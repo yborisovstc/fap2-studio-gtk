@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+
+<!-- Specification of FAP environment for empty root -->
+
+<!DOCTYPE  iobject SYSTEM "/usr/share/fapws/conf/objspec.dtd"> 
+
+<iobject type="none" id="root">
+</iobject> 
+

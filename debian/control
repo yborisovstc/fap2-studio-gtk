@@ -1,0 +1,19 @@
+Source: fap-studio-gtk
+Section: unknown
+Priority: extra
+Maintainer: Yuri Borisov <yuri.borisov.v@gmail.com>
+Build-Depends: debhelper (>= 7), fapws-dev (>= 0.0.4), fap-bvp-gtk-dev (>= 0.0.1)
+Standards-Version: 3.7.3
+
+Package: fap-studio-gtk
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, fapws (>= 0.0.4), fap-bvp-gtk-dev (>= 0.0.1)
+Description: Visual studio application for Finite Automata Framework (FAP)
+
+Package: fap-studio-gtk-dbg
+Section: libdevel
+Priority: extra
+Architecture: any
+Depends: fap-studio-gtk (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Visual studio application for Finite Automata Framework (FAP) debug symbols
+ 
