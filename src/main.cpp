@@ -1,15 +1,17 @@
 
 #include "mainwnd.h"
-#include <gtkmm/application.h>
+#include <gtkmm/main.h>
 
 int main (int argc, char *argv[])
 {
-    Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
+    Gtk::Main kit(argc, argv);
 
     MainWnd mainwnd;
 
     //Shows the window and returns when it is closed.
-    return app->run(mainwnd);
+    Gtk::Main::run(mainwnd);
+
+    return 0;
 }
 
 

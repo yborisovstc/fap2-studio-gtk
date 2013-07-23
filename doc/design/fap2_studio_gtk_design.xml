@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+
+<!DOCTYPE article SYSTEM "/usr/share/sgml/docbook/dtd/xml/4.5/docbookx.dtd">
+
+
+<article status="draft" class="specification"> <title>Studio application for Discrete Events System (DES) engine fap2 (aka grayb). 
+	Design.</title>
+
+    <articleinfo>
+	<author><personname><firstname>Yuri</firstname><surname>Borisov</surname></personname>
+	    <email>yuri.borisov.v@gmail.com</email></author> 
+
+	<releaseinfo>Ver.0.01 at 23-Jul-2013</releaseinfo>
+
+	<abstract>
+	    <simpara>This document outlines  software desing for 
+		Studio application for Discrete Events System (DES) engine fap2 (aka grayb). </simpara>
+	</abstract>
+
+	<revhistory>
+	    <revision> <revnumber>0.01</revnumber> <date>03-Mar-2013</date> <authorinitials>Yuri Borisov</authorinitials>
+		<revremark>Initial version</revremark> </revision>
+	</revhistory>
+
+    </articleinfo>
+
+    <bibliolist>
+	<title>References</title>
+    </bibliolist>
+
+
+    <glossary> <title>Glossary</title> 
+
+	<glossentry id="gls_cp"><glossterm>CP</glossterm> <acronym>CP</acronym>
+	    <glossdef> <para>Connection Point</para> <para>
+		    Element that is used as endpoint of connections between systems.  
+		    </para></glossdef> </glossentry>
+
+    </glossary>
+    
+    <sect1 id="ds_base"> <title>Base</title>
+    </sect1>
+
+</article>

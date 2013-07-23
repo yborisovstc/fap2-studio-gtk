@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+
+<!DOCTYPE article SYSTEM "/usr/share/sgml/docbook/dtd/xml/4.5/docbookx.dtd">
+
+
+<article status="draft" class="specification"> <title>Studio application for Discrete Events System (DES) engine fap2 (aka grayb). 
+	Requirements.</title>
+
+    <articleinfo>
+	<author><personname><firstname>Yuri</firstname><surname>Borisov</surname></personname>
+	    <email>yuri.borisov.v@gmail.com</email></author> 
+
+	<releaseinfo>Ver.0.01 at 30-Nov-2011</releaseinfo>
+
+	<abstract>
+	    <simpara>This document collects use-cases and software requirements for Studio application for Discrete Events System (DES) engine fap2 (aka grayb).</simpara>
+	</abstract>
+
+	<revhistory>
+	    <revision> <revnumber>0.01</revnumber> <date>23-Jul-2013</date> <authorinitials>Yuri Borisov</authorinitials>
+		<revremark>Initial version</revremark> </revision>
+	</revhistory>
+
+    </articleinfo>
+
+    <bibliolist>
+	<title>References</title>
+    </bibliolist>
+
+
+    <sect1 id="uc_001"><title>UC_01 Logging</title>
+	<sect2><title>Description</title>
+	    CLIENT requests logging and specifies logging parameters - SYSTEM provides CLIENT with logging data
+	</sect2>
+	<sect2><title>Extension of</title>
+	</sect2>
+	<sect2><title>Extended by</title>
+	    <itemizedlist>
+		<listitem><xref linkend="uc_1_02"/></listitem>
+	    </itemizedlist>
+	</sect2>
+    </sect1>
+
+</article>
