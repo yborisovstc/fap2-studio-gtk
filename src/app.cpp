@@ -1,4 +1,5 @@
 #include "app.h"
+#include "gtkmm/object.h"
 
 const char* KLogFileName = "fap-studio.log";
 const char* KTmpFileName = ".fap-studio-tmp.xml";
@@ -9,8 +10,9 @@ const char* KAppName = "fap-studio";
 /* Time slice of FAP environment, in milliseconds */
 const gint KFapeTimeSlice = 50;
 
-App::App(): Glib::Object()  {
+App::App(): iMainWnd(NULL) {
+    iMainWnd = new MainWnd();
 }
 
-~App::App() {
+App::~App() {
 }

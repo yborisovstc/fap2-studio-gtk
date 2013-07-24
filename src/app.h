@@ -2,14 +2,18 @@
 #ifndef __FAPSTU_GTK_APP_H
 #define __FAPSTU_GTK_APP_H
 
-#include <gtkmm/object.h>
+#include "mainwnd.h"
 
 
-class App: public Gtk::Object
+class App
 {
     public:
 	App();
 	virtual ~App();
+
+	MainWnd& Wnd() const {return *iMainWnd;};
+    private:
+	MainWnd* iMainWnd;
 };
 
 
