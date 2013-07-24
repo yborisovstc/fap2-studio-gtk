@@ -1,21 +1,42 @@
 #include "mainwnd.h"
 #include <iostream>
 
-MainWnd::MainWnd()
-    : m_button("Hello World")
+Glib::ustring sUiInfo = 
+"<ui>"
+"  <menubar name='MenuBar'>"
+"    <menu action='MenuFile'>"
+"      <menuitem action='Open'/>"
+"    </menu>"
+"  </menubar>"
+"  <toolbar  name='ToolBar'>"
+"    <toolitem action='Open'/>"
+"  </toolbar>"
+"</ui>";
+
+MainWnd::MainWnd() : iButton("Hello World"), iButton2("Test")
 {
-    // Sets the border width of the window.
-    set_border_width(10);
+    set_border_width(0);
 
-    // When the button receives the "clicked" signal, it will call the
-    // on_button_clicked() method defined below.
-    m_button.signal_clicked().connect(sigc::mem_fun(*this, &MainWnd::on_button_clicked));
+    irActionGroup = Gtk::ActionGroup::create("ActionGroup");
+    irActionGroup->add(Gtk::Action::create("MenuFile", "_File"));
+    irActionGroup->add(Gtk::Action::create("Open", "Open"), sigc::mem_fun(*this, &MainWnd::on_action_open));
+    irUiMgr = Gtk::UIManager::create();
+    irUiMgr->insert_action_group(irActionGroup);
+    irUiMgr->add_ui_from_string(sUiInfo);
+    Gtk::Widget* pMenuBar = irUiMgr->get_widget("/MenuBar");
 
-    // This packs the button into the Window (a container).
-    add(m_button);
+    add(iVboxMain);
+    iVboxMain.show();
 
-    // The final step is to display this newly created widget...
-    m_button.show();
+    iButton.signal_clicked().connect(sigc::mem_fun(*this, &MainWnd::on_button_clicked));
+
+    iVboxMain.pack_start(*pMenuBar, false, false, 0);
+
+    iVboxMain.pack_start(iButton);
+
+    pMenuBar->show();
+    iButton.show();
+
 }
 
 MainWnd::~MainWnd()
@@ -25,5 +46,10 @@ MainWnd::~MainWnd()
 void MainWnd::on_button_clicked()
 {
     std::cout << "Hello World" << std::endl;
+}
+
+void MainWnd::on_action_open()
+{
+    std::cout << "Action Open triggered" << std::endl;
 }
 
