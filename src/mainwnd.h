@@ -13,6 +13,7 @@ class MainWnd : public Gtk::Window
     public:
 	MainWnd();
 	virtual ~MainWnd();
+	Glib::RefPtr<Gtk::UIManager> UIManager() const;
 
     protected:
 	// Signal handlers:

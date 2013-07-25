@@ -53,3 +53,7 @@ void MainWnd::on_action_open()
     std::cout << "Action Open triggered" << std::endl;
 }
 
+Glib::RefPtr<Gtk::UIManager> MainWnd::UIManager() const
+{
+    return irUiMgr;
+}
