@@ -13,6 +13,7 @@ class App
 
 	MainWnd& Wnd() const {return *iMainWnd;};
     private:
+	Env* iEnv;
 	MainWnd* iMainWnd;
 };
 

@@ -10,7 +10,7 @@ const char* KAppName = "fap-studio";
 /* Time slice of FAP environment, in milliseconds */
 const gint KFapeTimeSlice = 50;
 
-App::App(): iMainWnd(NULL) {
+App::App(): iEnv(NULL), iMainWnd(NULL) {
     iMainWnd = new MainWnd();
 }
 
