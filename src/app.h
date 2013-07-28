@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "mainwnd.h"
+#include "hierdetailview.h"
 
 
 class App
@@ -20,9 +21,11 @@ class App
     private:
 	void on_action(const Glib::RefPtr<Gtk::Action>& aAction);
 	void on_action_open();
+	void OpenFile(const string& aFileName, bool aAsTmp = false);
     private:
 	Env* iEnv;
 	MainWnd* iMainWnd;
+	HierDetailView* iHDetView;
 	string iLogFileName;
 	string iSpecFileName;
 };

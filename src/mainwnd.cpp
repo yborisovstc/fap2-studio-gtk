@@ -1,5 +1,6 @@
 #include "mainwnd.h"
 #include <iostream>
+#include <gtkmm/stock.h>
 
 Glib::ustring sUiInfo = 
 "<ui>"
@@ -19,22 +20,29 @@ MainWnd::MainWnd() : iButton("Hello World"), iButton2("Test")
 
     irActionGroup = Gtk::ActionGroup::create("ActionGroup");
     irActionGroup->add(Gtk::Action::create("MenuFile", "_File"));
-    irActionGroup->add(Gtk::Action::create("Open", "Open"), sigc::mem_fun(*this, &MainWnd::on_action_open));
+    irActionGroup->add(Gtk::Action::create("Open", Gtk::Stock::OPEN), sigc::mem_fun(*this, &MainWnd::on_action_open));
     irUiMgr = Gtk::UIManager::create();
     irUiMgr->insert_action_group(irActionGroup);
     irUiMgr->add_ui_from_string(sUiInfo);
     Gtk::Widget* pMenuBar = irUiMgr->get_widget("/MenuBar");
+    Gtk::Widget* pToolBar = irUiMgr->get_widget("/ToolBar");
 
     add(iVboxMain);
     iVboxMain.show();
 
     iButton.signal_clicked().connect(sigc::mem_fun(*this, &MainWnd::on_button_clicked));
 
-    iVboxMain.pack_start(*pMenuBar, false, false, 0);
+    iVboxMain.pack_start(*pMenuBar, Gtk::PACK_SHRINK);
+    iVboxMain.pack_start(*pToolBar, Gtk::PACK_SHRINK);
 
-    iVboxMain.pack_start(iButton);
+    // Create main view client window
+    irMainClientWnd = new Gtk::ScrolledWindow();
+
+    //iVboxMain.pack_start(iButton);
+    iVboxMain.pack_start(*irMainClientWnd, Gtk::PACK_EXPAND_WIDGET);
 
     pMenuBar->show();
+    pToolBar->show();
     iButton.show();
 
 }
@@ -57,3 +65,9 @@ Glib::RefPtr<Gtk::UIManager> MainWnd::UIManager() const
 {
     return irUiMgr;
 }
+
+Gtk::Container& MainWnd::ClientWnd()
+{
+    return *irMainClientWnd;
+}
+

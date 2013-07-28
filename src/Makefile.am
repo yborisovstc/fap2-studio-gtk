@@ -6,6 +6,12 @@ fap2_studio_gtk_SOURCES = \
 		 main.cpp \
 		 app.h \
 		 app.cpp \
+		 hierdetailview.h \
+		 hierdetailview.cpp \
+		 elemdetrp.h \
+		 elemdetrp.cpp \
+		 elemcomprp.h \
+		 elemcomprp.cpp \
 		 mainwnd.h \
 		 mainwnd.cpp
 

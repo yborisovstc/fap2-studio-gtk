@@ -38,7 +38,12 @@
 
     </glossary>
     
-    <sect1 id="ds_base"> <title>Base</title>
+    <sect1 id="sec_scheme"> <title>Scheme</title>
+	<sect2><title>Introduction</title>
+	    <simpara>Application uses standard MVC scheme. In most cases view acts as controller, handling user actions and notifiactions from model.
+		Application can create a set of views to exposure system to user: system views, log views, visualization view etc,
+		ref <ulink url="../requirements/index.html#uc_002"/></simpara>
+	</sect2>
     </sect1>
 
 </article>

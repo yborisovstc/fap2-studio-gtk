@@ -2,8 +2,8 @@
 
 <!-- Specification of FAP environment for empty root -->
 
-<!DOCTYPE  iobject SYSTEM "/usr/share/fapws/conf/objspec.dtd"> 
+<!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
 
-<iobject type="none" id="root">
-</iobject> 
+<node id="root" parent="elem">
+</node> 
 

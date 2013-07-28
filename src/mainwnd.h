@@ -7,6 +7,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/uimanager.h>
+#include <gtkmm/scrolledwindow.h>
 
 class MainWnd : public Gtk::Window
 {
@@ -14,7 +15,7 @@ class MainWnd : public Gtk::Window
 	MainWnd();
 	virtual ~MainWnd();
 	Glib::RefPtr<Gtk::UIManager> UIManager() const;
-
+	Gtk::Container& ClientWnd();
     protected:
 	// Signal handlers:
 	void on_button_clicked();
@@ -27,6 +28,8 @@ class MainWnd : public Gtk::Window
 	Gtk::VBox iVboxMain;
 	Glib::RefPtr<Gtk::ActionGroup> irActionGroup;
 	Glib::RefPtr<Gtk::UIManager> irUiMgr;
+	// Client window for main view - normally hier detail view
+	Gtk::ScrolledWindow* irMainClientWnd;
 };
 
 #endif 

@@ -28,7 +28,8 @@
     </bibliolist>
 
 
-    <sect1 id="uc_001"><title>UC_01 Logging</title>
+
+    <sect1 id="uc_001"><title>UC_001 Logging</title>
 	<sect2><title>Description</title>
 	    CLIENT requests logging and specifies logging parameters - SYSTEM provides CLIENT with logging data
 	</sect2>
@@ -36,7 +37,39 @@
 	</sect2>
 	<sect2><title>Extended by</title>
 	    <itemizedlist>
-		<listitem><xref linkend="uc_1_02"/></listitem>
+	    </itemizedlist>
+	</sect2>
+    </sect1>
+
+    <sect1 id="uc_002"><title>UC_002 Views categories</title>
+	<sect2><title>Description</title>
+	    CLIENT requests SYSTEM for the views categories it can provides - SYSTEM can provides the following views categories:
+	    <itemizedlist>
+		<listitem>System view - views of system modelled</listitem>
+		<listitem>Log views</listitem>
+		<listitem>System visualization view - system visualize itself, it's trajectory, etc</listitem>
+	    </itemizedlist>
+	</sect2>
+	<sect2><title>Extension of</title>
+	</sect2>
+	<sect2><title>Extended by</title>
+	    <itemizedlist>
+	    </itemizedlist>
+	</sect2>
+    </sect1>
+
+    <sect1 id="uc_003"><title>UC_003 System views</title>
+	<sect2><title>Description</title>
+	    CLIENT requests SYSTEM for the system views it can provides - SYSTEM can provides the following types of system views:
+	    <itemizedlist>
+		<listitem>Hierarchy view - views of system native hierarchy in form of tree</listitem>
+		<listitem>Detail views - shows system components</listitem>
+	    </itemizedlist>
+	</sect2>
+	<sect2><title>Extension of</title>
+	</sect2>
+	<sect2><title>Extended by</title>
+	    <itemizedlist>
 	    </itemizedlist>
 	</sect2>
     </sect1>
