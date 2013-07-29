@@ -4,6 +4,7 @@ bin_PROGRAMS = fap2-studio-gtk
 
 fap2_studio_gtk_SOURCES = \
 		 main.cpp \
+		 common.h \
 		 app.h \
 		 app.cpp \
 		 hierdetailview.h \

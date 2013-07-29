@@ -14,12 +14,12 @@ class ElemDetRp: public Gtk::Layout
 	ElemDetRp(Elem* aElem);
 	virtual ~ElemDetRp();
     protected:
-	bool on_expose_event(GdkEventExpose* aEvent);
+	void on_size_allocate(Gtk::Allocation* aAllc);
+	void on_size_request(Gtk::Requisition* aRequisition);
     private:
 	Elem* iElem;
 	std::map<Elem*, ElemCompRp*> iCompRps; // Components representations
 	std::vector<Elem*> iComps; // Components
-	Gtk::Allocation iBodyAlc;
 };
 
 #endif

@@ -1,3 +1,4 @@
+#include "common.h"
 #include "elemdetrp.h"
 
 ElemDetRp::ElemDetRp(Elem* aElem): iElem(aElem)
@@ -17,23 +18,36 @@ ElemDetRp::~ElemDetRp()
 {
 }
 
-bool ElemDetRp::on_expose_event(GdkEventExpose* aEvent)
+void ElemDetRp::on_size_allocate(Gtk::Allocation* aAllc)
 {
-    // Draw body rect
     Gtk::Allocation alc = get_allocation();
-    Glib::RefPtr<Gdk::Window> drw = get_window();
-    Glib::RefPtr<Gtk::Style> style = get_style(); 	
-    Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
-    drw->draw_rectangle(gc, FALSE, iBodyAlc.get_x(), iBodyAlc.get_y(), iBodyAlc.get_width() - 1, iBodyAlc.get_height() - 1);
-    // Head separator
-    GtkAllocation head_alc; iHead->Allocation(&head_alc);
-    gdk_draw_line(BinWnd(), Gc(), iBodyAlc.x, head_alc.height, iBodyAlc.x + iBodyAlc.width - 1, head_alc.height);
-    // Draw init rect
-    GtkAllocation init_alc; iInit->Allocation(&init_alc);
-    gdk_draw_rectangle(BinWnd(), Gc(), FALSE, init_alc.x -1 , init_alc.y -1 , init_alc.width + 1, init_alc.height + 1);
-    // Draw trans rect
-    GtkAllocation tran_alc; iTrans->Allocation(&tran_alc);
-    gdk_draw_rectangle(BinWnd(), Gc(), FALSE, tran_alc.x -1 , tran_alc.y -1 , tran_alc.width + 1, tran_alc.height + 1);
+    // Allocate components
+    int compb_x = aAllc->get_width()/2, compb_y = KViewCompGapHight;
+    for (std::map<Elem*, ElemCompRp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	ElemCompRp* comp = it->second;
+	Gtk::Requisition req = comp->size_request();
+	int comp_body_center_x = req.width / 2;
+	Gtk::Allocation allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, req.height);
+	comp->size_allocate(allc);
+	compb_y += req.height + KViewCompGapHight;
+    }
 }
+
+void ElemDetRp::on_size_request(Gtk::Requisition* aReq)
+{
+    // Calculate size of comps
+    int comp_w = 0, comp_h = 0;
+    for (std::map<Elem*, ElemCompRp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	ElemCompRp* cpw = it->second;
+	Gtk::Requisition req = cpw->size_request();
+	comp_w = max(comp_w, req.width);
+	comp_h += req.height + KViewCompGapHight;
+    }
+
+    aReq->width = comp_w; 
+    aReq->height = comp_h + 2*KViewExtCompGapWidth;
+}
+
+
 
 
