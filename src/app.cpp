@@ -26,6 +26,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     // Open main hier detail view
     iHDetView = new HierDetailView(iMainWnd->ClientWnd(), iMainWnd->UIManager());
     iHDetView->SetRoot(iEnv->Root());
+    iHDetView->SetFocuse(iEnv->Root());
 }
 
 App::~App() {
@@ -50,6 +51,7 @@ void App::on_action_open()
     int result = dialog.run();
     if (result == Gtk::RESPONSE_OK) {
 	std::string filename = dialog.get_filename();
+	OpenFile(filename, false);
     }
 
 }
@@ -69,5 +71,6 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv = new Env("DesEnv", aFileName, iLogFileName);
     iEnv->ConstructSystem();
     iHDetView->SetRoot(iEnv->Root());
+    iHDetView->SetFocuse(iEnv->Root());
 }
 

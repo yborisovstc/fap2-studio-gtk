@@ -44,6 +44,7 @@ MainWnd::MainWnd() : iButton("Hello World"), iButton2("Test")
     pMenuBar->show();
     pToolBar->show();
     iButton.show();
+    irMainClientWnd->show();
 
 }
 

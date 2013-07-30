@@ -13,16 +13,18 @@ HierDetailView::~HierDetailView()
 
 void HierDetailView::SetRoot(Elem* aRoot)
 {
-    //assert(iRoot == NULL);
+    assert(aRoot != NULL);
     iRoot = aRoot;
 }
 
 void HierDetailView::SetFocuse(Elem* aElem)
 {
+    assert(aElem != NULL);
     if (iDetRp != NULL) {
 	delete iDetRp;
 	iDetRp = NULL;
     }
     iDetRp = new ElemDetRp(aElem);
     iContWnd.add(*iDetRp);
+    iDetRp->show();
 }

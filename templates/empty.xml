@@ -4,6 +4,6 @@
 
 <!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
 
-<node id="root" parent="elem">
+<node id="Root" parent="Elem">
 </node> 
 
