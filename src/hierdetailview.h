@@ -4,6 +4,7 @@
 #include <elem.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/uimanager.h>
+#include <gtkmm/alignment.h>
 
 #include "elemdetrp.h"
 
@@ -19,6 +20,7 @@ class HierDetailView
 	void SetFocuse(Elem* aRoot);
     private:
 	Gtk::Container& iContWnd;
+	Gtk::Alignment* iAlignent;
 	const Glib::RefPtr<Gtk::UIManager>& iUiMgr;
 	Elem* iRoot;
 	ElemDetRp* iDetRp;

@@ -14,8 +14,8 @@ class ElemDetRp: public Gtk::Layout
 	ElemDetRp(Elem* aElem);
 	virtual ~ElemDetRp();
     protected:
-	void on_size_allocate(Gtk::Allocation* aAllc);
-	void on_size_request(Gtk::Requisition* aRequisition);
+	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
+	virtual void on_size_request(Gtk::Requisition* aRequisition);
     private:
 	Elem* iElem;
 	std::map<Elem*, ElemCompRp*> iCompRps; // Components representations

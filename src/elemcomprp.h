@@ -4,14 +4,19 @@
 
 #include <gtkmm/layout.h>
 #include <gtkmm/box.h>
+#include "gtkmm/label.h"
+#include "gtkmm/drawingarea.h"
 #include <elem.h>
 
 class ElemCompHead: public Gtk::HBox
 {
     public:
 	ElemCompHead(const Elem& aElem);
+	virtual ~ElemCompHead();
     private:
 	const Elem& iElem;
+	Gtk::Label* iName;
+	Gtk::Label* iParent;
 };
 
 class ElemCompRp: public Gtk::Layout
@@ -20,9 +25,9 @@ class ElemCompRp: public Gtk::Layout
 	ElemCompRp(Elem* aElem);
 	virtual ~ElemCompRp();
     protected:
-	bool on_expose_event(GdkEventExpose* aEvent);
-	void on_size_allocate(Gtk::Allocation* aAllc);
-	void on_size_request(Gtk::Requisition* aRequisition);
+	virtual bool on_expose_event(GdkEventExpose* event);
+	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
+	virtual void on_size_request(Gtk::Requisition* aRequisition);
     private:
 	Elem* iElem;
 	ElemCompHead* iHead;

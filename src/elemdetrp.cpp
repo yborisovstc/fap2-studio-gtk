@@ -1,7 +1,7 @@
 #include "common.h"
 #include "elemdetrp.h"
 
-ElemDetRp::ElemDetRp(Elem* aElem): iElem(aElem)
+ElemDetRp::ElemDetRp(Elem* aElem): Gtk::Layout(), iElem(aElem)
 {
     // Add components
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
@@ -18,11 +18,11 @@ ElemDetRp::~ElemDetRp()
 {
 }
 
-void ElemDetRp::on_size_allocate(Gtk::Allocation* aAllc)
+void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
 {
     Gtk::Allocation alc = get_allocation();
     // Allocate components
-    int compb_x = aAllc->get_width()/2, compb_y = KViewCompGapHight;
+    int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
     for (std::map<Elem*, ElemCompRp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	ElemCompRp* comp = it->second;
 	Gtk::Requisition req = comp->size_request();
@@ -30,6 +30,10 @@ void ElemDetRp::on_size_allocate(Gtk::Allocation* aAllc)
 	Gtk::Allocation allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, req.height);
 	comp->size_allocate(allc);
 	compb_y += req.height + KViewCompGapHight;
+
+	GdkEventExpose* event = new GdkEventExpose();
+	event->type = GDK_EXPOSE;
+	comp->send_expose((GdkEvent*) event);
     }
 }
 

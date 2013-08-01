@@ -3,11 +3,24 @@
 
 ElemCompHead::ElemCompHead(const Elem& aElem): iElem(aElem)
 {
+    // Create Name
+    iName = new Gtk::Label();
+    iName->set_text(iElem.Name());
+    iName->show();
+    pack_start(*iName, false, false, 2);
 }
+
+ElemCompHead::~ElemCompHead()
+{
+    delete iName;
+}
+
 
 
 ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL)
 {
+    // Set name
+    set_name(iElem->Name());
     // Add header
     iHead = new ElemCompHead(*iElem);
     add(*iHead);
@@ -30,14 +43,15 @@ bool ElemCompRp::on_expose_event(GdkEventExpose* aEvent)
     // Head separator
     Gtk::Allocation head_alc = iHead->get_allocation();
     drw->draw_line(gc, iBodyAlc.get_x(), head_alc.get_height(), iBodyAlc.get_x() + iBodyAlc.get_width() - 1, head_alc.get_height());
+    return false;
 }
 
-void ElemCompRp::on_size_allocate(Gtk::Allocation* aAllc)
+void ElemCompRp::on_size_allocate(Gtk::Allocation& aAllc)
 {
     Gtk::Requisition head_req = iHead->size_request();
 
     // Calculate allocation of comp body
-    iBodyAlc = Gtk::Allocation(0, 0, aAllc->get_width(), aAllc->get_height());
+    iBodyAlc = Gtk::Allocation(0, 0, aAllc.get_width(), aAllc.get_height());
 
     // Allocate header
     Gtk::Allocation head_alc = Gtk::Allocation(iBodyAlc.get_x(), iBodyAlc.get_y(), iBodyAlc.get_width(), head_req.height);
