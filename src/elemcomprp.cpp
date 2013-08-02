@@ -36,10 +36,10 @@ bool ElemCompRp::on_expose_event(GdkEventExpose* aEvent)
 {
     // Draw body rect
     Gtk::Allocation alc = get_allocation();
-    Glib::RefPtr<Gdk::Window> drw = get_window();
+    Glib::RefPtr<Gdk::Window> drw = get_bin_window();
     Glib::RefPtr<Gtk::Style> style = get_style(); 	
     Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
-    drw->draw_rectangle(gc, FALSE, iBodyAlc.get_x(), iBodyAlc.get_y(), iBodyAlc.get_width() - 1, iBodyAlc.get_height() - 1);
+    drw->draw_rectangle(gc, false, iBodyAlc.get_x(), iBodyAlc.get_y(), iBodyAlc.get_width() - 1, iBodyAlc.get_height() - 1);
     // Head separator
     Gtk::Allocation head_alc = iHead->get_allocation();
     drw->draw_line(gc, iBodyAlc.get_x(), head_alc.get_height(), iBodyAlc.get_x() + iBodyAlc.get_width() - 1, head_alc.get_height());
@@ -56,6 +56,7 @@ void ElemCompRp::on_size_allocate(Gtk::Allocation& aAllc)
     // Allocate header
     Gtk::Allocation head_alc = Gtk::Allocation(iBodyAlc.get_x(), iBodyAlc.get_y(), iBodyAlc.get_width(), head_req.height);
     iHead->size_allocate(head_alc);
+    Gtk::Layout::on_size_allocate(aAllc);
 }
 
 void ElemCompRp::on_size_request(Gtk::Requisition* aRequisition)

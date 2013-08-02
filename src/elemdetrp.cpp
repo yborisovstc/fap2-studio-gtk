@@ -30,11 +30,8 @@ void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
 	Gtk::Allocation allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, req.height);
 	comp->size_allocate(allc);
 	compb_y += req.height + KViewCompGapHight;
-
-	GdkEventExpose* event = new GdkEventExpose();
-	event->type = GDK_EXPOSE;
-	comp->send_expose((GdkEvent*) event);
     }
+    Gtk::Layout::on_size_allocate(aAllc);
 }
 
 void ElemDetRp::on_size_request(Gtk::Requisition* aReq)
