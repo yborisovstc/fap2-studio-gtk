@@ -1,0 +1,760 @@
+
+fap2-studio-gtk=/home/yborisov/projects/fap/git/fap2-studio-gtk CD=. filter="autogen.sh Makefile *.am *.ac *.in AUTHORS COPYING ChangeLog README NEWS" {
+ autogen.sh
+  Makefile
+  Makefile.am
+  configure.ac
+  Makefile.in
+  AUTHORS
+  COPYING
+  ChangeLog
+  README
+  NEWS
+  debian=debian CD=. filter="*" {
+   changelog
+    compat
+    control
+    copyright
+    fap-studio-gtk.install
+    rules
+    stamp-autogen
+    stamp-autotools-files
+    stamp-makefile-build
+    stamp-makefile-check
+    fap-studio-gtk.debhelper.log
+  }
+ src=src CD=. filter="*.cpp *.h *.xml *.am *.rc" {
+  app.cpp
+  elemcomprp.cpp
+  elemdetrp.cpp
+  hierdetailview.cpp
+  main.cpp
+  mainwnd.cpp
+  toolitems.cpp
+  app.h
+  common.h
+  elemcomprp.h
+  elemdetrp.h
+  hierdetailview.h
+  mainwnd.h
+  toolitems.h
+  Makefile.am
+ }
+ templates=templates CD=. filter="*" {
+  empty.xml
+ }
+ examples=examples CD=. filter="*" {
+  rock_1.xml
+   rock_2.xml
+ }
+}
+grayb=/home/yborisov/projects/fap/git/grayb CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
+autogen.sh
+Makefile.am
+configure.ac
+AUTHORS
+COPYING
+ChangeLog
+README
+NEWS
+Makefile.in
+libgrayb.pc.in
+src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+ base.h
+  chromo.h
+  chromox.h
+  data.h
+  des.h
+  edge.h
+  elem.h
+  env.h
+  factr.h
+  func.h
+  graph.h
+  guri.h
+  hnode.h
+  incaps.h
+  log.h
+  mchromo.h
+  mconn.h
+  mdata.h
+  mdes.h
+  medge.h
+  melem.h
+  menv.h
+  mgraph.h
+  mlog.h
+  mmuta.h
+  mprop.h
+  mprov.h
+  mvert.h
+  plat.h
+  prop.h
+  prov.h
+  provdef.h
+  syst.h
+  vert.h
+  base.cpp
+  chromo.cpp
+  chromox.cpp
+  data.cpp
+  des.cpp
+  edge.cpp
+  elem.cpp
+  env.cpp
+  factr.cpp
+  func.cpp
+  graph.cpp
+  guri.cpp
+  hnode.cpp
+  incaps.cpp
+  log.cpp
+  prop.cpp
+  prov.cpp
+  provdef.cpp
+  syst.cpp
+  vert.cpp
+  Makefile.am
+} 
+etc=etc CD=. filter="*" {
+ objspec.dtd
+  objspec_s1.dtd
+  objspec_s2.dtd
+}
+modules=modules CD=. filter="*" {
+ capsula.xml
+  data.xml
+  des.xml
+  func.xml
+  syst.xml
+}
+debian=debian CD=. filter="*" {
+ README.Debian
+  changelog
+  compat
+  control
+  copyright
+  dirs
+  docs
+  fapws-dev.install
+  fapws-dev.substvars
+  fapws.install
+  fapws.postinst.debhelper
+  fapws.postrm.debhelper
+  fapws.substvars
+  files
+  rules
+  fapws-dev.debhelper.log
+  fapws.debhelper.log
+}
+doc=doc CD=. filter="*" {
+ requirements=requirements CD=. filter="*" {
+  fap_req.xml
+   index.html
+ }
+ design=design CD=. filter="*" {
+  fap_design.xml
+ }
+}
+test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
+  ut_conn.cpp
+  ut_cre.cpp
+  ut_des.cpp
+  ut_fun.cpp
+  ut_grayb_main.cpp
+  ut_mut.cpp
+  ut_uri.cpp
+  ut_conn_sock.xml
+  ut_cre_1.xml
+  ut_cre_data.xml
+  ut_cre_gr.xml
+  ut_cre_incaps.xml
+  ut_cre_incaps1.xml
+  ut_cre_syst.xml
+  ut_cre_syst1.xml
+  ut_cre_syst__S.xml
+  ut_des_cre1.xml
+  ut_des_cre2.xml
+  ut_des_cre3.xml
+  ut_des_cre4.xml
+  ut_func_seq1.xml
+  ut_func_seq2.xml
+  ut_func_seq3.xml
+  ut_func_seq4.xml
+  ut_mut_syst.xml
+  ut_mutadd_1.xml
+  ut_uri_base.xml
+  Makefile.am
+  ut_conn_sock.txt
+  ut_cre_1.txt
+  ut_cre_data.txt
+  ut_cre_gr.txt
+  ut_cre_incaps.txt
+  ut_cre_syst.txt
+  ut_des_cre1.txt
+  ut_des_cre2.txt
+  ut_des_cre4.txt
+  ut_func_seq1.txt
+  ut_func_seq2.txt
+  ut_func_seq3.txt
+  ut_func_seq4.txt
+  ut_mut_syst.txt
+  ut_mutadd_1.txt
+  ut_uri_base.txt
+  libs=.libs CD=. filter="*" {
+  }
+}
+}
+fap2=/home/yborisov/projects/fap/git/fap2 CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
+autogen.sh
+Makefile.am
+configure.ac
+AUTHORS
+COPYING
+ChangeLog
+README
+NEWS
+Makefile.in
+libfap2.pc.in
+src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+ base.h
+  graph.h
+  plat.h
+  base.cpp
+  graph.cpp
+  Makefile.am
+} 
+etc=etc CD=. filter="*" {
+ objspec.dtd
+}
+modules=modules CD=. filter="*" {
+ vector.xml
+}
+debian=debian CD=. filter="*" {
+ README.Debian
+  changelog
+  compat
+  control
+  copyright
+  dirs
+  docs
+  fapws-dev.install
+  fapws-dev.substvars
+  fapws.install
+  fapws.postinst.debhelper
+  fapws.postrm.debhelper
+  fapws.substvars
+  files
+  rules
+  fapws-dev.debhelper.log
+  fapws.debhelper.log
+}
+doc=doc CD=. filter="*" {
+ requirements=requirements CD=. filter="*" {
+  fap_req.xml
+   index.html
+ }
+ design=design CD=. filter="*" {
+  fap_design.xml
+ }
+}
+test=test CD=. filter="*.cpp *.h *.xml *.am" {
+  ut_embmod.cpp
+  Makefile.am
+  libs=.libs CD=. filter="*" {
+   ut-fapws-lib
+  }
+}
+}
+fap-vm-gtk=/home/yborisov/projects/fap/git/fap-vm-gtk CD=. filter="*" {
+ AUTHORS
+  COPYING
+  ChangeLog
+  INSTALL
+  Makefile.am
+  NEWS
+  README
+  autogen.sh
+  configure.ac
+  debian=debian CD=. filter="*" {
+   changelog
+    compat
+    control
+    copyright
+    fap-vm-gtk.install
+    files
+    rules
+  }
+ src=src CD=. filter="*.h *.cpp *.xml Makefile.am" {
+  vmstates.h
+   vmwindow.h
+   vmstates.cpp
+   vmwindow.cpp
+   Makefile.am
+ }
+}
+fap-bvp-gtk=/home/yborisov/projects/fap/git/fap-bvp-gtk CD=. filter="autogen.sh Makefile *.am *.ac *.in AUTHORS COPYING ChangeLog README NEWS" {
+ autogen.sh
+  Makefile
+  Makefile.am
+  configure.ac
+  Makefile.in
+  libfapbvpgtk.pc.in
+  AUTHORS
+  COPYING
+  ChangeLog
+  README
+  NEWS
+  Makefile.in
+  libfapbvpgtk.pc.in
+  etc=etc CD=. filter="*" {
+   cag_proxy.rc
+  }
+ src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+  cagbin.h
+   cagbox.h
+   cagbutton.h
+   cagcontainer.h
+   cagdialog.h
+   cagentry.h
+   cagimage.h
+   caglabel.h
+   caglayout.h
+   cagmenu.h
+   cagmisc.h
+   cagpaned.h
+   cagprov.h
+   cagproxy.h
+   cagstyle.h
+   cagtextview.h
+   cagtoolbar.h
+   cagwindow.h
+   capbutton.h
+   capcommon.h
+   capcomp.h
+   capcp.h
+   capcterm.h
+   capdect.h
+   caplogdlg.h
+   capmiscwid.h
+   capopwnd.h
+   capstate.h
+   capsys.h
+   mainwndiface.h
+   widgets.h
+   cagbin.cpp
+   cagbox.cpp
+   cagbutton.cpp
+   cagcontainer.cpp
+   cagdialog.cpp
+   cagentry.cpp
+   cagimage.cpp
+   caglabel.cpp
+   caglayout.cpp
+   cagmenu.cpp
+   cagmisc.cpp
+   cagpaned.cpp
+   cagprov.cpp
+   cagproxy.cpp
+   cagstyle.cpp
+   cagtextview.cpp
+   cagtoolbar.cpp
+   cagwindow.cpp
+   capbutton.cpp
+   capcomp.cpp
+   capcp.cpp
+   capcterm.cpp
+   capdect.cpp
+   caplogdlg.cpp
+   capmiscwid.cpp
+   capopwnd.cpp
+   capstate.cpp
+   capsys.cpp
+   widgets.cpp
+   Makefile.am
+ } 
+ debian=debian CD=. filter="*" {
+  changelog
+   control
+   copyright
+   fap-bvp-gtk-dev.install
+   fap-bvp-gtk.install
+   rules
+ }
+ img=img CD=. filter="*" {
+  dect_btn_less.png
+   dect_btn_more.png
+   tbar_btn_inp.png
+   tbar_btn_state.png
+   tbar_btn_syst.png
+   tbar_btn_trans.png
+ }
+}
+fap-tias=/home/yborisov/projects/fap/git/fap-tias CD=. filter="README *.ac *.am" {
+ README
+  configure.ac
+  Makefile.am
+  src=src CD=. filter="*.cpp *.h *.xml *.am *.rc" {
+   main.cpp
+    ut_emtran_spec_2.xml
+    ut_emtran_spec_3.xml
+    Makefile.am
+    cag_proxy.rc
+  }
+}
+fap-studio-gtk=/home/yborisov/projects/fap/git/fap-studio-gtk CD=. filter="autogen.sh Makefile *.am *.ac *.in AUTHORS COPYING ChangeLog README NEWS" {
+ autogen.sh
+  Makefile
+  Makefile.am
+  configure.ac
+  Makefile.in
+  AUTHORS
+  COPYING
+  ChangeLog
+  README
+  NEWS
+  debian=debian CD=. filter="*" {
+   changelog
+    compat
+    control
+    copyright
+    fap-studio-gtk.install
+    rules
+    stamp-autogen
+    stamp-autotools-files
+    stamp-makefile-build
+    stamp-makefile-check
+    fap-studio-gtk.debhelper.log
+  }
+ src=src CD=. filter="*.cpp *.h *.xml *.am *.rc" {
+  app.cpp
+   main.cpp
+   mainwnd.cpp
+   app.h
+   mainwnd.h
+   Makefile.am
+ }
+ templates=templates CD=. filter="*" {
+  empty.xml
+ }
+ examples=examples CD=. filter="*" {
+  rock_1.xml
+   rock_2.xml
+ }
+}
+fap2-studio-qt=/home/yborisov/projects/fap/git/fap2-studio-qt CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in *.pro {
+grayb_studio.pro
+src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+  capcomp.h
+  capobject.h
+  capopwnd.h
+  caqproxy.h
+  grfwidgets.h
+  mainwnd.h
+  capcomp.cpp
+  capobject.cpp
+  capopwnd.cpp
+  caqproxy.cpp
+  grfwidgets.cpp
+  mainwnd.cpp
+} 
+files=files CD=. filter="*" {
+ empty.xml
+}
+}
+fap-balls=/home/yborisov/projects/fap/git/fap-balls CD=. filter="*.ac *.am" {
+ configure.ac
+  Makefile.am
+  debian=debian CD=. filter="*" {
+   README.Debian
+    changelog
+    compat
+    control
+    copyright
+    dirs
+    docs
+    fap-balls.dirs
+    fap-balls.install
+    fap-balls.substvars
+    files
+    rules
+    fap-balls-0.0.4.debhelper.log
+    fap-balls.debhelper.log
+  }
+ src=src CD=. filter="*.cpp *.h *.xml *.am" {
+  fap-balls-model.cpp
+   main.cpp
+   fap-balls-model.h
+   fap-balls-spec.xml
+   Makefile.am
+ }
+ doc=doc CD=. filter="*" {
+  FAPTST_BALL_LLD_001.doc
+   FAPTST_BALL_LLD_SHM.vsd
+   stas1.docm
+   stas1.docx
+   stas1.rtf
+ }
+}
+fap-snails=/home/yborisov/projects/fap/git/fap-snails CD=. filter="*" {
+ snails.cpp
+ snails.h
+ snails.pro
+ ut_spec_ext_mut.xml
+ images=images CD=. filter="*" {
+  snail.png
+ }
+}
+fapws=/home/yborisov/projects/fap/git/fapws CD=. filter="*" {
+ AUTHORS
+  COPYING
+  ChangeLog
+  INSTALL
+  Makefile
+  Makefile.am
+  Makefile.in
+  NEWS
+  README
+  aclocal.m4
+  autogen.sh
+  build-stamp
+  config.guess
+  config.status
+  config.sub
+  configure
+  configure.ac
+  depcomp
+  install-sh
+  libfapws.pc
+  libfapws.pc.in
+  libtool
+  ltmain.sh
+  missing
+  src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+   deslbase.h
+    fapbase.h
+    fapext.h
+    fapfact.h
+    faplogger.h
+    fapplat.h
+    fapplugin.h
+    fapstext.h
+    faptran.h
+    fapws.h
+    panics.h
+    tadesl.h
+    deslbase.cpp
+    fapbase.cpp
+    fapext.cpp
+    fapfact.cpp
+    faplogger.cpp
+    fapstext.cpp
+    fapws.cpp
+    tadesl.cpp
+    Makefile.am
+  } 
+ etc=etc CD=. filter="*" {
+  objspec.dtd
+ }
+ modules=modules CD=. filter="*" {
+  vector.xml
+ }
+ debian=debian CD=. filter="*" {
+  README.Debian
+   changelog
+   compat
+   control
+   copyright
+   dirs
+   docs
+   fapws-dev.install
+   fapws-dev.substvars
+   fapws.install
+   fapws.postinst.debhelper
+   fapws.postrm.debhelper
+   fapws.substvars
+   files
+   rules
+   fapws-dev.debhelper.log
+   fapws.debhelper.log
+ }
+ doc=doc CD=. filter="*" {
+  requirements=requirements CD=. filter="*" {
+   fap_req.xml
+    index.html
+  }
+  design=design CD=. filter="*" {
+   fap_design.xml
+  }
+ }
+ test=test CD=. filter="*.cpp *.h *.xml *.am" {
+  ut_conn.cpp
+   ut_control.cpp
+   ut_embmod.cpp
+   ut_emtran.cpp
+   ut_ext_mut.cpp
+   ut_fapws_main.cpp
+   ut_game_xo.cpp
+   ut_modul.cpp
+   ut_simple_increase.cpp
+   ut_spec_creat.cpp
+   ut_game_xo.h
+   ut_simple_increase.h
+   ut_spec_creat.h
+   ut_conn_spec.xml
+   ut_contr_spec.xml
+   ut_embmod_vect.xml
+   ut_emtran_spec.xml
+   ut_emtran_spec_2.xml
+   ut_emtran_spec_3.xml
+   ut_emtran_vect.xml
+   ut_emtran_vectgf.xml
+   ut_modul_base.xml
+   ut_modul_ext1.xml
+   ut_modul_incr.xml
+   ut_modul_loc.xml
+   ut_modul_loc1.xml
+   ut_modul_save_tmp.xml
+   ut_mut_deta1.xml
+   ut_mut_deta2.xml
+   ut_spec_creat_1.xml
+   ut_spec_ext_mut.xml
+   Makefile.am
+   libs=.libs CD=. filter="*" {
+    ut-fapws-lib
+   }
+ }
+ config.log
+}
+gravityqt=/home/yborisov/projects/fap/michael/ver1/gravity CD=. filter="*.cpp *.h *.ui" {
+ GravityObject.cpp
+  GravityView.cpp
+  GravityWindow.cpp
+  ObjectPropDlg.cpp
+  main.cpp
+  moc_GravityView.cpp
+  moc_GravityWindow.cpp
+  moc_ObjectPropDlg.cpp
+  GravityObject.h
+  GravityView.h
+  GravityWindow.h
+  ObjectPropDlg.h
+  ui_GravityWindow.h
+  ui_ObjectPropDlg.h
+  GravityWindow.ui
+  ObjectPropDlg.ui
+}
+tmp=/home/yborisov/projects/fap/tmp CD=. filter="*" {
+ fapws=fapws CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
+  autogen.sh
+  Makefile.am
+  configure.ac
+  AUTHORS
+  COPYING
+  ChangeLog
+  README
+  NEWS
+  libfapws.pc.in
+  src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+   deslbase.h
+    fapbase.h
+    fapext.h
+    fapfact.h
+    faplogger.h
+    fapopvi.h
+    fapplat.h
+    fapstext.h
+    faptran.h
+    fapview.h
+    fapviewprim.h
+    fapws.h
+    panics.h
+    tadesl.h
+    viewgtk.h
+    deslbase.cpp
+    fapbase.cpp
+    fapext.cpp
+    fapfact.cpp
+    faplogger.cpp
+    fapopvi.cpp
+    fapstext.cpp
+    fapviewprim.cpp
+    fapws.cpp
+    tadesl.cpp
+    viewgtk.cpp
+    objspec.dtd
+    Makefile.am
+  } 
+ debian=debian CD=. filter="*" {
+  README.Debian
+   changelog
+   compat
+   control
+   copyright
+   dirs
+   docs
+   fapws-dev.install
+   fapws-dev.substvars
+   fapws.install
+   fapws.postinst.debhelper
+   fapws.postrm.debhelper
+   fapws.substvars
+   files
+   rules
+   fapws-dev.debhelper.log
+   fapws.debhelper.log
+ }
+ trag=trag CD=. filter="*" {
+  Makefile.am
+   tadesl=tadesl CD=. filter="*.cpp *.h *.am Makefile" {
+    tadesl.cpp
+     tadesl.h
+     Makefile.am
+     Makefile
+   }
+ }
+ doc=doc CD=. filter="*" {
+  requirements=requirements CD=. filter="*" {
+   fap_req.xml
+    index.html
+  }
+  design=design CD=. filter="*" {
+   fap_design.xml
+  }
+ }
+ test=test CD=. filter="*" {
+  Makefile
+   Makefile.am
+   Makefile.in
+   ut-fapws-lib
+   ut_conn.cpp
+   ut_conn_spec.xml
+   ut_contr_spec.xml
+   ut_control.cpp
+   ut_emtran.cpp
+   ut_emtran_spec.xml
+   ut_emtran_spec_2.xml
+   ut_emtran_spec_3.xml
+   ut_ext_mut.cpp
+   ut_fapws_main.cpp
+   ut_game_xo.cpp
+   ut_game_xo.h
+   ut_simple_increase.cpp
+   ut_simple_increase.h
+   ut_spec_creat.cpp
+   ut_spec_creat.h
+   ut_spec_creat_1.xml
+   ut_spec_ext_mut.xml
+   ut_fapws_lib-ut_conn.o
+   ut_fapws_lib-ut_control.o
+   ut_fapws_lib-ut_emtran.o
+   ut_fapws_lib-ut_ext_mut.o
+   ut_fapws_lib-ut_fapws_main.o
+   ut_fapws_lib-ut_simple_increase.o
+   ut_fapws_lib-ut_spec_creat.o
+   libs=.libs CD=. filter="*" {
+    ut-fapws-lib
+   }
+ }
+}
+}

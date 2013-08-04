@@ -13,6 +13,8 @@ class ElemCompHead: public Gtk::HBox
     public:
 	ElemCompHead(const Elem& aElem);
 	virtual ~ElemCompHead();
+    protected:
+	virtual bool on_expose_event(GdkEventExpose* event);
     private:
 	const Elem& iElem;
 	Gtk::Label* iName;
