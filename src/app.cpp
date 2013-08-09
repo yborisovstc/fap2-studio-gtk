@@ -13,6 +13,8 @@ const char* KAppName = "fap2-studio";
 const gint KFapeTimeSlice = 50;
 
 App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
+    // Create studio environment
+    iStEnv = new StEnv();
     // Default logfilename
     iLogFileName = GetDefaultLogFileName();
     // Create model
@@ -24,14 +26,15 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     //iMainWnd->UIManager()->signal_post_activate().connect(sigc::mem_fun(*this, &App::on_action));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Open")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_open));
     // Open main hier detail view
-    iHDetView = new HierDetailView(iMainWnd->ClientWnd(), iMainWnd->UIManager());
+    iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
     iHDetView->SetRoot(iEnv->Root());
-    iHDetView->SetFocuse(iEnv->Root());
+    iHDetView->SetCursor(iEnv->Root());
 }
 
 App::~App() {
     delete iMainWnd;
     delete iEnv;
+    delete iStEnv;
 }
 
 void App::on_action(const Glib::RefPtr<Gtk::Action>& aAction)
@@ -71,6 +74,6 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv = new Env("DesEnv", aFileName, iLogFileName);
     iEnv->ConstructSystem();
     iHDetView->SetRoot(iEnv->Root());
-    iHDetView->SetFocuse(iEnv->Root());
+    iHDetView->SetCursor(iEnv->Root());
 }
 

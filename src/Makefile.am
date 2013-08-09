@@ -13,8 +13,15 @@ fap2_studio_gtk_SOURCES = \
 		 elemdetrp.cpp \
 		 elemcomprp.h \
 		 elemcomprp.cpp \
+		 vertcrp.h \
+		 vertcrp.cpp \
 		 toolitems.h \
 		 toolitems.cpp \
+		 mprov.h \
+		 provdef.h \
+		 provdef.cpp \
+		 stenv.h \
+		 stenv.cpp \
 		 mainwnd.h \
 		 mainwnd.cpp
 

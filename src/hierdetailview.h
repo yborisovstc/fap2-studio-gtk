@@ -9,6 +9,7 @@
 
 #include "elemdetrp.h"
 #include "toolitems.h"
+#include "msenv.h"
 
 // System layer detail view. It exposes the structure of given layer of system hierarchy. 
 // View handles moving up/down hierarchy, mutation of element focused on
@@ -16,14 +17,17 @@
 class HierDetailView
 {
     public:
-	HierDetailView(Gtk::Container& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr);
+	HierDetailView(MSEnv& aStEnv, Gtk::Container& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr);
 	virtual ~HierDetailView();
 	void SetRoot(Elem* aRoot);
-	void SetFocuse(Elem* aRoot);
+	void SetCursor(Elem* aRoot);
     protected:
 	// Signal handlers:
-	void on_action_name();
+	void on_action_up();
+	void on_comp_selected(Elem* aComp);
     private:
+	// Environment
+	MSEnv& iStEnv;
 	Gtk::Container& iContWnd;
 	Gtk::Alignment* iAlignent;
 	Glib::RefPtr<Gtk::UIManager> iUiMgr;

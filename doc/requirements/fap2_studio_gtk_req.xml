@@ -70,6 +70,21 @@
 	</sect2>
 	<sect2><title>Extended by</title>
 	    <itemizedlist>
+		<listitem> <xref linkend="uc_004"/> </listitem>
+	    </itemizedlist>
+	</sect2>
+    </sect1>
+
+    <sect1 id="uc_004"><title>UC_004 Detail views selection</title>
+	<sect2><title>Description</title>
+	    CLIENT requests opening system specification - SYSTEM opens spec file and shows system in detail view.
+	    Type of detail view depends on type of system's root type. 
+	</sect2>
+	<sect2><title>Extension of</title>
+	    <xref linkend="uc_003"/>
+	</sect2>
+	<sect2><title>Extended by</title>
+	    <itemizedlist>
 	    </itemizedlist>
 	</sect2>
     </sect1>

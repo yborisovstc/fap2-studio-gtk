@@ -5,7 +5,7 @@
 
 
 
-ElemDetRp::ElemDetRp(Elem* aElem): Gtk::Layout(), iElem(aElem)
+ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv)
 {
     // Add components
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
@@ -13,7 +13,8 @@ ElemDetRp::ElemDetRp(Elem* aElem): Gtk::Layout(), iElem(aElem)
 	assert(comp != NULL);
 	ElemCompRp* rp = new ElemCompRp(comp);
 	rp->add_events(Gdk::BUTTON_PRESS_MASK);
-	rp->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press));
+//	rp->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press));
+	rp->signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
 	add(*rp);
 	iCompRps[comp] = rp;
 	rp->show();
@@ -69,5 +70,22 @@ void ElemDetRp::on_size_request(Gtk::Requisition* aReq)
 bool ElemDetRp::on_comp_button_press(GdkEventButton* event)
 {
     std::cout << "on_comp_button_press" << std::endl;
+}
+
+bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
+{
+    std::cout << "on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
+    iSigCompSelected.emit(aComp);
+}
+
+ElemDetRp::tSigCompSelected ElemDetRp::SignalCompSelected()
+{
+    return iSigCompSelected;
+}
+
+
+Elem* ElemDetRp::Model()
+{
+    return iElem;
 }
 

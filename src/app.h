@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "mainwnd.h"
+#include "stenv.h"
 #include "hierdetailview.h"
 
 
@@ -23,7 +24,10 @@ class App
 	void on_action_open();
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
     private:
+	// DES environment
 	Env* iEnv;
+	// Studio environment
+	StEnv* iStEnv;
 	MainWnd* iMainWnd;
 	HierDetailView* iHDetView;
 	string iLogFileName;
