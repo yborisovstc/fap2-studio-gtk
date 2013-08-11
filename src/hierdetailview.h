@@ -10,6 +10,7 @@
 #include "elemdetrp.h"
 #include "toolitems.h"
 #include "msenv.h"
+#include "mdrp.h"
 
 // System layer detail view. It exposes the structure of given layer of system hierarchy. 
 // View handles moving up/down hierarchy, mutation of element focused on
@@ -32,7 +33,8 @@ class HierDetailView
 	Gtk::Alignment* iAlignent;
 	Glib::RefPtr<Gtk::UIManager> iUiMgr;
 	Elem* iRoot;
-	ElemDetRp* iDetRp;
+	// Node detail representation
+	MDrp* iDetRp;
 	Glib::RefPtr<Gtk::ActionGroup> irActionGroup;
 	TiLabel* iTbNameHd;
 	TiLabel* iTbName;

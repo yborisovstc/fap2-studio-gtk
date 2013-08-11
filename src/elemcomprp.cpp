@@ -43,12 +43,15 @@ ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL)
     iHead = new ElemCompHead(*iElem);
     add(*iHead);
     iHead->show();
+    // Set events mask
+    add_events(Gdk::BUTTON_PRESS_MASK);
 }
 
 ElemCompRp::~ElemCompRp()
 {
     delete iHead;
 }
+
 
 bool ElemCompRp::on_expose_event(GdkEventExpose* aEvent)
 {
@@ -86,3 +89,22 @@ void ElemCompRp::on_size_request(Gtk::Requisition* aRequisition)
     aRequisition->height = head_req.height + body_h;
 }
 
+string ElemCrp::EType()
+{
+    return ":Elem";
+}
+
+ElemCrp::ElemCrp(Elem* aElem)
+{
+    iRp = new ElemCompRp(aElem);
+}
+
+ElemCrp::~ElemCrp()
+{
+    delete iRp;
+}
+
+Gtk::Widget& ElemCrp::Widget()
+{
+    return *iRp;
+}

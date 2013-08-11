@@ -9,15 +9,14 @@
 #include <elem.h>
 #include "elemcomprp.h"
 #include "mprov.h"
+#include "mcrp.h"
 
 class ElemDetRp: public Gtk::Layout
 {
+    friend class ElemDrp;
     public:
 	ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv);
 	virtual ~ElemDetRp();
-	Elem* Model();
-	typedef sigc::signal<void, Elem*> tSigCompSelected;
-	tSigCompSelected SignalCompSelected();
     protected:
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
@@ -27,9 +26,24 @@ class ElemDetRp: public Gtk::Layout
 	// Compact representations  provider
 	const MCrpProvider& iCrpProv;
 	Elem* iElem;
-	std::map<Elem*, ElemCompRp*> iCompRps; // Components representations
+	std::map<Elem*, MCrp*> iCompRps; // Components representations
 	std::vector<Elem*> iComps; // Components
-	tSigCompSelected iSigCompSelected;
+	MDrp::tSigCompSelected iSigCompSelected;
+};
+
+class ElemDrp: public MDrp
+{
+    public:
+	static string EType();
+    public:
+	ElemDrp(Elem* aElem, const MCrpProvider& aCrpProv);
+	virtual ~ElemDrp();
+	// From MDrp
+	virtual Gtk::Widget& Widget();
+	virtual Elem* Model();
+	virtual tSigCompSelected SignalCompSelected();
+    private:
+	ElemDetRp* iRp;
 };
 
 #endif

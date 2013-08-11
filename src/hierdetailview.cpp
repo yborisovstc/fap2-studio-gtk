@@ -65,13 +65,15 @@ void HierDetailView::SetCursor(Elem* aElem)
 {
     assert(aElem != NULL);
     if (iDetRp != NULL) {
+	iAlignent->remove();
 	delete iDetRp;
 	iDetRp = NULL;
     }
-    iDetRp = new ElemDetRp(aElem, iStEnv.CrpProvider());
+    MDrpProvider& prov = iStEnv.DrpProvider();
+    iDetRp = prov.CreateRp(*aElem);
     iDetRp->SignalCompSelected().connect(sigc::mem_fun(*this, &HierDetailView::on_comp_selected));
-    iAlignent->add(*iDetRp);
-    iDetRp->show();
+    iAlignent->add(iDetRp->Widget());
+    iDetRp->Widget().show();
     // Settng name and parent to the toolbar
     iTbName->Label().set_text(aElem->Name());
     iTbParent->Label().set_text(aElem->EType());

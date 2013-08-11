@@ -4,13 +4,17 @@
 
 // Providers interfaces
 
+#include "msenv.h"
 #include "mcrp.h"
+#include "mdrp.h"
 
 class Elem;
 
 class MRpProvider 
 {
     public:
+	// Set studio environment
+	virtual void SetSenv(MSEnv& aEnv) = 0;
 	// Returns confidence level: 0-9
 	virtual int GetConfidence(const Elem& aElem) const = 0;
 };
@@ -19,6 +23,8 @@ class MRpProvider
 class MDrpProvider: public MRpProvider
 {
     public:
+	// Creates representation
+	virtual MDrp* CreateRp(Elem& aElem) const = 0;
 };
 
 // Compact representation provider
@@ -26,7 +32,7 @@ class MCrpProvider: public MRpProvider
 {
     public:
 	// Creates representation
-	virtual MCrp& CreateRp(const Elem& aElem) = 0;
+	virtual MCrp* CreateRp(Elem& aElem) const = 0;
 };
 
 #endif

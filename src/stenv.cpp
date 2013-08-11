@@ -4,6 +4,9 @@
 StEnv::StEnv()
 {
     iCrpProv = new DefCrpProv();
+    iCrpProv->SetSenv(*this);
+    iDrpProv = new DefDrpProv();
+    iDrpProv->SetSenv(*this);
 }
 
 StEnv::~StEnv()
@@ -14,5 +17,10 @@ StEnv::~StEnv()
 MCrpProvider& StEnv::CrpProvider()
 {
     return *iCrpProv;
+}
+
+MDrpProvider& StEnv::DrpProvider()
+{
+    return *iDrpProv;
 }
 

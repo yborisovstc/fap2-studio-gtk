@@ -6,6 +6,7 @@
 #include <gtkmm/box.h>
 #include "gtkmm/label.h"
 #include "gtkmm/drawingarea.h"
+#include "mcrp.h"
 #include <elem.h>
 
 class ElemCompHead: public Gtk::HBox
@@ -34,6 +35,19 @@ class ElemCompRp: public Gtk::Layout
 	Elem* iElem;
 	ElemCompHead* iHead;
 	Gtk::Allocation iBodyAlc;
+};
+
+class ElemCrp: public MCrp
+{
+    public:
+	static string EType();
+    public:
+	ElemCrp(Elem* aElem);
+	virtual ~ElemCrp();
+	// From MCrp
+	virtual Gtk::Widget& Widget();
+    private:
+	ElemCompRp* iRp;
 };
 
 #endif

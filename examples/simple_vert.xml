@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+
+<!-- Simple vertex -->
+
+
+<!DOCTYPE node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+
+<node id="test" parent="Vert">
+    <node id="v1" parent="Vert"/>
+    <node id="v2" parent="Vert"/>
+    <node parent="Edge"> <cont node="Prop:P1" val="Vert:v1"/> <cont node="Prop:P2" val="Vert:v2"/> </node>
+</node>
+

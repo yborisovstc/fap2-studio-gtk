@@ -14,10 +14,12 @@ class StEnv: public MSEnv
 	virtual ~StEnv();
 	// From MSEnv
 	virtual MCrpProvider& CrpProvider();
+	virtual MDrpProvider& DrpProvider();
     private:
 	// Compact representaions provider
 	// TODO [YB] To replace default provider with full provider
 	DefCrpProv* iCrpProv;
+	DefDrpProv* iDrpProv;
 };
 
 

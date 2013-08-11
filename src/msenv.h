@@ -5,11 +5,13 @@
 // Environmet interface
 
 class MCrpProvider;
+class MDrpProvider;
 
 class MSEnv
 {
     public:
 	virtual MCrpProvider& CrpProvider() = 0;
+	virtual MDrpProvider& DrpProvider() = 0;
 };
 
 #endif

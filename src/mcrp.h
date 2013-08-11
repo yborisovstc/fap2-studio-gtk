@@ -1,6 +1,6 @@
 
-#ifndef __FAP2STU_CRP_H
-#define __FAP2STU_CRP_H
+#ifndef __FAP2STU_MCRP_H
+#define __FAP2STU_MCRP_H
 
 #include "gtkmm/widget.h"
 
@@ -10,7 +10,8 @@
 class MCrp
 {
     public:
-	virtual Gtk::Widget& Widget();
+	virtual ~MCrp() {};
+	virtual Gtk::Widget& Widget() = 0;
 };
 
 #endif
