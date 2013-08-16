@@ -7,12 +7,13 @@
 #include "gtkmm/label.h"
 #include "gtkmm/drawingarea.h"
 #include <elem.h>
+#include "mcrp.h"
 
-class VertCrpHead: public Gtk::HBox
+class VertCompHead: public Gtk::HBox
 {
     public:
-	VertCrpHead(const Elem& aElem);
-	virtual ~VertCrpHead();
+	VertCompHead(const Elem& aElem);
+	virtual ~VertCompHead();
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
     private:
@@ -21,19 +22,38 @@ class VertCrpHead: public Gtk::HBox
 	Gtk::Label* iParent;
 };
 
-class VertCrp: public Gtk::Layout
+class VertCompRp: public Gtk::Layout
 {
+    friend class VertCrp;
     public:
-	VertCrp(Elem* aElem);
-	virtual ~VertCrp();
+	VertCompRp(Elem* aElem);
+	virtual ~VertCompRp();
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	Gtk::Requisition GetCpCoord(MCrpConnectable::CpType aCpType);
     private:
 	Elem* iElem;
-	VertCrpHead* iHead;
+	VertCompHead* iHead;
 	Gtk::Allocation iBodyAlc;
+};
+
+class VertCrp: public MCrp, public MCrpConnectable
+{
+    public:
+	static const string& Type();
+	static string EType();
+    public:
+	VertCrp(Elem* aElem);
+	virtual ~VertCrp();
+	// From MCrp
+	virtual Gtk::Widget& Widget();
+	virtual void *DoGetObj(const string& aName);
+	// From MCrpConnectable
+	virtual Gtk::Requisition GetCpCoord(CpType aCpType);
+    private:
+	VertCompRp* iRp;
 };
 
 #endif

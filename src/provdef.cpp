@@ -2,7 +2,9 @@
 #include "provdef.h"
 #include "elemdetrp.h"
 #include "elemcomprp.h"
+#include "edgecrp.h"
 #include "vertdrp.h"
+#include "vertcrp.h"
 #include "mcrp.h"
 
 DefDrpProv::DefDrpProv(): iSenv(NULL)
@@ -66,7 +68,13 @@ int DefCrpProv::GetConfidence(const Elem& aElem) const
 MCrp* DefCrpProv::CreateRp(Elem& aElem) const
 {
     MCrp* res = NULL;
-    if (aElem.IsHeirOf(ElemCrp::EType())) {
+    if (aElem.IsHeirOf(VertCrp::EType())) {
+	res = new VertCrp(&aElem);
+    }
+    else if (aElem.IsHeirOf(EdgeCrp::EType())) {
+	res = new EdgeCrp(&aElem);
+    }
+    else if (aElem.IsHeirOf(ElemCrp::EType())) {
 	res = new ElemCrp(&aElem);
     }
     return res;

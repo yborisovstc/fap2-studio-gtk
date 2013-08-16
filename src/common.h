@@ -33,6 +33,8 @@ const gint KViewBtnBoxInnerBoard = 0;
 const gint KViewTransMinWidth = 30;
 const gint KViewBorder = 2;
 const gint KCompHeaderLabelsGap = 8;
+const gint KConnHorizGap = 8;
+const gint KConnHorizSpreadMin = 20;
 
 // Targets entries for drag-drop
 const gint KTei_NewObject = 1;

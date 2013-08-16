@@ -40,12 +40,14 @@ class ElemCompRp: public Gtk::Layout
 class ElemCrp: public MCrp
 {
     public:
+	static const string& Type();
 	static string EType();
     public:
 	ElemCrp(Elem* aElem);
 	virtual ~ElemCrp();
 	// From MCrp
 	virtual Gtk::Widget& Widget();
+	virtual void *DoGetObj(const string& aName);
     private:
 	ElemCompRp* iRp;
 };

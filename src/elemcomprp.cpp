@@ -89,6 +89,13 @@ void ElemCompRp::on_size_request(Gtk::Requisition* aRequisition)
     aRequisition->height = head_req.height + body_h;
 }
 
+const string sType = "ElemCrp";
+
+const string& ElemCrp::Type()
+{
+    return sType;
+}
+
 string ElemCrp::EType()
 {
     return ":Elem";
@@ -102,6 +109,15 @@ ElemCrp::ElemCrp(Elem* aElem)
 ElemCrp::~ElemCrp()
 {
     delete iRp;
+}
+
+void *ElemCrp::DoGetObj(const string& aName)
+{
+    void* res = NULL;
+    if (aName ==  Type()) {
+	res = this;
+    }
+    return res;
 }
 
 Gtk::Widget& ElemCrp::Widget()

@@ -1,7 +1,8 @@
+#include <vert.h>
 #include "common.h"
 #include "vertcrp.h"
 
-VertCrpHead::VertCrpHead(const Elem& aElem): iElem(aElem)
+VertCompHead::VertCompHead(const Elem& aElem): iElem(aElem)
 {
     // Create Name
     iName = new Gtk::Label();
@@ -15,13 +16,13 @@ VertCrpHead::VertCrpHead(const Elem& aElem): iElem(aElem)
     pack_start(*iParent, false, false, 2);
 }
 
-VertCrpHead::~VertCrpHead()
+VertCompHead::~VertCompHead()
 {
     delete iName;
     delete iParent;
 }
 
-bool VertCrpHead::on_expose_event(GdkEventExpose* aEvent)
+bool VertCompHead::on_expose_event(GdkEventExpose* aEvent)
 {
     Gtk::HBox::on_expose_event(aEvent);
     // Parent separator
@@ -35,22 +36,25 @@ bool VertCrpHead::on_expose_event(GdkEventExpose* aEvent)
 }
 
 
-VertCrp::VertCrp(Elem* aElem): iElem(aElem), iHead(NULL)
+VertCompRp::VertCompRp(Elem* aElem): iElem(aElem), iHead(NULL)
 {
     // Set name
     set_name(iElem->Name());
     // Add header
-    iHead = new VertCrpHead(*iElem);
+    iHead = new VertCompHead(*iElem);
     add(*iHead);
     iHead->show();
+    // Set events mask
+    add_events(Gdk::BUTTON_PRESS_MASK);
 }
 
-VertCrp::~VertCrp()
+VertCompRp::~VertCompRp()
 {
     delete iHead;
 }
 
-bool VertCrp::on_expose_event(GdkEventExpose* aEvent)
+
+bool VertCompRp::on_expose_event(GdkEventExpose* aEvent)
 {
     Gtk::Layout::on_expose_event(aEvent);
     // Draw body rect
@@ -63,7 +67,7 @@ bool VertCrp::on_expose_event(GdkEventExpose* aEvent)
     drw->draw_line(gc, iBodyAlc.get_x(), head_alc.get_height(), iBodyAlc.get_x() + iBodyAlc.get_width() - 1, head_alc.get_height());
 }
 
-void VertCrp::on_size_allocate(Gtk::Allocation& aAllc)
+void VertCompRp::on_size_allocate(Gtk::Allocation& aAllc)
 {
     Gtk::Layout::on_size_allocate(aAllc);
     Gtk::Requisition head_req = iHead->size_request();
@@ -76,7 +80,7 @@ void VertCrp::on_size_allocate(Gtk::Allocation& aAllc)
     iHead->size_allocate(head_alc);
 }
 
-void VertCrp::on_size_request(Gtk::Requisition* aRequisition)
+void VertCompRp::on_size_request(Gtk::Requisition* aRequisition)
 {
     Gtk::Requisition head_req = iHead->size_request();
     // Body width
@@ -85,4 +89,60 @@ void VertCrp::on_size_request(Gtk::Requisition* aRequisition)
     aRequisition->width = body_w; 
     aRequisition->height = head_req.height + body_h;
 }
+
+Gtk::Requisition VertCompRp::GetCpCoord(MCrpConnectable::CpType aCpType)
+{
+    Gtk::Allocation alc = get_allocation();
+    Gtk::Requisition res;
+    res.width = alc.get_x() + alc.get_width();
+    res.height = alc.get_y() + alc.get_height() / 2;
+    return res;
+}
+
+
+
+const string sType = "VertCrp";
+
+const string& VertCrp::Type()
+{
+    return sType;
+}
+
+string VertCrp::EType()
+{
+    return Vert::PEType();
+}
+
+VertCrp::VertCrp(Elem* aElem)
+{
+    iRp = new VertCompRp(aElem);
+}
+
+VertCrp::~VertCrp()
+{
+    delete iRp;
+}
+
+void *VertCrp::DoGetObj(const string& aName)
+{
+    void* res = NULL;
+    if (aName ==  Type()) {
+	res = this;
+    }
+    else if (aName ==  MCrpConnectable::Type()) {
+	res = (MCrpConnectable*) this;
+    }
+    return res;
+}
+
+Gtk::Widget& VertCrp::Widget()
+{
+    return *iRp;
+}
+
+Gtk::Requisition VertCrp::GetCpCoord(CpType aCpType)
+{
+    return iRp->GetCpCoord(aCpType);
+}
+
 

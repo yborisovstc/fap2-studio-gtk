@@ -8,31 +8,9 @@
 #include <gtkmm/enums.h>
 #include <elem.h>
 #include "elemcomprp.h"
+#include "edgecrp.h"
 #include "mprov.h"
 #include "mdrp.h"
-
-// Edge compact representation. It is not regular Crp (not inherit MCrp) because of high 
-// customization level
-class EdgeCrp
-{
-    public:
-	struct Cp 
-	{
-	    Gtk::Requisition iCoord;
-	    // Position from Cp: positive for upper
-	    int iPos;
-	};
-    public:
-	EdgeCrp(Elem* aElem);
-	virtual ~EdgeCrp();
-	void SetUcp(Gtk::Requisition* aReq, int aPos);
-	void SetExtent(Gtk::Requisition* aReq, int aPos);
-	void OnExposeEvent(GdkEventExpose* aEvent);
-    private:
-	Elem* iElem;
-	Cp iUcp;
-	Cp iLcp;
-};
 
 class VertDrpw: public Gtk::Layout
 {
@@ -50,8 +28,6 @@ class VertDrpw: public Gtk::Layout
 	const MCrpProvider& iCrpProv;
 	Elem* iElem;
 	std::map<Elem*, MCrp*> iCompRps; // Components representations
-	std::map<Elem*, EdgeCrp*> iEdgesRps; // Edges representations
-	std::vector<Elem*> iComps; // Components
 	MDrp::tSigCompSelected iSigCompSelected;
 };
 
