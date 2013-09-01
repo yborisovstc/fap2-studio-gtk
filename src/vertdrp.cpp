@@ -4,9 +4,24 @@
 #include "common.h"
 #include "vertdrp.h"
 
+VertDrpw::ConnInfo::ConnInfo(): iCompOrder(0), iConnsToTop(0), iConnsToBottom(0)
+{
+}
+
+VertDrpw::ConnInfo::ConnInfo(int aOrder, int aToTop, int aToBottom): 
+    iCompOrder(aOrder), iConnsToTop(aToTop), iConnsToBottom(aToBottom)
+{
+}
+
+VertDrpw::ConnInfo::ConnInfo(const ConnInfo& aCInfo): 
+    iCompOrder(aCInfo.iCompOrder), iConnsToTop(aCInfo.iConnsToTop), iConnsToBottom(aCInfo.iConnsToBottom)
+{
+}
+
 VertDrpw::VertDrpw(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv)
 {
     // Add components
+    int compord = 0;
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
 	assert(comp != NULL);
@@ -16,6 +31,11 @@ VertDrpw::VertDrpw(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iE
 	add(rpw);
 	iCompRps[comp] = rp;
 	rpw.show();
+	MEdgeCrp* medgecrp = rp->GetObj(medgecrp);
+	if (medgecrp == NULL) {
+	    ConnInfo cinfo(compord++);
+	    iConnInfos.insert(pair<Elem*, ConnInfo>(comp, cinfo));
+	}
     }
 }
 
@@ -38,24 +58,16 @@ void VertDrpw::on_size_allocate(Gtk::Allocation& aAllc)
 	get_bin_window()->resize(aAllc.get_width(), aAllc.get_height());
     }
 
-    // Allocate components excluding edges
-    // Keeping components order, so using elems reginster of comps
-    int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
-    int comps_w_max = 0;
+    // Configure edges order, calculate number of connections for each component
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	MCrp* crp = iCompRps.at(*it);
 	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
 	if (medgecrp == NULL) {
-	    Gtk::Widget* comp = &(crp->Widget());
-	    Gtk::Requisition req = comp->size_request();
-	    int comp_body_center_x = req.width / 2;
-	    comps_w_max = max(comps_w_max, req.width);
-	    Gtk::Allocation allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, req.height);
-	    comp->size_allocate(allc);
-	    compb_y += req.height + KViewCompGapHight;
+	    ConnInfo& ci = iConnInfos.at(*it);
+	    ci.iConnsToBottom = 0;
+	    ci.iConnsToTop = 0;
 	}
     }
-    // Allocate edges
     for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	MCrp* crp = it->second;
 	Gtk::Widget* comp = &(crp->Widget());
@@ -65,25 +77,92 @@ void VertDrpw::on_size_allocate(Gtk::Allocation& aAllc)
 	    Gtk::Requisition req = comp->size_request();
 	    Elem* p1 = medgecrp->Point1();
 	    Elem* p2 = medgecrp->Point2();
+	    Elem *pu = p1, *pl = p2;
+	    ConnInfo& ci1 = iConnInfos.at(p1);
+	    ConnInfo& ci2 = iConnInfos.at(p2);
+	    if (ci1.iCompOrder > ci2.iCompOrder) {
+		pu = p2; pl = p1;
+	    }
+	    if (pu != NULL) {
+		ConnInfo& ciu = iConnInfos.at(pu);
+		ciu.iConnsToBottom++;
+		medgecrp->SetUcp(ciu.iConnsToBottom);
+	    }
+	    if (pl != NULL) {
+		ConnInfo& cil = iConnInfos.at(pl);
+		cil.iConnsToTop++;
+		medgecrp->SetLcp(cil.iConnsToTop - 1);
+	    }
+	}
+    }
+
+    // Allocate components excluding edges
+    // Keeping components order, so using elems register of comps
+    int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
+    int comps_w_max = 0;
+    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+	MCrp* crp = iCompRps.at(*it);
+	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	if (medgecrp == NULL) {
+	    ConnInfo& ci = iConnInfos.at(*it);
+	    Gtk::Widget* comp = &(crp->Widget());
+	    Gtk::Requisition req = comp->size_request();
+	    int comp_body_center_x = req.width / 2;
+	    comps_w_max = max(comps_w_max, req.width);
+	    int hh = req.height + (ci.iConnsToTop + ci.iConnsToBottom - 1) * KConnVertGap;
+	    Gtk::Allocation allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, hh);
+	    comp->size_allocate(allc);
+	    compb_y += hh + KViewCompGapHight;
+	    ci.iConnsToBottom = 0;
+	    ci.iConnsToTop = 0;
+	}
+    }
+    // Allocate edges
+    int edge_wd = 0;
+    for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	MCrp* crp = it->second;
+	Gtk::Widget* comp = &(crp->Widget());
+	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	if (medgecrp != NULL) {
+	    Gtk::Widget* comp = &(crp->Widget());
+	    Gtk::Requisition req = comp->size_request();
+	    Elem* p1 = medgecrp->Point1();
+	    Elem* p2 = medgecrp->Point2();
+	    Elem *pu = p1, *pl = p2;
+	    ConnInfo& ci1 = iConnInfos.at(p1);
+	    ConnInfo& ci2 = iConnInfos.at(p2);
+	    if (ci1.iCompOrder > ci2.iCompOrder) {
+		pu = p2; pl = p1;
+	    }
+	    ConnInfo& ciu = iConnInfos.at(pu);
+	    ConnInfo& cil = iConnInfos.at(pl);
 	    Gtk::Requisition ucpcoord, lcpcoord;
-	    if (p1 != NULL) {
-		MCrp* pcrp = iCompRps.at(p1);
+	    if (pu != NULL) {
+		MCrp* pcrp = iCompRps.at(pu);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
 		assert(pcrpcbl != NULL);
 		ucpcoord = pcrpcbl->GetCpCoord(MCrpConnectable::CpGeneric);
-		medgecrp->SetUcp(ucpcoord, 0);
+		ucpcoord.height += ciu.iConnsToTop * KConnVertGap;
 	    }
-	    if (p2 != NULL) {
-		MCrp* pcrp = iCompRps.at(p2);
+	    if (pl != NULL) {
+		MCrp* pcrp = iCompRps.at(pl);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
 		assert(pcrpcbl != NULL);
 		lcpcoord = pcrpcbl->GetCpCoord(MCrpConnectable::CpGeneric);
-		medgecrp->SetLcp(lcpcoord, 0);
+		lcpcoord.height += cil.iConnsToTop * KConnVertGap;
 	    }
-	    int edge_w = compb_x + comps_w_max/2 + KConnHorizSpreadMin - min(ucpcoord.width, lcpcoord.width);
-	    Gtk::Allocation allc(ucpcoord.width, ucpcoord.height, edge_w, lcpcoord.height - ucpcoord.height);
+	    int uextd = ucpcoord.width > lcpcoord.width;
+	    if (uextd > 0) {
+		medgecrp->SetUcpExt(uextd, 0);
+	    }
+	    else {
+		medgecrp->SetLcpExt(-uextd, 0);
+	    }
+	    int edge_x = min(ucpcoord.width, lcpcoord.width);
+	    int edge_w = compb_x + comps_w_max/2 + KConnHorizSpreadMin - edge_x + edge_wd;
+	    Gtk::Allocation allc(edge_x, ucpcoord.height, edge_w, lcpcoord.height - ucpcoord.height);
 	    comp->size_allocate(allc);
-	    edge_w += KConnHorizGap;
+	    edge_wd += KConnHorizGap;
 	}
     }
 

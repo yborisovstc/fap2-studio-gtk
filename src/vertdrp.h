@@ -14,7 +14,17 @@
 
 class VertDrpw: public Gtk::Layout
 {
-    friend class VertDrp;
+    public:
+	class ConnInfo {
+	    public:
+		ConnInfo();
+		ConnInfo(const ConnInfo& aCInfo);
+		ConnInfo(int aOrder, int aToTop = 0, int aToBottom = 0);
+	    public:
+		int iCompOrder;
+		int iConnsToTop;
+		int iConnsToBottom;
+	};
     public:
 	VertDrpw(Elem* aElem, const MCrpProvider& aCrpProv);
 	virtual ~VertDrpw();
@@ -28,7 +38,10 @@ class VertDrpw: public Gtk::Layout
 	const MCrpProvider& iCrpProv;
 	Elem* iElem;
 	std::map<Elem*, MCrp*> iCompRps; // Components representations
+	std::map<Elem*, ConnInfo> iConnInfos; // Connection infos
 	MDrp::tSigCompSelected iSigCompSelected;
+
+	friend class VertDrp;
 };
 
 class VertDrp: public MDrp

@@ -10,8 +10,10 @@ class MEdgeCrp
     public:
 	static const string& Type();
     public:
-	virtual void SetUcp(Gtk::Requisition aReq, int aPos) = 0;
-	virtual void SetLcp(Gtk::Requisition aReq, int aPos) = 0;
+	virtual void SetUcp(int aPos) = 0;
+	virtual void SetLcp(int aPos) = 0;
+	virtual void SetUcpExt(int aX, int aY) = 0;
+	virtual void SetLcpExt(int aX, int aY) = 0;
 	virtual void SetExtent(Gtk::Requisition aReq, int aPos) = 0;
 	virtual Elem* Point1() = 0;
 	virtual Elem* Point2() = 0;
@@ -21,11 +23,13 @@ class EdgeCompRp: public Gtk::Widget
 {
     friend class EdgeCrp;
     public:
-	struct Cp 
+	class Cp 
 	{
-	    Gtk::Requisition iCoord;
-	    // Position from Cp: positive for upper
-	    int iPos;
+	    public:
+		Cp();
+		Gtk::Requisition iCoord;
+		// Position from Cp: positive for upper
+		int iPos;
 	};
     public:
 	EdgeCompRp(Elem* aElem);
@@ -48,8 +52,10 @@ class EdgeCrp: public MCrp, public MEdgeCrp
 	EdgeCrp(Elem* aElem);
 	virtual ~EdgeCrp();
 	// From MEdgeCrp
-	virtual void SetUcp(Gtk::Requisition aReq, int aPos);
-	virtual void SetLcp(Gtk::Requisition aReq, int aPos);
+	virtual void SetUcp(int aPos);
+	virtual void SetLcp(int aPos);
+	virtual void SetUcpExt(int aX, int aY);
+	virtual void SetLcpExt(int aX, int aY);
 	virtual void SetExtent(Gtk::Requisition aReq, int aPos);
 	virtual Elem* Point1();
 	virtual Elem* Point2();

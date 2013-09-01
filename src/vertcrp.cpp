@@ -93,9 +93,11 @@ void VertCompRp::on_size_request(Gtk::Requisition* aRequisition)
 Gtk::Requisition VertCompRp::GetCpCoord(MCrpConnectable::CpType aCpType)
 {
     Gtk::Allocation alc = get_allocation();
+    Gtk::Requisition head_req = iHead->size_request();
+    TInt body_h = KViewCompEmptyBodyHight;
     Gtk::Requisition res;
     res.width = alc.get_x() + alc.get_width();
-    res.height = alc.get_y() + alc.get_height() / 2;
+    res.height = alc.get_y() + head_req.height + body_h / 2;
     return res;
 }
 

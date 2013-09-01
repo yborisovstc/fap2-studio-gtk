@@ -25,6 +25,9 @@ EdgeCompRp::~EdgeCompRp()
 {
 }
 
+EdgeCompRp::Cp::Cp(): iPos(0)
+{
+}
 
 bool EdgeCompRp::on_expose_event(GdkEventExpose* aEvent)
 {
@@ -33,9 +36,13 @@ bool EdgeCompRp::on_expose_event(GdkEventExpose* aEvent)
     Glib::RefPtr<Gtk::Style> style = get_style(); 	
     Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
     Gtk::Allocation alc = get_allocation();
-    drw->draw_line(gc, alc.get_x(), alc.get_y(), alc.get_x() + alc.get_width() - 1, alc.get_y());
-    drw->draw_line(gc, alc.get_x() + alc.get_width() - 1, alc.get_y(), alc.get_x() + alc.get_width() - 1, alc.get_y() + alc.get_height() - 1);
-    drw->draw_line(gc, alc.get_x(), alc.get_y() + alc.get_height() - 1 , alc.get_x() + alc.get_width() - 1, alc.get_y() + alc.get_height() - 1);
+    int ux = alc.get_x() + iUcp.iCoord.width;
+    int uy = alc.get_y() + iUcp.iPos*KConnVertGap;
+    int lx = alc.get_x() + iLcp.iCoord.width;
+    int ly = alc.get_y() + alc.get_height() - 1 - iLcp.iPos*KConnVertGap;
+    drw->draw_line(gc, ux, uy, alc.get_x() + alc.get_width() - 1, uy);
+    drw->draw_line(gc, alc.get_x() + alc.get_width() - 1, uy, alc.get_x() + alc.get_width() - 1, ly);
+    drw->draw_line(gc, lx, ly , alc.get_x() + alc.get_width() - 1, ly);
 }
 
 void EdgeCompRp::on_size_request(Gtk::Requisition* aRequisition)
@@ -86,18 +93,27 @@ Gtk::Widget& EdgeCrp::Widget()
 }
 
 
-void EdgeCrp::SetUcp(Gtk::Requisition aReq, int aPos)
+void EdgeCrp::SetUcp(int aPos)
 {
-    iRp->iUcp.iCoord = aReq;
     iRp->iUcp.iPos = aPos;
 }
 
-void EdgeCrp::SetLcp(Gtk::Requisition aReq, int aPos)
+void EdgeCrp::SetLcp(int aPos)
 {
-    iRp->iLcp.iCoord = aReq;
     iRp->iLcp.iPos = aPos;
 }
 
+void EdgeCrp::SetUcpExt(int aX, int aY)
+{
+    iRp->iUcp.iCoord.width = aX;
+    iRp->iUcp.iCoord.height = aY;
+}
+
+void EdgeCrp::SetLcpExt(int aX, int aY)
+{
+    iRp->iLcp.iCoord.width = aX;
+    iRp->iLcp.iCoord.height = aY;
+}
 
 void EdgeCrp::SetExtent(Gtk::Requisition aReq, int aPos)
 {

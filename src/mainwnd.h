@@ -8,6 +8,7 @@
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/uimanager.h>
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/paned.h>
 
 class MainWnd : public Gtk::Window
 {
@@ -16,6 +17,7 @@ class MainWnd : public Gtk::Window
 	virtual ~MainWnd();
 	Glib::RefPtr<Gtk::UIManager> UIManager() const;
 	Gtk::Container& ClientWnd();
+	void SetNaviPane(Gtk::Widget& aWidget);
     protected:
 	// Signal handlers:
 	void on_button_clicked();
@@ -25,7 +27,10 @@ class MainWnd : public Gtk::Window
 	Gtk::Button iButton2;
 
     private:
+	// Generic vertical layout: menu, toolbar, client
 	Gtk::VBox iVboxMain;
+	// Base horisontal layout: left for tree/list, right for detail 
+	Gtk::HPaned iHPanG;
 	Glib::RefPtr<Gtk::ActionGroup> irActionGroup;
 	Glib::RefPtr<Gtk::UIManager> irUiMgr;
 	// Client window for main view - normally hier detail view

@@ -26,6 +26,8 @@ fap2_studio_gtk_SOURCES = \
 		 provdef.cpp \
 		 stenv.h \
 		 stenv.cpp \
+		 navi.h \
+		 navi.cpp \
 		 mainwnd.h \
 		 mainwnd.cpp
 

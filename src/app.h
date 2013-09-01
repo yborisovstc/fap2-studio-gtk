@@ -8,6 +8,7 @@
 #include "mainwnd.h"
 #include "stenv.h"
 #include "hierdetailview.h"
+#include "navi.h"
 
 
 class App
@@ -32,6 +33,8 @@ class App
 	HierDetailView* iHDetView;
 	string iLogFileName;
 	string iSpecFileName;
+	// Navigation pane widget
+	Navi* iNaviPane;
 };
 
 

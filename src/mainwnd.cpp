@@ -32,14 +32,20 @@ MainWnd::MainWnd() : iButton("Hello World"), iButton2("Test")
 
     iButton.signal_clicked().connect(sigc::mem_fun(*this, &MainWnd::on_button_clicked));
 
+    // Base vertical layout: menu
     iVboxMain.pack_start(*pMenuBar, Gtk::PACK_SHRINK);
+    // Base vertical layout: toolbar
     iVboxMain.pack_start(*pToolBar, Gtk::PACK_SHRINK);
 
     // Create main view client window
     irMainClientWnd = new Gtk::ScrolledWindow();
 
-    //iVboxMain.pack_start(iButton);
-    iVboxMain.pack_start(*irMainClientWnd, Gtk::PACK_EXPAND_WIDGET);
+    // Base vertical layout: main horisontal layout
+    iHPanG.show();
+    iVboxMain.pack_start(iHPanG, Gtk::PACK_EXPAND_WIDGET);
+//    iVboxMain.pack_start(*irMainClientWnd, Gtk::PACK_EXPAND_WIDGET);
+    // Detail view pane
+    iHPanG.pack2(*irMainClientWnd, Gtk::EXPAND);
 
     pMenuBar->show();
     pToolBar->show();
@@ -70,5 +76,10 @@ Glib::RefPtr<Gtk::UIManager> MainWnd::UIManager() const
 Gtk::Container& MainWnd::ClientWnd()
 {
     return *irMainClientWnd;
+}
+
+void MainWnd::SetNaviPane(Gtk::Widget& aWidget)
+{
+    iHPanG.pack1(aWidget, Gtk::EXPAND);
 }
 
