@@ -5,6 +5,8 @@
 #include "edgecrp.h"
 #include "vertdrp.h"
 #include "vertcrp.h"
+#include "sysdrp.h"
+#include "syscrp.h"
 #include "mcrp.h"
 
 DefDrpProv::DefDrpProv(): iSenv(NULL)
@@ -32,7 +34,10 @@ int DefDrpProv::GetConfidence(const Elem& aElem) const
 MDrp* DefDrpProv::CreateRp(Elem& aElem) const
 {
     MDrp* res = NULL;
-    if (aElem.IsHeirOf(VertDrp::EType())) {
+    if (aElem.IsHeirOf(SysDrp::EType())) {
+	res = new SysDrp(&aElem, iSenv->CrpProvider());
+    }
+    else if (aElem.IsHeirOf(VertDrp::EType())) {
 	res = new VertDrp(&aElem, iSenv->CrpProvider());
     }
     else if (aElem.IsHeirOf(ElemDrp::EType())) {
@@ -68,7 +73,10 @@ int DefCrpProv::GetConfidence(const Elem& aElem) const
 MCrp* DefCrpProv::CreateRp(Elem& aElem) const
 {
     MCrp* res = NULL;
-    if (aElem.IsHeirOf(VertCrp::EType())) {
+    if (aElem.IsHeirOf(SysCrp::EType())) {
+	res = new SysCrp(&aElem);
+    }
+    else if (aElem.IsHeirOf(VertCrp::EType())) {
 	res = new VertCrp(&aElem);
     }
     else if (aElem.IsHeirOf(EdgeCrp::EType())) {

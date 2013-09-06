@@ -34,11 +34,13 @@ class ElemDetRp: public Gtk::Layout
 class ElemDrp: public MDrp
 {
     public:
+	static const string& Type();
 	static string EType();
     public:
 	ElemDrp(Elem* aElem, const MCrpProvider& aCrpProv);
 	virtual ~ElemDrp();
 	// From MDrp
+	virtual void *DoGetObj(const string& aName);
 	virtual Gtk::Widget& Widget();
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();

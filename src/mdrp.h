@@ -2,14 +2,17 @@
 #ifndef __FAP2STU_MDRP_H
 #define __FAP2STU_MDRP_H
 
+#include "mbase.h"
 #include "gtkmm/widget.h"
 
 class Elem;
 
 // Detail representation interface
 
-class MDrp
+class MDrp: public MBase
 {
+    public:
+	static std::string Type() { return "MDrp";};
     public:
 	typedef sigc::signal<void, Elem*> tSigCompSelected;
     public:

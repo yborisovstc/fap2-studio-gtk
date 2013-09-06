@@ -35,14 +35,20 @@ class NatnTreeMdl: public Glib::Object, public Gtk::TreeModel
 	static Glib::RefPtr<NatnTreeMdl> create(MProvider* aNatnProv);
 	NatnTreeMdl(MProvider* aNatnProv);
 	virtual ~NatnTreeMdl();
+	NatnTreeClrec& ColRec() {return iColRec;};
     protected:
 	// From Gtk::TreeModel
+	virtual Gtk::TreeModelFlags get_flags_vfunc() const;
 	virtual int get_n_columns_vfunc() const;
 	virtual GType get_column_type_vfunc(int index) const;
 	virtual int iter_n_root_children_vfunc() const;
 	virtual int iter_n_children_vfunc(const iterator& iter) const;
 	virtual bool iter_children_vfunc(const iterator& parent, iterator& iter) const;
 	virtual bool iter_has_child_vfunc(const iterator& iter) const;
+	virtual bool iter_nth_child_vfunc(const iterator& parent, int n, iterator& iter) const;
+	virtual bool iter_nth_root_child_vfunc(int n, iterator& iter) const;
+	virtual bool iter_parent_vfunc(const iterator& child, iterator& iter) const;
+	virtual Path get_path_vfunc(const iterator& iter) const;
 	virtual bool get_iter_vfunc(const Path& path, iterator& iter) const;
 	virtual bool iter_is_valid(const iterator& iter) const;
 	virtual void get_value_vfunc(const TreeModel::iterator& iter, int column, Glib::ValueBase& value) const;

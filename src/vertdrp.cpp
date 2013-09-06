@@ -43,6 +43,18 @@ VertDrpw::~VertDrpw()
 {
 }
 
+Elem* VertDrpw::GetCompOwning(Elem* aElem)
+{
+    Elem* res = NULL;
+    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
+	Elem* comp = *it;
+	if (aElem == comp || comp->IsComp(aElem)) {
+	    res = comp;
+	}
+    }
+    return res;
+}
+
 void VertDrpw::on_size_allocate(Gtk::Allocation& aAllc)
 {
     //    Gtk::Layout::on_size_allocate(aAllc);
@@ -75,13 +87,17 @@ void VertDrpw::on_size_allocate(Gtk::Allocation& aAllc)
 	if (medgecrp != NULL) {
 	    Gtk::Widget* comp = &(crp->Widget());
 	    Gtk::Requisition req = comp->size_request();
-	    Elem* p1 = medgecrp->Point1();
-	    Elem* p2 = medgecrp->Point2();
+	    Elem* rp1 = medgecrp->Point1();
+	    Elem* rp2 = medgecrp->Point2();
+	    Elem* p1 = rp1 != NULL ? GetCompOwning(rp1): NULL;
+	    Elem* p2 = rp2 != NULL ? GetCompOwning(rp2): NULL;
 	    Elem *pu = p1, *pl = p2;
-	    ConnInfo& ci1 = iConnInfos.at(p1);
-	    ConnInfo& ci2 = iConnInfos.at(p2);
-	    if (ci1.iCompOrder > ci2.iCompOrder) {
-		pu = p2; pl = p1;
+	    if (p1 != NULL && p2 != NULL) {
+		ConnInfo& ci1 = iConnInfos.at(p1);
+		ConnInfo& ci2 = iConnInfos.at(p2);
+		if (ci1.iCompOrder > ci2.iCompOrder) {
+		    pu = p2; pl = p1;
+		}
 	    }
 	    if (pu != NULL) {
 		ConnInfo& ciu = iConnInfos.at(pu);
@@ -126,18 +142,21 @@ void VertDrpw::on_size_allocate(Gtk::Allocation& aAllc)
 	if (medgecrp != NULL) {
 	    Gtk::Widget* comp = &(crp->Widget());
 	    Gtk::Requisition req = comp->size_request();
-	    Elem* p1 = medgecrp->Point1();
-	    Elem* p2 = medgecrp->Point2();
+	    Elem* rp1 = medgecrp->Point1();
+	    Elem* rp2 = medgecrp->Point2();
+	    Elem* p1 = rp1 != NULL ? GetCompOwning(rp1): NULL;
+	    Elem* p2 = rp2 != NULL ? GetCompOwning(rp2): NULL;
 	    Elem *pu = p1, *pl = p2;
-	    ConnInfo& ci1 = iConnInfos.at(p1);
-	    ConnInfo& ci2 = iConnInfos.at(p2);
-	    if (ci1.iCompOrder > ci2.iCompOrder) {
-		pu = p2; pl = p1;
+	    if (p1 != NULL && p2 != NULL) {
+		ConnInfo& ci1 = iConnInfos.at(p1);
+		ConnInfo& ci2 = iConnInfos.at(p2);
+		if (ci1.iCompOrder > ci2.iCompOrder) {
+		    pu = p2; pl = p1;
+		}
 	    }
-	    ConnInfo& ciu = iConnInfos.at(pu);
-	    ConnInfo& cil = iConnInfos.at(pl);
 	    Gtk::Requisition ucpcoord, lcpcoord;
 	    if (pu != NULL) {
+		ConnInfo& ciu = iConnInfos.at(pu);
 		MCrp* pcrp = iCompRps.at(pu);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
 		assert(pcrpcbl != NULL);
@@ -145,6 +164,7 @@ void VertDrpw::on_size_allocate(Gtk::Allocation& aAllc)
 		ucpcoord.height += ciu.iConnsToTop * KConnVertGap;
 	    }
 	    if (pl != NULL) {
+		ConnInfo& cil = iConnInfos.at(pl);
 		MCrp* pcrp = iCompRps.at(pl);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
 		assert(pcrpcbl != NULL);
@@ -211,6 +231,14 @@ bool VertDrpw::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 }
 
 
+const string sVertDrpType = "VertDrp";
+
+const string& VertDrp::Type()
+{
+    return sVertDrpType;
+}
+
+
 string VertDrp::EType()
 {
     return ":Elem:Vert";
@@ -224,6 +252,18 @@ VertDrp::VertDrp(Elem* aElem, const MCrpProvider& aCrpProv)
 VertDrp::~VertDrp()
 {
     delete iRp;
+}
+
+void *VertDrp::DoGetObj(const string& aName)
+{
+    void* res = NULL;
+    if (aName ==  Type()) {
+	res = this;
+    }
+    if (aName ==  MDrp::Type()) {
+	res = (MDrp*) this;
+    }
+    return res;
 }
 
 Gtk::Widget& VertDrp::Widget()

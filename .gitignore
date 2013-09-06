@@ -27,7 +27,7 @@ tmp
 *.gcno
 debug
 release
-html
+*.html
 DEBIAN
 usr
 tmp
@@ -56,3 +56,4 @@ lcov_report
 *.info
 *-trunk
 install-root
+fap2-studio-gtk

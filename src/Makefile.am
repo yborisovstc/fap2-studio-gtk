@@ -19,6 +19,10 @@ fap2_studio_gtk_SOURCES = \
 		 vertdrp.cpp \
 		 edgecrp.h \
 		 edgecrp.cpp \
+		 syscrp.h \
+		 syscrp.cpp \
+		 sysdrp.h \
+		 sysdrp.cpp \
 		 toolitems.h \
 		 toolitems.cpp \
 		 mprov.h \

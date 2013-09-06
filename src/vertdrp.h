@@ -34,6 +34,8 @@ class VertDrpw: public Gtk::Layout
 	bool on_comp_button_press(GdkEventButton* event);
 	bool on_comp_button_press_ext(GdkEventButton* event, Elem* aComp);
     private:
+	Elem* GetCompOwning(Elem* aElem);
+    protected:
 	// Compact representations  provider
 	const MCrpProvider& iCrpProv;
 	Elem* iElem;
@@ -47,11 +49,13 @@ class VertDrpw: public Gtk::Layout
 class VertDrp: public MDrp
 {
     public:
+	static const string& Type();
 	static string EType();
     public:
 	VertDrp(Elem* aElem, const MCrpProvider& aCrpProv);
 	virtual ~VertDrp();
 	// From MDrp
+	virtual void *DoGetObj(const string& aName);
 	virtual Gtk::Widget& Widget();
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();

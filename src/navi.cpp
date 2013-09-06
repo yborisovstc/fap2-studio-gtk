@@ -31,6 +31,11 @@ Glib::RefPtr<NatnTreeMdl> NatnTreeMdl::create(MProvider* aNatnProv)
     return Glib::RefPtr<NatnTreeMdl>(nmdl);
 }
 
+Gtk::TreeModelFlags NatnTreeMdl::get_flags_vfunc() const
+{
+    return Gtk::TreeModelFlags(0);
+}
+
 int NatnTreeMdl::get_n_columns_vfunc() const
 {
     return iColRec.size();
@@ -61,6 +66,12 @@ bool NatnTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
     return res;
 }
 
+Gtk::TreeModel::Path NatnTreeMdl::get_path_vfunc(const iterator& iter) const
+{
+    // TODO
+    return Path();
+}
+
 bool NatnTreeMdl::IsIterValid(const iterator& iter) const
 {
   return (iStamp == iter.get_stamp());
@@ -76,10 +87,11 @@ void NatnTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column, G
 {
     if (IsIterValid(iter)) {
 	if (column < iColRec.size()) {
+	    GType coltype = get_column_type_vfunc(column);
 	    Glib::Value<Glib::ustring> sval;
+	    sval.init(coltype);
 	    string data = iNodesInfo.at(GetRowIndex(iter));
 	    sval.set(data.c_str());
-	    GType coltype = get_column_type_vfunc(column);
 	    value.init(coltype);
 	    value = sval;
 	}
@@ -93,8 +105,9 @@ bool NatnTreeMdl::iter_next_vfunc(const iterator& iter, iterator& iter_next) con
     if (IsIterValid(iter)) {
 	iter_next.set_stamp(iStamp);
 	int ri = GetRowIndex(iter);
-	if (ri < iNodesInfo.size()) {
-	    iter_next.gobj()->user_data = AddGlueItem(++ri);
+	if (++ri < iNodesInfo.size()) {
+	    iter_next.gobj()->user_data = AddGlueItem(ri);
+	    res = true;
 	}
     }
     return res;
@@ -107,10 +120,44 @@ int NatnTreeMdl::iter_n_children_vfunc(const iterator& iter) const
 
 bool NatnTreeMdl::iter_children_vfunc(const iterator& parent, iterator& iter) const
 {
+  return iter_nth_child_vfunc(parent, 0, iter);
 }
 
 bool NatnTreeMdl::iter_has_child_vfunc(const iterator& iter) const
 {
+    return (iter_n_children_vfunc(iter) > 0);
+}
+
+bool NatnTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterator& iter) const
+{
+    bool res = false;
+    iter = iterator();
+    if (IsIterValid(parent)) {
+	// To update further
+    }
+    return res;
+}
+
+bool NatnTreeMdl::iter_nth_root_child_vfunc(int n, iterator& iter) const
+{
+    bool res = false;
+    iter = iterator();
+    if (n < iNodesInfo.size()) {
+	iter.set_stamp(iStamp);
+	iter.gobj()->user_data = AddGlueItem(n);
+	res = true;
+    }
+    return res;
+}
+
+bool NatnTreeMdl::iter_parent_vfunc(const iterator& child, iterator& iter) const
+{
+    bool res = false;
+    iter = iterator();
+    if (IsIterValid(child)) {
+	// To update further
+    }
+    return res;
 }
 
 int NatnTreeMdl::GetRowIndex(const iterator& iter) const
@@ -130,6 +177,7 @@ NatnTreeMdl::GlueItem* NatnTreeMdl::AddGlueItem(int aRowIndex) const
 // Native nodes navigation widget
 NaviNatN::NaviNatN()
 {
+    set_headers_visible(false);
 }
 
 NaviNatN::~NaviNatN()
@@ -139,7 +187,9 @@ NaviNatN::~NaviNatN()
 void NaviNatN::SetDesEnv(MEnv* aDesEnv)
 {
     iDesEnv = aDesEnv;
-    set_model(NatnTreeMdl::create(iDesEnv->Provider()));
+    Glib::RefPtr<NatnTreeMdl> mdl = NatnTreeMdl::create(iDesEnv->Provider());
+    set_model(mdl);
+    append_column( "one", mdl->ColRec().name);
 }
 
 

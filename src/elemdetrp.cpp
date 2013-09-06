@@ -78,6 +78,13 @@ bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 }
 
 
+const string sElemDrpType = "ElemDrp";
+
+const string& ElemDrp::Type()
+{
+    return sElemDrpType;
+}
+
 string ElemDrp::EType()
 {
     return Elem::PEType();
@@ -91,6 +98,18 @@ ElemDrp::ElemDrp(Elem* aElem, const MCrpProvider& aCrpProv)
 ElemDrp::~ElemDrp()
 {
     delete iRp;
+}
+
+void *ElemDrp::DoGetObj(const string& aName)
+{
+    void* res = NULL;
+    if (aName ==  Type()) {
+	res = this;
+    }
+    if (aName ==  MDrp::Type()) {
+	res = (MDrp*) this;
+    }
+    return res;
 }
 
 Gtk::Widget& ElemDrp::Widget()
