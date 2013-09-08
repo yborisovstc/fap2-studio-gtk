@@ -32,8 +32,8 @@ class VertCompRp: public Gtk::Layout
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
-	Gtk::Requisition GetCpCoord(MCrpConnectable::CpType aCpType);
-    private:
+	Gtk::Requisition GetCpCoord(Elem* aCp);
+    protected:
 	Elem* iElem;
 	VertCompHead* iHead;
 	Gtk::Allocation iBodyAlc;
@@ -51,7 +51,7 @@ class VertCrp: public MCrp, public MCrpConnectable
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
 	// From MCrpConnectable
-	virtual Gtk::Requisition GetCpCoord(CpType aCpType);
+	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
     private:
 	VertCompRp* iRp;
 };

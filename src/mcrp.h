@@ -3,6 +3,7 @@
 #define __FAP2STU_MCRP_H
 
 #include <string>
+#include <elem.h>
 #include "gtkmm/widget.h"
 #include "mbase.h"
 
@@ -26,7 +27,8 @@ class MCrpConnectable: public MBase
     public:
 	static std::string Type() { return "MCrpConnectable";};
     public:
-	virtual Gtk::Requisition GetCpCoord(CpType aCpType) = 0;
+	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL) = 0;
+	//virtual void SetCpCoord(const Gtk::Requisition& aRec, Elem* aCp = NULL) = 0;
 };
 
 

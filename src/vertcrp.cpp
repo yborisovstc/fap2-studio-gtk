@@ -90,7 +90,7 @@ void VertCompRp::on_size_request(Gtk::Requisition* aRequisition)
     aRequisition->height = head_req.height + body_h;
 }
 
-Gtk::Requisition VertCompRp::GetCpCoord(MCrpConnectable::CpType aCpType)
+Gtk::Requisition VertCompRp::GetCpCoord(Elem* aCp)
 {
     Gtk::Allocation alc = get_allocation();
     Gtk::Requisition head_req = iHead->size_request();
@@ -142,9 +142,9 @@ Gtk::Widget& VertCrp::Widget()
     return *iRp;
 }
 
-Gtk::Requisition VertCrp::GetCpCoord(CpType aCpType)
+Gtk::Requisition VertCrp::GetCpCoord(Elem* aCp)
 {
-    return iRp->GetCpCoord(aCpType);
+    return iRp->GetCpCoord(aCp);
 }
 
 
