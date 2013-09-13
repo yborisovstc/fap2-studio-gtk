@@ -81,7 +81,18 @@ Gtk::Widget& SysCrp::Widget()
 
 Gtk::Requisition SysCrp::GetCpCoord(Elem* aCp)
 {
-    return VertCompRp::GetCpCoord(aCp);
+    Gtk::Allocation alc = get_allocation();
+    Gtk::Requisition res;
+    if (iCpRps.count(aCp) > 0) {
+	CpRp* cprp = iCpRps.at(aCp);
+	Gtk::Allocation cpalc = cprp->get_allocation();
+	res.width = alc.get_x() + cpalc.get_x() + cpalc.get_width();
+	res.height = alc.get_y() + cpalc.get_y() + cpalc.get_height()/2;
+    }
+    else {
+	res = VertCompRp::GetCpCoord(aCp);
+    }
+    return res;
 }
 
 bool SysCrp::on_expose_event(GdkEventExpose* event)
@@ -98,7 +109,7 @@ void SysCrp::on_size_allocate(Gtk::Allocation& 	aAlloc)
     //    CP allocation X base: X of right position
     int cpaxb = aAlloc.get_width();
     //    CP allocation Y base: mid of Y position
-    int cpayb = (aAlloc.get_height() + head_req.height)/2;
+    int cpayb = head_req.height + KViewCompEmptyBodyHight/2;
 
     for (tCpRps::iterator it = iCpRps.begin(); it != iCpRps.end(); it++) {
 	CpRp* cprp = it->second;

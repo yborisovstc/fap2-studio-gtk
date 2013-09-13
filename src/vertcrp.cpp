@@ -36,7 +36,19 @@ bool VertCompHead::on_expose_event(GdkEventExpose* aEvent)
 }
 
 
-VertCompRp::VertCompRp(Elem* aElem): iElem(aElem), iHead(NULL)
+const string sType = "VertCompRp";
+
+const string& VertCompRp::Type()
+{
+    return sType;
+}
+
+string VertCompRp::EType()
+{
+    return Vert::PEType();
+}
+
+VertCompRp::VertCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iIsInt(true)
 {
     // Set name
     set_name(iElem->Name());
@@ -53,6 +65,17 @@ VertCompRp::~VertCompRp()
     delete iHead;
 }
 
+void *VertCompRp::DoGetObj(const string& aName)
+{
+    void* res = NULL;
+    if (aName ==  Type()) {
+	res = this;
+    }
+    else if (aName ==  MCrpConnectable::Type()) {
+	res = (MCrpConnectable*) this;
+    }
+    return res;
+}
 
 bool VertCompRp::on_expose_event(GdkEventExpose* aEvent)
 {
@@ -96,12 +119,29 @@ Gtk::Requisition VertCompRp::GetCpCoord(Elem* aCp)
     Gtk::Requisition head_req = iHead->size_request();
     TInt body_h = KViewCompEmptyBodyHight;
     Gtk::Requisition res;
-    res.width = alc.get_x() + alc.get_width();
+    res.width = alc.get_x() + (iIsInt ? alc.get_width() : 0);
     res.height = alc.get_y() + head_req.height + body_h / 2;
     return res;
 }
 
+Gtk::Widget& VertCompRp::Widget()
+{
+    return *this;
+}
 
+bool VertCompRp::GetIsInt() const
+{
+    return iIsInt;
+}
+
+void VertCompRp::SetIsInt(bool aIsInt)
+{
+    if (aIsInt != iIsInt) {
+	iIsInt = aIsInt;
+    }
+}
+
+#if 0
 
 const string sType = "VertCrp";
 
@@ -147,4 +187,5 @@ Gtk::Requisition VertCrp::GetCpCoord(Elem* aCp)
     return iRp->GetCpCoord(aCp);
 }
 
+#endif
 

@@ -36,6 +36,8 @@ const gint KCompHeaderLabelsGap = 8;
 const gint KConnHorizGap = 8;
 const gint KConnVertGap = 10;
 const gint KConnHorizSpreadMin = 20;
+// Width of gap betweed boundary comp and view border
+const gint KBoundCompGapWidth = 4;
 
 // Targets entries for drag-drop
 const gint KTei_NewObject = 1;

@@ -22,9 +22,11 @@ class VertCompHead: public Gtk::HBox
 	Gtk::Label* iParent;
 };
 
-class VertCompRp: public Gtk::Layout
+class VertCompRp: public Gtk::Layout, public MCrp, public MCrpConnectable
 {
-    friend class VertCrp;
+    public:
+	static const string& Type();
+	static string EType();
     public:
 	VertCompRp(Elem* aElem);
 	virtual ~VertCompRp();
@@ -32,13 +34,21 @@ class VertCompRp: public Gtk::Layout
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
-	Gtk::Requisition GetCpCoord(Elem* aCp);
+	// From MCrp
+	virtual Gtk::Widget& Widget();
+	virtual void *DoGetObj(const string& aName);
+	// From MCrpConnectable
+	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
+	virtual bool GetIsInt() const;
+	virtual void SetIsInt(bool aIsInt);
     protected:
 	Elem* iElem;
 	VertCompHead* iHead;
 	Gtk::Allocation iBodyAlc;
+	bool iIsInt;
 };
 
+/*
 class VertCrp: public MCrp, public MCrpConnectable
 {
     public:
@@ -55,5 +65,6 @@ class VertCrp: public MCrp, public MCrpConnectable
     private:
 	VertCompRp* iRp;
 };
+*/
 
 #endif

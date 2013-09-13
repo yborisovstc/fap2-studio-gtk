@@ -4,7 +4,7 @@
 
 #include "vertdrp.h"
 
-class SysDrp: public VertDrpw, public MDrp
+class SysDrp: public VertDrpw_v1, public MDrp
 {
     public:
 	static std::string Type() { return string("SysDrp");};

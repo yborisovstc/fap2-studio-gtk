@@ -16,7 +16,7 @@ class MCrp: public MBase
 	virtual Gtk::Widget& Widget() = 0;
 };
 
-class MCrpConnectable: public MBase
+class MCrpConnectable
 {
     public:
 	enum CpType{
@@ -28,8 +28,10 @@ class MCrpConnectable: public MBase
 	static std::string Type() { return "MCrpConnectable";};
     public:
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL) = 0;
-	//virtual void SetCpCoord(const Gtk::Requisition& aRec, Elem* aCp = NULL) = 0;
+	// Is internal
+	virtual bool GetIsInt() const = 0;
+	// Set internal/boundary
+	virtual void SetIsInt(bool aIsInt) = 0;
 };
-
 
 #endif

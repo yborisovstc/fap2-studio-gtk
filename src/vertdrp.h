@@ -68,7 +68,7 @@ class VertDrpw_v1: public Gtk::Layout
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
 	bool on_comp_button_press(GdkEventButton* event);
 	bool on_comp_button_press_ext(GdkEventButton* event, Elem* aComp);
-    private:
+    protected:
 	Elem* GetCompOwning(Elem* aElem);
     protected:
 	// Compact representations  provider

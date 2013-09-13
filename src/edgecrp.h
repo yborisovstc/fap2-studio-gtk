@@ -8,8 +8,16 @@
 class MEdgeCrp
 {
     public:
+	enum EdgeType {
+	    EtRight = 1,
+	    EtLeft,
+	    EtLtRb, /* Left top to right bottom */
+	    EtLbRt /* Left bottom to right top */
+	};
+    public:
 	static const string& Type();
     public:
+	virtual void SetType(EdgeType aType) = 0;
 	virtual void SetUcp(int aPos) = 0;
 	virtual void SetLcp(int aPos) = 0;
 	virtual void SetUcpExt(int aX, int aY) = 0;
@@ -39,6 +47,7 @@ class EdgeCompRp: public Gtk::Widget
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
     private:
 	Elem* iElem;
+	MEdgeCrp::EdgeType iType;
 	Cp iUcp;
 	Cp iLcp;
 };
@@ -52,6 +61,7 @@ class EdgeCrp: public MCrp, public MEdgeCrp
 	EdgeCrp(Elem* aElem);
 	virtual ~EdgeCrp();
 	// From MEdgeCrp
+	virtual void SetType(EdgeType aType);
 	virtual void SetUcp(int aPos);
 	virtual void SetLcp(int aPos);
 	virtual void SetUcpExt(int aX, int aY);

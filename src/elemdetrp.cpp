@@ -40,8 +40,8 @@ void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
 
     // Allocate components
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
-    for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
-	MCrp* crp = it->second;
+    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+	MCrp* crp = iCompRps.at(*it);
 	Gtk::Widget* comp = &(crp->Widget());
 	Gtk::Requisition req = comp->size_request();
 	int comp_body_center_x = req.width / 2;

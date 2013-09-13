@@ -25,7 +25,7 @@ class CpRp: public Gtk::Label
 };
 
 // System representation
-class SysCrp: public VertCompRp, public MCrp, public MCrpConnectable
+class SysCrp: public VertCompRp
 {
     public:
 	static const string& Type();
