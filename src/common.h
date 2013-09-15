@@ -23,7 +23,7 @@ const gint KViewTransHeight = 100;
 const gint KViewStateGapTransInp = 20;
 const gint KViewCompInpOutpGapWidth = 20;
 const gint KViewCompCpGapHeight = 3;
-const gint KViewCompEmptyBodyHight = 40;
+const gint KViewCompEmptyBodyHight = 20;
 const gint KViewDectGapWidth = 0;
 const gint KViewExtCompGapWidth = 40;
 const gint KViewStateTransBorder = 1;
@@ -36,6 +36,8 @@ const gint KCompHeaderLabelsGap = 8;
 const gint KConnHorizGap = 8;
 const gint KConnVertGap = 10;
 const gint KConnHorizSpreadMin = 20;
+const gint KViewElemCrpInnerBorder = 8;
+const gint KViewElemContLinesVGap = 4;
 // Width of gap betweed boundary comp and view border
 const gint KBoundCompGapWidth = 4;
 

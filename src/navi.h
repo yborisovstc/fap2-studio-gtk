@@ -78,6 +78,9 @@ class NaviNatN: public Gtk::TreeView
 	NaviNatN();
 	virtual ~NaviNatN();
 	void SetDesEnv(MEnv* aDesEnv);
+    protected:
+	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context);
+	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext >& context, Gtk::SelectionData& selection_data, guint info, guint time);
     private:
 	// DES environment
 	MEnv* iDesEnv; 

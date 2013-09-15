@@ -20,6 +20,9 @@ class ElemDetRp: public Gtk::Layout
     protected:
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	virtual bool on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
+	virtual void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
+	// Signal handlers
 	bool on_comp_button_press(GdkEventButton* event);
 	bool on_comp_button_press_ext(GdkEventButton* event, Elem* aComp);
     private:

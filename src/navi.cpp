@@ -3,6 +3,14 @@
 
 #include <grayb/mprov.h>
 
+static GtkTargetEntry targetentries[] =
+{
+    { "STRING",        0, 0 },
+    { "text/plain",    0, 1 },
+    { "text/uri-list", 0, 2 },
+};
+
+
 // Native nodes tree model
 
 NatnTreeMdl::NatnTreeMdl(MProvider* aNatnProv): Glib::ObjectBase(typeid(NatnTreeMdl)), Glib::Object(), Gtk::TreeModel(), iNatnProv(aNatnProv),
@@ -192,6 +200,15 @@ void NaviNatN::SetDesEnv(MEnv* aDesEnv)
     append_column( "one", mdl->ColRec().name);
 }
 
+void NaviNatN::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context)
+{
+    TreeView::on_drag_begin(context);
+}
+
+void NaviNatN::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext >& context, Gtk::SelectionData& selection_data, guint info, guint time)
+{
+    TreeView::on_drag_data_get(context, selection_data, info, time);
+}
 
 // Navigation widget
 Navi::Navi(): iNatn(NULL)
@@ -210,5 +227,7 @@ void Navi::SetDesEnv(MEnv* aDesEnv)
 {
     iDesEnv = aDesEnv;
     iNatn->SetDesEnv(iDesEnv);
+    iNatn->enable_model_drag_source();
+    iNatn->drag_source_set (Gtk::ArrayHandle_TargetEntry(targetentries));
 }
 

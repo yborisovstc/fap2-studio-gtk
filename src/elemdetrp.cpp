@@ -3,6 +3,22 @@
 #include "common.h"
 #include "elemdetrp.h"
 
+static GtkTargetEntry targetentries[] =
+{
+    { "STRING",        0, 0 },
+    { "text/plain",    0, 1 },
+    { "text/uri-list", 0, 2 },
+};
+
+/*
+   static const Gtk::TargetEntry targetentries[] =
+   {
+   Gtk::TargetEntry("STRING", Gtk::TARGET_SAME_APP, 0),
+   Gtk::TargetEntry("text/plain", Gtk::TARGET_SAME_APP, 1),
+   Gtk::TargetEntry("text/uri-list", Gtk::TARGET_SAME_APP, 2)
+   };
+   */
+
 ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv)
 {
     // Add components
@@ -11,12 +27,14 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), 
 	assert(comp != NULL);
 	MCrp* rp = iCrpProv.CreateRp(*comp);
 	Gtk::Widget& rpw = rp->Widget();
-//	rp->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press));
+	//	rp->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press));
 	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
 	add(rpw);
 	iCompRps[comp] = rp;
 	rpw.show();
     }
+    //drag_dest_set(Gtk::DEST_DEFAULT_ALL);
+    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE));
 }
 
 ElemDetRp::~ElemDetRp()
@@ -77,6 +95,15 @@ bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
     iSigCompSelected.emit(aComp);
 }
 
+bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
+{
+    Layout::on_drag_drop(context, x, y, time);
+}
+
+void ElemDetRp::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
+{
+    Layout::on_drag_data_received(context, x, y, selection_data, info, time);
+}
 
 const string sElemDrpType = "ElemDrp";
 
