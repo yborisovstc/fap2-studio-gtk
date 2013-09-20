@@ -6,6 +6,7 @@
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treemodelcolumn.h>
+#include <gtkmm/treedragsource.h>
 
 #include <menv.h>
 
@@ -21,7 +22,7 @@ class NatnTreeClrec: public Gtk::TreeModelColumnRecord
 };
 
 // Native nodes tree model
-class NatnTreeMdl: public Glib::Object, public Gtk::TreeModel
+class NatnTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource
 {
     public:
 	class GlueItem
@@ -53,6 +54,10 @@ class NatnTreeMdl: public Glib::Object, public Gtk::TreeModel
 	virtual bool iter_is_valid(const iterator& iter) const;
 	virtual void get_value_vfunc(const TreeModel::iterator& iter, int column, Glib::ValueBase& value) const;
 	bool iter_next_vfunc(const iterator& iter, iterator& iter_next) const;
+	// From Gtk::TreeDragSource
+	virtual bool row_draggable_vfunc(const TreeModel::Path& path) const;
+	virtual bool drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const;
+	virtual bool drag_data_delete_vfunc(const TreeModel::Path& path);
     private:
 	bool IsIterValid(const iterator& iter) const;
 	GlueItem* AddGlueItem(int aRowIndex) const;
@@ -81,9 +86,13 @@ class NaviNatN: public Gtk::TreeView
     protected:
 	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context);
 	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext >& context, Gtk::SelectionData& selection_data, guint info, guint time);
+	virtual bool on_button_press_event(GdkEventButton* event);
+    protected:
+	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
     private:
 	// DES environment
 	MEnv* iDesEnv; 
+	int iPressX, iPressY;
 };
 
 

@@ -1,13 +1,13 @@
 
 #include "navi.h"
-
+#include <gtkmm/treerowreference.h>
 #include <grayb/mprov.h>
 
 static GtkTargetEntry targetentries[] =
 {
-    { "STRING",        0, 0 },
-    { "text/plain",    0, 1 },
-    { "text/uri-list", 0, 2 },
+    { (gchar*) "STRING",        0, 0 },
+    { (gchar*) "text/plain",    0, 1 },
+    { (gchar*) "text/uri-list", 0, 2 },
 };
 
 
@@ -181,6 +181,21 @@ NatnTreeMdl::GlueItem* NatnTreeMdl::AddGlueItem(int aRowIndex) const
     return item;
 }
 
+bool NatnTreeMdl::row_draggable_vfunc(const TreeModel::Path& path) const
+{
+    return true;
+}
+
+bool NatnTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const
+{
+    return true;
+}
+
+bool NatnTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
+{
+    return true;
+}
+
 
 // Native nodes navigation widget
 NaviNatN::NaviNatN()
@@ -196,16 +211,42 @@ void NaviNatN::SetDesEnv(MEnv* aDesEnv)
 {
     iDesEnv = aDesEnv;
     Glib::RefPtr<NatnTreeMdl> mdl = NatnTreeMdl::create(iDesEnv->Provider());
+    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
+    bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
     set_model(mdl);
     append_column( "one", mdl->ColRec().name);
+}
+
+bool NaviNatN::on_button_press_event(GdkEventButton* event)
+{
+    iPressX = event->x;
+    iPressY = event->y;
+    return TreeView::on_button_press_event(event);
 }
 
 void NaviNatN::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context)
 {
     TreeView::on_drag_begin(context);
+
+    // Set source row. On the base GtkTreeView code it is done in gtk_tree_view_maybe_begin_dragging_row()
+    // But this is not working for some reason. So implement setting source row here. 
+    Gtk::TreeModel::Path path;
+    Gtk::TreeViewColumn* col = NULL;
+    GtkTreeView *tree_view = Gtk::TreeView::gobj();
+    int cell_x, cell_y;
+
+    bool res = get_path_at_pos (iPressX, iPressY, path, col, cell_x, cell_y);
+    Glib::RefPtr<Gtk::TreeModel> model = get_model();
+    set_source_row(context, model, path);
 }
 
-void NaviNatN::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext >& context, Gtk::SelectionData& selection_data, guint info, guint time)
+void NaviNatN::set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row)
+{
+    Gtk::TreeRowReference* rr = source_row != NULL ? new Gtk::TreeRowReference(model, source_row) : NULL;
+    context->set_data(Glib::Quark("gtk-tree-view-source-row"), rr);
+}
+
+void NaviNatN::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context, Gtk::SelectionData& selection_data, guint info, guint time)
 {
     TreeView::on_drag_data_get(context, selection_data, info, time);
 }
