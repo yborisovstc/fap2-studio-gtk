@@ -72,8 +72,10 @@ class EdgeCrp: public MCrp, public MEdgeCrp
 	// From MCrp
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
+	virtual tSigButtonPressName SignalButtonPressName();
     private:
 	EdgeCompRp* iRp;
+	MCrp::tSigButtonPressName iSigButtonPressName;
 };
 
 

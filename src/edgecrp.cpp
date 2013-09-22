@@ -181,3 +181,9 @@ void EdgeCrp::SetType(EdgeType aType)
     iRp->iType = aType;
 }
 
+MCrp::tSigButtonPressName EdgeCrp::SignalButtonPressName()
+{
+    return iSigButtonPressName;
+}
+
+

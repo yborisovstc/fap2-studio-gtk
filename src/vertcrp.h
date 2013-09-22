@@ -7,7 +7,7 @@
 #include "gtkmm/label.h"
 #include "gtkmm/drawingarea.h"
 #include <elem.h>
-#include "mcrp.h"
+#include "elemcomprp.h"
 
 class VertCompHead: public Gtk::HBox
 {
@@ -22,7 +22,7 @@ class VertCompHead: public Gtk::HBox
 	Gtk::Label* iParent;
 };
 
-class VertCompRp: public Gtk::Layout, public MCrp, public MCrpConnectable
+class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 {
     public:
 	static const string& Type();
@@ -37,14 +37,12 @@ class VertCompRp: public Gtk::Layout, public MCrp, public MCrpConnectable
 	// From MCrp
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
+	virtual tSigButtonPressName SignalButtonPressName();
 	// From MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
 	virtual bool GetIsInt() const;
 	virtual void SetIsInt(bool aIsInt);
     protected:
-	Elem* iElem;
-	VertCompHead* iHead;
-	Gtk::Allocation iBodyAlc;
 	bool iIsInt;
 };
 

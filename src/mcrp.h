@@ -4,7 +4,7 @@
 
 #include <string>
 #include <elem.h>
-#include "gtkmm/widget.h"
+#include <gtkmm/widget.h>
 #include "mbase.h"
 
 
@@ -13,7 +13,10 @@
 class MCrp: public MBase
 {
     public:
+	typedef sigc::signal<void, GdkEventButton*> tSigButtonPressName;
+    public:
 	virtual Gtk::Widget& Widget() = 0;
+	virtual tSigButtonPressName SignalButtonPressName() = 0;
 };
 
 class MCrpConnectable

@@ -48,16 +48,8 @@ string VertCompRp::EType()
     return Vert::PEType();
 }
 
-VertCompRp::VertCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iIsInt(true)
+VertCompRp::VertCompRp(Elem* aElem): ElemCompRp(aElem), iIsInt(true)
 {
-    // Set name
-    set_name(iElem->Name());
-    // Add header
-    iHead = new VertCompHead(*iElem);
-    add(*iHead);
-    iHead->show();
-    // Set events mask
-    add_events(Gdk::BUTTON_PRESS_MASK);
 }
 
 VertCompRp::~VertCompRp()
@@ -141,6 +133,10 @@ void VertCompRp::SetIsInt(bool aIsInt)
     }
 }
 
+MCrp::tSigButtonPressName VertCompRp::SignalButtonPressName()
+{
+    return iSigButtonPressName;
+}
 #if 0
 
 const string sType = "VertCrp";

@@ -11,9 +11,12 @@
 #include "mprov.h"
 #include "mcrp.h"
 
+
 class ElemDetRp: public Gtk::Layout
 {
     friend class ElemDrp;
+    public:
+    typedef std::map<Elem*, MCrp*> tCrps;
     public:
 	ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv);
 	virtual ~ElemDetRp();
@@ -25,11 +28,18 @@ class ElemDetRp: public Gtk::Layout
 	// Signal handlers
 	bool on_comp_button_press(GdkEventButton* event);
 	bool on_comp_button_press_ext(GdkEventButton* event, Elem* aComp);
+	void on_comp_button_press_name(GdkEventButton* event, Elem* aComp);
+    protected:
+	virtual void on_node_dropped(const std::string& aUri);
+    protected:
+	void Construct();
+	void Erase();
+	void add_node(const std::string& aParentUri);
     private:
 	// Compact representations  provider
 	const MCrpProvider& iCrpProv;
 	Elem* iElem;
-	std::map<Elem*, MCrp*> iCompRps; // Components representations
+	tCrps iCompRps; // Components representations
 	std::vector<Elem*> iComps; // Components
 	MDrp::tSigCompSelected iSigCompSelected;
 };

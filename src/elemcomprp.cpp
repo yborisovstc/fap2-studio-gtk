@@ -1,6 +1,13 @@
 #include "common.h"
 #include "elemcomprp.h"
 
+ElemCrpCtxMenu::ElemCrpCtxMenu(): Gtk::Menu()
+{
+}
+
+
+
+	
 ElemCompHead::ElemCompHead(const Elem& aElem): iElem(aElem)
 {
     // Create Name
@@ -45,6 +52,7 @@ ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL)
     iHead->show();
     // Set events mask
     add_events(Gdk::BUTTON_PRESS_MASK);
+    iHead->iName->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemCompRp::on_name_button_press));
 }
 
 ElemCompRp::~ElemCompRp()
@@ -89,6 +97,14 @@ void ElemCompRp::on_size_request(Gtk::Requisition* aRequisition)
     aRequisition->height = head_req.height + body_h;
 }
 
+bool ElemCompRp::on_name_button_press(GdkEventButton* event)
+{
+    iSigButtonPressName.emit(event);
+}
+
+
+
+
 const string sType = "ElemCrp";
 
 const string& ElemCrp::Type()
@@ -124,3 +140,10 @@ Gtk::Widget& ElemCrp::Widget()
 {
     return *iRp;
 }
+
+MCrp::tSigButtonPressName ElemCrp::SignalButtonPressName()
+{
+    return iRp->iSigButtonPressName;
+}
+
+

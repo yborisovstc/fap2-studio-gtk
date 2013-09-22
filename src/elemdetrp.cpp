@@ -5,9 +5,9 @@
 
 static GtkTargetEntry targetentries[] =
 {
-    { "STRING",        0, 0 },
-    { "text/plain",    0, 1 },
-    { "text/uri-list", 0, 2 },
+    { (gchar*) "STRING",        0, 0 },
+    { (gchar*) "text/plain",    0, 1 },
+    { (gchar*) "text/uri-list", 0, 2 },
 };
 
 /*
@@ -21,6 +21,19 @@ static GtkTargetEntry targetentries[] =
 
 ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv)
 {
+    // Base construct
+    Construct();
+    //drag_dest_set(Gtk::DEST_DEFAULT_ALL);
+    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE));
+}
+
+ElemDetRp::~ElemDetRp()
+{
+    Erase();
+}
+
+void ElemDetRp::Construct()
+{
     // Add components
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
@@ -29,16 +42,22 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), 
 	Gtk::Widget& rpw = rp->Widget();
 	//	rp->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press));
 	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
+	rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
 	add(rpw);
 	iCompRps[comp] = rp;
 	rpw.show();
     }
-    //drag_dest_set(Gtk::DEST_DEFAULT_ALL);
-    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE));
 }
 
-ElemDetRp::~ElemDetRp()
+void ElemDetRp::Erase()
 {
+    // Remove components
+    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	MCrp* rp = it->second;
+	delete rp;
+    }
+    iCompRps.clear();
+
 }
 
 void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
@@ -92,18 +111,47 @@ bool ElemDetRp::on_comp_button_press(GdkEventButton* event)
 bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 {
     std::cout << "on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
-    iSigCompSelected.emit(aComp);
+//    iSigCompSelected.emit(aComp);
+}
+
+void ElemDetRp::on_comp_button_press_name(GdkEventButton* event, Elem* aComp)
+{
 }
 
 bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
 {
-    Layout::on_drag_drop(context, x, y, time);
+    //bool res = Layout::on_drag_drop(context, x, y, time);
+    return true;
 }
 
 void ElemDetRp::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
-    Layout::on_drag_data_received(context, x, y, selection_data, info, time);
+    std::string targ = selection_data.get_target();
+    Glib::ustring data = selection_data.get_text();
+    context->drag_finish(true, true, time);
+    on_node_dropped(data);
 }
+
+void ElemDetRp::on_node_dropped(const std::string& aUri)
+{
+    add_node(aUri);
+}
+
+void ElemDetRp::add_node(const std::string& aParentUri)
+{
+    MChromo& mut = iElem->Mutation();
+    ChromoNode smutr = mut.Root();
+    ChromoNode comp = smutr.AddChild(ENt_Node);
+    comp.SetAttr(ENa_Parent, aParentUri);
+    comp.SetAttr(ENa_Id, "Test_name");
+    iElem->Mutate();
+    Erase();
+    Construct();
+    //Refresh();
+}
+
+
+	
 
 const string sElemDrpType = "ElemDrp";
 
