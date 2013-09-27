@@ -6,6 +6,7 @@
 #include <gtkmm/box.h>
 #include "gtkmm/label.h"
 #include "gtkmm/drawingarea.h"
+#include "gtkmm/menu.h"
 #include "mcrp.h"
 #include <elem.h>
 

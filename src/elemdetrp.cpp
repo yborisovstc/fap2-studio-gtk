@@ -111,7 +111,15 @@ bool ElemDetRp::on_comp_button_press(GdkEventButton* event)
 bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 {
     std::cout << "on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
-//    iSigCompSelected.emit(aComp);
+    if (event->type == GDK_BUTTON_PRESS) {
+	if (event->button == 3) {
+	    ShowCrpCtxDlg(event, aComp);
+	}
+	else {
+	    //    iSigCompSelected.emit(aComp);
+	}
+    }
+    return false;
 }
 
 void ElemDetRp::on_comp_button_press_name(GdkEventButton* event, Elem* aComp)
@@ -150,8 +158,23 @@ void ElemDetRp::add_node(const std::string& aParentUri)
     //Refresh();
 }
 
+void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp)
+{
+    Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
 
-	
+    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Edit", sigc::mem_fun(*this, &ElemDetRp::on_menu_file_popup_generic) ) );
+    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Process", sigc::mem_fun(*this, &ElemDetRp::on_menu_file_popup_generic) ) );
+    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Remove", sigc::mem_fun(*this, &ElemDetRp::on_menu_file_popup_generic) ) );
+
+    iCrpContextMenu.accelerate(*this);
+
+    iCrpContextMenu.popup(event->button, event->time);
+}
+
+void ElemDetRp::on_menu_file_popup_generic()
+{
+}
+
 
 const string sElemDrpType = "ElemDrp";
 
