@@ -48,7 +48,7 @@ class VertDrpw: public Gtk::Layout
 };
 
 // Widget of Vertex detailed representation, version#1
-class VertDrpw_v1: public Gtk::Layout
+class VertDrpw_v1: public Gtk::Layout, public MDrp, public MCrpMgr
 {
     public:
 	class ConnInfo {
@@ -61,9 +61,22 @@ class VertDrpw_v1: public Gtk::Layout
 	};
 
     public:
+	static std::string Type() { return string("VertDrpw");};
+    public:
+	static string EType();
+    public:
 	VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv);
 	virtual ~VertDrpw_v1();
+    public:
+	// From MCrpMgr
+	virtual bool IsTypeAllowed(const std::string& aType) const;
     protected:
+	// From MDrp
+	virtual void *DoGetObj(const string& aName);
+	virtual Gtk::Widget& Widget();
+	virtual Elem* Model();
+	virtual tSigCompSelected SignalCompSelected();
+
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
 	bool on_comp_button_press(GdkEventButton* event);

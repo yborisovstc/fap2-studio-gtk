@@ -12,7 +12,7 @@
 #include "mcrp.h"
 
 
-class ElemDetRp: public Gtk::Layout
+class ElemDetRp: public Gtk::Layout, public MCrpMgr
 {
     friend class ElemDrp;
     public:
@@ -30,14 +30,20 @@ class ElemDetRp: public Gtk::Layout
 	bool on_comp_button_press(GdkEventButton* event);
 	bool on_comp_button_press_ext(GdkEventButton* event, Elem* aComp);
 	void on_comp_button_press_name(GdkEventButton* event, Elem* aComp);
+	// From MCrpMgr
+	virtual bool IsTypeAllowed(const std::string& aType) const;
     protected:
 	virtual void on_node_dropped(const std::string& aUri);
     protected:
 	void Construct();
 	void Erase();
+	void Refresh();
 	void add_node(const std::string& aParentUri);
+	void rename_node(const std::string& aNodeUri, const std::string& aNewName);
+	void remove_node(const std::string& aNodeUri);
 	void ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp);
-	void on_menu_file_popup_generic();
+	void on_comp_menu_rename();
+	void on_comp_menu_remove();
     private:
 	// Compact representations  provider
 	const MCrpProvider& iCrpProv;
@@ -46,6 +52,7 @@ class ElemDetRp: public Gtk::Layout
 	std::vector<Elem*> iComps; // Components
 	MDrp::tSigCompSelected iSigCompSelected;
 	Gtk::Menu iCrpContextMenu;
+	Elem* iCompSelected;
 };
 
 class ElemDrp: public MDrp

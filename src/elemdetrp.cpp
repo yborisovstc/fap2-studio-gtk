@@ -2,6 +2,7 @@
 #include <iostream>
 #include "common.h"
 #include "elemdetrp.h"
+#include "dlgbase.h"
 
 static GtkTargetEntry targetentries[] =
 {
@@ -25,6 +26,11 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), 
     Construct();
     //drag_dest_set(Gtk::DEST_DEFAULT_ALL);
     drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE));
+    // Setup components context menu
+    Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
+    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Rename", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_rename) ) );
+    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Remove", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_remove) ) );
+    iCrpContextMenu.accelerate(*this);
 }
 
 ElemDetRp::~ElemDetRp()
@@ -38,7 +44,7 @@ void ElemDetRp::Construct()
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
 	assert(comp != NULL);
-	MCrp* rp = iCrpProv.CreateRp(*comp);
+	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	Gtk::Widget& rpw = rp->Widget();
 	//	rp->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press));
 	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
@@ -58,6 +64,21 @@ void ElemDetRp::Erase()
     }
     iCompRps.clear();
 
+}
+
+void ElemDetRp::Refresh()
+{
+    Erase();
+    Construct();
+}
+
+bool ElemDetRp::IsTypeAllowed(const std::string& aType) const
+{
+    bool res = false;
+    if (aType == ":Elem") {
+	res = true;
+    }
+    return res;
 }
 
 void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
@@ -116,7 +137,7 @@ bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 	    ShowCrpCtxDlg(event, aComp);
 	}
 	else {
-	    //    iSigCompSelected.emit(aComp);
+	    iSigCompSelected.emit(aComp);
 	}
     }
     return false;
@@ -145,34 +166,73 @@ void ElemDetRp::on_node_dropped(const std::string& aUri)
     add_node(aUri);
 }
 
-void ElemDetRp::add_node(const std::string& aParentUri)
+void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNewName)
 {
     MChromo& mut = iElem->Mutation();
     ChromoNode smutr = mut.Root();
-    ChromoNode comp = smutr.AddChild(ENt_Node);
-    comp.SetAttr(ENa_Parent, aParentUri);
-    comp.SetAttr(ENa_Id, "Test_name");
+    ChromoNode change = smutr.AddChild(ENt_Change);
+    change.SetAttr(ENa_MutNode, aNodeUri);
+    change.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
+    change.SetAttr(ENa_MutVal, aNewName);
     iElem->Mutate();
-    Erase();
-    Construct();
-    //Refresh();
+    Refresh();
+}
+
+void ElemDetRp::add_node(const std::string& aParentUri)
+{
+    // Ask for name
+    ParEditDlg* dlg = new ParEditDlg("Enter name", "");
+    int res = dlg->run();
+    if (res == Gtk::RESPONSE_OK) {
+	std::string name;
+	dlg->GetData(name);
+	delete dlg;
+	MChromo& mut = iElem->Mutation();
+	ChromoNode smut = mut.Root().AddChild(ENt_Node);
+	smut.SetAttr(ENa_Parent, aParentUri);
+	smut.SetAttr(ENa_Id, name);
+	iElem->Mutate();
+	Refresh();
+    }
+    else {
+	delete dlg;
+    }
+}
+
+void ElemDetRp::remove_node(const std::string& aNodeUri)
+{
+    MChromo& mut = iElem->Mutation();
+    ChromoNode mutn = mut.Root().AddChild(ENt_Rm);
+    mutn.SetAttr(ENa_MutNode, aNodeUri);
+    iElem->Mutate();
+    Refresh();
 }
 
 void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp)
 {
-    Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
-
-    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Edit", sigc::mem_fun(*this, &ElemDetRp::on_menu_file_popup_generic) ) );
-    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Process", sigc::mem_fun(*this, &ElemDetRp::on_menu_file_popup_generic) ) );
-    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Remove", sigc::mem_fun(*this, &ElemDetRp::on_menu_file_popup_generic) ) );
-
-    iCrpContextMenu.accelerate(*this);
-
+    iCompSelected = aComp;
     iCrpContextMenu.popup(event->button, event->time);
 }
 
-void ElemDetRp::on_menu_file_popup_generic()
+void ElemDetRp::on_comp_menu_rename()
 {
+    assert(iCompSelected != NULL);
+    ParEditDlg* dlg = new ParEditDlg("Enter new name", iCompSelected->Name());
+    int res = dlg->run();
+    if (res == Gtk::RESPONSE_OK) {
+	std::string newname;
+	dlg->GetData(newname);
+	rename_node(iCompSelected->Name(), newname);
+    }
+    delete dlg;
+    iCompSelected = NULL;
+}
+
+void ElemDetRp::on_comp_menu_remove()
+{
+    assert(iCompSelected != NULL);
+    remove_node(iCompSelected->Name());
+    iCompSelected = NULL;
 }
 
 

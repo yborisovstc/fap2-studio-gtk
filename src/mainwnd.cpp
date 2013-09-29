@@ -7,10 +7,12 @@ Glib::ustring sUiInfo =
 "  <menubar name='MenuBar'>"
 "    <menu action='MenuFile'>"
 "      <menuitem action='Open'/>"
+"      <menuitem action='Save_as'/>"
 "    </menu>"
 "  </menubar>"
 "  <toolbar  name='ToolBar'>"
 "    <toolitem action='Open'/>"
+"    <toolitem action='Save_as'/>"
 "  </toolbar>"
 "</ui>";
 
@@ -21,6 +23,7 @@ MainWnd::MainWnd() : iButton("Hello World"), iButton2("Test")
     irActionGroup = Gtk::ActionGroup::create("ActionGroup");
     irActionGroup->add(Gtk::Action::create("MenuFile", "_File"));
     irActionGroup->add(Gtk::Action::create("Open", Gtk::Stock::OPEN), sigc::mem_fun(*this, &MainWnd::on_action_open));
+    irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS), sigc::mem_fun(*this, &MainWnd::on_action_saveas));
     irUiMgr = Gtk::UIManager::create();
     irUiMgr->insert_action_group(irActionGroup);
     irUiMgr->add_ui_from_string(sUiInfo);
@@ -66,6 +69,10 @@ void MainWnd::on_button_clicked()
 void MainWnd::on_action_open()
 {
     std::cout << "Action Open triggered" << std::endl;
+}
+
+void MainWnd::on_action_saveas()
+{
 }
 
 Glib::RefPtr<Gtk::UIManager> MainWnd::UIManager() const

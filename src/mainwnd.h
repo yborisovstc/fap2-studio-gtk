@@ -22,6 +22,7 @@ class MainWnd : public Gtk::Window
 	// Signal handlers:
 	void on_button_clicked();
 	void on_action_open();
+	void on_action_saveas();
 	// Member widgets:
 	Gtk::Button iButton;
 	Gtk::Button iButton2;

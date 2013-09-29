@@ -27,6 +27,8 @@ fap2_studio_gtk_SOURCES = \
 		 sysdrp.cpp \
 		 cpcrp.h \
 		 cpcrp.cpp \
+		 propcrp.h \
+		 propcrp.cpp \
 		 toolitems.h \
 		 toolitems.cpp \
 		 mprov.h \

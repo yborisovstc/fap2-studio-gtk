@@ -11,7 +11,7 @@ const string& MEdgeCrp::Type()
     return sMEdgeCrpType;
 }
 
-EdgeCompRp::EdgeCompRp(Elem* aElem): iElem(aElem), iType(MEdgeCrp::EtRight)
+EdgeCompRp::EdgeCompRp(Elem* aElem): iElem(aElem), iType(MEdgeCrp::EtLeft)
 {
     // set no_window mode
     set_has_window(false);
@@ -27,6 +27,8 @@ EdgeCompRp::~EdgeCompRp()
 
 EdgeCompRp::Cp::Cp(): iPos(0)
 {
+    iCoord.width = 0;
+    iCoord.height = 0;
 }
 
 bool EdgeCompRp::on_expose_event(GdkEventExpose* aEvent)

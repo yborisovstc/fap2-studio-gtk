@@ -6,7 +6,7 @@
 ParEditDlg::ParEditDlg(const string& aTitle, const string& aData): Gtk::Dialog(aTitle)
 {
     add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
+    add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);
     Gtk::VBox* cont_area = get_vbox();
     iEntry = new Gtk::Entry();
     iEntry->set_text(aData);
@@ -16,5 +16,6 @@ ParEditDlg::ParEditDlg(const string& aTitle, const string& aData): Gtk::Dialog(a
 
 void ParEditDlg::GetData(string& aData)
 {
+    aData = iEntry->get_text();
 }
 

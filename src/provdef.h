@@ -27,7 +27,7 @@ class DefCrpProv: public MCrpProvider
 	virtual ~DefCrpProv();
 	//  From MCrpProvider
 	virtual void SetSenv(MSEnv& aEnv);
-	virtual MCrp* CreateRp(Elem& aElem) const;
+	virtual MCrp* CreateRp(Elem& aElem, const MCrpMgr* aMgr) const;
 	virtual int GetConfidence(const Elem& aElem) const;
     private:
 	MSEnv* iSenv;

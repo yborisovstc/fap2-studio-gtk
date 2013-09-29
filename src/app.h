@@ -23,7 +23,9 @@ class App
     private:
 	void on_action(const Glib::RefPtr<Gtk::Action>& aAction);
 	void on_action_open();
+	void on_action_saveas();
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
+	void SaveFile(const string& aFileName);
     private:
 	// DES environment
 	Env* iEnv;

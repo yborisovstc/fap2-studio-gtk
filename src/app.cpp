@@ -26,6 +26,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     iMainWnd->maximize();
     //iMainWnd->UIManager()->signal_post_activate().connect(sigc::mem_fun(*this, &App::on_action));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Open")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_open));
+    iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
     // Open main hier detail view
     iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
     iHDetView->SetRoot(iEnv->Root());
@@ -62,7 +63,27 @@ void App::on_action_open()
 	std::string filename = dialog.get_filename();
 	OpenFile(filename, false);
     }
+}
 
+void App::on_action_saveas()
+{
+    Gtk::FileChooserDialog dialog("Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
+    dialog.set_transient_for(*iMainWnd);
+
+    //Add response buttons the the dialog:
+    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog.add_button(Gtk::Stock::SAVE_AS, Gtk::RESPONSE_OK);
+    // Set filter
+    Gtk::FileFilter filter;
+    filter.set_name("DES model files");
+    filter.add_mime_type("application/xml");
+    dialog.add_filter(filter);
+
+    int result = dialog.run();
+    if (result == Gtk::RESPONSE_OK) {
+	std::string filename = dialog.get_filename();
+	SaveFile(filename);
+    }
 }
 
 string App::GetDefaultLogFileName() const
@@ -81,5 +102,10 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv->ConstructSystem();
     iHDetView->SetRoot(iEnv->Root());
     iHDetView->SetCursor(iEnv->Root());
+}
+
+void App::SaveFile(const string& aFileName)
+{
+    iEnv->Root()->Chromos().Save(aFileName);
 }
 

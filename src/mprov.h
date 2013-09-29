@@ -27,12 +27,20 @@ class MDrpProvider: public MRpProvider
 	virtual MDrp* CreateRp(Elem& aElem) const = 0;
 };
 
+// Manager of CRp
+class MCrpMgr
+{
+    public:
+	// Verifies if CRp of given type is allowed
+	virtual bool IsTypeAllowed(const std::string& aType) const = 0;
+};
+
 // Compact representation provider
 class MCrpProvider: public MRpProvider
 {
     public:
 	// Creates representation
-	virtual MCrp* CreateRp(Elem& aElem) const = 0;
+	virtual MCrp* CreateRp(Elem& aElem, const MCrpMgr* aMgr) const = 0;
 };
 
 #endif

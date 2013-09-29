@@ -1,8 +1,13 @@
 
 #include <iostream>
+#include <vert.h>
 #include <edge.h>
 #include "common.h"
 #include "vertdrp.h"
+
+// Widget of Vertex detailed representation
+const string sVertDrpType = "VertDrp";
+
 
 VertDrpw::ConnInfo::ConnInfo(): iCompOrder(0), iConnsToTop(0), iConnsToBottom(0)
 {
@@ -25,7 +30,7 @@ VertDrpw::VertDrpw(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iE
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
 	assert(comp != NULL);
-	MCrp* rp = iCrpProv.CreateRp(*comp);
+	MCrp* rp = iCrpProv.CreateRp(*comp, NULL);
 	Gtk::Widget& rpw = rp->Widget();
 	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &VertDrpw::on_comp_button_press_ext), comp));
 	add(rpw);
@@ -250,7 +255,7 @@ VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
 	assert(comp != NULL);
-	MCrp* rp = iCrpProv.CreateRp(*comp);
+	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	Gtk::Widget& rpw = rp->Widget();
 	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &VertDrpw_v1::on_comp_button_press_ext), comp));
 	add(rpw);
@@ -266,6 +271,48 @@ VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout
 
 VertDrpw_v1::~VertDrpw_v1()
 {
+}
+
+string VertDrpw_v1::EType()
+{
+    return Vert::PEType();
+}
+
+void *VertDrpw_v1::DoGetObj(const string& aName)
+{
+    void* res = NULL;
+    if (aName ==  Type()) {
+	res = this;
+    }
+    if (aName ==  MDrp::Type()) {
+	res = (MDrp*) this;
+    }
+    return res;
+}
+
+Gtk::Widget& VertDrpw_v1::Widget()
+{
+    return *(static_cast<Gtk::Widget*>(this));
+}
+
+Elem* VertDrpw_v1::Model()
+{
+    return iElem;
+}
+
+MDrp::tSigCompSelected VertDrpw_v1::SignalCompSelected()
+{
+    return iSigCompSelected;
+}
+
+
+bool VertDrpw_v1::IsTypeAllowed(const std::string& aType) const
+{
+    bool res = false;
+    if (aType == Vert::PEType() || aType == Edge::PEType() || aType == Elem::PEType()) {
+	res = true;
+    }
+    return res;
 }
 
 Elem* VertDrpw_v1::GetCompOwning(Elem* aElem)
@@ -347,7 +394,7 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 		assert(pcrpcbl != NULL);
 		lcpcoord = pcrpcbl->GetCpCoord();
 	    }
-	    int uextd = ucpcoord.width > lcpcoord.width;
+	    int uextd = ucpcoord.width - lcpcoord.width;
 	    if (uextd > 0) {
 		medgecrp->SetUcpExt(uextd, 0);
 	    }
@@ -407,10 +454,6 @@ bool VertDrpw_v1::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 
 
 
-
-
-// Widget of Vertex detailed representation
-const string sVertDrpType = "VertDrp";
 
 const string& VertDrp::Type()
 {
