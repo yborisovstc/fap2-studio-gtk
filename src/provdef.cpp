@@ -8,6 +8,7 @@
 #include "sysdrp.h"
 #include "syscrp.h"
 #include "cpcrp.h"
+#include "propcrp.h"
 #include "mcrp.h"
 
 DefDrpProv::DefDrpProv(): iSenv(NULL)
@@ -85,6 +86,9 @@ MCrp* DefCrpProv::CreateRp(Elem& aElem, const MCrpMgr* aMgr) const
     }
     else if (aElem.IsHeirOf(EdgeCrp::EType()) && aMgr->IsTypeAllowed(EdgeCrp::EType())) {
 	res = new EdgeCrp(&aElem);
+    }
+    else if (aElem.IsHeirOf(PropCrp::EType()) && aMgr->IsTypeAllowed(PropCrp::EType())) {
+	res = new PropCrp(&aElem);
     }
     else if (aElem.IsHeirOf(ElemCrp::EType()) && aMgr->IsTypeAllowed(ElemCrp::EType())) {
 	res = new ElemCrp(&aElem);

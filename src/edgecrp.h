@@ -4,6 +4,8 @@
 
 #include "mcrp.h"
 #include <elem.h>
+#include <gtkmm/eventbox.h>
+#include <gtkmm/drawingarea.h>
 
 class MEdgeCrp
 {
@@ -45,11 +47,51 @@ class EdgeCompRp: public Gtk::Widget
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	// Signal handlers
+	void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint, guint);
+	void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>&);
     private:
 	Elem* iElem;
 	MEdgeCrp::EdgeType iType;
 	Cp iUcp;
 	Cp iLcp;
+	Gtk::EventBox iEboxP1;
+};
+
+class EdgeCompRp_v1: public Gtk::Container
+{
+    friend class EdgeCrp;
+    public:
+	class Cp 
+	{
+	    public:
+		Cp();
+		Gtk::Requisition iCoord;
+		// Position from Cp: positive for upper
+		int iPos;
+	};
+    public:
+	EdgeCompRp_v1(Elem* aElem);
+	virtual ~EdgeCompRp_v1();
+	// From Container
+	virtual void add(Gtk::Widget& widget);
+    protected:
+	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
+	virtual bool on_expose_event(GdkEventExpose* event);
+	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	// From Container
+	virtual void forall_vfunc(gboolean include_internals, GtkCallback callback, gpointer callback_data);
+	// Signal handlers
+	void on_cp_drag_begin(const Glib::RefPtr<Gdk::DragContext>&);
+	bool on_cp_button_press(GdkEventButton* event);
+    private:
+	Elem* iElem;
+	MEdgeCrp::EdgeType iType;
+	Cp iUcp;
+	Cp iLcp;
+	//Gtk::EventBox iEboxP1;
+	//Gtk::DrawingArea iEboxP1;
+	Gtk::Widget* iP1;
 };
 
 class EdgeCrp: public MCrp, public MEdgeCrp
@@ -73,8 +115,10 @@ class EdgeCrp: public MCrp, public MEdgeCrp
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
 	virtual tSigButtonPressName SignalButtonPressName();
+	virtual bool IsActionSupported(Action aAction);
     private:
-	EdgeCompRp* iRp;
+	//EdgeCompRp* iRp;
+	EdgeCompRp_v1* iRp;
 	MCrp::tSigButtonPressName iSigButtonPressName;
 };
 

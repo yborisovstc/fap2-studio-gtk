@@ -38,6 +38,7 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
 	virtual tSigButtonPressName SignalButtonPressName();
+	virtual bool IsActionSupported(Action aAction);
 	// From MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
 	virtual bool GetIsInt() const;

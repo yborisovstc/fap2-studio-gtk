@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vert.h>
 #include <edge.h>
+#include <prop.h>
 #include "common.h"
 #include "vertdrp.h"
 
@@ -237,8 +238,6 @@ bool VertDrpw::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 
 
 
-
-
 // Widget of Vertex detailed representation, version#1
 
 VertDrpw_v1::ConnInfo::ConnInfo(): iCompOrder(0) { }
@@ -248,7 +247,7 @@ VertDrpw_v1::ConnInfo::ConnInfo(int aOrder): iCompOrder(aOrder) { }
 VertDrpw_v1::ConnInfo::ConnInfo(const ConnInfo& aCInfo): iCompOrder(aCInfo.iCompOrder) { }
 
 
-VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv)
+VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(aElem, aCrpProv)
 {
     // Add components
     int compord = 0;
@@ -305,11 +304,10 @@ MDrp::tSigCompSelected VertDrpw_v1::SignalCompSelected()
     return iSigCompSelected;
 }
 
-
 bool VertDrpw_v1::IsTypeAllowed(const std::string& aType) const
 {
     bool res = false;
-    if (aType == Vert::PEType() || aType == Edge::PEType() || aType == Elem::PEType()) {
+    if (aType == Vert::PEType() || aType == Edge::PEType() || aType == Prop::PEType() || ElemDetRp::IsTypeAllowed(aType)) {
 	res = true;
     }
     return res;
@@ -381,7 +379,8 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 		    pu = p2; pl = p1;
 		}
 	    }
-	    Gtk::Requisition ucpcoord, lcpcoord;
+	    int edge_xw = compb_x + comps_w_max/2 + KConnHorizSpreadMin + edge_wd; // X + W
+	    Gtk::Requisition ucpcoord = {edge_xw, KViewCompGapHight}, lcpcoord = {edge_xw, 2*KViewCompGapHight};
 	    if (pu != NULL) {
 		MCrp* pcrp = iCompRps.at(pu);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
@@ -402,7 +401,7 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 		medgecrp->SetLcpExt(-uextd, 0);
 	    }
 	    int edge_x = min(ucpcoord.width, lcpcoord.width);
-	    int edge_w = compb_x + comps_w_max/2 + KConnHorizSpreadMin - edge_x + edge_wd;
+	    int edge_w = edge_xw - edge_x;
 	    Gtk::Allocation allc(edge_x, ucpcoord.height, edge_w, lcpcoord.height - ucpcoord.height + 1);
 	    comp->size_allocate(allc);
 	    edge_wd += KConnHorizGap;
@@ -440,18 +439,6 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
     aReq->width = comp_w + edge_w; 
     aReq->height = max(comp_h, edge_h);
 }
-
-bool VertDrpw_v1::on_comp_button_press(GdkEventButton* event)
-{
-    std::cout << "on_comp_button_press" << std::endl;
-}
-
-bool VertDrpw_v1::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
-{
-    std::cout << "on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
-    iSigCompSelected.emit(aComp);
-}
-
 
 
 

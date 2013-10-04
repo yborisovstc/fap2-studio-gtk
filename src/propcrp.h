@@ -2,6 +2,7 @@
 #ifndef __FAP2STU_PROPCRP_H
 #define __FAP2STU_PROPCRP_H
 
+#include <gtkmm/textview.h>
 #include "elemcomprp.h"
 
 class PropCrp: public ElemCompRp, public MCrp
@@ -17,8 +18,12 @@ class PropCrp: public ElemCompRp, public MCrp
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
 	// From MCrp
+	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
+	virtual tSigButtonPressName SignalButtonPressName();
+	virtual bool IsActionSupported(Action aAction);
     protected:
+	//Gtk::TextView iContent;
 	Gtk::Label iContent;
 };
 

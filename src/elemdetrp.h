@@ -41,18 +41,20 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void add_node(const std::string& aParentUri);
 	void rename_node(const std::string& aNodeUri, const std::string& aNewName);
 	void remove_node(const std::string& aNodeUri);
+	void change_content(const std::string& aNodeUri, const std::string& aNewContent);
 	void ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp);
 	void on_comp_menu_rename();
 	void on_comp_menu_remove();
-    private:
+	void on_comp_menu_edit_content();
+    protected:
 	// Compact representations  provider
 	const MCrpProvider& iCrpProv;
 	Elem* iElem;
 	tCrps iCompRps; // Components representations
-	std::vector<Elem*> iComps; // Components
 	MDrp::tSigCompSelected iSigCompSelected;
 	Gtk::Menu iCrpContextMenu;
 	Elem* iCompSelected;
+	std::map<MCrp::Action, Gtk::Menu_Helpers::MenuElem> iCompMenuElems;
 };
 
 class ElemDrp: public MDrp

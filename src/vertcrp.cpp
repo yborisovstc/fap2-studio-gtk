@@ -54,7 +54,6 @@ VertCompRp::VertCompRp(Elem* aElem): ElemCompRp(aElem), iIsInt(true)
 
 VertCompRp::~VertCompRp()
 {
-    delete iHead;
 }
 
 void *VertCompRp::DoGetObj(const string& aName)
@@ -137,6 +136,12 @@ MCrp::tSigButtonPressName VertCompRp::SignalButtonPressName()
 {
     return iSigButtonPressName;
 }
+
+bool VertCompRp::IsActionSupported(Action aAction)
+{
+    return (aAction == EA_Remove || aAction == EA_Rename);
+}
+
 #if 0
 
 const string sType = "VertCrp";

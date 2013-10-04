@@ -42,7 +42,6 @@ CpCrp::CpCrp(Elem* aElem): VertCompRp(aElem)
 
 CpCrp::~CpCrp()
 {
-    delete iHead;
 }
 
 void *CpCrp::DoGetObj(const string& aName)

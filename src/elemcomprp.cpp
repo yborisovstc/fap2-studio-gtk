@@ -146,4 +146,8 @@ MCrp::tSigButtonPressName ElemCrp::SignalButtonPressName()
     return iRp->iSigButtonPressName;
 }
 
+bool ElemCrp::IsActionSupported(Action aAction)
+{
+    return (aAction == EA_Remove || aAction == EA_Rename);
+}
 

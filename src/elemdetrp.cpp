@@ -26,10 +26,24 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), 
     Construct();
     //drag_dest_set(Gtk::DEST_DEFAULT_ALL);
     drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE));
+    // Create comp menu elements
+    // TODO [YB] To implement context menu in CRps but not DRp.
+    Gtk::Menu_Helpers::MenuElem e_rename("_Rename", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_rename));
+    Gtk::Menu_Helpers::MenuElem e_remove("_Remove", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_remove));
+    Gtk::Menu_Helpers::MenuElem e_editcont("_Edit content", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_edit_content));
+    iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Rename, e_rename));
+    iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Remove, e_remove));
+    iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Edit_Content, e_editcont));
     // Setup components context menu
     Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
+    /*
     menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Rename", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_rename) ) );
     menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Remove", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_remove) ) );
+    */
+    /*
+    menulist.push_back(iCompMenuElems.at(MCrp::EA_Rename));
+    menulist.push_back(iCompMenuElems.at(MCrp::EA_Remove));
+    */
     iCrpContextMenu.accelerate(*this);
 }
 
@@ -132,7 +146,7 @@ bool ElemDetRp::on_comp_button_press(GdkEventButton* event)
 bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 {
     std::cout << "on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
-    if (event->type == GDK_BUTTON_PRESS) {
+    if (event->type == GDK_2BUTTON_PRESS) {
 	if (event->button == 3) {
 	    ShowCrpCtxDlg(event, aComp);
 	}
@@ -208,9 +222,32 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     Refresh();
 }
 
+void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent)
+{
+    MChromo& mut = iElem->Mutation();
+    ChromoNode smutr = mut.Root();
+    ChromoNode change = smutr.AddChild(ENt_Cont);
+    change.SetAttr(ENa_MutNode, aNodeUri);
+    change.SetAttr(ENa_MutVal, aNewContent);
+    iElem->Mutate();
+    Refresh();
+}
+
 void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp)
 {
     iCompSelected = aComp;
+    MCrp* crp = iCompRps.at(aComp);
+    Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
+    menulist.erase(menulist.begin(), menulist.end());
+    if (crp->IsActionSupported(MCrp::EA_Rename)) {
+	menulist.push_back(iCompMenuElems.at(MCrp::EA_Rename));
+    }
+    if (crp->IsActionSupported(MCrp::EA_Remove)) {
+	menulist.push_back(iCompMenuElems.at(MCrp::EA_Remove));
+    }
+    if (crp->IsActionSupported(MCrp::EA_Edit_Content)) {
+	menulist.push_back(iCompMenuElems.at(MCrp::EA_Edit_Content));
+    }
     iCrpContextMenu.popup(event->button, event->time);
 }
 
@@ -235,6 +272,20 @@ void ElemDetRp::on_comp_menu_remove()
     iCompSelected = NULL;
 }
 
+void ElemDetRp::on_comp_menu_edit_content()
+{
+    assert(iCompSelected != NULL);
+    string sCont;
+    iCompSelected->GetCont(sCont);
+    TextEditDlg* dlg = new TextEditDlg("Edit content", sCont);
+    int res = dlg->run();
+    if (res == Gtk::RESPONSE_OK) {
+	dlg->GetData(sCont);
+	change_content(iCompSelected->Name(), sCont);
+    }
+    delete dlg;
+    iCompSelected = NULL;
+}
 
 const string sElemDrpType = "ElemDrp";
 

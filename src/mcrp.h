@@ -13,10 +13,17 @@
 class MCrp: public MBase
 {
     public:
+	enum Action {
+	    EA_Rename,
+	    EA_Remove,
+	    EA_Edit_Content
+	};
+    public:
 	typedef sigc::signal<void, GdkEventButton*> tSigButtonPressName;
     public:
 	virtual Gtk::Widget& Widget() = 0;
 	virtual tSigButtonPressName SignalButtonPressName() = 0;
+	virtual bool IsActionSupported(Action aAction) = 0;
 };
 
 class MCrpConnectable
