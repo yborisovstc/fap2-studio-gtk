@@ -108,12 +108,12 @@ void VertDrpw::on_size_allocate(Gtk::Allocation& aAllc)
 	    if (pu != NULL) {
 		ConnInfo& ciu = iConnInfos.at(pu);
 		ciu.iConnsToBottom++;
-		medgecrp->SetUcp(ciu.iConnsToBottom);
+		medgecrp->SetUcpPos(ciu.iConnsToBottom);
 	    }
 	    if (pl != NULL) {
 		ConnInfo& cil = iConnInfos.at(pl);
 		cil.iConnsToTop++;
-		medgecrp->SetLcp(cil.iConnsToTop - 1);
+		medgecrp->SetLcpPos(cil.iConnsToTop - 1);
 	    }
 	}
     }
@@ -257,6 +257,7 @@ VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(a
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	Gtk::Widget& rpw = rp->Widget();
 	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &VertDrpw_v1::on_comp_button_press_ext), comp));
+	rp->SignalUpdated().connect(sigc::mem_fun(*this, &VertDrpw_v1::on_comp_updated));
 	add(rpw);
 	iCompRps[comp] = rp;
 	rpw.show();
@@ -325,6 +326,11 @@ Elem* VertDrpw_v1::GetCompOwning(Elem* aElem)
     return res;
 }
 
+void VertDrpw_v1::on_comp_updated(Elem* aElem)
+{
+    std::cout << "on_comp_updated" << std::endl;
+}
+
 void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 {
     //    Gtk::Layout::on_size_allocate(aAllc);
@@ -371,6 +377,32 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 	    Elem* rp2 = medgecrp->Point2();
 	    Elem* p1 = rp1 != NULL ? GetCompOwning(rp1): NULL;
 	    Elem* p2 = rp2 != NULL ? GetCompOwning(rp2): NULL;
+
+	    int edge_xw = compb_x + comps_w_max/2 + KConnHorizSpreadMin + edge_wd; // X + W
+	    Gtk::Requisition p1coord = { edge_xw, medgecrp->Cp1Coord().height};
+	    Gtk::Requisition p2coord = { edge_xw, medgecrp->Cp2Coord().height};
+	    if (p1coord.height == 0) {
+	       	p1coord.height = KViewCompGapHight;
+	    }
+	    if (p2coord.height == 0) {
+	       	p2coord.height = 2*KViewCompGapHight;
+	    }
+	    if (p1 != NULL) {
+		MCrp* pcrp = iCompRps.at(p1);
+		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
+		assert(pcrpcbl != NULL);
+		p1coord = pcrpcbl->GetCpCoord();
+	    }
+	    medgecrp->SetCp1Coord(p1coord);
+
+	    if (p2 != NULL) {
+		MCrp* pcrp = iCompRps.at(p2);
+		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
+		assert(pcrpcbl != NULL);
+		p2coord = pcrpcbl->GetCpCoord();
+	    }
+	    medgecrp->SetCp2Coord(p2coord);
+
 	    Elem *pu = p1, *pl = p2;
 	    if (p1 != NULL && p2 != NULL) {
 		ConnInfo& ci1 = iConnInfos.at(p1);
@@ -379,7 +411,6 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 		    pu = p2; pl = p1;
 		}
 	    }
-	    int edge_xw = compb_x + comps_w_max/2 + KConnHorizSpreadMin + edge_wd; // X + W
 	    Gtk::Requisition ucpcoord = {edge_xw, KViewCompGapHight}, lcpcoord = {edge_xw, 2*KViewCompGapHight};
 	    if (pu != NULL) {
 		MCrp* pcrp = iCompRps.at(pu);
@@ -407,7 +438,6 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 	    edge_wd += KConnHorizGap;
 	}
     }
-
 }
 
 void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
@@ -438,6 +468,11 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
     }
     aReq->width = comp_w + edge_w; 
     aReq->height = max(comp_h, edge_h);
+}
+
+bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
+{
+    std::cout << "VertDrpw_v1 on_drag_motion" << std::endl;
 }
 
 

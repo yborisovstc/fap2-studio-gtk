@@ -1,9 +1,12 @@
 
+#include <iostream>
 #include "edgecrp.h"
 #include <edge.h>
 #include <mvert.h>
 #include "common.h"
 #include <gdkmm/event.h>
+
+const int KEdgeDragThreshold = 5;
 
 static GtkTargetEntry targetentries[] =
 {
@@ -40,8 +43,8 @@ EdgeCompRp::~EdgeCompRp()
 
 EdgeCompRp::Cp::Cp(): iPos(0)
 {
-    iCoord.width = 0;
-    iCoord.height = 0;
+    iOffset.width = 0;
+    iOffset.height = 0;
 }
 
 void EdgeCompRp::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint, guint)
@@ -59,18 +62,18 @@ bool EdgeCompRp::on_expose_event(GdkEventExpose* aEvent)
     Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
     Gtk::Allocation alc = get_allocation();
     if (iType == MEdgeCrp::EtLeft) {
-	int ux = alc.get_x() + iUcp.iCoord.width;
+	int ux = alc.get_x() + iUcp.iOffset.width;
 	int uy = alc.get_y() + iUcp.iPos*KConnVertGap;
-	int lx = alc.get_x() + iLcp.iCoord.width;
+	int lx = alc.get_x() + iLcp.iOffset.width;
 	int ly = alc.get_y() + alc.get_height() - 1 - iLcp.iPos*KConnVertGap;
 	drw->draw_line(gc, ux, uy, alc.get_x() + alc.get_width() - 1, uy);
 	drw->draw_line(gc, alc.get_x() + alc.get_width() - 1, uy, alc.get_x() + alc.get_width() - 1, ly);
 	drw->draw_line(gc, lx, ly , alc.get_x() + alc.get_width() - 1, ly);
     }
     else if (iType == MEdgeCrp::EtRight) {
-	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iCoord.width;
+	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iOffset.width;
 	int uy = alc.get_y();
-	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iCoord.width;
+	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iOffset.width;
 	int ly = alc.get_y() + alc.get_height() - 1;
 	drw->draw_line(gc, alc.get_x(), uy, ux, uy);
 	drw->draw_line(gc, alc.get_x(), uy, alc.get_x(), ly);
@@ -79,7 +82,7 @@ bool EdgeCompRp::on_expose_event(GdkEventExpose* aEvent)
     else if (iType == MEdgeCrp::EtLtRb) {
 	// Left top to right bottom
 	int ux = alc.get_x();
-	int urx = alc.get_x() + iUcp.iCoord.width; // Upper right
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
 	int uy = alc.get_y();
 	int lx = alc.get_x() + alc.get_width() - 1;
 	int ly = alc.get_y() + alc.get_height() - 1;
@@ -90,7 +93,7 @@ bool EdgeCompRp::on_expose_event(GdkEventExpose* aEvent)
     else {
 	// Left bottom to right top
 	int ux = alc.get_x() + alc.get_width() - 1;
-	int urx = alc.get_x() + iUcp.iCoord.width; // Upper right
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
 	int uy = alc.get_y();
 	int lx = alc.get_x();
 	int ly = alc.get_y() + alc.get_height() - 1;
@@ -145,8 +148,8 @@ EdgeCompRp_v1::~EdgeCompRp_v1()
 
 EdgeCompRp_v1::Cp::Cp(): iPos(0)
 {
-    iCoord.width = 0;
-    iCoord.height = 0;
+    iOffset.width = 0;
+    iOffset.height = 0;
 }
 
 void EdgeCompRp_v1::add(Gtk::Widget& widget)
@@ -171,23 +174,23 @@ void EdgeCompRp_v1::on_size_allocate(Gtk::Allocation& aAlloc)
 //    iEboxP1.size_allocate(aAlloc);
     // Allocate connection points 
         if (iType == MEdgeCrp::EtLeft) {
-	int ux = alc.get_x() + iUcp.iCoord.width;
+	int ux = alc.get_x() + iUcp.iOffset.width;
 	int uy = alc.get_y() + iUcp.iPos*KConnVertGap;
-	int lx = alc.get_x() + iLcp.iCoord.width;
+	int lx = alc.get_x() + iLcp.iOffset.width;
 	int ly = alc.get_y() + alc.get_height() - 1 - iLcp.iPos*KConnVertGap;
 	Gtk::Allocation allc(ux, uy, KEdgePointWidth, KEdgePointWidth);
 	iP1->size_allocate(allc);
     }
     else if (iType == MEdgeCrp::EtRight) {
-	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iCoord.width;
+	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iOffset.width;
 	int uy = alc.get_y();
-	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iCoord.width;
+	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iOffset.width;
 	int ly = alc.get_y() + alc.get_height() - 1;
     }
     else if (iType == MEdgeCrp::EtLtRb) {
 	// Left top to right bottom
 	int ux = alc.get_x();
-	int urx = alc.get_x() + iUcp.iCoord.width; // Upper right
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
 	int uy = alc.get_y();
 	int lx = alc.get_x() + alc.get_width() - 1;
 	int ly = alc.get_y() + alc.get_height() - 1;
@@ -195,7 +198,7 @@ void EdgeCompRp_v1::on_size_allocate(Gtk::Allocation& aAlloc)
     else {
 	// Left bottom to right top
 	int ux = alc.get_x() + alc.get_width() - 1;
-	int urx = alc.get_x() + iUcp.iCoord.width; // Upper right
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
 	int uy = alc.get_y();
 	int lx = alc.get_x();
 	int ly = alc.get_y() + alc.get_height() - 1;
@@ -212,18 +215,18 @@ bool EdgeCompRp_v1::on_expose_event(GdkEventExpose* aEvent)
     Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
     Gtk::Allocation alc = get_allocation();
     if (iType == MEdgeCrp::EtLeft) {
-	int ux = alc.get_x() + iUcp.iCoord.width;
+	int ux = alc.get_x() + iUcp.iOffset.width;
 	int uy = alc.get_y() + iUcp.iPos*KConnVertGap;
-	int lx = alc.get_x() + iLcp.iCoord.width;
+	int lx = alc.get_x() + iLcp.iOffset.width;
 	int ly = alc.get_y() + alc.get_height() - 1 - iLcp.iPos*KConnVertGap;
 	drw->draw_line(gc, ux, uy, alc.get_x() + alc.get_width() - 1, uy);
 	drw->draw_line(gc, alc.get_x() + alc.get_width() - 1, uy, alc.get_x() + alc.get_width() - 1, ly);
 	drw->draw_line(gc, lx, ly , alc.get_x() + alc.get_width() - 1, ly);
     }
     else if (iType == MEdgeCrp::EtRight) {
-	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iCoord.width;
+	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iOffset.width;
 	int uy = alc.get_y();
-	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iCoord.width;
+	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iOffset.width;
 	int ly = alc.get_y() + alc.get_height() - 1;
 	drw->draw_line(gc, alc.get_x(), uy, ux, uy);
 	drw->draw_line(gc, alc.get_x(), uy, alc.get_x(), ly);
@@ -232,7 +235,7 @@ bool EdgeCompRp_v1::on_expose_event(GdkEventExpose* aEvent)
     else if (iType == MEdgeCrp::EtLtRb) {
 	// Left top to right bottom
 	int ux = alc.get_x();
-	int urx = alc.get_x() + iUcp.iCoord.width; // Upper right
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
 	int uy = alc.get_y();
 	int lx = alc.get_x() + alc.get_width() - 1;
 	int ly = alc.get_y() + alc.get_height() - 1;
@@ -243,7 +246,7 @@ bool EdgeCompRp_v1::on_expose_event(GdkEventExpose* aEvent)
     else {
 	// Left bottom to right top
 	int ux = alc.get_x() + alc.get_width() - 1;
-	int urx = alc.get_x() + iUcp.iCoord.width; // Upper right
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
 	int uy = alc.get_y();
 	int lx = alc.get_x();
 	int ly = alc.get_y() + alc.get_height() - 1;
@@ -270,6 +273,181 @@ bool EdgeCompRp_v1::on_cp_button_press(GdkEventButton* event)
 
 
 
+// Edge Crp widget, version 2
+EdgeCompRp_v2::EdgeCompRp_v2(Elem* aElem): iElem(aElem), iType(MEdgeCrp::EtLeft), iDraggedPart(EDp_None), 
+    iDragging(false)
+{
+    // set no_window mode
+    set_visible_window(false);
+    // Set name
+    set_name(iElem->Name());
+    // Set events mask
+    add_events(Gdk::BUTTON_PRESS_MASK);
+    // Setup DnD source
+    drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries));
+    drag_highlight();
+    signal_drag_data_get().connect(sigc::mem_fun(*this, &EdgeCompRp_v2::on_drag_data_get));
+}
+
+EdgeCompRp_v2::~EdgeCompRp_v2()
+{
+}
+
+EdgeCompRp_v2::Cp::Cp(): iPos(0)
+{
+    iOffset.width = 0;
+    iOffset.height = 0;
+    iCoord.width = 0;
+    iCoord.height = 0;
+}
+
+void EdgeCompRp_v2::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint, guint)
+{
+}
+
+void EdgeCompRp_v2::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext)
+{
+    if (iDraggedPart != EDp_None) {
+	iDragging = true;
+	std::cout << "Dragging begin" << std::endl;
+    }
+}
+
+bool EdgeCompRp_v2::on_button_press_event(GdkEventButton* aEvent)
+{
+    if (aEvent->type == GDK_BUTTON_PRESS) {
+	int ex = aEvent->x;
+	int ey = aEvent->y;
+	if (iDraggedPart == EDp_None) {
+	    if (abs(ex - iCp1.iCoord.width) < KEdgeDragThreshold || abs(ey - iCp1.iCoord.height) < KEdgeDragThreshold) {
+		iDraggedPart = EDp_Cp1;
+	    }
+	    else if (abs(ex - iCp2.iCoord.width) < KEdgeDragThreshold || abs(ey - iCp2.iCoord.height) < KEdgeDragThreshold) {
+		iDraggedPart = EDp_Cp2;
+	    }
+	}
+    }
+}
+
+bool EdgeCompRp_v2::on_motion_notify_event(GdkEventMotion* aEvent)
+{
+    if (iDragging) {
+	if (iDraggedPart == EDp_Cp1) {
+	    iCp1.iCoord.height = aEvent->y;
+	    std::cout << "Dragging Cp1" << std::endl;
+	    iSigUpdated.emit(iElem);
+	}
+	else if (iDraggedPart == EDp_Cp2) {
+	    iCp2.iCoord.height = aEvent->y;
+	    std::cout << "Dragging Cp2" << std::endl;
+	    iSigUpdated.emit(iElem);
+	}
+    }
+}
+
+/*
+   bool EdgeCompRp_v2::on_expose_event(GdkEventExpose* aEvent)
+   {
+    Glib::RefPtr<Gdk::Window> drw = get_window();
+    Glib::RefPtr<Gtk::Style> style = get_style(); 	
+    Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
+    Gtk::Allocation alc = get_allocation();
+    if (iType == MEdgeCrp::EtLeft) {
+	int ux = alc.get_x() + iUcp.iOffset.width;
+	int uy = alc.get_y() + iUcp.iPos*KConnVertGap;
+	int lx = alc.get_x() + iLcp.iOffset.width;
+	int ly = alc.get_y() + alc.get_height() - 1 - iLcp.iPos*KConnVertGap;
+	drw->draw_line(gc, ux, uy, alc.get_x() + alc.get_width() - 1, uy);
+	drw->draw_line(gc, alc.get_x() + alc.get_width() - 1, uy, alc.get_x() + alc.get_width() - 1, ly);
+	drw->draw_line(gc, lx, ly , alc.get_x() + alc.get_width() - 1, ly);
+    }
+    else if (iType == MEdgeCrp::EtRight) {
+	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iOffset.width;
+	int uy = alc.get_y();
+	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iOffset.width;
+	int ly = alc.get_y() + alc.get_height() - 1;
+	drw->draw_line(gc, alc.get_x(), uy, ux, uy);
+	drw->draw_line(gc, alc.get_x(), uy, alc.get_x(), ly);
+	drw->draw_line(gc, alc.get_x(), ly, lx, ly);
+    }
+    else if (iType == MEdgeCrp::EtLtRb) {
+	// Left top to right bottom
+	int ux = alc.get_x();
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
+	int uy = alc.get_y();
+	int lx = alc.get_x() + alc.get_width() - 1;
+	int ly = alc.get_y() + alc.get_height() - 1;
+	drw->draw_line(gc, urx, uy, urx, ly);
+	drw->draw_line(gc, ux, uy, urx, uy);
+	drw->draw_line(gc, urx, ly , lx, ly);
+    }
+    else {
+	// Left bottom to right top
+	int ux = alc.get_x() + alc.get_width() - 1;
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
+	int uy = alc.get_y();
+	int lx = alc.get_x();
+	int ly = alc.get_y() + alc.get_height() - 1;
+	drw->draw_line(gc, urx, uy, urx, ly);
+	drw->draw_line(gc, urx, uy, ux, uy);
+	drw->draw_line(gc, lx, ly , urx, ly);
+    }
+}
+*/
+
+bool EdgeCompRp_v2::on_expose_event(GdkEventExpose* aEvent)
+{
+    Glib::RefPtr<Gdk::Window> drw = get_window();
+    Glib::RefPtr<Gtk::Style> style = get_style(); 	
+    Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
+    Gtk::Allocation alc = get_allocation();
+    if (iType == MEdgeCrp::EtLeft) {
+	int rx = alc.get_x() + alc.get_width() - 2;
+	drw->draw_line(gc, iCp1.iCoord.width, iCp1.iCoord.height, rx, iCp1.iCoord.height);
+	drw->draw_line(gc, rx, iCp1.iCoord.height, rx, iCp2.iCoord.height);
+	drw->draw_line(gc, iCp2.iCoord.width, iCp2.iCoord.height, rx, iCp2.iCoord.height);
+    }
+    else if (iType == MEdgeCrp::EtRight) {
+	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iOffset.width;
+	int uy = alc.get_y();
+	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iOffset.width;
+	int ly = alc.get_y() + alc.get_height() - 1;
+	drw->draw_line(gc, alc.get_x(), uy, ux, uy);
+	drw->draw_line(gc, alc.get_x(), uy, alc.get_x(), ly);
+	drw->draw_line(gc, alc.get_x(), ly, lx, ly);
+    }
+    else if (iType == MEdgeCrp::EtLtRb) {
+	// Left top to right bottom
+	int ux = alc.get_x();
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
+	int uy = alc.get_y();
+	int lx = alc.get_x() + alc.get_width() - 1;
+	int ly = alc.get_y() + alc.get_height() - 1;
+	drw->draw_line(gc, urx, uy, urx, ly);
+	drw->draw_line(gc, ux, uy, urx, uy);
+	drw->draw_line(gc, urx, ly , lx, ly);
+    }
+    else {
+	// Left bottom to right top
+	int ux = alc.get_x() + alc.get_width() - 1;
+	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
+	int uy = alc.get_y();
+	int lx = alc.get_x();
+	int ly = alc.get_y() + alc.get_height() - 1;
+	drw->draw_line(gc, urx, uy, urx, ly);
+	drw->draw_line(gc, urx, uy, ux, uy);
+	drw->draw_line(gc, lx, ly , urx, ly);
+    }
+}
+
+void EdgeCompRp_v2::on_size_request(Gtk::Requisition* aReq)
+{
+   // aReq->width = KConnHorizSpreadMin; 
+    aReq->width = 1; 
+    aReq->height = KViewCompGapHight;
+}
+
+
 
 
 // Edge compact representation
@@ -288,7 +466,7 @@ string EdgeCrp::EType()
 
 EdgeCrp::EdgeCrp(Elem* aElem)
 {
-    iRp = new EdgeCompRp_v1(aElem);
+    iRp = new EdgeCompRp_v2(aElem);
 }
 
 EdgeCrp::~EdgeCrp()
@@ -314,30 +492,45 @@ Gtk::Widget& EdgeCrp::Widget()
 }
 
 
-void EdgeCrp::SetUcp(int aPos)
+void EdgeCrp::SetUcpPos(int aPos)
 {
     iRp->iUcp.iPos = aPos;
 }
 
-void EdgeCrp::SetLcp(int aPos)
+void EdgeCrp::SetLcpPos(int aPos)
 {
     iRp->iLcp.iPos = aPos;
 }
 
 void EdgeCrp::SetUcpExt(int aX, int aY)
 {
-    iRp->iUcp.iCoord.width = aX;
-    iRp->iUcp.iCoord.height = aY;
+    iRp->iUcp.iOffset.width = aX;
+    iRp->iUcp.iOffset.height = aY;
 }
 
 void EdgeCrp::SetLcpExt(int aX, int aY)
 {
-    iRp->iLcp.iCoord.width = aX;
-    iRp->iLcp.iCoord.height = aY;
+    iRp->iLcp.iOffset.width = aX;
+    iRp->iLcp.iOffset.height = aY;
 }
 
-void EdgeCrp::SetExtent(Gtk::Requisition aReq, int aPos)
+void EdgeCrp::SetCp1Coord(const Gtk::Requisition& aReq)
 {
+    iRp->iCp1.iCoord = aReq;
+}
+
+void EdgeCrp::SetCp2Coord(const Gtk::Requisition& aReq)
+{
+    iRp->iCp2.iCoord = aReq;
+}
+
+const Gtk::Requisition& EdgeCrp::Cp1Coord()
+{
+    return iRp->iCp1.iCoord;
+}
+const Gtk::Requisition& EdgeCrp::Cp2Coord()
+{
+    return iRp->iCp2.iCoord;
 }
 
 Elem* EdgeCrp::Point1()
@@ -373,6 +566,11 @@ void EdgeCrp::SetType(EdgeType aType)
 MCrp::tSigButtonPressName EdgeCrp::SignalButtonPressName()
 {
     return iSigButtonPressName;
+}
+
+MCrp::tSigUpdated EdgeCrp::SignalUpdated()
+{
+    return iRp->iSigUpdated;
 }
 
 bool EdgeCrp::IsActionSupported(Action aAction)

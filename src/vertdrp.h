@@ -78,18 +78,14 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();
 
+	virtual bool on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	// Signal handlers
+	void on_comp_updated(Elem* aElem);
     protected:
 	Elem* GetCompOwning(Elem* aElem);
     protected:
-	/*
-	// Compact representations  provider
-	const MCrpProvider& iCrpProv;
-	Elem* iElem;
-	std::map<Elem*, MCrp*> iCompRps; // Components representations
-	MDrp::tSigCompSelected iSigCompSelected;
-	*/
 	std::map<Elem*, ConnInfo> iConnInfos; // Connection infos
 
 	friend class VertDrp;

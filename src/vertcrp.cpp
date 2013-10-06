@@ -137,6 +137,11 @@ MCrp::tSigButtonPressName VertCompRp::SignalButtonPressName()
     return iSigButtonPressName;
 }
 
+MCrp::tSigUpdated VertCompRp::SignalUpdated()
+{
+    return iSigUpdated;
+}
+
 bool VertCompRp::IsActionSupported(Action aAction)
 {
     return (aAction == EA_Remove || aAction == EA_Rename);

@@ -51,6 +51,11 @@ MCrp::tSigButtonPressName PropCrp::SignalButtonPressName()
     return iSigButtonPressName;
 }
 
+MCrp::tSigUpdated PropCrp::SignalUpdated()
+{
+    return iSigUpdated;
+}
+
 bool PropCrp::on_expose_event(GdkEventExpose* aEvent)
 {
     Gtk::Layout::on_expose_event(aEvent);

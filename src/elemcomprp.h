@@ -46,6 +46,7 @@ class ElemCompRp: public Gtk::Layout
 	ElemCompHead* iHead;
 	Gtk::Allocation iBodyAlc;
 	MCrp::tSigButtonPressName iSigButtonPressName;
+	MCrp::tSigUpdated iSigUpdated;
 	Gtk::Menu iContextMenu; // Context menu
 };
 
@@ -61,6 +62,7 @@ class ElemCrp: public MCrp
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
 	virtual tSigButtonPressName SignalButtonPressName();
+	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
     private:
 	ElemCompRp* iRp;

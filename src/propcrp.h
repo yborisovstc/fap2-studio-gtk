@@ -21,6 +21,7 @@ class PropCrp: public ElemCompRp, public MCrp
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
 	virtual tSigButtonPressName SignalButtonPressName();
+	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
     protected:
 	//Gtk::TextView iContent;
