@@ -50,8 +50,8 @@ class EdgeCompRp: public Gtk::Widget
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
 	// Signal handlers
-	void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint, guint);
 	void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>&);
     private:
 	Elem* iElem;
@@ -124,11 +124,11 @@ class EdgeCompRp_v2: public Gtk::EventBox
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
-	virtual bool on_motion_notify_event(GdkEventMotion* aEvent);
+	//virtual bool on_motion_notify_event(GdkEventMotion* aEvent);
 	virtual bool on_button_press_event(GdkEventButton* aEvent);
 	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext);
+	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
 	// Signal handlers
-	void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint, guint);
 	bool on_cp_button_press(GdkEventButton* event);
 
     private:

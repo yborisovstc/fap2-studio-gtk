@@ -10,9 +10,10 @@ const int KEdgeDragThreshold = 5;
 
 static GtkTargetEntry targetentries[] =
 {
-    { (gchar*) "STRING",        0, 0 },
-    { (gchar*) "text/plain",    0, 1 },
-    { (gchar*) "text/uri-list", 0, 2 },
+//    { (gchar*) "STRING",        0, KTei_EdgeCp },
+    { (gchar*) "text/edge-cp-uri", 0, KTei_EdgeCp },
+//    { (gchar*) "text/plain",    0, KTei_EdgeCp },
+//    { (gchar*) "text/uri-list", 0, 2 },
 };
 
 const string sMEdgeCrpType = "MEdgeCrp";
@@ -31,7 +32,7 @@ EdgeCompRp::EdgeCompRp(Elem* aElem): iElem(aElem), iType(MEdgeCrp::EtLeft)
     // Set events mask
     add_events(Gdk::BUTTON_PRESS_MASK);
     // Setup DnD source
-    iEboxP1.drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries));
+    iEboxP1.drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE));
     iEboxP1.drag_highlight();
     signal_drag_data_get().connect(sigc::mem_fun(*this, &EdgeCompRp::on_drag_data_get));
     signal_drag_begin().connect(sigc::mem_fun(*this, &EdgeCompRp::on_drag_begin));
@@ -129,7 +130,7 @@ EdgeCompRp_v1::EdgeCompRp_v1(Elem* aElem): iElem(aElem), iType(MEdgeCrp::EtLeft)
     p1->show();
     p1->signal_drag_begin().connect(sigc::mem_fun(*this, &EdgeCompRp_v1::on_cp_drag_begin));
     p1->drag_highlight();
-    p1->drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries));
+    p1->drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE));
     /*
     //add(iEboxP1);
     iEboxP1.add_events(Gdk::BUTTON_PRESS_MASK);
@@ -284,9 +285,9 @@ EdgeCompRp_v2::EdgeCompRp_v2(Elem* aElem): iElem(aElem), iType(MEdgeCrp::EtLeft)
     // Set events mask
     add_events(Gdk::BUTTON_PRESS_MASK);
     // Setup DnD source
-    drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries));
-    drag_highlight();
-    signal_drag_data_get().connect(sigc::mem_fun(*this, &EdgeCompRp_v2::on_drag_data_get));
+//    drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE));
+//    drag_highlight();
+//    signal_drag_data_get().connect(sigc::mem_fun(*this, &EdgeCompRp_v2::on_drag_data_get));
 }
 
 EdgeCompRp_v2::~EdgeCompRp_v2()
@@ -301,8 +302,18 @@ EdgeCompRp_v2::Cp::Cp(): iPos(0)
     iCoord.height = 0;
 }
 
-void EdgeCompRp_v2::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint, guint)
+void EdgeCompRp_v2::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time)
 {
+    std::cout << "EdgeCompRp_v2 on_drag_data_get" << std::endl;
+    //if (info == KTei_EdgeCp && iDragging && iDraggedPart != EDp_None) {
+    if (true) {
+	std::string uri("fdfd");
+	if (iDraggedPart == EDp_Cp1) {
+	}
+	else {
+	}
+	data.set_text(uri);
+    }
 }
 
 void EdgeCompRp_v2::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext)
@@ -315,20 +326,42 @@ void EdgeCompRp_v2::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext
 
 bool EdgeCompRp_v2::on_button_press_event(GdkEventButton* aEvent)
 {
+    bool res = true;
     if (aEvent->type == GDK_BUTTON_PRESS) {
-	int ex = aEvent->x;
-	int ey = aEvent->y;
-	if (iDraggedPart == EDp_None) {
-	    if (abs(ex - iCp1.iCoord.width) < KEdgeDragThreshold || abs(ey - iCp1.iCoord.height) < KEdgeDragThreshold) {
+	//if (iDraggedPart == EDp_None) {
+	if (true) {
+	    Gtk::Allocation alc = get_allocation();
+	    int ex = aEvent->x;
+	    int ey = aEvent->y;
+	    int cp1x = iCp1.iCoord.width - alc.get_x();
+	    int cp1y = iCp1.iCoord.height - alc.get_y();
+	    int cp2x = iCp2.iCoord.width - alc.get_x();
+	    int cp2y = iCp2.iCoord.height - alc.get_y();
+	    if (abs(ex - cp1x) < KEdgeDragThreshold || abs(ey - cp1y) < KEdgeDragThreshold) {
 		iDraggedPart = EDp_Cp1;
+		iDragging = true;
 	    }
-	    else if (abs(ex - iCp2.iCoord.width) < KEdgeDragThreshold || abs(ey - iCp2.iCoord.height) < KEdgeDragThreshold) {
+	    else if (abs(ex - cp2x) < KEdgeDragThreshold || abs(ey - cp2x) < KEdgeDragThreshold) {
 		iDraggedPart = EDp_Cp2;
+		iDragging = true;
+	    }
+	    //if (iDragging) {
+	    if (true) {
+		// Needs to use this array handle constructor with length argument, otherwise not working
+		Glib::RefPtr<Gtk::TargetList> targ = Gtk::TargetList::create(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE));
+		GdkEvent* evt = (GdkEvent*) aEvent;
+		std::cout << "EdgeCompRp_v2 begin dragging from " << iDraggedPart << std::endl;
+		//drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE));
+		// TODO [YB] Only ACTION_COPY works here, to analyse why
+		drag_begin(targ, Gdk::ACTION_COPY, aEvent->button, evt);
 	    }
 	}
     }
+    res = Widget::on_button_press_event(aEvent);
+    return res;
 }
 
+/*
 bool EdgeCompRp_v2::on_motion_notify_event(GdkEventMotion* aEvent)
 {
     if (iDragging) {
@@ -344,6 +377,7 @@ bool EdgeCompRp_v2::on_motion_notify_event(GdkEventMotion* aEvent)
 	}
     }
 }
+*/
 
 /*
    bool EdgeCompRp_v2::on_expose_event(GdkEventExpose* aEvent)

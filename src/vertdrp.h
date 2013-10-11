@@ -79,6 +79,8 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual tSigCompSelected SignalCompSelected();
 
 	virtual bool on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
+	virtual void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, 
+		const Gtk::SelectionData& selection_data, guint info, guint time);
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
 	// Signal handlers

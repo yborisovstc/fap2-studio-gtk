@@ -9,6 +9,7 @@ static GtkTargetEntry targetentries[] =
     { (gchar*) "STRING",        0, 0 },
     { (gchar*) "text/plain",    0, 1 },
     { (gchar*) "text/uri-list", 0, 2 },
+    { (gchar*) "text/edge-cp-uri", 0, KTei_EdgeCp },
 };
 
 /*
@@ -25,7 +26,7 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), 
     // Base construct
     Construct();
     //drag_dest_set(Gtk::DEST_DEFAULT_ALL);
-    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE));
+    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 4, Glib::OWNERSHIP_NONE));
     // Create comp menu elements
     // TODO [YB] To implement context menu in CRps but not DRp.
     Gtk::Menu_Helpers::MenuElem e_rename("_Rename", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_rename));
@@ -163,16 +164,23 @@ void ElemDetRp::on_comp_button_press_name(GdkEventButton* event, Elem* aComp)
 
 bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
 {
+    std::cout << "ElemDetRp on_drag_drop" << std::endl;
     //bool res = Layout::on_drag_drop(context, x, y, time);
     return true;
 }
 
 void ElemDetRp::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
+    std::cout << "ElemDetRp on_drag_data_received" << std::endl;
     std::string targ = selection_data.get_target();
     Glib::ustring data = selection_data.get_text();
     context->drag_finish(true, true, time);
     on_node_dropped(data);
+}
+
+void ElemDetRp::on_drag_leave(const Glib::RefPtr<Gdk::DragContext>& context, guint time)
+{
+    std::cout << "ElemDetRp on_drag_leave" << std::endl;
 }
 
 void ElemDetRp::on_node_dropped(const std::string& aUri)

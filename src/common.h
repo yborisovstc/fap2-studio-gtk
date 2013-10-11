@@ -43,14 +43,8 @@ const gint KBoundCompGapWidth = 4;
 // Edge's points width and height
 const gint KEdgePointWidth = 9;
 
-// Targets entries for drag-drop
-const gint KTei_NewObject = 1;
-const gint KTei_NewState = 2;
-const gint KTei_Conn = 3; // Connection point
-const gint KTei_NewTrans = 4;
-const gint KTei_NewInp = 5;
-const gint KTei_NewOutp = 6;
-const gint KTei_MoveComp = 7;
+// Targets entries infos for drag-drop
+const gint KTei_EdgeCp = 4;
 
 
 

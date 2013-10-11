@@ -5,6 +5,7 @@
 #include <prop.h>
 #include "common.h"
 #include "vertdrp.h"
+#include <gdkmm/types.h>
 
 // Widget of Vertex detailed representation
 const string sVertDrpType = "VertDrp";
@@ -472,9 +473,26 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
 
 bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
 {
+    bool res = false;
     std::cout << "VertDrpw_v1 on_drag_motion" << std::endl;
+    // Checking if source target is Edge CP URI
+    Gdk::ListHandle_AtomString src_targ = context->get_targets();
+    std::vector<std::string> vv = src_targ.operator std::vector<std::string>();
+    std::string targ = vv.at(0);
+    if (targ == "text/edge-cp-uri") {
+	std::cout << "VertDrpw_v1 on_drag_motion: edge-cp-uri" << std::endl;
+	// Target - Edge CP URI
+	// Getting URI from source
+	drag_get_data(context, targ, time);
+    }
+    return res;
 }
 
+void VertDrpw_v1::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, 
+	const Gtk::SelectionData& sel_data, guint info, guint time)
+{
+    std::cout << "VertDrpw_v1 on_drag_data_received: " << sel_data.get_text() << std::endl;
+}
 
 
 const string& VertDrp::Type()
