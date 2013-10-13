@@ -81,6 +81,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual bool on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 	virtual void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, 
 		const Gtk::SelectionData& selection_data, guint info, guint time);
+	virtual bool on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
 	// Signal handlers
@@ -89,6 +90,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	Elem* GetCompOwning(Elem* aElem);
     protected:
 	std::map<Elem*, ConnInfo> iConnInfos; // Connection infos
+	std::string iDndReceivedData;
 
 	friend class VertDrp;
 };

@@ -25,7 +25,7 @@ AC_SUBST(GLIB_LIBS)
 
 
 PKG_CHECK_MODULES(GTKMM, [gtkmm-2.4 >= 2.8.0], , [
-    AC_MSG_ERROR([You must have 'libgtkmm-3.0' dev headers (libgtkmm-3.0-dev) installed
+    AC_MSG_ERROR([You must have 'libgtkmm-2.4' dev headers (libgtkmm-2.4-dev) installed
     ]) ])
 
 AC_SUBST(GTKMM_CFLAGS)

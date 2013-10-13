@@ -9,7 +9,6 @@ static GtkTargetEntry targetentries[] =
     { (gchar*) "STRING",        0, 0 },
     { (gchar*) "text/plain",    0, 1 },
     { (gchar*) "text/uri-list", 0, 2 },
-    { (gchar*) "text/edge-cp-uri", 0, KTei_EdgeCp },
 };
 
 /*
@@ -21,12 +20,13 @@ static GtkTargetEntry targetentries[] =
    };
    */
 
-ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv)
+ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv),
+    iDnDTarg(EDT_Unknown)
 {
     // Base construct
     Construct();
     //drag_dest_set(Gtk::DEST_DEFAULT_ALL);
-    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 4, Glib::OWNERSHIP_NONE));
+    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE));
     // Create comp menu elements
     // TODO [YB] To implement context menu in CRps but not DRp.
     Gtk::Menu_Helpers::MenuElem e_rename("_Rename", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_rename));

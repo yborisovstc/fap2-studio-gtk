@@ -10,8 +10,8 @@ const int KEdgeDragThreshold = 5;
 
 static GtkTargetEntry targetentries[] =
 {
-//    { (gchar*) "STRING",        0, KTei_EdgeCp },
-    { (gchar*) "text/edge-cp-uri", 0, KTei_EdgeCp },
+    { (gchar*) "STRING",        0, KTei_EdgeCp },
+//    { (gchar*) "text/edge-cp-uri", 0, KTei_EdgeCp },
 //    { (gchar*) "text/plain",    0, KTei_EdgeCp },
 //    { (gchar*) "text/uri-list", 0, 2 },
 };
@@ -304,15 +304,19 @@ EdgeCompRp_v2::Cp::Cp(): iPos(0)
 
 void EdgeCompRp_v2::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time)
 {
-    std::cout << "EdgeCompRp_v2 on_drag_data_get" << std::endl;
-    //if (info == KTei_EdgeCp && iDragging && iDraggedPart != EDp_None) {
-    if (true) {
-	std::string uri("fdfd");
+    //std::cout << "EdgeCompRp_v2 on_drag_data_get, info: " << info << std::endl;
+    if (info == KTei_EdgeCp && iDragging && iDraggedPart != EDp_None) {
+	GUri uri;
+	Elem* pte = NULL;
 	if (iDraggedPart == EDp_Cp1) {
+	    pte = iElem->GetNode("Prop:P1");
 	}
 	else {
+	    pte = iElem->GetNode("Prop:P2");
 	}
-	data.set_text(uri);
+	pte->GetUri(uri, iElem->GetMan());
+	std::string suri = uri.GetUri();
+	data.set_text(suri);
     }
 }
 
@@ -320,8 +324,14 @@ void EdgeCompRp_v2::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext
 {
     if (iDraggedPart != EDp_None) {
 	iDragging = true;
-	std::cout << "Dragging begin" << std::endl;
+	std::cout << "Dragging begin, CP: " << iDraggedPart << std::endl;
     }
+}
+
+void EdgeCompRp_v2::on_drag_end(const Glib::RefPtr<Gdk::DragContext>& context)
+{
+    iDraggedPart = EDp_None;
+    iDragging = false;
 }
 
 bool EdgeCompRp_v2::on_button_press_event(GdkEventButton* aEvent)
@@ -337,11 +347,11 @@ bool EdgeCompRp_v2::on_button_press_event(GdkEventButton* aEvent)
 	    int cp1y = iCp1.iCoord.height - alc.get_y();
 	    int cp2x = iCp2.iCoord.width - alc.get_x();
 	    int cp2y = iCp2.iCoord.height - alc.get_y();
-	    if (abs(ex - cp1x) < KEdgeDragThreshold || abs(ey - cp1y) < KEdgeDragThreshold) {
+	    if (abs(ex - cp1x) < KEdgeDragThreshold && abs(ey - cp1y) < KEdgeDragThreshold) {
 		iDraggedPart = EDp_Cp1;
 		iDragging = true;
 	    }
-	    else if (abs(ex - cp2x) < KEdgeDragThreshold || abs(ey - cp2x) < KEdgeDragThreshold) {
+	    else if (abs(ex - cp2x) < KEdgeDragThreshold && abs(ey - cp2y) < KEdgeDragThreshold) {
 		iDraggedPart = EDp_Cp2;
 		iDragging = true;
 	    }

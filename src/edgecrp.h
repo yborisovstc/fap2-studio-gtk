@@ -128,6 +128,7 @@ class EdgeCompRp_v2: public Gtk::EventBox
 	virtual bool on_button_press_event(GdkEventButton* aEvent);
 	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext);
 	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
+	virtual void on_drag_end(const Glib::RefPtr<Gdk::DragContext>& context);
 	// Signal handlers
 	bool on_cp_button_press(GdkEventButton* event);
 

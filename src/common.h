@@ -46,6 +46,12 @@ const gint KEdgePointWidth = 9;
 // Targets entries infos for drag-drop
 const gint KTei_EdgeCp = 4;
 
+// DnD targets type
+enum TDnDTarg {
+    EDT_Unknown = 0,
+    EDT_AddingNode = 1,
+    EDT_EdgeCp = 2,
+};
 
 
 #endif

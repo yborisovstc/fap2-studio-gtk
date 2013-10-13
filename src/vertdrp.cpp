@@ -7,6 +7,19 @@
 #include "vertdrp.h"
 #include <gdkmm/types.h>
 
+
+// Note that it is not possible just to use custom targets, like "text/edge-cp-uri" for purpose of resolving source. 
+// The targets names are also used in DnD interprocess data exchange 
+// Ref Selection. In case of custom targets the selection data transferring can face some trouble
+static GtkTargetEntry targetentries[] =
+{
+    { (gchar*) "STRING",        0, 0 },
+    { (gchar*) "text/plain",    0, 1 },
+    { (gchar*) "text/uri-list", 0, 2 },
+    { (gchar*) "STRING", 	0, KTei_EdgeCp },
+//    { (gchar*) "text/edge-cp-uri", 0, KTei_EdgeCp },
+};
+
 // Widget of Vertex detailed representation
 const string sVertDrpType = "VertDrp";
 
@@ -250,6 +263,9 @@ VertDrpw_v1::ConnInfo::ConnInfo(const ConnInfo& aCInfo): iCompOrder(aCInfo.iComp
 
 VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(aElem, aCrpProv)
 {
+    // Set dest with avoiding DestDefaults flags. These flags are only for some trivial DnD 
+    // scenarious, but we need to implement requesting edges data during drop motion
+    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 4, Glib::OWNERSHIP_NONE), Gtk::DestDefaults(0));
     // Add components
     int compord = 0;
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
@@ -474,16 +490,34 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
 bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
 {
     bool res = false;
-    std::cout << "VertDrpw_v1 on_drag_motion" << std::endl;
     // Checking if source target is Edge CP URI
     Gdk::ListHandle_AtomString src_targ = context->get_targets();
     std::vector<std::string> vv = src_targ.operator std::vector<std::string>();
     std::string targ = vv.at(0);
-    if (targ == "text/edge-cp-uri") {
-	std::cout << "VertDrpw_v1 on_drag_motion: edge-cp-uri" << std::endl;
-	// Target - Edge CP URI
-	// Getting URI from source
+    if (iDnDTarg == EDT_Unknown) {
+	// Detect target type
+//	std::cout << "VertDrpw_v1 on_drag_motion: edge-cp-uri" << std::endl;
 	drag_get_data(context, targ, time);
+    }
+    else {
+	if (iDnDTarg == EDT_EdgeCp) {
+	    Gtk::Requisition coord = {x,y};
+	    Elem* cp = iElem->GetNode(iDndReceivedData);
+	    std::cout << "VertDrpw_v1 on_drag_motion, edge CP:" << cp->Name() << std::endl;
+	    Elem* edge = cp->GetMan();
+	    MCrp* crp = iCompRps.at(edge);
+	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	    if (cp->Name() == "P1") {
+		medgecrp->SetCp1Coord(coord);
+	    }
+	    else if (cp->Name() == "P2") {
+		medgecrp->SetCp2Coord(coord);
+	    }
+	    queue_resize();
+	}
+	std::cout << "VertDrpw_v1 on_drag_motion: targ detected: " << iDnDTarg << ", x: " << x << ", y: " << y << std::endl;
+	res = true;
+	context->drag_status(Gdk::ACTION_COPY, time);
     }
     return res;
 }
@@ -491,7 +525,50 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 void VertDrpw_v1::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, 
 	const Gtk::SelectionData& sel_data, guint info, guint time)
 {
-    std::cout << "VertDrpw_v1 on_drag_data_received: " << sel_data.get_text() << std::endl;
+    std::string target = sel_data.get_target();
+    iDndReceivedData = sel_data.get_text();
+    std::cout << "VertDrpw_v1 on_drag_data_received, target: " << target << ", info: " << info << " , text: " << iDndReceivedData << std::endl;
+    if (iDnDTarg == EDT_Unknown) {
+	// Classify DnD target
+	Elem* cp = iElem->GetNode(iDndReceivedData);
+	// TODO [YB] To use more valuable criteria
+	if (cp != NULL) {
+	    iDnDTarg = EDT_EdgeCp;
+	}
+	else {
+	    iDnDTarg = EDT_AddingNode;
+	}
+	std::cout << "VertDrpw_v1 on_drag_data_received, detecting target: " << iDnDTarg << std::endl;
+    }
+    else {
+	// Target type detected
+	context->drop_finish(true, time);
+    }
+}
+
+bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
+{
+    bool res = false;
+    std::cout << "VertDrpw_v1 on_drag_drop, detected target: " << iDnDTarg << std::endl;
+    if (iDnDTarg == EDT_AddingNode) {
+	res = true;
+	context->drag_finish(true, true, time);
+	on_node_dropped(iDndReceivedData);
+    }
+    else if (iDnDTarg == EDT_EdgeCp) {
+	// Return edges CPs coord back for now
+	Gtk::Requisition coord = {0,0};
+	Elem* cp = iElem->GetNode(iDndReceivedData);
+	Elem* edge = cp->GetMan();
+	MCrp* crp = iCompRps.at(edge);
+	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	medgecrp->SetCp1Coord(coord);
+	medgecrp->SetCp2Coord(coord);
+	queue_resize();
+    }
+    iDnDTarg = EDT_Unknown;
+    iDndReceivedData.clear();
+    return res;
 }
 
 

@@ -10,6 +10,7 @@
 #include "elemcomprp.h"
 #include "mprov.h"
 #include "mcrp.h"
+#include "common.h"
 
 
 class ElemDetRp: public Gtk::Layout, public MCrpMgr
@@ -56,6 +57,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	Gtk::Menu iCrpContextMenu;
 	Elem* iCompSelected;
 	std::map<MCrp::Action, Gtk::Menu_Helpers::MenuElem> iCompMenuElems;
+	TDnDTarg iDnDTarg;
 };
 
 class ElemDrp: public MDrp
