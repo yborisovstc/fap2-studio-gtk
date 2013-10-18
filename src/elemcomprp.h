@@ -64,6 +64,7 @@ class ElemCrp: public MCrp
 	virtual tSigButtonPressName SignalButtonPressName();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
+	virtual bool Dragging();
     private:
 	ElemCompRp* iRp;
 };

@@ -23,6 +23,7 @@ class PropCrp: public ElemCompRp, public MCrp
 	virtual tSigButtonPressName SignalButtonPressName();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
+	virtual bool Dragging();
     protected:
 	//Gtk::TextView iContent;
 	Gtk::Label iContent;

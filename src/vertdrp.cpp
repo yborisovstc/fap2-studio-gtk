@@ -396,29 +396,35 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 	    Elem* p2 = rp2 != NULL ? GetCompOwning(rp2): NULL;
 
 	    int edge_xw = compb_x + comps_w_max/2 + KConnHorizSpreadMin + edge_wd; // X + W
-	    Gtk::Requisition p1coord = { edge_xw, medgecrp->Cp1Coord().height};
-	    Gtk::Requisition p2coord = { edge_xw, medgecrp->Cp2Coord().height};
-	    if (p1coord.height == 0) {
-	       	p1coord.height = KViewCompGapHight;
-	    }
-	    if (p2coord.height == 0) {
-	       	p2coord.height = 2*KViewCompGapHight;
+	    Gtk::Requisition p1coord;
+	    Gtk::Requisition p2coord;
+	    if (p1coord.width == 0 && p1coord.height == 0) {
 	    }
 	    if (p1 != NULL) {
 		MCrp* pcrp = iCompRps.at(p1);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
 		assert(pcrpcbl != NULL);
 		p1coord = pcrpcbl->GetCpCoord();
+		medgecrp->SetCp1Coord(p1coord);
 	    }
-	    medgecrp->SetCp1Coord(p1coord);
+	    else if (!crp->Dragging()) {
+		p1coord.width = edge_xw;
+	       	p1coord.height =  KViewCompGapHight;
+		medgecrp->SetCp1Coord(p1coord);
+	    }
 
 	    if (p2 != NULL) {
 		MCrp* pcrp = iCompRps.at(p2);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
 		assert(pcrpcbl != NULL);
 		p2coord = pcrpcbl->GetCpCoord();
+		medgecrp->SetCp2Coord(p2coord);
 	    }
-	    medgecrp->SetCp2Coord(p2coord);
+	    else if (!crp->Dragging()) {
+		p2coord.width = edge_xw;
+	       	p2coord.height =  p1coord.height + KViewCompGapHight;
+		medgecrp->SetCp2Coord(p2coord);
+	    }
 
 	    Elem *pu = p1, *pl = p2;
 	    if (p1 != NULL && p2 != NULL) {
@@ -554,16 +560,10 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	res = true;
 	context->drag_finish(true, true, time);
 	on_node_dropped(iDndReceivedData);
+	queue_resize();
     }
     else if (iDnDTarg == EDT_EdgeCp) {
-	// Return edges CPs coord back for now
-	Gtk::Requisition coord = {0,0};
-	Elem* cp = iElem->GetNode(iDndReceivedData);
-	Elem* edge = cp->GetMan();
-	MCrp* crp = iCompRps.at(edge);
-	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
-	medgecrp->SetCp1Coord(coord);
-	medgecrp->SetCp2Coord(coord);
+	context->drag_finish(false, true, time);
 	queue_resize();
     }
     iDnDTarg = EDT_Unknown;

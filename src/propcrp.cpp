@@ -98,3 +98,7 @@ bool PropCrp::IsActionSupported(Action aAction)
     return (aAction == EA_Remove || aAction == EA_Rename || aAction == EA_Edit_Content);
 }
 
+bool PropCrp::Dragging()
+{
+    return false;
+}

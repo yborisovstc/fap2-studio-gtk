@@ -330,6 +330,7 @@ void EdgeCompRp_v2::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext
 
 void EdgeCompRp_v2::on_drag_end(const Glib::RefPtr<Gdk::DragContext>& context)
 {
+    std::cout << "EdgeCompRp_v2: on_drag_end "  << std::endl;
     iDraggedPart = EDp_None;
     iDragging = false;
 }
@@ -620,5 +621,10 @@ MCrp::tSigUpdated EdgeCrp::SignalUpdated()
 bool EdgeCrp::IsActionSupported(Action aAction)
 {
     return (aAction == EA_Remove || aAction == EA_Rename);
+}
+
+bool EdgeCrp::Dragging()
+{
+    return iRp->iDragging;
 }
 

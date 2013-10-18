@@ -156,3 +156,7 @@ bool ElemCrp::IsActionSupported(Action aAction)
     return (aAction == EA_Remove || aAction == EA_Rename);
 }
 
+bool ElemCrp::Dragging()
+{
+    return false;
+}

@@ -26,6 +26,7 @@ class MCrp: public MBase
 	virtual tSigButtonPressName SignalButtonPressName() = 0;
 	virtual tSigUpdated SignalUpdated() = 0;
 	virtual bool IsActionSupported(Action aAction) = 0;
+	virtual bool Dragging() = 0;
 };
 
 class MCrpConnectable

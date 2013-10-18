@@ -40,6 +40,7 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual tSigButtonPressName SignalButtonPressName();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
+	virtual bool Dragging();
 	// From MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
 	virtual bool GetIsInt() const;

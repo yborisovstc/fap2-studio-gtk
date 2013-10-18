@@ -147,6 +147,11 @@ bool VertCompRp::IsActionSupported(Action aAction)
     return (aAction == EA_Remove || aAction == EA_Rename);
 }
 
+bool VertCompRp::Dragging()
+{
+    return false;
+}
+
 #if 0
 
 const string sType = "VertCrp";

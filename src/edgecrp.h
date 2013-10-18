@@ -170,6 +170,7 @@ class EdgeCrp: public MCrp, public MEdgeCrp
 	virtual tSigButtonPressName SignalButtonPressName();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
+	virtual bool Dragging();
     private:
 	//EdgeCompRp* iRp;
 	EdgeCompRp_v2* iRp;
