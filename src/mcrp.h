@@ -27,6 +27,8 @@ class MCrp: public MBase
 	virtual tSigUpdated SignalUpdated() = 0;
 	virtual bool IsActionSupported(Action aAction) = 0;
 	virtual bool Dragging() = 0;
+	virtual void SetHighlighted(bool aSet) = 0;
+	virtual Elem* Model() = 0;
 };
 
 class MCrpConnectable
@@ -45,6 +47,10 @@ class MCrpConnectable
 	virtual bool GetIsInt() const = 0;
 	// Set internal/boundary
 	virtual void SetIsInt(bool aIsInt) = 0;
+	// Get nearest CP, returns distance to checking positon
+	virtual int GetNearestCp(Gtk::Requisition aCoord, GUri& aCpUri) = 0;
+	// Highlight CP
+	virtual void HighlightCp(const GUri& aCpUri, bool aSet) = 0;
 };
 
 #endif

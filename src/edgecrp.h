@@ -122,6 +122,8 @@ class EdgeCompRp_v2: public Gtk::EventBox
 	EdgeCompRp_v2(Elem* aElem);
 	virtual ~EdgeCompRp_v2();
     protected:
+	void DoSetHighlighted(bool aSet);
+    protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
 	//virtual bool on_motion_notify_event(GdkEventMotion* aEvent);
@@ -142,6 +144,7 @@ class EdgeCompRp_v2: public Gtk::EventBox
 	TDraggedPart iDraggedPart;
 	bool iDragging;
 	MCrp::tSigUpdated iSigUpdated;
+	bool iHighlighted;
 };
 
 class EdgeCrp: public MCrp, public MEdgeCrp
@@ -171,6 +174,8 @@ class EdgeCrp: public MCrp, public MEdgeCrp
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
 	virtual bool Dragging();
+	virtual void SetHighlighted(bool aSet);
+	virtual Elem* Model();
     private:
 	//EdgeCompRp* iRp;
 	EdgeCompRp_v2* iRp;

@@ -102,3 +102,13 @@ bool PropCrp::Dragging()
 {
     return false;
 }
+
+void PropCrp::SetHighlighted(bool aSet)
+{
+    DoSetHighlighted(aSet);
+}
+
+Elem* PropCrp::Model()
+{
+    return iElem;
+}

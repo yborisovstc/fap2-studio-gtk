@@ -276,7 +276,7 @@ bool EdgeCompRp_v1::on_cp_button_press(GdkEventButton* event)
 
 // Edge Crp widget, version 2
 EdgeCompRp_v2::EdgeCompRp_v2(Elem* aElem): iElem(aElem), iType(MEdgeCrp::EtLeft), iDraggedPart(EDp_None), 
-    iDragging(false)
+    iDragging(false), iHighlighted(false)
 {
     // set no_window mode
     set_visible_window(false);
@@ -492,6 +492,19 @@ void EdgeCompRp_v2::on_size_request(Gtk::Requisition* aReq)
     aReq->height = KViewCompGapHight;
 }
 
+void EdgeCompRp_v2::DoSetHighlighted(bool aSet)
+{
+    if (aSet != iHighlighted) {
+	iHighlighted = aSet;
+	if (iHighlighted) {
+	    std::cout << "Elem [" << iElem->Name() << "]: higligted" << std::endl;
+	    set_state(Gtk::STATE_PRELIGHT);
+	}
+	else {
+	    set_state(Gtk::STATE_NORMAL);
+	}
+    }
+}
 
 
 
@@ -628,3 +641,12 @@ bool EdgeCrp::Dragging()
     return iRp->iDragging;
 }
 
+void EdgeCrp::SetHighlighted(bool aSet)
+{
+    iRp->DoSetHighlighted(aSet);
+}
+
+Elem* EdgeCrp::Model()
+{
+    return iRp->iElem;
+}

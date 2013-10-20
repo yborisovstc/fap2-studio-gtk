@@ -70,6 +70,11 @@ void ElemDetRp::Construct()
     }
 }
 
+Elem* ElemDetRp::GetElem()
+{
+    return iElem;
+}
+
 void ElemDetRp::Erase()
 {
     // Remove components

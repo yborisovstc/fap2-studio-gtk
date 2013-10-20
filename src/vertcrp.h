@@ -41,10 +41,14 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
 	virtual bool Dragging();
+	virtual void SetHighlighted(bool aSet);
+	virtual Elem* Model();
 	// From MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
 	virtual bool GetIsInt() const;
 	virtual void SetIsInt(bool aIsInt);
+	virtual int GetNearestCp(Gtk::Requisition aCoord, GUri& aCpUri);
+	virtual void HighlightCp(const GUri& aCpUri, bool aSet);
     protected:
 	bool iIsInt;
 };

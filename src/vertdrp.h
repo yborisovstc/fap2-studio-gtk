@@ -91,6 +91,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
     protected:
 	std::map<Elem*, ConnInfo> iConnInfos; // Connection infos
 	std::string iDndReceivedData;
+	MCrp* iEdgeDropCandidate;
 
 	friend class VertDrp;
 };

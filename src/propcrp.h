@@ -24,6 +24,8 @@ class PropCrp: public ElemCompRp, public MCrp
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
 	virtual bool Dragging();
+	virtual void SetHighlighted(bool aSet);
+	virtual Elem* Model();
     protected:
 	//Gtk::TextView iContent;
 	Gtk::Label iContent;

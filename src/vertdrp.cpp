@@ -261,7 +261,7 @@ VertDrpw_v1::ConnInfo::ConnInfo(int aOrder): iCompOrder(aOrder) { }
 VertDrpw_v1::ConnInfo::ConnInfo(const ConnInfo& aCInfo): iCompOrder(aCInfo.iCompOrder) { }
 
 
-VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(aElem, aCrpProv)
+VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(aElem, aCrpProv), iEdgeDropCandidate(NULL)
 {
     // Set dest with avoiding DestDefaults flags. These flags are only for some trivial DnD 
     // scenarious, but we need to implement requesting edges data during drop motion
@@ -507,6 +507,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
     }
     else {
 	if (iDnDTarg == EDT_EdgeCp) {
+	    // Stretch Edge to dragging CP
 	    Gtk::Requisition coord = {x,y};
 	    Elem* cp = iElem->GetNode(iDndReceivedData);
 	    std::cout << "VertDrpw_v1 on_drag_motion, edge CP:" << cp->Name() << std::endl;
@@ -518,6 +519,31 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 	    }
 	    else if (cp->Name() == "P2") {
 		medgecrp->SetCp2Coord(coord);
+	    }
+	    // Find the nearest CP and highligh it
+	    int dist = -1;
+	    MCrp* cand = NULL;
+	    GUri uri;
+	    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+		MCrp* crp = it->second;
+		MCrpConnectable* conn = crp->GetObj(conn);
+		if (conn != NULL) {
+		    int dd = conn->GetNearestCp(coord, uri);
+		    if (dist == -1 || dd < dist) {
+			dist = dd;
+			cand = crp;
+		    }
+		}
+	    }
+	    if (cand != NULL && cand != iEdgeDropCandidate) {
+		MCrpConnectable* conn = NULL;
+		if (iEdgeDropCandidate != NULL) {
+		    conn = iEdgeDropCandidate->GetObj(conn);
+		    conn->HighlightCp(uri, false);
+		}
+		iEdgeDropCandidate = cand;
+		conn = iEdgeDropCandidate->GetObj(conn);
+		conn->HighlightCp(uri, true);
 	    }
 	    queue_resize();
 	}
@@ -563,8 +589,26 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	queue_resize();
     }
     else if (iDnDTarg == EDT_EdgeCp) {
-	context->drag_finish(false, true, time);
-	queue_resize();
+	Gtk::Requisition coord = {x,y};
+	GUri uri;
+	MCrpConnectable* conn = iEdgeDropCandidate->GetObj(conn);
+	// Reset highlighting of drop candidate
+	conn->HighlightCp(uri, false);
+	// Check the distance
+	int dist = conn->GetNearestCp(coord, uri);
+	if (dist <= KDistThresholdEdge) {
+	    Elem* targ = iEdgeDropCandidate->Model();
+	    targ->GetUri(uri, iElem);
+	    res = true;
+	    std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
+	    change_content(iDndReceivedData, uri.GetUri());
+	}
+	else {
+	    // Redraw
+	    queue_resize();
+	}
+	context->drag_finish(res, true, time);
+	iEdgeDropCandidate = NULL;
     }
     iDnDTarg = EDT_Unknown;
     iDndReceivedData.clear();

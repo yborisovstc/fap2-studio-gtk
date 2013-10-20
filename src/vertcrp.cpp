@@ -1,3 +1,4 @@
+#include <complex>
 #include <vert.h>
 #include "common.h"
 #include "vertcrp.h"
@@ -132,6 +133,21 @@ void VertCompRp::SetIsInt(bool aIsInt)
     }
 }
 
+int VertCompRp::GetNearestCp(Gtk::Requisition aCoord, GUri& aCpUri)
+{
+    int res = -1;
+    Gtk::Requisition cpcoord = GetCpCoord(NULL);
+    std::complex<int> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
+    res = std::abs(sub);
+    return res;
+}
+
+void VertCompRp::HighlightCp(const GUri& aCpUri, bool aSet)
+{
+    SetHighlighted(aSet);
+}
+
+
 MCrp::tSigButtonPressName VertCompRp::SignalButtonPressName()
 {
     return iSigButtonPressName;
@@ -150,6 +166,16 @@ bool VertCompRp::IsActionSupported(Action aAction)
 bool VertCompRp::Dragging()
 {
     return false;
+}
+
+void VertCompRp::SetHighlighted(bool aSet)
+{
+    DoSetHighlighted(aSet);
+}
+
+Elem* VertCompRp::Model()
+{
+    return iElem;
 }
 
 #if 0

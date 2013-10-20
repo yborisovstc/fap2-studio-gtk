@@ -36,6 +36,8 @@ class ElemCompRp: public Gtk::Layout
 	ElemCompRp(Elem* aElem);
 	virtual ~ElemCompRp();
     protected:
+	void DoSetHighlighted(bool aSet);
+    protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
@@ -48,6 +50,7 @@ class ElemCompRp: public Gtk::Layout
 	MCrp::tSigButtonPressName iSigButtonPressName;
 	MCrp::tSigUpdated iSigUpdated;
 	Gtk::Menu iContextMenu; // Context menu
+	bool iHighlighted;
 };
 
 class ElemCrp: public MCrp
@@ -65,6 +68,8 @@ class ElemCrp: public MCrp
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
 	virtual bool Dragging();
+	virtual void SetHighlighted(bool aSet);
+	virtual Elem* Model();
     private:
 	ElemCompRp* iRp;
 };

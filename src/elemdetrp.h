@@ -21,6 +21,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
     public:
 	ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv);
 	virtual ~ElemDetRp();
+	Elem* GetElem();
     protected:
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);

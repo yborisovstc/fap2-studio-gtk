@@ -45,6 +45,8 @@ const gint KEdgePointWidth = 9;
 
 // Targets entries infos for drag-drop
 const gint KTei_EdgeCp = 4;
+// Distance Threshold when DnD edge to connectable component
+const gint KDistThresholdEdge = 9;
 
 // DnD targets type
 enum TDnDTarg {

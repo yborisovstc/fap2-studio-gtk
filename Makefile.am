@@ -8,6 +8,9 @@ dist_icons_DATA = \
 	     img/tbar_btn_start.png \
 	     img/tbar_btn_step.png
 
+vconfdir = $(pkgdatadir)/conf
+dist_vconf_DATA = \
+	     etc/reg.rc
 
 templdir = $(pkgdatadir)/templ
 dist_templ_DATA = \
@@ -29,6 +32,7 @@ EXTRA_DIST = \
 	     templates/empty.xml
 	     files/rock_1.xml \
 	     examples/rock_1.xml \
-	     examples/rock_2.xml
+	     examples/rock_2.xml \
+	     etc/reg.rc
 	
 

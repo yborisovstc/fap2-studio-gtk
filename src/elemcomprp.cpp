@@ -1,3 +1,4 @@
+#include <iostream>
 #include "common.h"
 #include "elemcomprp.h"
 
@@ -42,10 +43,10 @@ bool ElemCompHead::on_expose_event(GdkEventExpose* aEvent)
 }
 
 
-ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL)
+ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(false)
 {
     // Set name
-    set_name(iElem->Name());
+    set_name("ElemCompRp");
     // Add header
     iHead = new ElemCompHead(*iElem);
     add(*iHead);
@@ -102,6 +103,20 @@ bool ElemCompRp::on_name_button_press(GdkEventButton* event)
     iSigButtonPressName.emit(event);
 }
 
+void ElemCompRp::DoSetHighlighted(bool aSet)
+{
+    if (aSet != iHighlighted) {
+	iHighlighted = aSet;
+	if (iHighlighted) {
+	    std::cout << "Elem [" << iElem->Name() << "]: higligted" << std::endl;
+	    set_state(Gtk::STATE_PRELIGHT);
+	    //set_state(Gtk::STATE_SELECTED);
+	}
+	else {
+	    set_state(Gtk::STATE_NORMAL);
+	}
+    }
+}
 
 
 
@@ -159,4 +174,14 @@ bool ElemCrp::IsActionSupported(Action aAction)
 bool ElemCrp::Dragging()
 {
     return false;
+}
+
+void ElemCrp::SetHighlighted(bool aSet)
+{
+    iRp->DoSetHighlighted(aSet);
+}
+
+Elem* ElemCrp::Model()
+{
+    return iRp->iElem;
 }

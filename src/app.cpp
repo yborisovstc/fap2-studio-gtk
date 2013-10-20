@@ -8,6 +8,7 @@ const char* KTmpFileName = ".fap2-studio-tmp.xml";
 const char* KSpecFileName = "/usr/share/fap2-studio-gtk/templ/empty.xml";
 const char* KTemplDirName = "/usr/share/fap2-studio-gtk/templ";
 const char* KAppName = "fap2-studio";
+const char* KRcFileName = "/usr/share/fap2-studio-gtk/conf/reg.rc";
 
 /* Time slice of FAP environment, in milliseconds */
 const gint KFapeTimeSlice = 50;
@@ -36,6 +37,8 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     iNaviPane->SetDesEnv(iEnv);
     iNaviPane->show();
     iMainWnd->SetNaviPane(*iNaviPane);
+    // Parse resource file
+    gtk_rc_parse(KRcFileName);
 }
 
 App::~App() {
