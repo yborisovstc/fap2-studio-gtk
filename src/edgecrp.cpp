@@ -356,8 +356,7 @@ bool EdgeCompRp_v2::on_button_press_event(GdkEventButton* aEvent)
 		iDraggedPart = EDp_Cp2;
 		iDragging = true;
 	    }
-	    //if (iDragging) {
-	    if (true) {
+	    if (iDragging) {
 		// Needs to use this array handle constructor with length argument, otherwise not working
 		Glib::RefPtr<Gtk::TargetList> targ = Gtk::TargetList::create(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE));
 		GdkEvent* evt = (GdkEvent*) aEvent;

@@ -398,8 +398,6 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 	    int edge_xw = compb_x + comps_w_max/2 + KConnHorizSpreadMin + edge_wd; // X + W
 	    Gtk::Requisition p1coord;
 	    Gtk::Requisition p2coord;
-	    if (p1coord.width == 0 && p1coord.height == 0) {
-	    }
 	    if (p1 != NULL) {
 		MCrp* pcrp = iCompRps.at(p1);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
@@ -428,9 +426,7 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 
 	    Elem *pu = p1, *pl = p2;
 	    if (p1 != NULL && p2 != NULL) {
-		ConnInfo& ci1 = iConnInfos.at(p1);
-		ConnInfo& ci2 = iConnInfos.at(p2);
-		if (ci1.iCompOrder > ci2.iCompOrder) {
+		if (p2coord.height < p1coord.height) {
 		    pu = p2; pl = p1;
 		}
 	    }
@@ -521,7 +517,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		medgecrp->SetCp2Coord(coord);
 	    }
 	    // Find the nearest CP and highligh it
-	    int dist = -1;
+	    int dist = KDistThresholdEdge ;
 	    MCrp* cand = NULL;
 	    GUri uri;
 	    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
@@ -529,7 +525,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		MCrpConnectable* conn = crp->GetObj(conn);
 		if (conn != NULL) {
 		    int dd = conn->GetNearestCp(coord, uri);
-		    if (dist == -1 || dd < dist) {
+		    if (dd < dist) {
 			dist = dd;
 			cand = crp;
 		    }
@@ -589,14 +585,11 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	queue_resize();
     }
     else if (iDnDTarg == EDT_EdgeCp) {
-	Gtk::Requisition coord = {x,y};
-	GUri uri;
-	MCrpConnectable* conn = iEdgeDropCandidate->GetObj(conn);
-	// Reset highlighting of drop candidate
-	conn->HighlightCp(uri, false);
-	// Check the distance
-	int dist = conn->GetNearestCp(coord, uri);
-	if (dist <= KDistThresholdEdge) {
+	if (iEdgeDropCandidate != NULL) {
+	    GUri uri;
+	    MCrpConnectable* conn = iEdgeDropCandidate->GetObj(conn);
+	    // Reset highlighting of drop candidate
+	    conn->HighlightCp(uri, false);
 	    Elem* targ = iEdgeDropCandidate->Model();
 	    targ->GetUri(uri, iElem);
 	    res = true;
