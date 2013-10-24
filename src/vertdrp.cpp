@@ -396,8 +396,8 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 	    Elem* p2 = rp2 != NULL ? GetCompOwning(rp2): NULL;
 
 	    int edge_xw = compb_x + comps_w_max/2 + KConnHorizSpreadMin + edge_wd; // X + W
-	    Gtk::Requisition p1coord;
-	    Gtk::Requisition p2coord;
+	    Gtk::Requisition p1coord = medgecrp->Cp1Coord();
+	    Gtk::Requisition p2coord = medgecrp->Cp2Coord();
 	    if (p1 != NULL) {
 		MCrp* pcrp = iCompRps.at(p1);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
@@ -425,12 +425,10 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 	    }
 
 	    Elem *pu = p1, *pl = p2;
-	    if (p1 != NULL && p2 != NULL) {
-		if (p2coord.height < p1coord.height) {
-		    pu = p2; pl = p1;
-		}
+	    Gtk::Requisition ucpcoord = p1coord, lcpcoord = p2coord;
+	    if (p2coord.height < p1coord.height) {
+		pu = p2; pl = p1; ucpcoord = p2coord; lcpcoord = p1coord;
 	    }
-	    Gtk::Requisition ucpcoord = {edge_xw, KViewCompGapHight}, lcpcoord = {edge_xw, 2*KViewCompGapHight};
 	    if (pu != NULL) {
 		MCrp* pcrp = iCompRps.at(pu);
 		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
@@ -452,7 +450,8 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 	    }
 	    int edge_x = min(ucpcoord.width, lcpcoord.width);
 	    int edge_w = edge_xw - edge_x;
-	    Gtk::Allocation allc(edge_x, ucpcoord.height, edge_w, lcpcoord.height - ucpcoord.height + 1);
+	    Gtk::Allocation allc(edge_x - KEdgeBorderWidth, ucpcoord.height - KEdgeBorderWidth, 
+		    edge_w + 2*KEdgeBorderWidth, lcpcoord.height - ucpcoord.height + 1 + 2*KEdgeBorderWidth);
 	    comp->size_allocate(allc);
 	    edge_wd += KConnHorizGap;
 	}
@@ -541,6 +540,11 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		conn = iEdgeDropCandidate->GetObj(conn);
 		conn->HighlightCp(uri, true);
 	    }
+	    else if (cand == NULL && iEdgeDropCandidate != NULL) {
+		MCrpConnectable* conn = iEdgeDropCandidate->GetObj(conn);
+		conn->HighlightCp(uri, false);
+		iEdgeDropCandidate = NULL;
+	    }
 	    queue_resize();
 	}
 	std::cout << "VertDrpw_v1 on_drag_motion: targ detected: " << iDnDTarg << ", x: " << x << ", y: " << y << std::endl;
@@ -593,14 +597,21 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    Elem* targ = iEdgeDropCandidate->Model();
 	    targ->GetUri(uri, iElem);
 	    res = true;
+	    context->drag_finish(res, true, time);
 	    std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
 	    change_content(iDndReceivedData, uri.GetUri());
 	}
 	else {
+	    // Disconnect edge if it is connected
+	    res = true;
+	    context->drag_finish(res, true, time);
+	    Elem* cp = iElem->GetNode(iDndReceivedData);
+	    MProp* prop = cp->GetObj(prop);
+	    std::cout << "VertDrpw_v1 on_drag_motion, disconnecting CP:" << prop->Value() << std::endl;
+	    change_content(iDndReceivedData, std::string());
 	    // Redraw
-	    queue_resize();
+	    //queue_resize();
 	}
-	context->drag_finish(res, true, time);
 	iEdgeDropCandidate = NULL;
     }
     iDnDTarg = EDT_Unknown;

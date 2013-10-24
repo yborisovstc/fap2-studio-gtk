@@ -90,6 +90,7 @@ void ElemDetRp::Refresh()
 {
     Erase();
     Construct();
+    queue_resize();
 }
 
 bool ElemDetRp::IsTypeAllowed(const std::string& aType) const
@@ -152,11 +153,13 @@ bool ElemDetRp::on_comp_button_press(GdkEventButton* event)
 bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 {
     std::cout << "on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
-    if (event->type == GDK_2BUTTON_PRESS) {
+    if (event->type == GDK_BUTTON_PRESS) {
 	if (event->button == 3) {
 	    ShowCrpCtxDlg(event, aComp);
 	}
-	else {
+    }
+    else if (event->type == GDK_2BUTTON_PRESS) {
+	if (event->button != 3) {
 	    iSigCompSelected.emit(aComp);
 	}
     }

@@ -6,7 +6,7 @@
 #include "common.h"
 #include <gdkmm/event.h>
 
-const int KEdgeDragThreshold = 5;
+const int KEdgeDragThreshold = 8;
 
 static GtkTargetEntry targetentries[] =
 {
@@ -337,7 +337,7 @@ void EdgeCompRp_v2::on_drag_end(const Glib::RefPtr<Gdk::DragContext>& context)
 
 bool EdgeCompRp_v2::on_button_press_event(GdkEventButton* aEvent)
 {
-    bool res = true;
+    bool res = false;
     if (aEvent->type == GDK_BUTTON_PRESS) {
 	//if (iDraggedPart == EDp_None) {
 	if (true) {
@@ -364,10 +364,11 @@ bool EdgeCompRp_v2::on_button_press_event(GdkEventButton* aEvent)
 		//drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE));
 		// TODO [YB] Only ACTION_COPY works here, to analyse why
 		drag_begin(targ, Gdk::ACTION_COPY, aEvent->button, evt);
+		res = true;
 	    }
 	}
     }
-    res = Widget::on_button_press_event(aEvent);
+    //res = Widget::on_button_press_event(aEvent);
     return res;
 }
 
@@ -389,56 +390,6 @@ bool EdgeCompRp_v2::on_motion_notify_event(GdkEventMotion* aEvent)
 }
 */
 
-/*
-   bool EdgeCompRp_v2::on_expose_event(GdkEventExpose* aEvent)
-   {
-    Glib::RefPtr<Gdk::Window> drw = get_window();
-    Glib::RefPtr<Gtk::Style> style = get_style(); 	
-    Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
-    Gtk::Allocation alc = get_allocation();
-    if (iType == MEdgeCrp::EtLeft) {
-	int ux = alc.get_x() + iUcp.iOffset.width;
-	int uy = alc.get_y() + iUcp.iPos*KConnVertGap;
-	int lx = alc.get_x() + iLcp.iOffset.width;
-	int ly = alc.get_y() + alc.get_height() - 1 - iLcp.iPos*KConnVertGap;
-	drw->draw_line(gc, ux, uy, alc.get_x() + alc.get_width() - 1, uy);
-	drw->draw_line(gc, alc.get_x() + alc.get_width() - 1, uy, alc.get_x() + alc.get_width() - 1, ly);
-	drw->draw_line(gc, lx, ly , alc.get_x() + alc.get_width() - 1, ly);
-    }
-    else if (iType == MEdgeCrp::EtRight) {
-	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iOffset.width;
-	int uy = alc.get_y();
-	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iOffset.width;
-	int ly = alc.get_y() + alc.get_height() - 1;
-	drw->draw_line(gc, alc.get_x(), uy, ux, uy);
-	drw->draw_line(gc, alc.get_x(), uy, alc.get_x(), ly);
-	drw->draw_line(gc, alc.get_x(), ly, lx, ly);
-    }
-    else if (iType == MEdgeCrp::EtLtRb) {
-	// Left top to right bottom
-	int ux = alc.get_x();
-	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
-	int uy = alc.get_y();
-	int lx = alc.get_x() + alc.get_width() - 1;
-	int ly = alc.get_y() + alc.get_height() - 1;
-	drw->draw_line(gc, urx, uy, urx, ly);
-	drw->draw_line(gc, ux, uy, urx, uy);
-	drw->draw_line(gc, urx, ly , lx, ly);
-    }
-    else {
-	// Left bottom to right top
-	int ux = alc.get_x() + alc.get_width() - 1;
-	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
-	int uy = alc.get_y();
-	int lx = alc.get_x();
-	int ly = alc.get_y() + alc.get_height() - 1;
-	drw->draw_line(gc, urx, uy, urx, ly);
-	drw->draw_line(gc, urx, uy, ux, uy);
-	drw->draw_line(gc, lx, ly , urx, ly);
-    }
-}
-*/
-
 bool EdgeCompRp_v2::on_expose_event(GdkEventExpose* aEvent)
 {
     Glib::RefPtr<Gdk::Window> drw = get_window();
@@ -446,7 +397,7 @@ bool EdgeCompRp_v2::on_expose_event(GdkEventExpose* aEvent)
     Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
     Gtk::Allocation alc = get_allocation();
     if (iType == MEdgeCrp::EtLeft) {
-	int rx = alc.get_x() + alc.get_width() - 2;
+	int rx = alc.get_x() + alc.get_width() - KEdgeBorderWidth;
 	drw->draw_line(gc, iCp1.iCoord.width, iCp1.iCoord.height, rx, iCp1.iCoord.height);
 	drw->draw_line(gc, rx, iCp1.iCoord.height, rx, iCp2.iCoord.height);
 	drw->draw_line(gc, iCp2.iCoord.width, iCp2.iCoord.height, rx, iCp2.iCoord.height);
@@ -487,7 +438,7 @@ bool EdgeCompRp_v2::on_expose_event(GdkEventExpose* aEvent)
 void EdgeCompRp_v2::on_size_request(Gtk::Requisition* aReq)
 {
    // aReq->width = KConnHorizSpreadMin; 
-    aReq->width = 1; 
+    aReq->width = 2*KEdgeBorderWidth; 
     aReq->height = KViewCompGapHight;
 }
 

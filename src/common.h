@@ -42,6 +42,7 @@ const gint KViewElemContLinesVGap = 4;
 const gint KBoundCompGapWidth = 4;
 // Edge's points width and height
 const gint KEdgePointWidth = 9;
+const gint KEdgeBorderWidth = 8;
 
 // Targets entries infos for drag-drop
 const gint KTei_EdgeCp = 4;
