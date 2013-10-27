@@ -123,10 +123,12 @@ class EdgeCompRp_v2: public Gtk::EventBox
 	virtual ~EdgeCompRp_v2();
     protected:
 	void DoSetHighlighted(bool aSet);
+	bool IsPointIn(int aX, int aY);
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
-	//virtual bool on_motion_notify_event(GdkEventMotion* aEvent);
+	virtual bool on_motion_notify_event(GdkEventMotion* aEvent);
+	virtual bool on_leave_notify_event(GdkEventCrossing* event);
 	virtual bool on_button_press_event(GdkEventButton* aEvent);
 	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext);
 	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
@@ -145,6 +147,8 @@ class EdgeCompRp_v2: public Gtk::EventBox
 	bool iDragging;
 	MCrp::tSigUpdated iSigUpdated;
 	bool iHighlighted;
+	Gdk::Region iRegion;
+	Gdk::Rectangle iRect1;
 };
 
 class EdgeCrp: public MCrp, public MEdgeCrp

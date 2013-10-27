@@ -5,6 +5,20 @@ style "def_label_style"
     fg[PRELIGHT] = {0.9, 0, 0.0}
 }
 
+style "edge_style" 
+{ 
+    color["background"] = {0.9, 0.9, 0.9}
+    color["foreground"] = {0.0, 0.9, 0.0}
+    color["red"] = {0.9, 0.0, 0.0}
+    fg[NORMAL] = @foreground
+    fg[PRELIGHT] = {0.9, 0.0, 0.0}
+    fg[SELECTED] = {0.0, 0.0, 0.9}
+    bg[NORMAL] = @background
+    text[NORMAL] = @foreground
+    base[NORMAL] = @background
+    GtkLayout::draw-border = {5, 5, 5, 5}
+}
+
 style "elem_style" 
 { 
     color["background"] = {0.9, 0.9, 0.9}
@@ -21,3 +35,4 @@ style "elem_style"
 class "GtkLabel" style "def_label_style"
 
 widget "*.*.ElemCompRp" style "elem_style"
+widget "*.*.Edge~*" style "edge_style"

@@ -77,13 +77,17 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual Gtk::Widget& Widget();
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();
-
+    protected:
+	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual bool on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 	virtual void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, 
 		const Gtk::SelectionData& selection_data, guint info, guint time);
 	virtual bool on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	virtual bool on_button_press_event(GdkEventButton* aEvent);
+	virtual bool on_motion_notify_event(GdkEventMotion* aEvent);
+	virtual bool on_leave_notify_event(GdkEventCrossing* event);
 	// Signal handlers
 	void on_comp_updated(Elem* aElem);
     protected:

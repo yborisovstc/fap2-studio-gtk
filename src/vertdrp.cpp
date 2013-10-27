@@ -202,7 +202,7 @@ void VertDrpw::on_size_allocate(Gtk::Allocation& aAllc)
 	    int edge_w = compb_x + comps_w_max/2 + KConnHorizSpreadMin - edge_x + edge_wd;
 	    Gtk::Allocation allc(edge_x, ucpcoord.height, edge_w, lcpcoord.height - ucpcoord.height);
 	    comp->size_allocate(allc);
-	    edge_wd += KConnHorizGap;
+	    edge_wd += KEdgeGridCell;
 	}
     }
 
@@ -348,6 +348,27 @@ void VertDrpw_v1::on_comp_updated(Elem* aElem)
     std::cout << "on_comp_updated" << std::endl;
 }
 
+// Overloaded on-expose handler to prioritize highlighted childs (edges)
+//
+bool VertDrpw_v1::on_expose_event(GdkEventExpose* event)
+{
+    Glib::ListHandle<Gtk::Widget*> children = get_children();
+    // Normal states first
+    for (Glib::ListHandle<Gtk::Widget*>::iterator it = children.begin(); it != children.end(); it++) {
+	Gtk::Widget* ww = (*it);
+	if (ww->get_state() == Gtk::STATE_NORMAL) {
+	    propagate_expose(*ww, event);
+	}
+    }
+    // Then highlighted
+    for (Glib::ListHandle<Gtk::Widget*>::iterator it = children.begin(); it != children.end(); it++) {
+	Gtk::Widget* ww = (*it);
+	if (ww->get_state() != Gtk::STATE_NORMAL) {
+	    propagate_expose(*ww, event);
+	}
+    }
+}
+
 void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 {
     //    Gtk::Layout::on_size_allocate(aAllc);
@@ -453,7 +474,7 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 	    Gtk::Allocation allc(edge_x - KEdgeBorderWidth, ucpcoord.height - KEdgeBorderWidth, 
 		    edge_w + 2*KEdgeBorderWidth, lcpcoord.height - ucpcoord.height + 1 + 2*KEdgeBorderWidth);
 	    comp->size_allocate(allc);
-	    edge_wd += KConnHorizGap;
+	    edge_wd += KEdgeGridCell;
 	}
     }
 }
@@ -479,7 +500,7 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
 		edge_w = KConnHorizSpreadMin;
 	    }
 	    else {
-		edge_w += KConnHorizGap;
+		edge_w += KEdgeGridCell;
 	    }
 	    edge_h = max(edge_h, req.height);
 	}
@@ -619,6 +640,70 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
     return res;
 }
 
+bool VertDrpw_v1::on_button_press_event(GdkEventButton* aEvent)
+{
+     bool res = false;
+    // Propagate event to edges, recalculating the event coord from originated window to the target
+    int ox, oy;
+    gdk_window_get_position(aEvent->window, &ox, &oy);
+    int ex = aEvent->x, ey = aEvent->y;
+    std::cout << "VertDrpw_v1 on_button_press_event, ewpos = (" << ox << " , " << oy << "), ecoord = (" 
+	<< aEvent->x << " , " << aEvent->y << ")" << std::endl;
+    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end() && !res; it++) {
+	MCrp* crp = it->second;
+	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	if (medgecrp != NULL) {
+	    Gtk::Widget& wd = crp->Widget();
+	    Gtk::Allocation talc = wd.get_allocation();
+	    aEvent->x = ex + ox - talc.get_x();
+	    aEvent->y = ey + oy - talc.get_y();
+	    res = wd.event((GdkEvent*) aEvent);
+	}
+    }
+    return true;
+}
+
+bool VertDrpw_v1::on_motion_notify_event(GdkEventMotion* aEvent)
+{
+    bool res = false;
+    // Propagate event to edges, recalculating the event coord from originated window to the target
+    // Note that we need to use edges allocation to recalulation instead of edges window because edges
+    // window is hidden (EventBox)
+    int ox, oy;
+    gdk_window_get_position(aEvent->window, &ox, &oy);
+    int ex = aEvent->x, ey = aEvent->y;
+    //std::cout << "VertDrpw_v1 on_motion_notify_event, ewpos = (" << ox << " , " << oy << "), ecoord = (" 
+//	<< aEvent->x << " , " << aEvent->y << ")" << std::endl;
+    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	MCrp* crp = it->second;
+	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	if (medgecrp != NULL) {
+	    Gtk::Widget& wd = crp->Widget();
+	    Gtk::Allocation talc = wd.get_allocation();
+	    //std::cout << "edge [" << wd.get_name() << "], orig = [" << talc.get_x() << " , " << talc.get_y() << ")" << std::endl;
+	    aEvent->x = ex + ox - talc.get_x();
+	    aEvent->y = ey + oy - talc.get_y();
+	    res = wd.event((GdkEvent*) aEvent);
+	}
+    }
+    return true;
+}
+
+bool VertDrpw_v1::on_leave_notify_event(GdkEventCrossing* aEvent)
+{
+    bool res = false;
+    std::cout << "VertDrpw_v1 on_leave_notify_event" << std::endl;
+    // Propagate event to edges
+    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	MCrp* crp = it->second;
+	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	if (medgecrp != NULL) {
+	    res = crp->Widget().event((GdkEvent*) aEvent);
+	}
+    }
+    return true;
+
+}
 
 const string& VertDrp::Type()
 {

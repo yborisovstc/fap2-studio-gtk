@@ -281,9 +281,9 @@ EdgeCompRp_v2::EdgeCompRp_v2(Elem* aElem): iElem(aElem), iType(MEdgeCrp::EtLeft)
     // set no_window mode
     set_visible_window(false);
     // Set name
-    set_name(iElem->Name());
+    set_name("Edge~" + iElem->Name());
     // Set events mask
-    add_events(Gdk::BUTTON_PRESS_MASK);
+    add_events(Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK);
     // Setup DnD source
 //    drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE));
 //    drag_highlight();
@@ -339,6 +339,7 @@ bool EdgeCompRp_v2::on_button_press_event(GdkEventButton* aEvent)
 {
     bool res = false;
     if (aEvent->type == GDK_BUTTON_PRESS) {
+	std::cout << "EdgeCompRp_v2 on_button_press_event [" << get_name() << "]"  << std::endl;
 	//if (iDraggedPart == EDp_None) {
 	if (true) {
 	    Gtk::Allocation alc = get_allocation();
@@ -366,29 +367,72 @@ bool EdgeCompRp_v2::on_button_press_event(GdkEventButton* aEvent)
 		drag_begin(targ, Gdk::ACTION_COPY, aEvent->button, evt);
 		res = true;
 	    }
+	    else {
+		if (aEvent->button == 1) {
+		    // Select edge
+		    // Don't stop event processing in ordet to allow other edges to be selected
+		    //std::cout << "EdgeCompRp_v2 on_button_press_event [" << get_name() << "], set selected" << std::endl; 
+		    bool isin = IsPointIn(aEvent->x, aEvent->y);
+		    if (isin) {
+			if (get_state() != Gtk::STATE_SELECTED) {
+			    set_state(Gtk::STATE_SELECTED);
+			}
+			else {
+			    set_state(Gtk::STATE_NORMAL);
+			}
+			res = true;
+		    }
+		}
+	    }
 	}
     }
     //res = Widget::on_button_press_event(aEvent);
     return res;
-}
+    }
 
-/*
-bool EdgeCompRp_v2::on_motion_notify_event(GdkEventMotion* aEvent)
-{
-    if (iDragging) {
-	if (iDraggedPart == EDp_Cp1) {
-	    iCp1.iCoord.height = aEvent->y;
-	    std::cout << "Dragging Cp1" << std::endl;
-	    iSigUpdated.emit(iElem);
+    bool EdgeCompRp_v2::on_motion_notify_event(GdkEventMotion* aEvent)
+    {
+	bool res = false;
+   // std::cout << "EdgeCompRp_v2 on_motion_notify_event [" << get_name() << "], coord (" << aEvent->x << "," << aEvent->y << "), ewnd " 
+//	<< aEvent->window << ", wnd " << get_window()->gobj() << std::endl;
+    Gtk::Allocation alc = get_allocation();
+   // std::cout << "alc = [ " << alc.get_x() << "," << alc.get_y() << "," << alc.get_width() << "," << alc.get_height() << "]" << std::endl;
+   // std::cout << "cp1 = [ " << iCp1.iCoord.width << "," << iCp1.iCoord.height << "]" << std::endl;
+   // std::cout << "rect = [ " << iRect1.get_x() << "," << iRect1.get_y() << "," << iRect1.get_width() << "," << iRect1.get_height() << "]" << std::endl;
+    // Set highlighted state if point is in
+    bool isin = IsPointIn(aEvent->x, aEvent->y);
+    if (isin) {
+	if (get_state() == Gtk::STATE_NORMAL) {
+	    //std::cout << "EdgeCompRp_v2 on_motion_notify_event [" << get_name() << "] : set prelight" << std::endl;
+	    set_state(Gtk::STATE_PRELIGHT);
+	    //queue_draw();
 	}
-	else if (iDraggedPart == EDp_Cp2) {
-	    iCp2.iCoord.height = aEvent->y;
-	    std::cout << "Dragging Cp2" << std::endl;
-	    iSigUpdated.emit(iElem);
+	//res = true;
+    }
+    else { 
+	if (get_state() == Gtk::STATE_PRELIGHT) {
+	   // std::cout << "EdgeCompRp_v2 on_motion_notify_event  [" << get_name() << "] : unset plelight" << std::endl;
+	    set_state(Gtk::STATE_NORMAL);
+	    //queue_draw();
 	}
     }
+    return res;
 }
-*/
+
+bool EdgeCompRp_v2::on_leave_notify_event(GdkEventCrossing* event)
+{
+    if (get_state() == Gtk::STATE_PRELIGHT) {
+	std::cout << "EdgeCompRp_v2 on_leave_notify_event  [" << get_name() << "] : unset plelight" << std::endl;
+	set_state(Gtk::STATE_NORMAL);
+    }
+    return false;
+}
+
+bool EdgeCompRp_v2::IsPointIn(int aX, int aY)
+{
+    // Get region of drawable part of edge
+    return iRegion.point_in(aX, aY);
+}
 
 bool EdgeCompRp_v2::on_expose_event(GdkEventExpose* aEvent)
 {
@@ -396,11 +440,22 @@ bool EdgeCompRp_v2::on_expose_event(GdkEventExpose* aEvent)
     Glib::RefPtr<Gtk::Style> style = get_style(); 	
     Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
     Gtk::Allocation alc = get_allocation();
+    iRegion = Gdk::Region();
     if (iType == MEdgeCrp::EtLeft) {
+	Cp& ucp = (iCp1.iCoord.height <= iCp2.iCoord.height) ? iCp1 : iCp2;
+	Cp& lcp = (iCp1.iCoord.height > iCp2.iCoord.height) ? iCp1 : iCp2;
 	int rx = alc.get_x() + alc.get_width() - KEdgeBorderWidth;
 	drw->draw_line(gc, iCp1.iCoord.width, iCp1.iCoord.height, rx, iCp1.iCoord.height);
 	drw->draw_line(gc, rx, iCp1.iCoord.height, rx, iCp2.iCoord.height);
 	drw->draw_line(gc, iCp2.iCoord.width, iCp2.iCoord.height, rx, iCp2.iCoord.height);
+	iRegion.union_with_rect(Gdk::Rectangle(ucp.iCoord.width - alc.get_x() - KEdgeBorderWidth, 
+		    ucp.iCoord.height - alc.get_y() - KEdgeBorderWidth, alc.get_width(), 2*KEdgeBorderWidth));
+	iRect1 = Gdk::Rectangle(ucp.iCoord.width - alc.get_x() - KEdgeBorderWidth, 
+		    ucp.iCoord.height - alc.get_y() - KEdgeBorderWidth, alc.get_width(), 2*KEdgeBorderWidth);
+	iRegion.union_with_rect(Gdk::Rectangle(lcp.iCoord.width - alc.get_x() - KEdgeBorderWidth, 
+		    lcp.iCoord.height - alc.get_y() - KEdgeBorderWidth, alc.get_width(), 2*KEdgeBorderWidth));
+	iRegion.union_with_rect(Gdk::Rectangle(rx - alc.get_x() - KEdgeBorderWidth, 
+		    ucp.iCoord.height - alc.get_y() - KEdgeBorderWidth, 2*KEdgeBorderWidth, alc.get_height()));
     }
     else if (iType == MEdgeCrp::EtRight) {
 	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iOffset.width;
@@ -600,3 +655,4 @@ Elem* EdgeCrp::Model()
 {
     return iRp->iElem;
 }
+
