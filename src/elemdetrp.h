@@ -30,9 +30,9 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 		const Gtk::SelectionData& selection_data, guint info, guint time);
 	virtual void on_drag_leave(const Glib::RefPtr<Gdk::DragContext>& context, guint time);
 	// Signal handlers
-	bool on_comp_button_press(GdkEventButton* event);
 	bool on_comp_button_press_ext(GdkEventButton* event, Elem* aComp);
 	void on_comp_button_press_name(GdkEventButton* event, Elem* aComp);
+	void on_comp_button_press(GdkEventButton* event, Elem* aComp);
 	// From MCrpMgr
 	virtual bool IsTypeAllowed(const std::string& aType) const;
     protected:

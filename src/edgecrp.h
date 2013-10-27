@@ -32,6 +32,7 @@ class MEdgeCrp
 	virtual Elem* Point2() = 0;
 };
 
+#if 0
 class EdgeCompRp: public Gtk::Widget
 {
     friend class EdgeCrp;
@@ -60,7 +61,9 @@ class EdgeCompRp: public Gtk::Widget
 	Cp iLcp;
 	Gtk::EventBox iEboxP1;
 };
+#endif
 
+#if 0
 class EdgeCompRp_v1: public Gtk::Container
 {
     friend class EdgeCrp;
@@ -96,8 +99,9 @@ class EdgeCompRp_v1: public Gtk::Container
 	//Gtk::DrawingArea iEboxP1;
 	Gtk::Widget* iP1;
 };
+#endif
 
-
+#if 0
 class EdgeCompRp_v2: public Gtk::EventBox
 {
     friend class EdgeCrp;
@@ -150,6 +154,61 @@ class EdgeCompRp_v2: public Gtk::EventBox
 	Gdk::Region iRegion;
 	Gdk::Rectangle iRect1;
 };
+#endif
+
+class EdgeCompRp_v3: public Gtk::Widget
+{
+    friend class EdgeCrp;
+    public:
+
+    enum TDraggedPart {
+	EDp_None,
+	EDp_Cp1,
+	EDp_Cp2
+    };
+
+	class Cp 
+	{
+	    public:
+		Cp();
+		Gtk::Requisition iOffset;
+		Gtk::Requisition iCoord;
+		// Position from Cp: positive for upper
+		int iPos;
+	};
+    public:
+	EdgeCompRp_v3(Elem* aElem);
+	virtual ~EdgeCompRp_v3();
+    protected:
+	void DoSetHighlighted(bool aSet);
+	bool IsPointIn(int aX, int aY);
+    protected:
+	virtual bool on_expose_event(GdkEventExpose* event);
+	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	virtual bool on_motion_notify_event(GdkEventMotion* aEvent);
+	virtual bool on_leave_notify_event(GdkEventCrossing* event);
+	virtual bool on_button_press_event(GdkEventButton* aEvent);
+	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext);
+	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
+	virtual void on_drag_end(const Glib::RefPtr<Gdk::DragContext>& context);
+	// Signal handlers
+	bool on_cp_button_press(GdkEventButton* event);
+
+    private:
+	Elem* iElem;
+	MEdgeCrp::EdgeType iType;
+	Cp iUcp;
+	Cp iLcp;
+	Cp iCp1;
+	Cp iCp2;
+	TDraggedPart iDraggedPart;
+	bool iDragging;
+	MCrp::tSigUpdated iSigUpdated;
+	bool iHighlighted;
+	Gdk::Region iRegion;
+	Gdk::Rectangle iRect1;
+	MCrp::tSigButtonPress iSigButtonPress;
+};
 
 class EdgeCrp: public MCrp, public MEdgeCrp
 {
@@ -175,6 +234,7 @@ class EdgeCrp: public MCrp, public MEdgeCrp
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
 	virtual tSigButtonPressName SignalButtonPressName();
+	virtual tSigButtonPress SignalButtonPress();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
 	virtual bool Dragging();
@@ -182,7 +242,7 @@ class EdgeCrp: public MCrp, public MEdgeCrp
 	virtual Elem* Model();
     private:
 	//EdgeCompRp* iRp;
-	EdgeCompRp_v2* iRp;
+	EdgeCompRp_v3* iRp;
 	MCrp::tSigButtonPressName iSigButtonPressName;
 };
 

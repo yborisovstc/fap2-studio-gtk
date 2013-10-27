@@ -20,10 +20,12 @@ class MCrp: public MBase
 	};
     public:
 	typedef sigc::signal<void, GdkEventButton*> tSigButtonPressName;
+	typedef sigc::signal<void, GdkEventButton*> tSigButtonPress;
 	typedef sigc::signal<void, Elem*> tSigUpdated;
     public:
 	virtual Gtk::Widget& Widget() = 0;
 	virtual tSigButtonPressName SignalButtonPressName() = 0;
+	virtual tSigButtonPress SignalButtonPress() = 0;
 	virtual tSigUpdated SignalUpdated() = 0;
 	virtual bool IsActionSupported(Action aAction) = 0;
 	virtual bool Dragging() = 0;

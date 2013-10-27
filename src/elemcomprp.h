@@ -41,6 +41,7 @@ class ElemCompRp: public Gtk::Layout
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	virtual bool on_button_press_event(GdkEventButton* aEvent);
 	// Signal handlers
 	bool on_name_button_press(GdkEventButton* event);
     protected:
@@ -48,6 +49,7 @@ class ElemCompRp: public Gtk::Layout
 	ElemCompHead* iHead;
 	Gtk::Allocation iBodyAlc;
 	MCrp::tSigButtonPressName iSigButtonPressName;
+	MCrp::tSigButtonPress iSigButtonPress;
 	MCrp::tSigUpdated iSigUpdated;
 	Gtk::Menu iContextMenu; // Context menu
 	bool iHighlighted;
@@ -65,6 +67,7 @@ class ElemCrp: public MCrp
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
 	virtual tSigButtonPressName SignalButtonPressName();
+	virtual tSigButtonPress SignalButtonPress();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
 	virtual bool Dragging();

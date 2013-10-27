@@ -61,9 +61,9 @@ void ElemDetRp::Construct()
 	assert(comp != NULL);
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	Gtk::Widget& rpw = rp->Widget();
-	//	rp->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press));
 	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
 	rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
+	rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
 	add(rpw);
 	iCompRps[comp] = rp;
 	rpw.show();
@@ -145,14 +145,9 @@ void ElemDetRp::on_size_request(Gtk::Requisition* aReq)
     aReq->height = comp_h + KViewCompGapHight;
 }
 
-bool ElemDetRp::on_comp_button_press(GdkEventButton* event)
-{
-    std::cout << "on_comp_button_press" << std::endl;
-}
-
 bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 {
-    std::cout << "on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
+    std::cout << "on_comp_button_press_ext, comp [" << aComp->Name() << "]" << std::endl;
     if (event->type == GDK_BUTTON_PRESS) {
 	if (event->button == 3) {
 	    ShowCrpCtxDlg(event, aComp);
@@ -164,6 +159,11 @@ bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 	}
     }
     return false;
+}
+
+void ElemDetRp::on_comp_button_press(GdkEventButton* event, Elem* aComp)
+{
+    on_comp_button_press_ext(event, aComp);
 }
 
 void ElemDetRp::on_comp_button_press_name(GdkEventButton* event, Elem* aComp)

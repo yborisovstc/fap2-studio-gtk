@@ -267,13 +267,14 @@ VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(a
     // scenarious, but we need to implement requesting edges data during drop motion
     drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 4, Glib::OWNERSHIP_NONE), Gtk::DestDefaults(0));
     // Add components
+    /*
     int compord = 0;
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
 	assert(comp != NULL);
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	Gtk::Widget& rpw = rp->Widget();
-	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &VertDrpw_v1::on_comp_button_press_ext), comp));
+//	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &VertDrpw_v1::on_comp_button_press_ext), comp));
 	rp->SignalUpdated().connect(sigc::mem_fun(*this, &VertDrpw_v1::on_comp_updated));
 	add(rpw);
 	iCompRps[comp] = rp;
@@ -284,6 +285,9 @@ VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(a
 	    iConnInfos.insert(pair<Elem*, ConnInfo>(comp, cinfo));
 	}
     }
+    */
+    // Enable receiving events by itself to handle events from non-windowed widgets (edges)
+    add_events(Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK);
 }
 
 VertDrpw_v1::~VertDrpw_v1()
@@ -363,7 +367,14 @@ bool VertDrpw_v1::on_expose_event(GdkEventExpose* event)
     // Then highlighted
     for (Glib::ListHandle<Gtk::Widget*>::iterator it = children.begin(); it != children.end(); it++) {
 	Gtk::Widget* ww = (*it);
-	if (ww->get_state() != Gtk::STATE_NORMAL) {
+	if (ww->get_state() == Gtk::STATE_PRELIGHT) {
+	    propagate_expose(*ww, event);
+	}
+    }
+    // Then selected
+    for (Glib::ListHandle<Gtk::Widget*>::iterator it = children.begin(); it != children.end(); it++) {
+	Gtk::Widget* ww = (*it);
+	if (ww->get_state() == Gtk::STATE_SELECTED) {
 	    propagate_expose(*ww, event);
 	}
     }
@@ -649,15 +660,33 @@ bool VertDrpw_v1::on_button_press_event(GdkEventButton* aEvent)
     int ex = aEvent->x, ey = aEvent->y;
     std::cout << "VertDrpw_v1 on_button_press_event, ewpos = (" << ox << " , " << oy << "), ecoord = (" 
 	<< aEvent->x << " , " << aEvent->y << ")" << std::endl;
+    // Prioritize selected edge to allow DnD for it
     for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end() && !res; it++) {
 	MCrp* crp = it->second;
 	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
 	if (medgecrp != NULL) {
 	    Gtk::Widget& wd = crp->Widget();
-	    Gtk::Allocation talc = wd.get_allocation();
-	    aEvent->x = ex + ox - talc.get_x();
-	    aEvent->y = ey + oy - talc.get_y();
-	    res = wd.event((GdkEvent*) aEvent);
+	    if (wd.get_state() == Gtk::STATE_SELECTED) {
+		Gtk::Allocation talc = wd.get_allocation();
+		aEvent->x = ex + ox - talc.get_x();
+		aEvent->y = ey + oy - talc.get_y();
+		res = wd.event((GdkEvent*) aEvent);
+	    }
+	}
+    }
+    if (!res) {
+	for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end() && !res; it++) {
+	    MCrp* crp = it->second;
+	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	    if (medgecrp != NULL) {
+		Gtk::Widget& wd = crp->Widget();
+		if (wd.get_state() != Gtk::STATE_SELECTED) {
+		    Gtk::Allocation talc = wd.get_allocation();
+		    aEvent->x = ex + ox - talc.get_x();
+		    aEvent->y = ey + oy - talc.get_y();
+		    res = wd.event((GdkEvent*) aEvent);
+		}
+	    }
 	}
     }
     return true;

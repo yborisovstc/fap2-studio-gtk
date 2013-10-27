@@ -178,6 +178,11 @@ Elem* VertCompRp::Model()
     return iElem;
 }
 
+MCrp::tSigButtonPress VertCompRp::SignalButtonPress()
+{
+    return iSigButtonPress;
+}
+
 #if 0
 
 const string sType = "VertCrp";

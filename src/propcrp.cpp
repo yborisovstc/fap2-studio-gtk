@@ -112,3 +112,8 @@ Elem* PropCrp::Model()
 {
     return iElem;
 }
+
+MCrp::tSigButtonPress PropCrp::SignalButtonPress()
+{
+    return iSigButtonPress;
+}

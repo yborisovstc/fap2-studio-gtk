@@ -38,6 +38,7 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
 	virtual tSigButtonPressName SignalButtonPressName();
+	virtual tSigButtonPress SignalButtonPress();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
 	virtual bool Dragging();

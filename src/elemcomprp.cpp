@@ -118,6 +118,10 @@ void ElemCompRp::DoSetHighlighted(bool aSet)
     }
 }
 
+bool ElemCompRp::on_button_press_event(GdkEventButton* aEvent)
+{
+    iSigButtonPress.emit(aEvent);
+}
 
 
 const string sType = "ElemCrp";
@@ -159,6 +163,11 @@ Gtk::Widget& ElemCrp::Widget()
 MCrp::tSigButtonPressName ElemCrp::SignalButtonPressName()
 {
     return iRp->iSigButtonPressName;
+}
+
+MCrp::tSigButtonPress ElemCrp::SignalButtonPress()
+{
+    return iRp->iSigButtonPress;
 }
 
 MCrp::tSigUpdated ElemCrp::SignalUpdated()
