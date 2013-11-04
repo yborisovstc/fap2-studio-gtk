@@ -50,9 +50,9 @@ class MCrpConnectable
 	// Set internal/boundary
 	virtual void SetIsInt(bool aIsInt) = 0;
 	// Get nearest CP, returns distance to checking positon
-	virtual int GetNearestCp(Gtk::Requisition aCoord, GUri& aCpUri) = 0;
+	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp) = 0;
 	// Highlight CP
-	virtual void HighlightCp(const GUri& aCpUri, bool aSet) = 0;
+	virtual void HighlightCp(Elem* aCp, bool aSet) = 0;
 };
 
 #endif

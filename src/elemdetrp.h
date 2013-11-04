@@ -23,6 +23,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	virtual ~ElemDetRp();
 	Elem* GetElem();
     protected:
+	virtual void on_realize();
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
 	virtual bool on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
@@ -38,7 +39,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
     protected:
 	virtual void on_node_dropped(const std::string& aUri);
     protected:
-	void Construct();
+	virtual void Construct();
 	void Erase();
 	void Refresh();
 	void add_node(const std::string& aParentUri);

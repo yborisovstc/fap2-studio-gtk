@@ -261,31 +261,12 @@ VertDrpw_v1::ConnInfo::ConnInfo(int aOrder): iCompOrder(aOrder) { }
 VertDrpw_v1::ConnInfo::ConnInfo(const ConnInfo& aCInfo): iCompOrder(aCInfo.iCompOrder) { }
 
 
-VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(aElem, aCrpProv), iEdgeDropCandidate(NULL)
+VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(aElem, aCrpProv), iEdgeDropCandidate(NULL),
+    iEdgeDropCpCandidate(NULL)
 {
     // Set dest with avoiding DestDefaults flags. These flags are only for some trivial DnD 
     // scenarious, but we need to implement requesting edges data during drop motion
     drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 4, Glib::OWNERSHIP_NONE), Gtk::DestDefaults(0));
-    // Add components
-    /*
-    int compord = 0;
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	Elem* comp = *it;
-	assert(comp != NULL);
-	MCrp* rp = iCrpProv.CreateRp(*comp, this);
-	Gtk::Widget& rpw = rp->Widget();
-//	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &VertDrpw_v1::on_comp_button_press_ext), comp));
-	rp->SignalUpdated().connect(sigc::mem_fun(*this, &VertDrpw_v1::on_comp_updated));
-	add(rpw);
-	iCompRps[comp] = rp;
-	rpw.show();
-	MEdgeCrp* medgecrp = rp->GetObj(medgecrp);
-	if (medgecrp == NULL) {
-	    ConnInfo cinfo(compord++);
-	    iConnInfos.insert(pair<Elem*, ConnInfo>(comp, cinfo));
-	}
-    }
-    */
     // Enable receiving events by itself to handle events from non-windowed widgets (edges)
     add_events(Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK);
 }
@@ -353,7 +334,6 @@ void VertDrpw_v1::on_comp_updated(Elem* aElem)
 }
 
 // Overloaded on-expose handler to prioritize highlighted childs (edges)
-//
 bool VertDrpw_v1::on_expose_event(GdkEventExpose* event)
 {
     Glib::ListHandle<Gtk::Widget*> children = get_children();
@@ -539,43 +519,59 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 	    Elem* cp = iElem->GetNode(iDndReceivedData);
 	    std::cout << "VertDrpw_v1 on_drag_motion, edge CP:" << cp->Name() << std::endl;
 	    Elem* edge = cp->GetMan();
+	    MEdge* medge = edge->GetObj(medge);
+	    assert(medge != NULL);
 	    MCrp* crp = iCompRps.at(edge);
 	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	    MVert* pair = NULL;
 	    if (cp->Name() == "P1") {
 		medgecrp->SetCp1Coord(coord);
+		pair = medge->Point2();
 	    }
 	    else if (cp->Name() == "P2") {
 		medgecrp->SetCp2Coord(coord);
+		pair = medge->Point1();
 	    }
+	    MCompatChecker* mpaircc = pair != NULL ? pair->EBase()->GetObj(mpaircc) : NULL;
 	    // Find the nearest CP and highligh it
 	    int dist = KDistThresholdEdge ;
 	    MCrp* cand = NULL;
-	    GUri uri;
+	    Elem* candcp = NULL;
 	    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 		MCrp* crp = it->second;
 		MCrpConnectable* conn = crp->GetObj(conn);
 		if (conn != NULL) {
-		    int dd = conn->GetNearestCp(coord, uri);
+		    Elem* curcp;
+		    int dd = conn->GetNearestCp(coord, curcp);
 		    if (dd < dist) {
 			dist = dd;
 			cand = crp;
+			candcp = curcp;
 		    }
 		}
 	    }
-	    if (cand != NULL && cand != iEdgeDropCandidate) {
+	    if (cand != NULL && (cand != iEdgeDropCandidate || candcp != iEdgeDropCpCandidate)) {
 		MCrpConnectable* conn = NULL;
 		if (iEdgeDropCandidate != NULL) {
 		    conn = iEdgeDropCandidate->GetObj(conn);
-		    conn->HighlightCp(uri, false);
+		    conn->HighlightCp(iEdgeDropCpCandidate, false);
 		}
-		iEdgeDropCandidate = cand;
-		conn = iEdgeDropCandidate->GetObj(conn);
-		conn->HighlightCp(uri, true);
+		if (mpaircc == NULL || mpaircc->IsCompatible(candcp)) {
+		    iEdgeDropCandidate = cand;
+		    iEdgeDropCpCandidate = candcp;
+		    conn = iEdgeDropCandidate->GetObj(conn);
+		    conn->HighlightCp(iEdgeDropCpCandidate, true);
+		}
+		else {
+		    iEdgeDropCandidate = NULL;
+		    iEdgeDropCpCandidate = NULL;
+		}
 	    }
 	    else if (cand == NULL && iEdgeDropCandidate != NULL) {
 		MCrpConnectable* conn = iEdgeDropCandidate->GetObj(conn);
-		conn->HighlightCp(uri, false);
+		conn->HighlightCp(iEdgeDropCpCandidate, false);
 		iEdgeDropCandidate = NULL;
+		iEdgeDropCpCandidate = NULL;
 	    }
 	    queue_resize();
 	}
@@ -616,27 +612,27 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
     std::cout << "VertDrpw_v1 on_drag_drop, detected target: " << iDnDTarg << std::endl;
     if (iDnDTarg == EDT_AddingNode) {
 	res = true;
-	context->drag_finish(true, true, time);
+	context->drag_finish(true, false, time);
 	on_node_dropped(iDndReceivedData);
 	queue_resize();
     }
     else if (iDnDTarg == EDT_EdgeCp) {
 	if (iEdgeDropCandidate != NULL) {
-	    GUri uri;
 	    MCrpConnectable* conn = iEdgeDropCandidate->GetObj(conn);
 	    // Reset highlighting of drop candidate
-	    conn->HighlightCp(uri, false);
-	    Elem* targ = iEdgeDropCandidate->Model();
+	    conn->HighlightCp(iEdgeDropCpCandidate, false);
+	    Elem* targ = iEdgeDropCpCandidate;
+	    GUri uri;
 	    targ->GetUri(uri, iElem);
 	    res = true;
-	    context->drag_finish(res, true, time);
+	    context->drag_finish(res, false, time);
 	    std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
 	    change_content(iDndReceivedData, uri.GetUri());
 	}
 	else {
 	    // Disconnect edge if it is connected
 	    res = true;
-	    context->drag_finish(res, true, time);
+	    context->drag_finish(res, false, time);
 	    Elem* cp = iElem->GetNode(iDndReceivedData);
 	    MProp* prop = cp->GetObj(prop);
 	    std::cout << "VertDrpw_v1 on_drag_motion, disconnecting CP:" << prop->Value() << std::endl;

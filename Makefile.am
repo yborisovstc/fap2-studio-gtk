@@ -19,7 +19,10 @@ dist_templ_DATA = \
 examplesdir = $(pkgdatadir)/examples
 dist_examples_DATA = \
 	     examples/rock_1.xml \
-	     examples/rock_2.xml
+	     examples/rock_2.xml \
+	     examples/simple_elem.xml \
+	     examples/simple_vert.xml \
+	     examples/syst_1.xml
 
 
 

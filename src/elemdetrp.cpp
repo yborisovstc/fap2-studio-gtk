@@ -4,11 +4,15 @@
 #include "elemdetrp.h"
 #include "dlgbase.h"
 
+// [YB] GTK_TREE_MODEL_ROW is the only target supported by tree view model
+// All tree views in navigation panel sources are overwritted for now, so this target
+// isn't required at the moment
 static GtkTargetEntry targetentries[] =
 {
     { (gchar*) "STRING",        0, 0 },
     { (gchar*) "text/plain",    0, 1 },
     { (gchar*) "text/uri-list", 0, 2 },
+//    { (gchar*) "GTK_TREE_MODEL_ROW", 0, 3 },
 };
 
 /*
@@ -23,9 +27,6 @@ static GtkTargetEntry targetentries[] =
 ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv),
     iDnDTarg(EDT_Unknown)
 {
-    // Base construct
-    Construct();
-    //drag_dest_set(Gtk::DEST_DEFAULT_ALL);
     drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE));
     // Create comp menu elements
     // TODO [YB] To implement context menu in CRps but not DRp.
@@ -61,9 +62,10 @@ void ElemDetRp::Construct()
 	assert(comp != NULL);
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	Gtk::Widget& rpw = rp->Widget();
-	rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
-	rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
+	//rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
+	// Using specific signal for button press instead of standard because some Crps can have complex layout
 	rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
+	rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
 	add(rpw);
 	iCompRps[comp] = rp;
 	rpw.show();
@@ -100,6 +102,13 @@ bool ElemDetRp::IsTypeAllowed(const std::string& aType) const
 	res = true;
     }
     return res;
+}
+
+void ElemDetRp::on_realize()
+{
+    Gtk::Layout::on_realize();
+    // Base construct
+    Construct();
 }
 
 void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
@@ -163,6 +172,7 @@ bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 
 void ElemDetRp::on_comp_button_press(GdkEventButton* event, Elem* aComp)
 {
+    std::cout << "on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
     on_comp_button_press_ext(event, aComp);
 }
 
@@ -179,10 +189,11 @@ bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int 
 
 void ElemDetRp::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
-    std::cout << "ElemDetRp on_drag_data_received" << std::endl;
     std::string targ = selection_data.get_target();
     Glib::ustring data = selection_data.get_text();
-    context->drag_finish(true, true, time);
+    std::cout << "ElemDetRp on_drag_data_received: " << data << std::endl;
+    // Finishing drag, not removing the original data
+    context->drag_finish(true, false, time);
     on_node_dropped(data);
 }
 

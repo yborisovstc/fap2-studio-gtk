@@ -698,43 +698,51 @@ bool EdgeCompRp_v3::on_expose_event(GdkEventExpose* aEvent)
 	drw->draw_line(gc, iCp2.iCoord.width, iCp2.iCoord.height, rx, iCp2.iCoord.height);
 	iRegion.union_with_rect(Gdk::Rectangle(ucp.iCoord.width - alc.get_x() - KEdgeBorderWidth, 
 		    ucp.iCoord.height - alc.get_y() - KEdgeBorderWidth, alc.get_width(), 2*KEdgeBorderWidth));
-	iRect1 = Gdk::Rectangle(ucp.iCoord.width - alc.get_x() - KEdgeBorderWidth, 
-		    ucp.iCoord.height - alc.get_y() - KEdgeBorderWidth, alc.get_width(), 2*KEdgeBorderWidth);
 	iRegion.union_with_rect(Gdk::Rectangle(lcp.iCoord.width - alc.get_x() - KEdgeBorderWidth, 
 		    lcp.iCoord.height - alc.get_y() - KEdgeBorderWidth, alc.get_width(), 2*KEdgeBorderWidth));
 	iRegion.union_with_rect(Gdk::Rectangle(rx - alc.get_x() - KEdgeBorderWidth, 
 		    ucp.iCoord.height - alc.get_y() - KEdgeBorderWidth, 2*KEdgeBorderWidth, alc.get_height()));
     }
     else if (iType == MEdgeCrp::EtRight) {
-	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iOffset.width;
-	int uy = alc.get_y();
-	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iOffset.width;
-	int ly = alc.get_y() + alc.get_height() - 1;
+	int ux = alc.get_x() + alc.get_width() - 1 + iUcp.iOffset.width - KEdgeBorderWidth;
+	int uy = alc.get_y() + KEdgeBorderWidth;
+	int lx = alc.get_x() + alc.get_width() - 1 + iLcp.iOffset.width - KEdgeBorderWidth;
+	int ly = alc.get_y() + alc.get_height() - 1 - KEdgeBorderWidth;
 	drw->draw_line(gc, alc.get_x(), uy, ux, uy);
 	drw->draw_line(gc, alc.get_x(), uy, alc.get_x(), ly);
 	drw->draw_line(gc, alc.get_x(), ly, lx, ly);
+	iRegion.union_with_rect(Gdk::Rectangle(0, 0, ux + KEdgeBorderWidth, 2*KEdgeBorderWidth));
+	iRegion.union_with_rect(Gdk::Rectangle(0, 0, 2*KEdgeBorderWidth, alc.get_height()));
+	iRegion.union_with_rect(Gdk::Rectangle(0, alc.get_height() - 2*KEdgeBorderWidth, alc.get_width(), 2*KEdgeBorderWidth));
     }
     else if (iType == MEdgeCrp::EtLtRb) {
 	// Left top to right bottom
-	int ux = alc.get_x();
+	int ux = alc.get_x() + KEdgeBorderWidth;
 	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
-	int uy = alc.get_y();
-	int lx = alc.get_x() + alc.get_width() - 1;
-	int ly = alc.get_y() + alc.get_height() - 1;
+	int uy = alc.get_y() + KEdgeBorderWidth;
+	int lx = alc.get_x() + alc.get_width() - 1 - KEdgeBorderWidth;
+	int ly = alc.get_y() + alc.get_height() - 1 - KEdgeBorderWidth;
 	drw->draw_line(gc, urx, uy, urx, ly);
 	drw->draw_line(gc, ux, uy, urx, uy);
 	drw->draw_line(gc, urx, ly , lx, ly);
+	iRegion.union_with_rect(Gdk::Rectangle(iUcp.iOffset.width - KEdgeBorderWidth, 0, 2*KEdgeBorderWidth, ly - uy + 2*KEdgeBorderWidth));
+	iRegion.union_with_rect(Gdk::Rectangle(0, 0, urx - ux + 2*KEdgeBorderWidth, 2*KEdgeBorderWidth));
+	iRegion.union_with_rect(Gdk::Rectangle(iUcp.iOffset.width - KEdgeBorderWidth, alc.get_height() - 2*KEdgeBorderWidth, 
+		    lx - urx + KEdgeBorderWidth, 2*KEdgeBorderWidth));
     }
     else {
 	// Left bottom to right top
-	int ux = alc.get_x() + alc.get_width() - 1;
-	int urx = alc.get_x() + iUcp.iOffset.width; // Upper right
-	int uy = alc.get_y();
-	int lx = alc.get_x();
-	int ly = alc.get_y() + alc.get_height() - 1;
+	int ux = alc.get_x() + alc.get_width() - 1 - KEdgeBorderWidth;
+	int urx = alc.get_x() + iUcp.iOffset.width;
+	int uy = alc.get_y() + KEdgeBorderWidth;
+	int lx = alc.get_x() + KEdgeBorderWidth;
+	int ly = alc.get_y() + alc.get_height() - 1 - KEdgeBorderWidth;
 	drw->draw_line(gc, urx, uy, urx, ly);
 	drw->draw_line(gc, urx, uy, ux, uy);
 	drw->draw_line(gc, lx, ly , urx, ly);
+	iRegion.union_with_rect(Gdk::Rectangle(iUcp.iOffset.width - KEdgeBorderWidth, 0, 2*KEdgeBorderWidth, ly - uy + 2*KEdgeBorderWidth));
+	iRegion.union_with_rect(Gdk::Rectangle(iUcp.iOffset.width - KEdgeBorderWidth, 0, ux - urx + 2*KEdgeBorderWidth, 2*KEdgeBorderWidth));
+	iRegion.union_with_rect(Gdk::Rectangle(0, alc.get_height() - 2*KEdgeBorderWidth, iUcp.iOffset.width + KEdgeBorderWidth, 2*KEdgeBorderWidth));
     }
 }
 

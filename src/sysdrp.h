@@ -14,6 +14,9 @@ class SysDrp: public VertDrpw_v1
 	SysDrp(Elem* aElem, const MCrpProvider& aCrpProv);
 	virtual ~SysDrp();
     protected:
+	virtual void Construct();
+	// From MCrpMgr
+	virtual bool IsTypeAllowed(const std::string& aType) const;
 	// From MDrp
 	virtual void *DoGetObj(const string& aName);
 	virtual Gtk::Widget& Widget();

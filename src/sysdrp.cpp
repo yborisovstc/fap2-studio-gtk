@@ -1,8 +1,11 @@
 
+#include <syst.h>
+
 #include "common.h"
 #include "sysdrp.h"
 
 const string KCpEType = "Elem:Vert:ConnPointBase:ConnPoint";
+const string KExtdEType = "Elem:Vert:Extender";
 
 string SysDrp::EType()
 {
@@ -11,10 +14,20 @@ string SysDrp::EType()
 
 SysDrp::SysDrp(Elem* aElem, const MCrpProvider& aCrpProv): VertDrpw_v1(aElem, aCrpProv)
 {
+}
+
+SysDrp::~SysDrp()
+{
+}
+
+void SysDrp::Construct()
+{
+    VertDrpw_v1::Construct();
     // Mark all CPs as boundary
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* ecmp = *it;
 	if (ecmp->IsHeirOf(KCpEType)) {
+	    assert(iCompRps.count(ecmp) > 0);
 	    MCrp* crp = iCompRps.at(ecmp);
 	    MCrpConnectable* crpc = crp->GetObj(crpc);
 	    if (crpc != NULL) {
@@ -22,12 +35,8 @@ SysDrp::SysDrp(Elem* aElem, const MCrpProvider& aCrpProv): VertDrpw_v1(aElem, aC
 	    }
 	}
     }
-}
 
-SysDrp::~SysDrp()
-{
 }
-
 
 void *SysDrp::DoGetObj(const string& aName)
 {
@@ -49,6 +58,15 @@ Gtk::Widget& SysDrp::Widget()
 Elem* SysDrp::Model()
 {
     return iElem;
+}
+
+bool SysDrp::IsTypeAllowed(const std::string& aType) const
+{
+    bool res = false;
+    if (aType == KExtdEType || aType == KCpEType || aType == Syst::PEType() || VertDrpw_v1::IsTypeAllowed(aType)) {
+	res = true;
+    }
+    return res;
 }
 
 MDrp::tSigCompSelected SysDrp::SignalCompSelected()
@@ -101,7 +119,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	}
     }
 
-    // Allocate edges
+    // Allocating edges
     int edge_wd = 0;
     int redge_wd = 0; // Right edges x-coord
     int edge_mpb = (bcompb_x - bcomps_w_max - (compb_x + comps_w_max/2 + KConnHorizSpreadMin)) / 2; // Left-right edges mid-point base
@@ -116,25 +134,45 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	    Elem* p2 = medgecrp->Point2();
 	    Elem* op1 = p1 != NULL ? GetCompOwning(p1): NULL;
 	    Elem* op2 = p2 != NULL ? GetCompOwning(p2): NULL;
-	    Elem *pu = p1, *pl = p2, *opu = op1, *opl = op2;
-	    bool puint, plint;
-	    Gtk::Requisition ucoord, lcoord;
-	    if (p1 != NULL && p2 != NULL) {
-		MCrp* crp1 = iCompRps.at(op1);
-		MCrpConnectable* crp1c = crp1->GetObj(crp1c);
-		Gtk::Requisition coord1 = crp1c->GetCpCoord(p1);
-		bool p1int = crp1c->GetIsInt();
-		MCrp* crp2 = iCompRps.at(op2);
-		MCrpConnectable* crp2c = crp2->GetObj(crp2c);
-		Gtk::Requisition coord2 = crp2c->GetCpCoord(p2);
-		bool p2int = crp2c->GetIsInt();
-		puint = p1int; plint = p2int;
-		ucoord = coord1; lcoord = coord2;
-		if (coord2.height < coord1.height) {
-		    pu = p2; pl = p1; opu = op2; opl = op1;
-		    puint = p2int; plint = p1int;
-		    ucoord = coord2; lcoord = coord1;
-		}
+
+	    int edge_xw = compb_x + comps_w_max/2 + KConnHorizSpreadMin + edge_wd; // X + W
+	    Gtk::Requisition p1coord = medgecrp->Cp1Coord();
+	    Gtk::Requisition p2coord = medgecrp->Cp2Coord();
+	    bool p1int = true, p2int = true;
+	    if (p1 != NULL) {
+		MCrp* pcrp = iCompRps.at(op1);
+		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
+		assert(pcrpcbl != NULL);
+		p1coord = pcrpcbl->GetCpCoord(p1);
+		medgecrp->SetCp1Coord(p1coord);
+		p1int = pcrpcbl->GetIsInt();
+	    }
+	    else if (!crp->Dragging()) {
+		p1coord.width = edge_xw;
+	       	p1coord.height =  KViewCompGapHight;
+		medgecrp->SetCp1Coord(p1coord);
+	    }
+
+	    if (p2 != NULL) {
+		MCrp* pcrp = iCompRps.at(op2);
+		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
+		assert(pcrpcbl != NULL);
+		p2coord = pcrpcbl->GetCpCoord(p2);
+		medgecrp->SetCp2Coord(p2coord);
+		p2int = pcrpcbl->GetIsInt();
+	    }
+	    else if (!crp->Dragging()) {
+		p2coord.width = edge_xw;
+	       	p2coord.height =  p1coord.height + KViewCompGapHight;
+		medgecrp->SetCp2Coord(p2coord);
+	    }
+
+	    bool puint = p1int, plint = p2int;
+	    Elem *pu = p1, *pl = p2;
+	    Gtk::Requisition ucoord = p1coord, lcoord = p2coord;
+	    if (p2coord.height < p1coord.height) {
+		pu = p2; pl = p1; ucoord = p2coord; lcoord = p1coord;
+		puint = p2int; plint = p1int;
 	    }
 
 	    Gtk::Allocation allc;
@@ -149,7 +187,8 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		}
 		int edge_x = min(ucoord.width, lcoord.width);
 		int edge_w = compb_x + comps_w_max/2 + KConnHorizSpreadMin - edge_x + edge_wd;
-		allc = Gtk::Allocation(edge_x, ucoord.height, edge_w, lcoord.height - ucoord.height + 1);
+		allc = Gtk::Allocation(edge_x - KEdgeBorderWidth, ucoord.height - KEdgeBorderWidth, 
+			edge_w + 2*KEdgeBorderWidth, lcoord.height - ucoord.height + 1 + 2*KEdgeBorderWidth);
 		edge_wd += KConnHorizGap;
 	    }
 	    else if (!puint && !plint) {
@@ -163,7 +202,8 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		}
 		int edge_x = min(ucoord.width, lcoord.width);
 		int edge_w = edge_x - (bcompb_x - bcomps_w_max - KConnHorizSpreadMin) + redge_wd;
-		allc = Gtk::Allocation(edge_x - edge_w, ucoord.height, edge_w, lcoord.height - ucoord.height + 1);
+		allc = Gtk::Allocation(edge_x - edge_w - KEdgeBorderWidth, ucoord.height - KEdgeBorderWidth, 
+			edge_w + 2*KEdgeBorderWidth, lcoord.height - ucoord.height + 1 + 2*KEdgeBorderWidth);
 		redge_wd += KConnHorizGap;
 	    }
 	    else if (puint && !plint) {
@@ -172,7 +212,8 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		int edge_w = lcoord.width - ucoord.width;
 		int edge_mp = compb_x + comps_w_max/2 + KConnHorizSpreadMin - edge_x + edge_wd;
 		medgecrp->SetUcpExt(edge_mp, 0);
-		allc = Gtk::Allocation(edge_x, ucoord.height, edge_w, lcoord.height - ucoord.height + 1);
+		allc = Gtk::Allocation(edge_x - KEdgeBorderWidth, ucoord.height - KEdgeBorderWidth, 
+			edge_w + 2*KEdgeBorderWidth, lcoord.height - ucoord.height + 1 + 2*KEdgeBorderWidth);
 		edge_wd += KConnHorizGap;
 	    }
 	    else {
@@ -181,7 +222,8 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		int edge_w = ucoord.width - lcoord.width;
 		int edge_mp = compb_x + comps_w_max/2 + KConnHorizSpreadMin - edge_x + edge_wd;
 		medgecrp->SetUcpExt(edge_mp, 0);
-		allc = Gtk::Allocation(edge_x, ucoord.height, edge_w, lcoord.height - ucoord.height + 1);
+		allc = Gtk::Allocation(edge_x - KEdgeBorderWidth, ucoord.height - KEdgeBorderWidth, 
+			edge_w + 2*KEdgeBorderWidth, lcoord.height - ucoord.height + 1 + 2*KEdgeBorderWidth);
 		edge_wd += KConnHorizGap;
 	    }
 	    comp->size_allocate(allc);

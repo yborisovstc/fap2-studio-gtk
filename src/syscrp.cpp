@@ -1,3 +1,4 @@
+#include <complex>
 #include <syst.h>
 #include "syscrp.h"
 #include "common.h"
@@ -93,6 +94,39 @@ Gtk::Requisition SysCrp::GetCpCoord(Elem* aCp)
 	res = VertCompRp::GetCpCoord(aCp);
     }
     return res;
+}
+
+int SysCrp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
+{
+    int res = -1;
+    Elem* ncp = NULL; // Nearest CP
+    for (tCpRps::iterator it = iCpRps.begin(); it != iCpRps.end(); it++) {
+	Elem* cp = it->first;
+	Gtk::Requisition cpcoord = GetCpCoord(cp);
+	std::complex<int> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
+	int dist = std::abs(sub);
+	if (res == -1 || dist < res) {
+	    res = dist;
+	    ncp = cp;
+	}
+    }
+    if (ncp != NULL) {
+	aCp = ncp;
+    }
+    return res;
+}
+
+void SysCrp::HighlightCp(Elem* aCp, bool aSet)
+{
+    Elem* cp = aCp;
+    assert(cp != NULL && iCpRps.count(cp) > 0);
+    Gtk::Widget* cprp = iCpRps.at(cp);
+    if (aSet) {
+	cprp->set_state(Gtk::STATE_PRELIGHT);
+    }
+    else {
+	cprp->set_state(Gtk::STATE_NORMAL);
+    }
 }
 
 bool SysCrp::on_expose_event(GdkEventExpose* event)

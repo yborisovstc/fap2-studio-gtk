@@ -39,6 +39,8 @@ class SysCrp: public VertCompRp
 	virtual void *DoGetObj(const string& aName);
 	// From MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
+	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp);
+	virtual void HighlightCp(Elem* aCp, bool aSet);
 	// From Layout
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
