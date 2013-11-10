@@ -37,6 +37,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     iNaviPane->SetDesEnv(iEnv);
     iNaviPane->show();
     iMainWnd->SetNaviPane(*iNaviPane);
+    iNaviPane->NatHier().SignalCompSelected().connect(sigc::mem_fun(*iHDetView, &HierDetailView::on_comp_selected));
     // Parse resource file
     gtk_rc_parse(KRcFileName);
 }
@@ -98,11 +99,13 @@ string App::GetDefaultLogFileName() const
 void App::OpenFile(const string& aFileName, bool aAsTmp)
 {
     if (iEnv != NULL) {
+	iNaviPane->SetDesEnv(NULL);
 	delete iEnv;
 	iEnv = NULL;
     }
     iEnv = new Env("DesEnv", aFileName, iLogFileName);
     iEnv->ConstructSystem();
+    iNaviPane->SetDesEnv(iEnv);
     iHDetView->SetRoot(iEnv->Root());
     iHDetView->SetCursor(iEnv->Root());
 }

@@ -225,12 +225,26 @@ NaviNatN::~NaviNatN()
 
 void NaviNatN::SetDesEnv(MEnv* aDesEnv)
 {
-    iDesEnv = aDesEnv;
-    Glib::RefPtr<NatnTreeMdl> mdl = NatnTreeMdl::create(iDesEnv->Provider());
-    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
-    bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
-    set_model(mdl);
-    append_column( "one", mdl->ColRec().name);
+    if (aDesEnv != iDesEnv) {
+	unset_model();
+	remove_all_columns();
+	Glib::RefPtr<TreeModel> curmdl = get_model();
+	/*
+	TreeModel* curmdlp = curmdl.operator ->();
+	if (curmdlp != NULL) {
+	    delete curmdlp;
+	}
+	*/
+	curmdl.reset();
+	iDesEnv = aDesEnv;
+	if (iDesEnv != NULL) {
+	    Glib::RefPtr<NatnTreeMdl> mdl = NatnTreeMdl::create(iDesEnv->Provider());
+	    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
+	    bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
+	    set_model(mdl);
+	    append_column( "one", mdl->ColRec().name);
+	}
+    }
 }
 
 bool NaviNatN::on_button_press_event(GdkEventButton* event)
@@ -289,23 +303,30 @@ NaviModules::~NaviModules()
 
 void NaviModules::SetDesEnv(MEnv* aDesEnv)
 {
-    iDesEnv = aDesEnv;
-    Glib::RefPtr<Gtk::ListStore> mdl = Gtk::ListStore::create(iColRec);
-    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
-    set_model(mdl);
-    append_column( "one", iColRec.name);
-    // Fill out the model
-    // List modules directory
-    struct dirent **entlist;
-    string modpath = iDesEnv->Provider()->ModulesPath();
-    int n = scandir (modpath.c_str(), &entlist, FilterModulesDirEntries, alphasort);
-    // Fill out the model
-    for (int cnt = 0; cnt < n; ++cnt) {
-	Gtk::TreeIter it = mdl->append();
-	Glib::ustring data = entlist[cnt]->d_name;
-	(*it).set_value(iColRec.name, data);
+    if (aDesEnv != iDesEnv) {
+	unset_model();
+	remove_all_columns();
+	Glib::RefPtr<TreeModel> curmdl = get_model();
+	curmdl.reset();
+	iDesEnv = aDesEnv;
+	if (iDesEnv != NULL) {
+	    Glib::RefPtr<Gtk::ListStore> mdl = Gtk::ListStore::create(iColRec);
+	    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
+	    set_model(mdl);
+	    append_column( "one", iColRec.name);
+	    // Fill out the model
+	    // List modules directory
+	    struct dirent **entlist;
+	    string modpath = iDesEnv->Provider()->ModulesPath();
+	    int n = scandir (modpath.c_str(), &entlist, FilterModulesDirEntries, alphasort);
+	    // Fill out the model
+	    for (int cnt = 0; cnt < n; ++cnt) {
+		Gtk::TreeIter it = mdl->append();
+		Glib::ustring data = entlist[cnt]->d_name;
+		(*it).set_value(iColRec.name, data);
+	    }
+	}
     }
-
 }
 
 int NaviModules::FilterModulesDirEntries(const struct dirent *aEntry)
@@ -378,17 +399,12 @@ HierTreeMdl::HierTreeMdl(MEnv* aDesEnv): Glib::ObjectBase(typeid(HierTreeMdl)), 
     iStamp(55)
 {
     iRoot = iDesEnv->Root();
+    iRoot->SetObserver(this);
 }
 
 HierTreeMdl::~HierTreeMdl()
 {
-    // Remove glue items
-    for(tGiList::iterator iter = iGiList.begin(); iter != iGiList.end(); ++iter)
-    {
-	GlueItem* pItem = *iter;
-	delete pItem;
-    }
-
+    iRoot->SetObserver(NULL);
 }
 
 Glib::RefPtr<HierTreeMdl> HierTreeMdl::create(MEnv* aDesEnv)
@@ -398,6 +414,11 @@ Glib::RefPtr<HierTreeMdl> HierTreeMdl::create(MEnv* aDesEnv)
     GtkTreeModel* treemdl = mdl->gobj();
     bool ist = GTK_IS_TREE_MODEL(treemdl);
     return Glib::RefPtr<HierTreeMdl>(nmdl);
+}
+
+void HierTreeMdl::UpdateStamp()
+{
+    iStamp++;
 }
 
 Gtk::TreeModelFlags HierTreeMdl::get_flags_vfunc() const
@@ -423,12 +444,22 @@ int HierTreeMdl::iter_n_root_children_vfunc() const
 bool HierTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
 {
     bool res = false;
-    unsigned psize = path.size();
-    if (psize > 0 && psize <= 1) {
+    Elem* comp = NULL;
+    Elem* mgr = iRoot;
+    unsigned depth = path.size();
+    //Glib::ArrayHandle<int> indc = path.get_indices(); 
+    vector<int> indcv = path.get_indices();
+    for (int dc = 0; dc < depth; dc++) {
+	int ind = indcv.at(dc);
+	if (ind >= mgr->Comps().size()) {
+	    return false;
+	}
+	comp = mgr->Comps().at(ind);
+	mgr = comp;
+    }
+    if (comp != NULL) {
 	iter.set_stamp(iStamp);
-	int row_index = path[0];
-	//iter.gobj()->user_data = (gpointer) &(iNodesInfo.at(row_index));
-	iter.gobj()->user_data = AddGlueItem(row_index);
+	iter.gobj()->user_data = comp;
 	res = true;
     }
     return res;
@@ -436,15 +467,28 @@ bool HierTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
 
 Gtk::TreeModel::Path HierTreeMdl::get_path_vfunc(const iterator& iter) const
 {
-    int indval = GetRowIndex(iter);
     Path path;
-    path.append_index(indval);
+    Elem* mgr = NULL;
+    Elem* comp = (Elem*) iter.gobj()->user_data;
+    // By depth
+    do {
+	mgr = comp->GetMan();
+	int pos;
+	for (pos = 0; pos < mgr->Comps().size(); pos++) {
+	    if (mgr->Comps().at(pos) == comp) {
+		break;
+	    }
+	}
+	path.prepend_index(pos);
+	comp = mgr;
+    } while (comp != iRoot);
     return path;
 }
 
 bool HierTreeMdl::IsIterValid(const iterator& iter) const
 {
-  return (iStamp == iter.get_stamp());
+    bool res = (iStamp == iter.get_stamp());
+    return res;
 }
 
 bool HierTreeMdl::iter_is_valid(const iterator& iter) const
@@ -458,15 +502,20 @@ void HierTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column, G
     if (IsIterValid(iter)) {
 	if (column < iColRec.size()) {
 	    GType coltype = get_column_type_vfunc(column);
-	    Glib::Value<Glib::ustring> sval;
-	    sval.init(coltype);
-	    int row_index = GetRowIndex(iter);
-	    int count = iRoot->Comps().size();
-	    if (count > 0) {
-		assert(row_index < count);
-		Elem* node = iRoot->Comps().at(row_index);
+	    if (column == HierTreeClrec::KCol_Name) {
+		Glib::Value<Glib::ustring> sval;
+		sval.init(coltype);
+		Elem* node = (Elem*) iter.gobj()->user_data;
 		string data = node->Name();
 		sval.set(data.c_str());
+		value.init(coltype);
+		value = sval;
+	    }
+	    else if (column == HierTreeClrec::KCol_Elem) {
+		Glib::Value<Elem*> sval;
+		sval.init(coltype);
+		Elem* data = (Elem*) iter.gobj()->user_data;
+		sval.set(data);
 		value.init(coltype);
 		value = sval;
 	    }
@@ -474,16 +523,34 @@ void HierTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column, G
     }
 }
 
+Elem* HierTreeMdl::get_next_comp(Elem* aComp) 
+{
+    Elem* res = NULL;
+    Elem* mgr = aComp->GetMan();
+    if (mgr != NULL) {
+	int ct = 0;
+	for (; ct < mgr->Comps().size(); ct++) {
+	    if (mgr->Comps().at(ct) == aComp) {
+		break;
+	    }
+	}
+	if (ct < mgr->Comps().size() - 1) {
+	    res = mgr->Comps().at(++ct);
+	}	
+    }
+    return res;
+}
+
 bool HierTreeMdl::iter_next_vfunc(const iterator& iter, iterator& iter_next) const
 {
     bool res = false;
     iter_next = iterator();
     if (IsIterValid(iter)) {
-	iter_next.set_stamp(iStamp);
-	int ri = GetRowIndex(iter);
-	int count = iRoot->Comps().size();
-	if (++ri < count) {
-	    iter_next.gobj()->user_data = AddGlueItem(ri);
+	Elem* node = (Elem*) iter.gobj()->user_data;
+	Elem* next = ((HierTreeMdl*) this)->get_next_comp(node);
+	if (next != NULL) {
+	    iter_next.set_stamp(iStamp);
+	    iter_next.gobj()->user_data = next;
 	    res = true;
 	}
     }
@@ -492,7 +559,12 @@ bool HierTreeMdl::iter_next_vfunc(const iterator& iter, iterator& iter_next) con
 
 int HierTreeMdl::iter_n_children_vfunc(const iterator& iter) const
 {
-    return 0;
+    int res = 0;
+    if (IsIterValid(iter)) {
+	Elem* node = (Elem*) iter.gobj()->user_data;
+	res = node->Comps().size();
+    }
+    return res;
 }
 
 bool HierTreeMdl::iter_children_vfunc(const iterator& parent, iterator& iter) const
@@ -502,15 +574,24 @@ bool HierTreeMdl::iter_children_vfunc(const iterator& parent, iterator& iter) co
 
 bool HierTreeMdl::iter_has_child_vfunc(const iterator& iter) const
 {
-    return (iter_n_children_vfunc(iter) > 0);
+    bool res = false;
+    if (IsIterValid(iter)) {
+	Elem* node = (Elem*) iter.gobj()->user_data;
+	res = (node->Comps().size() > 0);
+    }
+    return res;
 }
 
 bool HierTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterator& iter) const
 {
     bool res = false;
-    iter = iterator();
     if (IsIterValid(parent)) {
-	// To update further
+	Elem* node = (Elem*) parent.gobj()->user_data;
+	if (n < node->Comps().size()) {
+	    iter.set_stamp(iStamp);
+	    iter.gobj()->user_data = node->Comps().at(n);
+	    res = true;
+	}
     }
     return res;
 }
@@ -518,11 +599,9 @@ bool HierTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterator& 
 bool HierTreeMdl::iter_nth_root_child_vfunc(int n, iterator& iter) const
 {
     bool res = false;
-    iter = iterator();
-    int count = iRoot->Comps().size();
-    if (n < count) {
+    if (n < iRoot->Comps().size()) {
 	iter.set_stamp(iStamp);
-	iter.gobj()->user_data = AddGlueItem(n);
+	iter.gobj()->user_data = iRoot->Comps().at(n);
 	res = true;
     }
     return res;
@@ -531,24 +610,16 @@ bool HierTreeMdl::iter_nth_root_child_vfunc(int n, iterator& iter) const
 bool HierTreeMdl::iter_parent_vfunc(const iterator& child, iterator& iter) const
 {
     bool res = false;
-    iter = iterator();
-    if (IsIterValid(child)) {
-	// To update further
+    bool valid = IsIterValid(child);
+    if (valid) {
+	Elem* comp = (Elem*) child.gobj()->user_data;
+	if (comp->GetMan() != NULL) {
+	    iter.set_stamp(iStamp);
+	    iter.gobj()->user_data = comp->GetMan();
+	    res = true;
+	}
     }
     return res;
-}
-
-int HierTreeMdl::GetRowIndex(const iterator& iter) const
-{
-    GlueItem* gi = static_cast<GlueItem*>(iter.gobj()->user_data);
-    return gi->iRowIndex;
-}
-
-HierTreeMdl::GlueItem* HierTreeMdl::AddGlueItem(int aRowIndex) const
-{
-    GlueItem* item = new GlueItem(aRowIndex);
-    iGiList.push_back(item);
-    return item;
 }
 
 bool HierTreeMdl::row_draggable_vfunc(const TreeModel::Path& path) const
@@ -560,10 +631,19 @@ bool HierTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::Selectio
 {
     bool res = false;
     // Set selection. This will evolve DnD process 
+    iterator iter((TreeModel*)this);
+    bool ires = get_iter_vfunc(path, iter);
+    Elem* node = (Elem*) (*iter).get_value(ColRec().elem);
+    GUri uri;
+    node->GetUri(uri);
+    selection_data.set_text(uri.GetUri());
+    //
+    /*
     int row_index = path[0];
     Elem* node = iRoot->Comps().at(row_index);
     string data = node->Name();
     selection_data.set_text(data);
+    */
     res = true;
     return res;
 }
@@ -572,6 +652,35 @@ bool HierTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
 {
     return true;
 }
+
+void HierTreeMdl::OnCompDeleting(Elem& aComp)
+{
+    std::cout << "HierTreeMdl::OnCompDeleting: [" << aComp.Name() << "]" << std::endl;
+    //UpdateStamp();
+    iterator iter;
+    iter.set_stamp(iStamp);
+    iter.gobj()->user_data = &aComp;
+    Path path = get_path_vfunc(iter);
+    row_deleted(path);
+}
+
+void HierTreeMdl::OnCompAdding(Elem& aComp)
+{
+    std::cout << "HierTreeMdl::OnCompAdding: [" << aComp.Name() << "]" << std::endl;
+    //UpdateStamp();
+    iterator iter;
+    iter.set_stamp(iStamp);
+    iter.gobj()->user_data = &aComp;
+    Path path = get_path_vfunc(iter);
+    row_inserted(path, iter);
+}
+
+void HierTreeMdl::OnCompChanged(Elem& aComp)
+{
+    std::cout << "HierTreeMdl::OnCompChanged" << std::endl;
+    UpdateStamp();
+}
+
 
 
 // Current hier navigation widget
@@ -586,12 +695,22 @@ NaviHier::~NaviHier()
 
 void NaviHier::SetDesEnv(MEnv* aDesEnv)
 {
-    iDesEnv = aDesEnv;
-    Glib::RefPtr<HierTreeMdl> mdl = HierTreeMdl::create(iDesEnv);
-    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
-    bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
-    set_model(mdl);
-    append_column( "one", mdl->ColRec().name);
+    if (aDesEnv != iDesEnv) {
+	unset_model();
+	remove_all_columns();
+	Glib::RefPtr<TreeModel> curmdl = get_model();
+	TreeModel* curmdlp = curmdl.operator ->();
+	curmdl.reset();
+	delete curmdlp;
+	iDesEnv = aDesEnv;
+	if (iDesEnv != NULL) {
+	    Glib::RefPtr<HierTreeMdl> mdl = HierTreeMdl::create(iDesEnv);
+	    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
+	    bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
+	    set_model(mdl);
+	    append_column( "one", mdl->ColRec().name);
+	}
+    }
 }
 
 bool NaviHier::on_button_press_event(GdkEventButton* event)
@@ -636,7 +755,17 @@ void NaviHier::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context, G
     TreeView::on_drag_data_get(context, selection_data, info, time);
 }
 
+void NaviHier::on_row_activated(const TreeModel::Path& path, TreeViewColumn* column)
+{
+    TreeModel::iterator iter = get_model()->get_iter(path);
+    Elem* node = (Elem*) (*iter).get_value(HierTreeMdl::ColRec().elem);
+    iSigCompSelected.emit(node);
+}
 
+NaviHier::tSigCompSelected NaviHier::SignalCompSelected()
+{
+    return iSigCompSelected;
+}
 
 
 
@@ -664,6 +793,7 @@ Navi::~Navi()
 
 void Navi::SetDesEnv(MEnv* aDesEnv)
 {
+    assert(aDesEnv == NULL || aDesEnv != NULL && iDesEnv == NULL);
     iDesEnv = aDesEnv;
     iNatn->SetDesEnv(iDesEnv);
     iNatn->enable_model_drag_source();
@@ -676,3 +806,7 @@ void Navi::SetDesEnv(MEnv* aDesEnv)
     iNatHier->drag_source_set (Gtk::ArrayHandle_TargetEntry(targetentries));
 }
 
+NaviHier& Navi::NatHier()
+{
+    return *iNatHier;
+}

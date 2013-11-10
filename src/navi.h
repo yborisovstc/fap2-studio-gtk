@@ -9,9 +9,11 @@
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treedragsource.h>
 
+#include <melem.h>
 #include <menv.h>
 
 using namespace std;
+using namespace Gtk;
 
 // Native nodes tree column record
 class NatnTreeClrec: public Gtk::TreeModelColumnRecord
@@ -102,27 +104,26 @@ class NaviNatN: public Gtk::TreeView
 class HierTreeClrec: public Gtk::TreeModelColumnRecord
 {
     public:
-	Gtk::TreeModelColumn<Glib::ustring> name;
+	enum ColumnIndex {
+	    KCol_Name = 0,
+	    KCol_Elem = 1,
+	};
     public:
-	HierTreeClrec() { add(name);};
+	Gtk::TreeModelColumn<Glib::ustring> name;
+	Gtk::TreeModelColumn<void*> elem;
+    public:
+	HierTreeClrec() { add(name); add(elem);};
 };
 
 // Current hier tree model
-class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource
+class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource, 
+    public MCompsObserver
 {
-    public:
-	class GlueItem
-	{
-	    public:
-		GlueItem(int aRowIndex): iRowIndex(aRowIndex) {};
-		int iRowIndex;
-	};
-
     public:
 	static Glib::RefPtr<HierTreeMdl> create(MEnv* aDesEnv);
 	HierTreeMdl(MEnv* aDesEnv);
 	virtual ~HierTreeMdl();
-	const HierTreeClrec& ColRec() {return iColRec;};
+	static const HierTreeClrec& ColRec() {return iColRec;};
     protected:
 	// From Gtk::TreeModel
 	virtual Gtk::TreeModelFlags get_flags_vfunc() const;
@@ -144,10 +145,14 @@ class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeD
 	virtual bool row_draggable_vfunc(const TreeModel::Path& path) const;
 	virtual bool drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const;
 	virtual bool drag_data_delete_vfunc(const TreeModel::Path& path);
+	// From MCompsObserver
+	virtual void OnCompDeleting(Elem& aComp);
+	virtual void OnCompAdding(Elem& aComp);
+	virtual void OnCompChanged(Elem& aComp);
     private:
 	bool IsIterValid(const iterator& iter) const;
-	GlueItem* AddGlueItem(int aRowIndex) const;
-	int GetRowIndex(const iterator& iter) const;
+	void UpdateStamp();
+	Elem* get_next_comp(Elem* aComp);
     private:
 	// Provider provider
 	MEnv* iDesEnv;
@@ -157,28 +162,31 @@ class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeD
 	Elem* iRoot;
 	// Stamp, is used for securing iterator's associating to model
 	int iStamp;
-	// Glue Items list
-	typedef std::list<GlueItem*> tGiList;
-	mutable tGiList iGiList;
 };
 
 // Current hier navigation widget
 class NaviHier: public Gtk::TreeView
 {
     public:
+	typedef sigc::signal<void, Elem*> tSigCompSelected;
+    public:
 	NaviHier();
 	virtual ~NaviHier();
 	void SetDesEnv(MEnv* aDesEnv);
+	// TODO [YB] To move out to iface like MHierNavigator, and implement, the same for MDrp
+	virtual tSigCompSelected SignalCompSelected();
     protected:
 	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context);
 	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext >& context, Gtk::SelectionData& selection_data, guint info, guint time);
 	virtual bool on_button_press_event(GdkEventButton* event);
+	virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);
     protected:
 	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
     private:
 	// DES environment
 	MEnv* iDesEnv; 
 	int iPressX, iPressY;
+	tSigCompSelected iSigCompSelected;
 };
 
 
@@ -221,6 +229,7 @@ class Navi: public Gtk::Notebook
 	Navi();
 	virtual ~Navi();
 	void SetDesEnv(MEnv* aDesEnv);
+	NaviHier& NatHier();
     private:
 	// DES environment
 	MEnv* iDesEnv; 

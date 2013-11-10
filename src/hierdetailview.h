@@ -22,10 +22,11 @@ class HierDetailView
 	virtual ~HierDetailView();
 	void SetRoot(Elem* aRoot);
 	void SetCursor(Elem* aRoot);
+	// Signal handlers:
+	void on_comp_selected(Elem* aComp);
     protected:
 	// Signal handlers:
 	void on_action_up();
-	void on_comp_selected(Elem* aComp);
     private:
 	// Environment
 	MSEnv& iStEnv;
