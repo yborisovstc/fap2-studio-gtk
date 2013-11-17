@@ -9,6 +9,7 @@
 // isn't required at the moment
 static GtkTargetEntry targetentries[] =
 {
+    { (gchar*) KDnDTarg_Comp, 0, 0 },
     { (gchar*) "STRING",        0, 0 },
     { (gchar*) "text/plain",    0, 1 },
     { (gchar*) "text/uri-list", 0, 2 },
@@ -25,9 +26,11 @@ static GtkTargetEntry targetentries[] =
    */
 
 ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv),
-    iDnDTarg(EDT_Unknown)
+    iDnDTarg(EDT_Unknown), iDropBaseCandidate(NULL)
 {
-    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE));
+    // Set dest with avoiding DestDefaults flags. These flags are only for some trivial DnD 
+    // scenarious, but we need to implement requesting edges data during drop motion
+    drag_dest_set(Gtk::ArrayHandle_TargetEntry(targetentries, 3, Glib::OWNERSHIP_NONE), Gtk::DestDefaults(0), Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
     // Create comp menu elements
     // TODO [YB] To implement context menu in CRps but not DRp.
     Gtk::Menu_Helpers::MenuElem e_rename("_Rename", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_rename));
@@ -180,21 +183,110 @@ void ElemDetRp::on_comp_button_press_name(GdkEventButton* event, Elem* aComp)
 {
 }
 
+bool ElemDetRp::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
+{
+    bool res = false;
+    // Checking if source target is local component and action is Move
+    Gdk::ListHandle_AtomString src_targets = context->get_targets();
+    std::vector<std::string> vtargs = src_targets.operator std::vector<std::string>();
+    std::string targ = vtargs.at(0);
+    Gdk::DragAction action = context->get_action();
+    Gdk::DragAction saction = context->get_suggested_action();
+    std::cout << "ElemDetRp on_drag_motion, iDnDTarg: " << iDnDTarg << ", action: " << action << ", s_action " << saction << std::endl;
+    if (iDnDTarg == EDT_Unknown) {
+	// Detect target type
+	drag_get_data(context, targ, time);
+    }
+    else {
+	std::cout << "ElemDetRp on_drag_motion: targ detected: " << iDnDTarg << ", x: " << x << ", y: " << y << std::endl;
+	if (iDnDTarg == EDT_AddingNode) {
+	    // Find the nearest node and highligh it
+	    MCrp* cand = NULL;
+	    for (vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && cand == NULL; it++) {
+		MCrp* crp = iCompRps.at(*it);
+		Widget& crpw = crp->Widget();
+		Allocation alc = crpw.get_allocation();
+		if (y < alc.get_y()) {
+		    cand = crp;
+		}
+	    }
+	    if (cand != NULL && (cand != iDropBaseCandidate)) {
+		if (iDropBaseCandidate != NULL) {
+		    iDropBaseCandidate->SetHighlighted(false);
+		}
+		iDropBaseCandidate = cand;
+		iDropBaseCandidate->SetHighlighted(true);
+	    }
+	    else if (cand == NULL && iDropBaseCandidate != NULL) {
+		iDropBaseCandidate->SetHighlighted(false);
+		iDropBaseCandidate = NULL;
+	    }
+	    queue_resize();
+	}
+	res = true;
+	//context->drag_status(Gdk::ACTION_COPY, time);
+	context->drag_status(saction, time);
+    }
+    return res;
+}
+
 bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
 {
-    std::cout << "ElemDetRp on_drag_drop" << std::endl;
-    //bool res = Layout::on_drag_drop(context, x, y, time);
-    return true;
+    bool res = false;
+    Gdk::DragAction action = context->get_action();
+    std::cout << "ElemDetRp on_drag_drop, action: " << action << ", target: " << iDnDTarg << std::endl;
+    if (iDnDTarg == EDT_AddingNode) {
+	context->drag_finish(true, false, time);
+	if (iDropBaseCandidate != NULL) {
+	    iDropBaseCandidate->SetHighlighted(false);
+	}
+	if (action == Gdk::ACTION_COPY) {
+	    add_node(iDndReceivedData);
+	}
+	else if (action == Gdk::ACTION_MOVE) {
+	    GUri uri;
+	    if (iDropBaseCandidate != NULL) {
+		iDropBaseCandidate->Model()->GetUri(uri, iElem);
+	    }
+	    move_node(iDndReceivedData, uri.GetUri());
+	}
+	iDnDTarg = EDT_Unknown;
+	iDndReceivedData.clear();
+	iDropBaseCandidate = NULL;
+	res = true;
+	queue_resize();
+    }
+    return res;
 }
 
 void ElemDetRp::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
     std::string targ = selection_data.get_target();
-    Glib::ustring data = selection_data.get_text();
-    std::cout << "ElemDetRp on_drag_data_received: " << data << std::endl;
+    Glib::ustring data = (const char*) selection_data.get_data();
+    iDndReceivedData = data;
+    std::cout << "ElemDetRp on_drag_data_received, target: " << targ << ", data: " << data << std::endl;
+    if (iDnDTarg == EDT_Unknown) {
+	// Classify DnD target
+	if (targ == KDnDTarg_Comp) {
+	    iDnDTarg = EDT_AddingNode;
+	    std::cout << "ElemDetRp on_drag_data_received, DnD targ: " << iDnDTarg << ", action - MOVE" << std::endl;
+	    context->drag_status(Gdk::ACTION_MOVE, time);
+	}
+	if (targ == "STRING") {
+	    iDnDTarg = EDT_AddingNode;
+	    std::cout << "ElemDetRp on_drag_data_received, DnD targ: " << iDnDTarg << ", action - COPY" << std::endl;
+	    context->drag_status(Gdk::ACTION_COPY, time);
+	}
+    }
+    else {
+	// Target type detected
+	context->drop_finish(true, time);
+    }
     // Finishing drag, not removing the original data
-    context->drag_finish(true, false, time);
-    on_node_dropped(data);
+    /*
+       context->drag_finish(true, false, time);
+       on_node_dropped(data);
+       */
 }
 
 void ElemDetRp::on_drag_leave(const Glib::RefPtr<Gdk::DragContext>& context, guint time)
@@ -204,6 +296,7 @@ void ElemDetRp::on_drag_leave(const Glib::RefPtr<Gdk::DragContext>& context, gui
 
 void ElemDetRp::on_node_dropped(const std::string& aUri)
 {
+    std::cout << "ElemDetRp on_node_dropped" << std::endl;
     add_node(aUri);
 }
 
@@ -256,6 +349,17 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
     ChromoNode change = smutr.AddChild(ENt_Cont);
     change.SetAttr(ENa_MutNode, aNodeUri);
     change.SetAttr(ENa_MutVal, aNewContent);
+    iElem->Mutate();
+    Refresh();
+}
+
+void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestUri)
+{
+    MChromo& mut = iElem->Mutation();
+    ChromoNode smutr = mut.Root();
+    ChromoNode change = smutr.AddChild(ENt_Move);
+    change.SetAttr(ENa_Id, aNodeUri);
+    change.SetAttr(ENa_MutNode, aDestUri);
     iElem->Mutate();
     Refresh();
 }

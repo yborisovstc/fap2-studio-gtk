@@ -2,6 +2,14 @@
 #include "common.h"
 #include "elemcomprp.h"
 
+
+// Using dedicated DnD target for component 
+static GtkTargetEntry targetentries[] =
+{
+//    { (gchar*) "STRING", GTK_TARGET_SAME_WIDGET, KTei_ElemCrp },
+    { (gchar*) KDnDTarg_Comp, 0, 0 },
+};
+
 ElemCrpCtxMenu::ElemCrpCtxMenu(): Gtk::Menu()
 {
 }
@@ -54,6 +62,10 @@ ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(fal
     // Set events mask
     add_events(Gdk::BUTTON_PRESS_MASK);
     iHead->iName->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemCompRp::on_name_button_press));
+    // [DnD] We would need here both MOVE and COPY actions available, when COPY is initiated with CTRL button,
+    // but GTK doesn't provide the convenient way to implement this, ref gtk_drag_get_event_actions in gtkdnd.c 
+    // So the currently COPY is priority but MOVE initiated via SHIFT
+    drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
 }
 
 ElemCompRp::~ElemCompRp()
@@ -121,6 +133,15 @@ void ElemCompRp::DoSetHighlighted(bool aSet)
 bool ElemCompRp::on_button_press_event(GdkEventButton* aEvent)
 {
     iSigButtonPress.emit(aEvent);
+}
+
+void ElemCompRp::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time)
+{
+    std::cout << "ElemCompRp on_drag_data_get"  << std::endl;
+    GUri uri;
+    iElem->GetUri(uri, iElem->GetMan());
+    std::string suri = uri.GetUri();
+    data.set("FAP_COMP", suri);
 }
 
 

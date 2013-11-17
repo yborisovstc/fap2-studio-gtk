@@ -506,6 +506,7 @@ void HierTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column, G
 		Glib::Value<Glib::ustring> sval;
 		sval.init(coltype);
 		Elem* node = (Elem*) iter.gobj()->user_data;
+		//string data = node->EType() + ":" + node->Name();
 		string data = node->Name();
 		sval.set(data.c_str());
 		value.init(coltype);
@@ -668,11 +669,16 @@ void HierTreeMdl::OnCompAdding(Elem& aComp)
 {
     std::cout << "HierTreeMdl::OnCompAdding: [" << aComp.Name() << "]" << std::endl;
     //UpdateStamp();
+    // Nodify view of all the internal components. This is required because there is no
+    // notif from internal comps - they are created before element gets inserted to the hier
     iterator iter;
     iter.set_stamp(iStamp);
     iter.gobj()->user_data = &aComp;
     Path path = get_path_vfunc(iter);
     row_inserted(path, iter);
+    for (vector<Elem*>::iterator it = aComp.Comps().begin(); it != aComp.Comps().end(); it++) {
+	OnCompAdding(*(*it));
+    }
 }
 
 void HierTreeMdl::OnCompChanged(Elem& aComp)

@@ -93,7 +93,6 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
     protected:
 	Elem* GetCompOwning(Elem* aElem);
     protected:
-	std::string iDndReceivedData;
 	MCrp* iEdgeDropCandidate;
 	Elem* iEdgeDropCpCandidate;
 

@@ -42,6 +42,7 @@ class ElemCompRp: public Gtk::Layout
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
 	virtual bool on_button_press_event(GdkEventButton* aEvent);
+	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
 	// Signal handlers
 	bool on_name_button_press(GdkEventButton* event);
     protected:

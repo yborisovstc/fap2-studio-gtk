@@ -12,6 +12,7 @@
 #include "mcrp.h"
 #include "common.h"
 
+using namespace Gtk;
 
 class ElemDetRp: public Gtk::Layout, public MCrpMgr
 {
@@ -26,6 +27,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	virtual void on_realize();
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	virtual bool on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 	virtual bool on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 	virtual void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, 
 		const Gtk::SelectionData& selection_data, guint info, guint time);
@@ -46,6 +48,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void rename_node(const std::string& aNodeUri, const std::string& aNewName);
 	void remove_node(const std::string& aNodeUri);
 	void change_content(const std::string& aNodeUri, const std::string& aNewContent);
+	void move_node(const std::string& aNodeUri, const std::string& aDestUri);
 	void ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp);
 	void on_comp_menu_rename();
 	void on_comp_menu_remove();
@@ -60,6 +63,8 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	Elem* iCompSelected;
 	std::map<MCrp::Action, Gtk::Menu_Helpers::MenuElem> iCompMenuElems;
 	TDnDTarg iDnDTarg;
+	MCrp* iDropBaseCandidate;
+	std::string iDndReceivedData;
 };
 
 class ElemDrp: public MDrp

@@ -592,7 +592,7 @@ void VertDrpw_v1::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& co
 	// Classify DnD target
 	Elem* cp = iElem->GetNode(iDndReceivedData);
 	// TODO [YB] To use more valuable criteria
-	if (cp != NULL) {
+	if (cp != NULL && cp->EType(EFalse) == Prop::PEType()) {
 	    iDnDTarg = EDT_EdgeCp;
 	}
 	else {

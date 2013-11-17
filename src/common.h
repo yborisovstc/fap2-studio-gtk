@@ -50,6 +50,7 @@ const gint KEdgeGridCell = 10;
 
 // Targets entries infos for drag-drop
 const gint KTei_EdgeCp = 4;
+const gint KTei_ElemCrp = 5;
 // Distance Threshold when DnD edge to connectable component
 const gint KDistThresholdEdge = 90;
 
@@ -58,7 +59,10 @@ enum TDnDTarg {
     EDT_Unknown = 0,
     EDT_AddingNode = 1,
     EDT_EdgeCp = 2,
+    EDT_Comp = 3, // Local component
 };
 
+// TODO [YB] To rename to FAP_NODE_URI
+static const gchar* KDnDTarg_Comp = "FAP_COMP";
 
 #endif
