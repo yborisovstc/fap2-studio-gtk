@@ -57,12 +57,13 @@ const gint KDistThresholdEdge = 90;
 // DnD targets type
 enum TDnDTarg {
     EDT_Unknown = 0,
-    EDT_AddingNode = 1,
+    EDT_Node = 1,
     EDT_EdgeCp = 2,
     EDT_Comp = 3, // Local component
 };
 
 // TODO [YB] To rename to FAP_NODE_URI
 static const gchar* KDnDTarg_Comp = "FAP_COMP";
+static const gchar* KDnDTarg_EdgeCp = "FAP_EDGE_CP";
 
 #endif

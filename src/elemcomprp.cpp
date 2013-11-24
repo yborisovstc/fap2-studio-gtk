@@ -141,7 +141,7 @@ void ElemCompRp::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Se
     GUri uri;
     iElem->GetUri(uri, iElem->GetMan());
     std::string suri = uri.GetUri();
-    data.set("FAP_COMP", suri);
+    data.set(KDnDTarg_Comp, suri);
 }
 
 

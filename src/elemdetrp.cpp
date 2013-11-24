@@ -192,14 +192,14 @@ bool ElemDetRp::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, i
     std::string targ = vtargs.at(0);
     Gdk::DragAction action = context->get_action();
     Gdk::DragAction saction = context->get_suggested_action();
-    std::cout << "ElemDetRp on_drag_motion, iDnDTarg: " << iDnDTarg << ", action: " << action << ", s_action " << saction << std::endl;
+    //std::cout << "ElemDetRp on_drag_motion, iDnDTarg: " << iDnDTarg << ", action: " << action << ", s_action " << saction << std::endl;
     if (iDnDTarg == EDT_Unknown) {
 	// Detect target type
 	drag_get_data(context, targ, time);
     }
     else {
-	std::cout << "ElemDetRp on_drag_motion: targ detected: " << iDnDTarg << ", x: " << x << ", y: " << y << std::endl;
-	if (iDnDTarg == EDT_AddingNode) {
+	//std::cout << "ElemDetRp on_drag_motion: targ detected: " << iDnDTarg << ", x: " << x << ", y: " << y << std::endl;
+	if (iDnDTarg == EDT_Node) {
 	    // Find the nearest node and highligh it
 	    MCrp* cand = NULL;
 	    for (vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && cand == NULL; it++) {
@@ -222,10 +222,10 @@ bool ElemDetRp::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, i
 		iDropBaseCandidate = NULL;
 	    }
 	    queue_resize();
+	    res = true;
+	    //context->drag_status(Gdk::ACTION_COPY, time);
+	    context->drag_status(saction, time);
 	}
-	res = true;
-	//context->drag_status(Gdk::ACTION_COPY, time);
-	context->drag_status(saction, time);
     }
     return res;
 }
@@ -235,7 +235,7 @@ bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int 
     bool res = false;
     Gdk::DragAction action = context->get_action();
     std::cout << "ElemDetRp on_drag_drop, action: " << action << ", target: " << iDnDTarg << std::endl;
-    if (iDnDTarg == EDT_AddingNode) {
+    if (iDnDTarg == EDT_Node) {
 	context->drag_finish(true, false, time);
 	if (iDropBaseCandidate != NULL) {
 	    iDropBaseCandidate->SetHighlighted(false);
@@ -268,12 +268,12 @@ void ElemDetRp::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& cont
     if (iDnDTarg == EDT_Unknown) {
 	// Classify DnD target
 	if (targ == KDnDTarg_Comp) {
-	    iDnDTarg = EDT_AddingNode;
+	    iDnDTarg = EDT_Node;
 	    std::cout << "ElemDetRp on_drag_data_received, DnD targ: " << iDnDTarg << ", action - MOVE" << std::endl;
 	    context->drag_status(Gdk::ACTION_MOVE, time);
 	}
 	if (targ == "STRING") {
-	    iDnDTarg = EDT_AddingNode;
+	    iDnDTarg = EDT_Node;
 	    std::cout << "ElemDetRp on_drag_data_received, DnD targ: " << iDnDTarg << ", action - COPY" << std::endl;
 	    context->drag_status(Gdk::ACTION_COPY, time);
 	}

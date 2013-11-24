@@ -31,6 +31,8 @@ fap2_studio_gtk_SOURCES = \
 		 propcrp.cpp \
 		 toolitems.h \
 		 toolitems.cpp \
+		 logview.h \
+		 logview.cpp \
 		 mprov.h \
 		 provdef.h \
 		 provdef.cpp \

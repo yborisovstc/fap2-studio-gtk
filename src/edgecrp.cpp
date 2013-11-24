@@ -10,10 +10,8 @@ const int KEdgeDragThreshold = 8;
 
 static GtkTargetEntry targetentries[] =
 {
-    { (gchar*) "STRING",        0, KTei_EdgeCp },
-//    { (gchar*) "text/edge-cp-uri", 0, KTei_EdgeCp },
-//    { (gchar*) "text/plain",    0, KTei_EdgeCp },
-//    { (gchar*) "text/uri-list", 0, 2 },
+//    { (gchar*) "STRING",        0, KTei_EdgeCp },
+    { (gchar*) KDnDTarg_EdgeCp, 0, KTei_EdgeCp },
 };
 
 const string sMEdgeCrpType = "MEdgeCrp";
@@ -548,7 +546,7 @@ EdgeCompRp_v3::Cp::Cp(): iPos(0)
 
 void EdgeCompRp_v3::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time)
 {
-    //std::cout << "EdgeCompRp_v3 on_drag_data_get, info: " << info << std::endl;
+    std::cout << "EdgeCompRp_v3 on_drag_data_get, info: " << info << std::endl;
     if (info == KTei_EdgeCp && iDragging && iDraggedPart != EDp_None) {
 	GUri uri;
 	Elem* pte = NULL;
@@ -560,7 +558,9 @@ void EdgeCompRp_v3::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk:
 	}
 	pte->GetUri(uri, iElem->GetMan());
 	std::string suri = uri.GetUri();
-	data.set_text(suri);
+	//data.set_text(suri);
+	data.set(KDnDTarg_EdgeCp, suri);
+	std::cout << "EdgeCompRp_v3 on_drag_data_get, data set: [" << suri << "]" << std::endl;
     }
 }
 

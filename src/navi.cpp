@@ -473,6 +473,9 @@ Gtk::TreeModel::Path HierTreeMdl::get_path_vfunc(const iterator& iter) const
     // By depth
     do {
 	mgr = comp->GetMan();
+	if (mgr == NULL) {
+	    break;
+	}
 	int pos;
 	for (pos = 0; pos < mgr->Comps().size(); pos++) {
 	    if (mgr->Comps().at(pos) == comp) {
@@ -690,7 +693,7 @@ void HierTreeMdl::OnCompChanged(Elem& aComp)
 
 
 // Current hier navigation widget
-NaviHier::NaviHier()
+NaviHier::NaviHier(): iDesEnv(NULL)
 {
     set_headers_visible(false);
 }
@@ -701,13 +704,16 @@ NaviHier::~NaviHier()
 
 void NaviHier::SetDesEnv(MEnv* aDesEnv)
 {
+    assert(aDesEnv == NULL || aDesEnv != NULL && iDesEnv == NULL);
     if (aDesEnv != iDesEnv) {
 	unset_model();
 	remove_all_columns();
+	/* No need to delete model explicitly, it is deleted at unset_model
 	Glib::RefPtr<TreeModel> curmdl = get_model();
 	TreeModel* curmdlp = curmdl.operator ->();
 	curmdl.reset();
 	delete curmdlp;
+	*/
 	iDesEnv = aDesEnv;
 	if (iDesEnv != NULL) {
 	    Glib::RefPtr<HierTreeMdl> mdl = HierTreeMdl::create(iDesEnv);
@@ -776,7 +782,7 @@ NaviHier::tSigCompSelected NaviHier::SignalCompSelected()
 
 
 // Navigation widget
-Navi::Navi(): iNatn(NULL)
+Navi::Navi(): iNatn(NULL), iDesEnv(NULL)
 {
     // Native nodes
     iNatn = new NaviNatN();

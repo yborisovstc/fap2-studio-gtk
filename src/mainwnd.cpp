@@ -42,19 +42,27 @@ MainWnd::MainWnd() : iButton("Hello World"), iButton2("Test")
 
     // Create main view client window
     irMainClientWnd = new Gtk::ScrolledWindow();
+    // Log view
+    iLogWnd = new Gtk::ScrolledWindow();
+    iLogView = new LogView();
+    iLogWnd->add(*iLogView);
+    iLogWnd->show();
 
+    iVPanG.show();
     // Base vertical layout: main horisontal layout
     iHPanG.show();
-    iVboxMain.pack_start(iHPanG, Gtk::PACK_EXPAND_WIDGET);
+    iVboxMain.pack_start(iVPanG, Gtk::PACK_EXPAND_WIDGET);
 //    iVboxMain.pack_start(*irMainClientWnd, Gtk::PACK_EXPAND_WIDGET);
     // Detail view pane
     iHPanG.pack2(*irMainClientWnd, Gtk::EXPAND);
+    iVPanG.pack1(iHPanG, Gtk::EXPAND);
+    iVPanG.pack2(*iLogWnd, Gtk::EXPAND);
 
     pMenuBar->show();
     pToolBar->show();
     iButton.show();
     irMainClientWnd->show();
-
+    iLogView->show();
 }
 
 MainWnd::~MainWnd()
@@ -88,5 +96,10 @@ Gtk::Container& MainWnd::ClientWnd()
 void MainWnd::SetNaviPane(Gtk::Widget& aWidget)
 {
     iHPanG.pack1(aWidget, Gtk::EXPAND);
+}
+
+void MainWnd::SetEnvLog(const string& aLogFileName)
+{
+    iLogView->SetLogFileName(aLogFileName);
 }
 

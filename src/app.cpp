@@ -25,6 +25,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     // Create main window
     iMainWnd = new MainWnd();
     iMainWnd->maximize();
+    iMainWnd->SetEnvLog(iLogFileName);
     //iMainWnd->UIManager()->signal_post_activate().connect(sigc::mem_fun(*this, &App::on_action));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Open")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_open));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
