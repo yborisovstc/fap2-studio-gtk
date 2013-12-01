@@ -14,7 +14,8 @@ dist_vconf_DATA = \
 
 templdir = $(pkgdatadir)/templ
 dist_templ_DATA = \
-	     templates/empty.xml
+	     templates/empty.xml \
+	     templates/simple.xml
 
 examplesdir = $(pkgdatadir)/examples
 dist_examples_DATA = \
@@ -23,8 +24,6 @@ dist_examples_DATA = \
 	     examples/simple_elem.xml \
 	     examples/simple_vert.xml \
 	     examples/syst_1.xml
-
-
 
 EXTRA_DIST = \
 	     img/tbar_btn_run.png \

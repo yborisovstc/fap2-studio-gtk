@@ -270,6 +270,13 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
     aReq->height = max(comp_h, edge_h);
 }
 
+bool VertDrpw_v1::AreCpsCompatible(Elem* aCp1, Elem* aCp2)
+{
+    MVert* v1 = aCp1->GetObj(v1);
+    MVert* v2 = aCp2->GetObj(v2);
+    return (v1 != NULL && v2 != NULL);
+}
+
 bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
 {
     bool res = false;
@@ -307,6 +314,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		medgecrp->SetCp2Coord(coord);
 		pair = medge->Point1();
 	    }
+	    Elem* epair = pair != NULL ? pair->EBase()->GetObj(epair) : NULL;
 	    MCompatChecker* mpaircc = pair != NULL ? pair->EBase()->GetObj(mpaircc) : NULL;
 	    // Find the nearest CP and highligh it
 	    int dist = KDistThresholdEdge ;
@@ -331,7 +339,8 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		    conn = iEdgeDropCandidate->GetObj(conn);
 		    conn->HighlightCp(iEdgeDropCpCandidate, false);
 		}
-		if (mpaircc == NULL || mpaircc->IsCompatible(candcp)) {
+		//if (mpaircc == NULL || mpaircc->IsCompatible(candcp)) {
+		if (pair == NULL || AreCpsCompatible(epair, candcp)) {
 		    iEdgeDropCandidate = cand;
 		    iEdgeDropCpCandidate = candcp;
 		    conn = iEdgeDropCandidate->GetObj(conn);

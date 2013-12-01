@@ -15,6 +15,7 @@ class SysDrp: public VertDrpw_v1
 	virtual ~SysDrp();
     protected:
 	virtual void Construct();
+	virtual bool AreCpsCompatible(Elem* aCp1, Elem* aCp2);
 	// From MCrpMgr
 	virtual bool IsTypeAllowed(const std::string& aType) const;
 	// From MDrp
@@ -25,6 +26,9 @@ class SysDrp: public VertDrpw_v1
 	//  From VertDrpw
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+    protected:
+	static const string KCpEType;
+	static const string KExtdEType;
 };
 
 #endif

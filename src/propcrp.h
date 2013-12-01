@@ -24,12 +24,14 @@ class PropCrp: public ElemCompRp, public MCrp
 	virtual tSigButtonPress SignalButtonPress();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
+	virtual void GetContentUri(GUri& aUri);
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
 	virtual Elem* Model();
     protected:
 	//Gtk::TextView iContent;
 	Gtk::Label iContent;
+	static int iMaxWidthChars;
 };
 
 #endif

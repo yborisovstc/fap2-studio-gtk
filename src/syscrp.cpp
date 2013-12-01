@@ -46,6 +46,10 @@ string SysCrp::EType()
 
 SysCrp::SysCrp(Elem* aElem): VertCompRp(aElem)
 {
+}
+
+void SysCrp::Construct()
+{
     // Add CPs
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
@@ -148,7 +152,7 @@ void SysCrp::on_size_allocate(Gtk::Allocation& 	aAlloc)
     for (tCpRps::iterator it = iCpRps.begin(); it != iCpRps.end(); it++) {
 	CpRp* cprp = it->second;
 	Gtk::Requisition cpreq = cprp->size_request();
-	Gtk::Allocation cpalc(cpaxb - cpreq.width, cpayb - cpreq.height/2, cpreq.width, cpreq.height);
+	Gtk::Allocation cpalc(cpaxb - cpreq.width, cpayb, cpreq.width, cpreq.height);
 	cpayb += cpreq.height + KViewConnGapHeight;
 	cprp->size_allocate(cpalc);
     }

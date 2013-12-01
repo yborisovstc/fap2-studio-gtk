@@ -68,11 +68,22 @@ ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(fal
     drag_source_set(Gtk::ArrayHandle_TargetEntry(targetentries, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
 }
 
+void ElemCompRp::Construct()
+{
+}
+
 ElemCompRp::~ElemCompRp()
 {
     delete iHead;
 }
 
+
+void ElemCompRp::on_realize()
+{
+    Gtk::Layout::on_realize();
+    // Base construct
+    Construct();
+}
 
 bool ElemCompRp::on_expose_event(GdkEventExpose* aEvent)
 {
@@ -214,4 +225,8 @@ void ElemCrp::SetHighlighted(bool aSet)
 Elem* ElemCrp::Model()
 {
     return iRp->iElem;
+}
+
+void ElemCrp::GetContentUri(GUri& aUri)
+{
 }

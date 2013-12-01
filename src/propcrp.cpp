@@ -4,6 +4,7 @@
 #include "propcrp.h"
 
 const string sType = "PropCrp";
+int PropCrp::iMaxWidthChars = 40;
 
 const string& PropCrp::Type()
 {
@@ -22,7 +23,9 @@ PropCrp::PropCrp(Elem* aElem): ElemCompRp(aElem)
     assert(prop != NULL);
     Glib::RefPtr<Gtk::TextBuffer> buf = Gtk::TextBuffer::create();
     buf->set_text(prop->Value());
-    //iContent.set_buffer(buf);
+//    iContent.set_single_line_mode(false);
+//    iContent.set_width_chars(iMaxWidthChars);
+    iContent.set_line_wrap(true);
     iContent.set_text(prop->Value());
     add(iContent);
     iContent.show();
@@ -117,3 +120,8 @@ MCrp::tSigButtonPress PropCrp::SignalButtonPress()
 {
     return iSigButtonPress;
 }
+
+void PropCrp::GetContentUri(GUri& aUri)
+{
+}
+

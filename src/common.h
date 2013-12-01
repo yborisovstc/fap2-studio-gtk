@@ -41,7 +41,7 @@ const gint KViewElemContLinesVGap = 4;
 // Width of gap betweed boundary comp and view border
 const gint KBoundCompGapWidth = 4;
 // Edge's points width and height
-// TODO not used, consider to removec:w
+// TODO not used, consider to removec
 const gint KEdgePointWidth = 9;
 // Edges border size
 const gint KEdgeBorderWidth = 4;

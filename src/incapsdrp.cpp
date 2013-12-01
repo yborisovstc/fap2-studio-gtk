@@ -1,44 +1,47 @@
 
-#include <syst.h>
+#include <incaps.h>
 
 #include "common.h"
-#include "sysdrp.h"
+#include "incapsdrp.h"
 
-const string SysDrp::KCpEType = "Elem:Vert:ConnPointBase:ConnPoint";
-const string SysDrp::KExtdEType = "Elem:Vert:Extender";
 
-string SysDrp::EType()
+const string IncapsDrp::KCapsUri = "Elem:Capsule";
+const string IncapsDrp::KIncapsType = Syst::PEType() + ":Incaps";
+const string IncapsDrp::KExtdType = "Elem:Vert:Extender";
+
+string IncapsDrp::EType()
 {
-    return ":Elem:Vert:Syst";
+    return ":Elem:Vert:Syst:Incaps";
 }
 
-SysDrp::SysDrp(Elem* aElem, const MCrpProvider& aCrpProv): VertDrpw_v1(aElem, aCrpProv)
+IncapsDrp::IncapsDrp(Elem* aElem, const MCrpProvider& aCrpProv): SysDrp(aElem, aCrpProv)
 {
 }
 
-SysDrp::~SysDrp()
+IncapsDrp::~IncapsDrp()
 {
 }
 
-void SysDrp::Construct()
+void IncapsDrp::Construct()
 {
-    VertDrpw_v1::Construct();
-    // Mark all CPs as boundary
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	Elem* ecmp = *it;
-	if (ecmp->IsHeirOf(KCpEType)) {
-	    assert(iCompRps.count(ecmp) > 0);
-	    MCrp* crp = iCompRps.at(ecmp);
-	    MCrpConnectable* crpc = crp->GetObj(crpc);
-	    if (crpc != NULL) {
-		crpc->SetIsInt(false);
-	    }
-	}
+    SysDrp::Construct();
+    // Capsule
+    Elem* caps = iElem->GetNode(KCapsUri);
+    assert(caps != NULL);
+    for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
+	Elem* comp = *it;
+	assert(comp != NULL);
+	MCrp* rp = iCrpProv.CreateRp(*comp, this);
+	Gtk::Widget& rpw = rp->Widget();
+	rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
+	rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
+	add(rpw);
+	iCompRps[comp] = rp;
+	rpw.show();
     }
-
 }
 
-void *SysDrp::DoGetObj(const string& aName)
+void *IncapsDrp::DoGetObj(const string& aName)
 {
     void* res = NULL;
     if (aName ==  Type()) {
@@ -50,31 +53,23 @@ void *SysDrp::DoGetObj(const string& aName)
     return res;
 }
 
-Gtk::Widget& SysDrp::Widget()
+TBool IncapsDrp::IsTypeOf(const string& aType, const string& aParent) const
 {
-    return *(static_cast<Gtk::Widget*>(this));
+    int pos = aType.find(aParent);
+    return pos != string::npos;
 }
 
-Elem* SysDrp::Model()
-{
-    return iElem;
-}
-
-bool SysDrp::IsTypeAllowed(const std::string& aType) const
+bool IncapsDrp::IsTypeAllowed(const std::string& aType) const
 {
     bool res = false;
-    if (aType == KExtdEType || aType == KCpEType || aType == Syst::PEType() || VertDrpw_v1::IsTypeAllowed(aType)) {
+    if (SysDrp::IsTypeAllowed(aType) || IsTypeOf(aType, KIncapsType) || 
+	   IsTypeOf(aType, KExtdType))  {
 	res = true;
     }
     return res;
 }
 
-MDrp::tSigCompSelected SysDrp::SignalCompSelected()
-{
-    return iSigCompSelected;
-}
-
-void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
+void IncapsDrp::on_size_allocate(Gtk::Allocation& aAllc)
 {
     set_allocation(aAllc);
     if (get_realized()) {
@@ -82,41 +77,54 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	get_bin_window()->resize(aAllc.get_width(), aAllc.get_height());
     }
 
-    // Allocate components excluding edges
+    // Allocate components excluding edges and capsula
     // Keeping components order, so using elems register of comps
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
     int bcompb_x = aAllc.get_width() - KBoundCompGapWidth , bcompb_y = KViewCompGapHight;
     int comps_w_max = 0;
     int bcomps_w_max = 0;
+    Elem* caps = iElem->GetNode(KCapsUri);
+    assert(caps != NULL);
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* ecmp = *it;
 	MCrp* crp = iCompRps.at(ecmp);
 	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
-	if (medgecrp == NULL) {
+	bool is_edge = medgecrp != NULL;
+	bool is_caps = ecmp == caps;
+	if (!is_edge && !is_caps) {
 	    Gtk::Widget* comp = &(crp->Widget());
 	    Gtk::Requisition req = comp->size_request();
 	    int hh = req.height;
 	    Gtk::Allocation allc;
 	    MCrpConnectable* crpc = crp->GetObj(crpc);
-	    if (crpc == NULL || crpc != NULL && crpc->GetIsInt()) {
-		// Internal component
-		if (crpc != NULL) {
-		    crpc->SetIsInt(true);
-		}
-		int comp_body_center_x = req.width / 2;
-		comps_w_max = max(comps_w_max, req.width);
-		allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, hh);
-		compb_y += hh + KViewCompGapHight;
+	    // Internal component
+	    if (crpc != NULL) {
+		crpc->SetIsInt(true);
 	    }
-	    else {
-		// Boundary components
-		crpc->SetIsInt(false);
-		bcomps_w_max = max(bcomps_w_max, req.width);
-		allc = Gtk::Allocation(bcompb_x - req.width, bcompb_y, req.width, hh);
-		bcompb_y += hh + KViewCompGapHight;
-	    }
+	    int comp_body_center_x = req.width / 2;
+	    comps_w_max = max(comps_w_max, req.width);
+	    allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, hh);
+	    compb_y += hh + KViewCompGapHight;
 	    comp->size_allocate(allc);
 	}
+    }
+
+    // Capsule
+    for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
+	Elem* ecmp = *it;
+	MCrp* crp = iCompRps.at(ecmp);
+	Gtk::Widget* comp = &(crp->Widget());
+	Gtk::Requisition req = comp->size_request();
+	int hh = req.height;
+	Gtk::Allocation allc;
+	MCrpConnectable* crpc = crp->GetObj(crpc);
+	if (crpc != NULL) {
+	    crpc->SetIsInt(false);
+	}
+	bcomps_w_max = max(bcomps_w_max, req.width);
+	allc = Gtk::Allocation(bcompb_x - req.width, bcompb_y, req.width, hh);
+	bcompb_y += hh + KViewCompGapHight;
+	comp->size_allocate(allc);
     }
 
     // Allocating edges
@@ -231,21 +239,35 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
     }
 }
 
-void SysDrp::on_size_request(Gtk::Requisition* aRequisition)
+void IncapsDrp::on_size_request(Gtk::Requisition* aRequisition)
 {
-    VertDrpw_v1::on_size_request(aRequisition);
+    SysDrp::on_size_request(aRequisition);
+    // Exclude capsula size 
+    Elem* caps = Model()->GetNode(KCapsUri);
+    assert(caps != NULL);
+    MCrp* capscrp = iCompRps.at(caps);
+    assert(capscrp != NULL);
+    Requisition req = capscrp->Widget().size_request();
+    aRequisition->height -= req.height + KViewCompGapHight;
 }
 
-bool SysDrp::AreCpsCompatible(Elem* aCp1, Elem* aCp2)
+Elem* IncapsDrp::GetCompOwning(Elem* aElem)
 {
-    bool res = false;
-    MVert* v1 = aCp1->GetObj(v1);
-    MVert* v2 = aCp2->GetObj(v2);
-    if (v1 != NULL && v2 != NULL) {
-	MCompatChecker* c1 = aCp1->GetObj(c1);
-	MCompatChecker* c2 = aCp2->GetObj(c2);
-	res = (c1 == NULL || c1->IsCompatible(aCp2)) && (c2 == NULL || c2->IsCompatible(aCp1));
+    Elem* res = NULL;
+    Elem* caps = iElem->GetNode("Capsule");
+    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
+	Elem* comp = *it;
+	if (aElem == comp || comp != caps && comp->IsComp(aElem)) {
+	    res = comp;
+	}
+    }
+    if (res == NULL) {
+	for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end() && res == NULL; it++) {
+	    Elem* comp = *it;
+	    if (aElem == comp || comp->IsComp(aElem)) {
+		res = comp;
+	    }
+	}
     }
     return res;
 }
-

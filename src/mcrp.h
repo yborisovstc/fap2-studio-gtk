@@ -28,6 +28,7 @@ class MCrp: public MBase
 	virtual tSigButtonPress SignalButtonPress() = 0;
 	virtual tSigUpdated SignalUpdated() = 0;
 	virtual bool IsActionSupported(Action aAction) = 0;
+	virtual void GetContentUri(GUri& aUri) = 0;
 	virtual bool Dragging() = 0;
 	virtual void SetHighlighted(bool aSet) = 0;
 	virtual Elem* Model() = 0;

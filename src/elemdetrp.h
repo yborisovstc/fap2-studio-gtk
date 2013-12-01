@@ -23,6 +23,11 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv);
 	virtual ~ElemDetRp();
 	Elem* GetElem();
+    public:
+	// Signal handlers
+	bool on_comp_button_press_ext(GdkEventButton* event, Elem* aComp);
+	void on_comp_button_press_name(GdkEventButton* event, Elem* aComp);
+	void on_comp_button_press(GdkEventButton* event, Elem* aComp);
     protected:
 	virtual void on_realize();
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
@@ -32,10 +37,6 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	virtual void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, 
 		const Gtk::SelectionData& selection_data, guint info, guint time);
 	virtual void on_drag_leave(const Glib::RefPtr<Gdk::DragContext>& context, guint time);
-	// Signal handlers
-	bool on_comp_button_press_ext(GdkEventButton* event, Elem* aComp);
-	void on_comp_button_press_name(GdkEventButton* event, Elem* aComp);
-	void on_comp_button_press(GdkEventButton* event, Elem* aComp);
 	// From MCrpMgr
 	virtual bool IsTypeAllowed(const std::string& aType) const;
     protected:

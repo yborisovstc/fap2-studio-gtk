@@ -27,6 +27,8 @@ fap2_studio_gtk_SOURCES = \
 		 sysdrp.cpp \
 		 cpcrp.h \
 		 cpcrp.cpp \
+		 extdcrp.h \
+		 extdcrp.cpp \
 		 propcrp.h \
 		 propcrp.cpp \
 		 toolitems.h \
@@ -40,6 +42,12 @@ fap2_studio_gtk_SOURCES = \
 		 stenv.cpp \
 		 navi.h \
 		 navi.cpp \
+		 incapsdrp.h \
+		 incapsdrp.cpp \
+		 incapscrp.h \
+		 incapscrp.cpp \
+		 datacrp.h \
+		 datacrp.cpp \
 		 mainwnd.h \
 		 mainwnd.cpp
 

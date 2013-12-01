@@ -787,7 +787,9 @@ Navi::Navi(): iNatn(NULL), iDesEnv(NULL)
     // Native nodes
     iNatn = new NaviNatN();
     iNatn->show();
-    append_page(*iNatn, "Native");
+    iNatnSw.add(*iNatn);
+    iNatnSw.show();
+    append_page(iNatnSw, "Native");
     // Modules
     iNatMod = new NaviModules();
     iNatMod->show();
@@ -795,7 +797,9 @@ Navi::Navi(): iNatn(NULL), iDesEnv(NULL)
     // Current hier
     iNatHier = new NaviHier();
     iNatHier->show();
-    append_page(*iNatHier, "Model");
+    iNatHierSw.add(*iNatHier);
+    iNatHierSw.show();
+    append_page(iNatHierSw, "Model");
 }
 
 Navi::~Navi()

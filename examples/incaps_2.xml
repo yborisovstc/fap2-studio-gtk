@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+
+<!-- Unit test for ceation of Incapsulated system. It has capsule component that includes connpoint.
+     -->
+
+
+<!DOCTYPE node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+
+<node id="testroot" parent="Elem">
+    <!-- Module containing components of system layer -->
+    <node id="sysmod" parent="file:/usr/share/grayb/modules/syst.xml#SysComps" />
+    <!-- Module containing components of incaps layer -->
+    <node id="incapsmod" parent="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
+
+    <!-- <node id="test" parent="IncapsComps:incapsmod/IncapsBase:Incaps"> -->
+    <node id="test" parent="IncapsComps:incapsmod/Syst:Incaps">
+	<node id="Ics1" parent="../IncapsComps:incapsmod/Syst:Incaps">
+	    <node id="cp_int" parent="../../SysComps:sysmod/ConnPointBase:ConnPoint"> 
+		<cont node="Prop:Provided" val="Role3"/> <cont node="Prop:Required" val="Role4"/>
+	    </node>
+	    <add node="Capsule">
+		<node id="ep" parent="../../../SysComps:sysmod/Vert:Extender"> 
+		    <cont node="ConnPoint:Int/Prop:Provided" val="Role4"/> <cont node="ConnPoint:Int/Prop:Required" val="Role3"/>
+		</node>
+	    </add>
+	</node>
+
+	<node id="Ics2" parent="../IncapsComps:incapsmod/Syst:Incaps">
+	    <add node="Capsule">
+		<node id="ep" parent="../../../SysComps:sysmod/Vert:Extender"> 
+		    <cont node="ConnPoint:Int/Prop:Provided" val="Role3"/> <cont node="ConnPoint:Int/Prop:Required" val="Role4"/>
+		</node>
+	    </add>
+	</node>
+
+	<add node="Capsule">
+	    <node id="ep" parent="../../SysComps:sysmod/Vert:Extender"> 
+		<cont node="ConnPoint:Int/Prop:Provided" val="Role3"/> <cont node="ConnPoint:Int/Prop:Required" val="Role4"/>
+	    </node>
+	</add>
+
+	<!-- Trying to connect extention points from capsules - right way to connect -->
+	<!--
+	<node parent="Edge"> 
+	    <cont node="Prop:P1" val="Incaps:Ics1/Elem:Capsule/Extender:ep"/> 
+	    <cont node="Prop:P2" val="Incaps:Ics2/Elem:Capsule/Extender:ep"/> 
+	</node>
+-->>
+
+	<node parent="Edge"> 
+	    <cont node="Prop:P1" val="Incaps:Ics2/Elem:Capsule/Extender:ep"/> 
+	    <cont node="Prop:P2" val="Elem:Capsule/Extender:ep/Int"/> 
+	</node>
+
+    </node>
+</node>
+

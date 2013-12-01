@@ -6,8 +6,12 @@
 #include "vertdrp.h"
 #include "vertcrp.h"
 #include "sysdrp.h"
+#include "incapsdrp.h"
 #include "syscrp.h"
+#include "incapscrp.h"
+#include "datacrp.h"
 #include "cpcrp.h"
+#include "extdcrp.h"
 #include "propcrp.h"
 #include "mcrp.h"
 
@@ -36,7 +40,10 @@ int DefDrpProv::GetConfidence(const Elem& aElem) const
 MDrp* DefDrpProv::CreateRp(Elem& aElem) const
 {
     MDrp* res = NULL;
-    if (aElem.IsHeirOf(SysDrp::EType())) {
+    if (aElem.IsHeirOf(IncapsDrp::EType())) {
+	res = new IncapsDrp(&aElem, iSenv->CrpProvider());
+    }
+    else if (aElem.IsHeirOf(SysDrp::EType())) {
 	res = new SysDrp(&aElem, iSenv->CrpProvider());
     }
     else if (aElem.IsHeirOf(VertDrpw_v1::EType())) {
@@ -75,8 +82,17 @@ int DefCrpProv::GetConfidence(const Elem& aElem) const
 MCrp* DefCrpProv::CreateRp(Elem& aElem, const MCrpMgr* aMgr) const
 {
     MCrp* res = NULL;
-    if (aElem.IsHeirOf(SysCrp::EType()) && aMgr->IsTypeAllowed(SysCrp::EType())) {
+    if (aElem.IsHeirOf(DataCrp::EType()) && aMgr->IsTypeAllowed(DataCrp::EType())) {
+	res = new DataCrp(&aElem);
+    }
+    else if (aElem.IsHeirOf(IncapsCrp::EType()) && aMgr->IsTypeAllowed(IncapsCrp::EType())) {
+	res = new IncapsCrp(&aElem);
+    }
+    else if (aElem.IsHeirOf(SysCrp::EType()) && aMgr->IsTypeAllowed(SysCrp::EType())) {
 	res = new SysCrp(&aElem);
+    }
+    else if (aElem.IsHeirOf(ExtdCrp::EType()) && aMgr->IsTypeAllowed(ExtdCrp::EType())) {
+	res = new ExtdCrp(&aElem);
     }
     else if (aElem.IsHeirOf(CpCrp::EType()) && aMgr->IsTypeAllowed(CpCrp::EType())) {
 	res = new CpCrp(&aElem);

@@ -56,7 +56,9 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	// Signal handlers
 	void on_comp_updated(Elem* aElem);
     protected:
-	Elem* GetCompOwning(Elem* aElem);
+	virtual Elem* GetCompOwning(Elem* aElem);
+	// TODO This is workaround for missing of model APIs of mutation trying, ref #uc_014. To implement API
+	virtual bool AreCpsCompatible(Elem* aCp1, Elem* aCp2);
     protected:
 	MCrp* iEdgeDropCandidate;
 	Elem* iEdgeDropCpCandidate;

@@ -412,7 +412,13 @@ void ElemDetRp::on_comp_menu_edit_content()
     int res = dlg->run();
     if (res == Gtk::RESPONSE_OK) {
 	dlg->GetData(sCont);
-	change_content(iCompSelected->Name(), sCont);
+	MCrp* crp = iCompRps.at(iCompSelected);
+	GUri uri;
+	iCompSelected->GetUri(uri, iElem);
+	GUri uri_cont;
+	crp->GetContentUri(uri_cont);
+	uri += uri_cont;
+	change_content(uri.GetUri(), sCont);
     }
     delete dlg;
     iCompSelected = NULL;

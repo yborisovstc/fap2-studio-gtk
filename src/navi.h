@@ -8,6 +8,7 @@
 #include <gtkmm/liststore.h>
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treedragsource.h>
+#include <gtkmm/scrolledwindow.h>
 
 #include <melem.h>
 #include <menv.h>
@@ -235,10 +236,12 @@ class Navi: public Gtk::Notebook
 	MEnv* iDesEnv; 
 	// Navigation tree of native nodes
 	NaviNatN* iNatn;
+	ScrolledWindow iNatnSw;
 	// Navigation tree of modules
 	NaviModules* iNatMod;
 	// Navigation tree of current hier
 	NaviHier* iNatHier;
+	ScrolledWindow iNatHierSw;
 };
 
 

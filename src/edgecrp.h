@@ -32,130 +32,6 @@ class MEdgeCrp
 	virtual Elem* Point2() = 0;
 };
 
-#if 0
-class EdgeCompRp: public Gtk::Widget
-{
-    friend class EdgeCrp;
-    public:
-	class Cp 
-	{
-	    public:
-		Cp();
-		Gtk::Requisition iOffset;
-		// Position from Cp: positive for upper
-		int iPos;
-	};
-    public:
-	EdgeCompRp(Elem* aElem);
-	virtual ~EdgeCompRp();
-    protected:
-	virtual bool on_expose_event(GdkEventExpose* event);
-	virtual void on_size_request(Gtk::Requisition* aRequisition);
-	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
-	// Signal handlers
-	void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>&);
-    private:
-	Elem* iElem;
-	MEdgeCrp::EdgeType iType;
-	Cp iUcp;
-	Cp iLcp;
-	Gtk::EventBox iEboxP1;
-};
-#endif
-
-#if 0
-class EdgeCompRp_v1: public Gtk::Container
-{
-    friend class EdgeCrp;
-    public:
-	class Cp 
-	{
-	    public:
-		Cp();
-		Gtk::Requisition iOffset;
-		// Position from Cp: positive for upper
-		int iPos;
-	};
-    public:
-	EdgeCompRp_v1(Elem* aElem);
-	virtual ~EdgeCompRp_v1();
-	// From Container
-	virtual void add(Gtk::Widget& widget);
-    protected:
-	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
-	virtual bool on_expose_event(GdkEventExpose* event);
-	virtual void on_size_request(Gtk::Requisition* aRequisition);
-	// From Container
-	virtual void forall_vfunc(gboolean include_internals, GtkCallback callback, gpointer callback_data);
-	// Signal handlers
-	void on_cp_drag_begin(const Glib::RefPtr<Gdk::DragContext>&);
-	bool on_cp_button_press(GdkEventButton* event);
-    private:
-	Elem* iElem;
-	MEdgeCrp::EdgeType iType;
-	Cp iUcp;
-	Cp iLcp;
-	//Gtk::EventBox iEboxP1;
-	//Gtk::DrawingArea iEboxP1;
-	Gtk::Widget* iP1;
-};
-#endif
-
-#if 0
-class EdgeCompRp_v2: public Gtk::EventBox
-{
-    friend class EdgeCrp;
-    public:
-
-    enum TDraggedPart {
-	EDp_None,
-	EDp_Cp1,
-	EDp_Cp2
-    };
-
-	class Cp 
-	{
-	    public:
-		Cp();
-		Gtk::Requisition iOffset;
-		Gtk::Requisition iCoord;
-		// Position from Cp: positive for upper
-		int iPos;
-	};
-    public:
-	EdgeCompRp_v2(Elem* aElem);
-	virtual ~EdgeCompRp_v2();
-    protected:
-	void DoSetHighlighted(bool aSet);
-	bool IsPointIn(int aX, int aY);
-    protected:
-	virtual bool on_expose_event(GdkEventExpose* event);
-	virtual void on_size_request(Gtk::Requisition* aRequisition);
-	virtual bool on_motion_notify_event(GdkEventMotion* aEvent);
-	virtual bool on_leave_notify_event(GdkEventCrossing* event);
-	virtual bool on_button_press_event(GdkEventButton* aEvent);
-	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& aContext);
-	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
-	virtual void on_drag_end(const Glib::RefPtr<Gdk::DragContext>& context);
-	// Signal handlers
-	bool on_cp_button_press(GdkEventButton* event);
-
-    private:
-	Elem* iElem;
-	MEdgeCrp::EdgeType iType;
-	Cp iUcp;
-	Cp iLcp;
-	Cp iCp1;
-	Cp iCp2;
-	TDraggedPart iDraggedPart;
-	bool iDragging;
-	MCrp::tSigUpdated iSigUpdated;
-	bool iHighlighted;
-	Gdk::Region iRegion;
-	Gdk::Rectangle iRect1;
-};
-#endif
-
 class EdgeCompRp_v3: public Gtk::Widget
 {
     friend class EdgeCrp;
@@ -237,6 +113,7 @@ class EdgeCrp: public MCrp, public MEdgeCrp
 	virtual tSigButtonPress SignalButtonPress();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
+	virtual void GetContentUri(GUri& aUri);
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
 	virtual Elem* Model();

@@ -23,7 +23,7 @@ CpCrp::CpCrp(Elem* aElem): VertCompRp(aElem)
     assert(prov != NULL);
     MProp* mprop = prov->GetObj(mprop);
     assert(mprop != NULL);
-    string pval("Provided: ");
+    string pval("P: ");
     pval += mprop->Value();
     iLabProv = new Gtk::Label(pval, Gtk::ALIGN_LEFT);
     add(*iLabProv);
@@ -33,7 +33,7 @@ CpCrp::CpCrp(Elem* aElem): VertCompRp(aElem)
     assert(req != NULL);
     mprop = req->GetObj(mprop);
     assert(mprop != NULL);
-    string rval("Required: ");
+    string rval("R: ");
     rval += mprop->Value();
     iLabReq = new Gtk::Label(rval, Gtk::ALIGN_LEFT);
     add(*iLabReq);

@@ -232,3 +232,7 @@ Gtk::Requisition VertCrp::GetCpCoord(Elem* aCp)
 
 #endif
 
+void VertCompRp::GetContentUri(GUri& aUri)
+{
+}
+

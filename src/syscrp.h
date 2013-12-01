@@ -34,6 +34,7 @@ class SysCrp: public VertCompRp
 	SysCrp(Elem* aElem);
 	virtual ~SysCrp();
     protected:
+	virtual void Construct();
 	// From MCrp
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);

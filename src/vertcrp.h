@@ -41,6 +41,7 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual tSigButtonPress SignalButtonPress();
 	virtual tSigUpdated SignalUpdated();
 	virtual bool IsActionSupported(Action aAction);
+	virtual void GetContentUri(GUri& aUri);
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
 	virtual Elem* Model();

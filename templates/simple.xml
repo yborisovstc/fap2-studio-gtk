@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+
+<!-- Specification of FAP environment for empty root -->
+
+<!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+
+<node id="Root" parent="Elem">
+    <node id="Modules" parent="Elem"/>
+    <node id="Start" parent="Elem"/>
+</node> 
+

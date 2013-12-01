@@ -7,13 +7,13 @@
 
 <node id="testroot" parent="Elem">
     <!-- Module containing components of system layer -->
-    <node id="sysmod" parent="file:../modules/syst.xml#SysComps" />
+    <node id="sysmod" parent="file:/usr/share/grayb/modules/syst.xml#SysComps" />
     <!-- Module containing components of incaps layer -->
-    <node id="incapsmod" parent="file:../modules/capsula.xml#IncapsComps" />
+    <node id="incapsmod" parent="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
     <!-- Module containing components of data -->
-    <node id="datamod" parent="file:../modules/data.xml#DataComps" />
+    <node id="datamod" parent="file:/usr/share/grayb/modules/data.xml#DataComps" />
     <!-- Module containing components of func -->
-    <node id="funcmod" parent="file:../modules/func.xml#FuncComps" />
+    <node id="funcmod" parent="file:/usr/share/grayb/modules/func.xml#FuncComps" />
 
     <node id="test" parent="IncapsComps:incapsmod/Syst:Incaps">
 
