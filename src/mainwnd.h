@@ -24,13 +24,8 @@ class MainWnd : public Gtk::Window
 	void SetEnvLog(const string& aLogFileName);
     protected:
 	// Signal handlers:
-	void on_button_clicked();
 	void on_action_open();
 	void on_action_saveas();
-	// Member widgets:
-	Gtk::Button iButton;
-	Gtk::Button iButton2;
-
     private:
 	// Generic vertical layout: menu, toolbar, client
 	Gtk::VBox iVboxMain;

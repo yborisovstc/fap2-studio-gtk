@@ -9,6 +9,7 @@
 #include "stenv.h"
 #include "hierdetailview.h"
 #include "navi.h"
+#include "mdlprov.h"
 
 
 class App
@@ -31,12 +32,15 @@ class App
 	Env* iEnv;
 	// Studio environment
 	StEnv* iStEnv;
+	StDesEnv* iStDesEnv;
 	MainWnd* iMainWnd;
 	HierDetailView* iHDetView;
 	string iLogFileName;
 	string iSpecFileName;
 	// Navigation pane widget
 	Navi* iNaviPane;
+	// Model nodes provider
+	MdlProv* iMdlProv;
 };
 
 

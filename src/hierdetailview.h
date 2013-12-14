@@ -27,6 +27,8 @@ class HierDetailView
     protected:
 	// Signal handlers:
 	void on_action_up();
+	void on_action_undo();
+	void on_action_redo();
     private:
 	// Environment
 	MSEnv& iStEnv;

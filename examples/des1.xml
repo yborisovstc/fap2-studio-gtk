@@ -1,0 +1,62 @@
+<?xml version="1.0" ?>
+
+
+<!-- Simple test that creates sole state Incrementor looped to youself 
+     Tests: state (Confirmed, Prepared, Trans, agent), socket connection -->
+
+
+<!DOCTYPE node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+
+<node id="testroot" parent="Elem">
+    <!-- Module containing components of system layer -->
+    <node id="sysmod" parent="file:/usr/share/grayb/modules/syst.xml#SysComps" />
+    <!-- Module containing components of incaps layer -->
+    <node id="incapsmod" parent="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
+    <!-- Module containing components of data -->
+    <node id="datamod" parent="file:/usr/share/grayb/modules/data.xml#DataComps" />
+    <!-- Module containing components of func -->
+    <node id="funcmod" parent="file:/usr/share/grayb/modules/func.xml#FuncComps" />
+    <!-- Module containing components of des layer -->
+    <node id="desmod" parent="file:/usr/share/grayb/modules/des.xml#DesComps" />
+
+    <node id="test" parent="IncapsComps:incapsmod/Syst:Incaps">
+
+	<node id="State1" parent="../DesComps:desmod/State:StateInt">
+	    <!-- <cont node="DataSInt:Confirmed/Prop:Value" val="34"/> -->
+
+	    <node id="Logspec" parent="Elem">
+		<node id="Creation" parent="Elem">
+		</node>
+	    </node>
+
+	    <add node="DataSCInt:Confirmed">
+		<node id="Logspec" parent="Elem">
+		    <node id="Update" parent="../../../../DataComps:datamod/DataLogevent">
+		    </node>
+		</node>
+	    </add>
+
+	    <node id="Trans" parent="../../DesComps:desmod/TrInt:TrIncInt">
+	    </node>
+
+	    <node parent="Edge"> 
+		<cont node="Prop:P1" val="TrIncInt:Trans/ConnPoint:Inp"/> 
+		<cont node="Prop:P2" val="Elem:Capsule/Extender:Inp/StInpSocket:Int/ConnPoint:PinData"/> 
+	    </node>
+
+	    <node parent="Edge"> 
+		<cont node="Prop:P1" val="TrIncInt:Trans/ConnPoint:Out"/> 
+		<cont node="Prop:P2" val="DataSCInt:Prepared/Elem:Capsule/ConnPoint:Inp"/> 
+	    </node>
+
+	</node>
+
+	<!-- Loop -->
+	<node parent="Edge"> 
+	    <cont node="Prop:P1" val="StateInt:State1/Elem:Capsule/Extender:Out"/> 
+	    <cont node="Prop:P2" val="StateInt:State1/Elem:Capsule/Extender:Inp"/> 
+	</node>
+
+    </node>
+</node>
+

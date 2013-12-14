@@ -5,7 +5,10 @@
 // Studio environment
 
 #include "msenv.h"
+#include "msdesenv.h"
 #include "provdef.h"
+
+using namespace Gtk;
 
 class StEnv: public MSEnv
 {
@@ -20,6 +23,19 @@ class StEnv: public MSEnv
 	// TODO [YB] To replace default provider with full provider
 	DefCrpProv* iCrpProv;
 	DefDrpProv* iDrpProv;
+};
+
+// Studio DES Environment
+
+class StDesEnv: public MSDesEnv
+{
+    public:
+	StDesEnv(const Glib::RefPtr<UIManager>& aUiMgr);
+	virtual ~StDesEnv();
+	// From MSDesEnv
+	virtual Glib::RefPtr<UIManager> UiMgr();
+    private:
+	Glib::RefPtr<UIManager> iUiMgr;
 };
 
 

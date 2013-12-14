@@ -234,6 +234,7 @@ void IncapsDrp::on_size_allocate(Gtk::Allocation& aAllc)
 			edge_w + 2*KEdgeBorderWidth, lcoord.height - ucoord.height + 1 + 2*KEdgeBorderWidth);
 		edge_wd += KConnHorizGap;
 	    }
+	    assert(allc.get_width() > 0 && allc.get_height() > 0);
 	    comp->size_allocate(allc);
 	}
     }

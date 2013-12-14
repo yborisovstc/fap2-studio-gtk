@@ -16,7 +16,8 @@ Glib::ustring sUiInfo =
 "  </toolbar>"
 "</ui>";
 
-MainWnd::MainWnd() : iButton("Hello World"), iButton2("Test")
+
+MainWnd::MainWnd()
 {
     set_border_width(0);
 
@@ -32,8 +33,6 @@ MainWnd::MainWnd() : iButton("Hello World"), iButton2("Test")
 
     add(iVboxMain);
     iVboxMain.show();
-
-    iButton.signal_clicked().connect(sigc::mem_fun(*this, &MainWnd::on_button_clicked));
 
     // Base vertical layout: menu
     iVboxMain.pack_start(*pMenuBar, Gtk::PACK_SHRINK);
@@ -60,18 +59,12 @@ MainWnd::MainWnd() : iButton("Hello World"), iButton2("Test")
 
     pMenuBar->show();
     pToolBar->show();
-    iButton.show();
     irMainClientWnd->show();
     iLogView->show();
 }
 
 MainWnd::~MainWnd()
 {
-}
-
-void MainWnd::on_button_clicked()
-{
-    std::cout << "Hello World" << std::endl;
 }
 
 void MainWnd::on_action_open()

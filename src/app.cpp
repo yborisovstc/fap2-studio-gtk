@@ -18,10 +18,6 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     iStEnv = new StEnv();
     // Default logfilename
     iLogFileName = GetDefaultLogFileName();
-    // Create model
-    iSpecFileName = KSpecFileName;
-    iEnv = new Env("DesEnv", KSpecFileName, iLogFileName);
-    iEnv->ConstructSystem();
     // Create main window
     iMainWnd = new MainWnd();
     iMainWnd->maximize();
@@ -29,6 +25,15 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     //iMainWnd->UIManager()->signal_post_activate().connect(sigc::mem_fun(*this, &App::on_action));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Open")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_open));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
+    // Create studio DES environment
+    iStDesEnv = new StDesEnv(iMainWnd->UIManager());
+    // Model specific nodes provider
+    iMdlProv = new MdlProv("MdlProv", iStDesEnv);
+    // Create model
+    iSpecFileName = KSpecFileName;
+    iEnv = new Env("DesEnv", KSpecFileName, iLogFileName);
+    iEnv->AddProvider(iMdlProv);
+    iEnv->ConstructSystem();
     // Open main hier detail view
     iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
     iHDetView->SetRoot(iEnv->Root());
@@ -47,6 +52,8 @@ App::~App() {
     delete iMainWnd;
     delete iEnv;
     delete iStEnv;
+    delete iStDesEnv;
+    delete iMdlProv;
 }
 
 void App::on_action(const Glib::RefPtr<Gtk::Action>& aAction)

@@ -24,3 +24,17 @@ MDrpProvider& StEnv::DrpProvider()
     return *iDrpProv;
 }
 
+
+StDesEnv::StDesEnv(const Glib::RefPtr<UIManager>& aUiMgr): iUiMgr(aUiMgr)
+{
+}
+
+StDesEnv::~StDesEnv()
+{
+}
+
+Glib::RefPtr<UIManager> StDesEnv::UiMgr()
+{
+    return iUiMgr;
+}
+

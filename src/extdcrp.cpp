@@ -90,12 +90,13 @@ Gtk::Requisition ExtdCrp::GetCpCoord(Elem* aCp)
     Gtk::Requisition res;
     Elem* intcp = iElem->GetNode("Int");
     assert(intcp != NULL);
+    assert(aCp == iElem || aCp == intcp || intcp->IsComp(aCp));
     if (aCp == iElem) {
 	Gtk::Allocation cpalc = iLabExt->get_allocation();
 	res.width = alc.get_x();
 	res.height = alc.get_y() + cpalc.get_y() + cpalc.get_height()/2;
     }
-    else if (aCp == intcp) {
+    else {
 	Gtk::Allocation cpalc = iLabInt->get_allocation();
 	res.width = alc.get_x();
 	res.height = alc.get_y() + cpalc.get_y() + cpalc.get_height()/2;

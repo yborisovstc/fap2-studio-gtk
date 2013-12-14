@@ -48,6 +48,10 @@ fap2_studio_gtk_SOURCES = \
 		 incapscrp.cpp \
 		 datacrp.h \
 		 datacrp.cpp \
+		 dessync.h \
+		 dessync.cpp \
+		 mdlprov.h \
+		 mdlprov.cpp \
 		 mainwnd.h \
 		 mainwnd.cpp
 

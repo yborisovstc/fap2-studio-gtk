@@ -42,6 +42,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual Gtk::Widget& Widget();
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();
+	virtual void Udno();
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual bool on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);

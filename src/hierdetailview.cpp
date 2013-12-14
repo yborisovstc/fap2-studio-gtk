@@ -9,12 +9,14 @@ Glib::ustring sUiHierDview =
 "<ui>"
 "  <toolbar  name='ToolBar'>"
 "    <toolitem action='GoUp'/>"
+"    <toolitem action='Undo'/>"
+"    <toolitem action='Redo'/>"
 "    <separator/>"
 "    <placeholder name='NamePlaceholder'/>"
 "    <separator/>"
-"    <toolitem name='Name' action='Name'/>"
 "  </toolbar>"
 "</ui>";
+
 
 HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::Container& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr): 
     iStEnv(aStEnv), iContWnd(aCont), iUiMgr(aUiMgr), iDetRp(NULL), iAlignent()
@@ -22,8 +24,11 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::Container& aCont, const Glib:
     // Addig toolbar
     irActionGroup = Gtk::ActionGroup::create("ElemDrpActGroup");
     irActionGroup->add(Gtk::Action::create("GoUp", Gtk::Stock::GOTO_TOP, "Go Up"), sigc::mem_fun(*this, &HierDetailView::on_action_up));
+    irActionGroup->add(Gtk::Action::create("Undo", Gtk::Stock::UNDO, "Undo"), sigc::mem_fun(*this, &HierDetailView::on_action_undo));
+    irActionGroup->add(Gtk::Action::create("Redo", Gtk::Stock::REDO, "Redo"), sigc::mem_fun(*this, &HierDetailView::on_action_redo));
     iUiMgr->insert_action_group(irActionGroup);
     iUiMgr->add_ui_from_string(sUiHierDview);
+
     Gtk::ToolItem* pc = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/NamePlaceholder"));
     iTbNameHd = new TiLabel("Name: ");
     iTbNameHd->show();
@@ -85,6 +90,14 @@ void HierDetailView::on_action_up()
     if (cursor != iRoot) {
 	SetCursor(cursor->GetMan());
     }
+}
+
+void HierDetailView::on_action_undo()
+{
+}
+
+void HierDetailView::on_action_redo()
+{
 }
 
 void HierDetailView::on_comp_selected(Elem* aComp)

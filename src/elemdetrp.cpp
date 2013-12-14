@@ -237,17 +237,15 @@ bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int 
     std::cout << "ElemDetRp on_drag_drop, action: " << action << ", target: " << iDnDTarg << std::endl;
     if (iDnDTarg == EDT_Node) {
 	context->drag_finish(true, false, time);
+	GUri uri;
 	if (iDropBaseCandidate != NULL) {
 	    iDropBaseCandidate->SetHighlighted(false);
+	    iDropBaseCandidate->Model()->GetUri(uri, iElem);
 	}
 	if (action == Gdk::ACTION_COPY) {
-	    add_node(iDndReceivedData);
+	    add_node(iDndReceivedData, uri.GetUri());
 	}
 	else if (action == Gdk::ACTION_MOVE) {
-	    GUri uri;
-	    if (iDropBaseCandidate != NULL) {
-		iDropBaseCandidate->Model()->GetUri(uri, iElem);
-	    }
 	    move_node(iDndReceivedData, uri.GetUri());
 	}
 	iDnDTarg = EDT_Unknown;
@@ -312,7 +310,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
     Refresh();
 }
 
-void ElemDetRp::add_node(const std::string& aParentUri)
+void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeighborUri)
 {
     // Ask for name
     ParEditDlg* dlg = new ParEditDlg("Enter name", "");
@@ -321,10 +319,20 @@ void ElemDetRp::add_node(const std::string& aParentUri)
 	std::string name;
 	dlg->GetData(name);
 	delete dlg;
+	// Mutate appending
 	MChromo& mut = iElem->Mutation();
 	ChromoNode smut = mut.Root().AddChild(ENt_Node);
 	smut.SetAttr(ENa_Parent, aParentUri);
 	smut.SetAttr(ENa_Id, name);
+	if (!aNeighborUri.empty()) {
+	    ChromoNode change = mut.Root().AddChild(ENt_Move);
+	    GUri puri(aParentUri);
+	    GUri suri;
+	    suri.AppendElem(puri.GetName(), name);
+	    change.SetAttr(ENa_Id, suri.GetUri());
+	    change.SetAttr(ENa_MutNode, aNeighborUri);
+	}
+	// Mutate moving
 	iElem->Mutate();
 	Refresh();
     }
@@ -424,6 +432,10 @@ void ElemDetRp::on_comp_menu_edit_content()
     iCompSelected = NULL;
 }
 
+void ElemDetRp::DoUdno()
+{
+}
+
 const string sElemDrpType = "ElemDrp";
 
 const string& ElemDrp::Type()
@@ -473,4 +485,8 @@ Elem* ElemDrp::Model()
     return iRp->iElem;
 }
 
+void ElemDrp::Udno()
+{
+    iRp->DoUdno();
+}
 

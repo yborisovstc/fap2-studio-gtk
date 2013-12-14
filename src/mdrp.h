@@ -19,6 +19,7 @@ class MDrp: public MBase
 	virtual Gtk::Widget& Widget() = 0;
 	virtual Elem* Model() = 0;
 	virtual tSigCompSelected SignalCompSelected() = 0;
+	virtual void Udno() = 0;
 };
 
 #endif

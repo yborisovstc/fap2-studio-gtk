@@ -517,6 +517,13 @@ bool VertDrpw_v1::on_leave_notify_event(GdkEventCrossing* aEvent)
 
 }
 
+void VertDrpw_v1::Udno()
+{
+}
+
+
+
+
 const string& VertDrp::Type()
 {
     return sVertDrpType;
