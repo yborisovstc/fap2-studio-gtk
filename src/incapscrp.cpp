@@ -16,7 +16,7 @@ string IncapsCrp::EType()
     return Syst::PEType() + ":Incaps";
 }
 
-IncapsCrp::IncapsCrp(Elem* aElem): SysCrp(aElem)
+IncapsCrp::IncapsCrp(Elem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): SysCrp(aElem, aMdlObs, aDataUri)
 {
 }
 
@@ -38,6 +38,8 @@ void IncapsCrp::Construct()
 	    iCpRps[comp] = rp;
 	}
     }
+    // Add Data Crp
+    AddDataRp();
 }
 
 void *IncapsCrp::DoGetObj(const string& aName)

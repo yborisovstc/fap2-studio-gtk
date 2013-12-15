@@ -28,7 +28,7 @@ string DataCrp::EType()
     return IncapsCrp::EType() + GUri::KParentSep + KModelName;
 }
 
-DataCrp::DataCrp(Elem* aElem): IncapsCrp(aElem), iValue(NULL)
+DataCrp::DataCrp(Elem* aElem, MMdlObserver* aMdlObs): IncapsCrp(aElem, aMdlObs), iValue(NULL)
 {
 }
 

@@ -7,18 +7,20 @@
 #include "msenv.h"
 #include "msdesenv.h"
 #include "provdef.h"
+#include "mdesobs.h"
 
 using namespace Gtk;
 
 class StEnv: public MSEnv
 {
     public:
-	StEnv();
+	StEnv(MMdlObserver* aMdlObs);
 	virtual ~StEnv();
 	// From MSEnv
 	virtual MCrpProvider& CrpProvider();
 	virtual MDrpProvider& DrpProvider();
     private:
+	MMdlObserver* iMdlObs;
 	// Compact representaions provider
 	// TODO [YB] To replace default provider with full provider
 	DefCrpProv* iCrpProv;

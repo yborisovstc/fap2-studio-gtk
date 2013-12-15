@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+<node id="testroot" parent="Elem">
+  <node id="sysmod" parent="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
+  <node id="incapsmod" parent="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
+  <node id="datamod" parent="file:/usr/share/grayb/modules/data.xml#DataComps"/>
+  <node id="funcmod" parent="file:/usr/share/grayb/modules/func.xml#FuncComps"/>
+  <node id="desmod" parent="file:/usr/share/grayb/modules/des.xml#DesComps"/>
+  <node id="test" parent="IncapsComps:incapsmod/Syst:Incaps">
+    <node id="State1" parent="../DesComps:desmod/State:StateInt">
+      <node id="Logspec" parent="Elem">
+        <node id="Creation" parent="Elem"/>
+      </node>
+      <add node="DataSCInt:Confirmed">
+		<node id="Logspec" parent="Elem">
+		    <node id="Update" parent="../../../../DataComps:datamod/DataLogevent">
+		    </node>
+		</node>
+	    </add>
+      <node id="Trans" parent="../../DesComps:desmod/TrInt:TrIncInt"/>
+      <node id="1219987303" parent="Edge">
+        <cont node="Prop:P1" val="TrIncInt:Trans/ConnPoint:Inp"/>
+        <cont node="Prop:P2" val="Elem:Capsule/Extender:Inp/StInpSocket:Int/ConnPoint:PinData"/>
+      </node>
+      <node id="188350694" parent="Edge">
+        <cont node="Prop:P1" val="TrIncInt:Trans/ConnPoint:Out"/>
+        <cont node="Prop:P2" val="DataSCInt:Prepared/Elem:Capsule/ConnPoint:Inp"/>
+      </node>
+    </node>
+    <node id="1712574952" parent="Edge">
+      <cont node="Prop:P1" val="StateInt:State1/Elem:Capsule/Extender:Out"/>
+      <cont node="Prop:P2" val="StateInt:State1/Elem:Capsule/Extender:Inp"/>
+    </node>
+    <node id="Ticker" parent="/Elem:testroot/DesComps:desmod/Incaps:DesTicker"/>
+    <node id="ee" parent="Edge"/>
+    <cont node="Edge:ee/Prop:P2" val="DesTicker:Ticker/Elem:Capsule/ConnPoint:Out"/>
+    <cont node="Edge:ee/Prop:P1" val="StateInt:State1/Elem:Capsule/ConnPoint:Sync"/>
+  </node>
+</node>

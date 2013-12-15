@@ -12,6 +12,7 @@
 
 #include <melem.h>
 #include <menv.h>
+#include "mdesobs.h"
 
 using namespace std;
 using namespace Gtk;
@@ -84,7 +85,7 @@ class NatnTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeD
 class NaviNatN: public Gtk::TreeView
 {
     public:
-	NaviNatN();
+	NaviNatN(MMdlObserver* aDesObs);
 	virtual ~NaviNatN();
 	void SetDesEnv(MEnv* aDesEnv);
     protected:
@@ -93,7 +94,10 @@ class NaviNatN: public Gtk::TreeView
 	virtual bool on_button_press_event(GdkEventButton* event);
     protected:
 	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
+	void on_des_env_changed();
     private:
+	// DES observer
+	MMdlObserver* iDesObs;
 	// DES environment
 	MEnv* iDesEnv; 
 	int iPressX, iPressY;
@@ -125,6 +129,10 @@ class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeD
 	HierTreeMdl(MEnv* aDesEnv);
 	virtual ~HierTreeMdl();
 	static const HierTreeClrec& ColRec() {return iColRec;};
+	// Model events handlers
+	void on_comp_deleting(Elem* aComp);
+	void on_comp_adding(Elem* aComp);
+	void on_comp_changed(Elem* aComp);
     protected:
 	// From Gtk::TreeModel
 	virtual Gtk::TreeModelFlags get_flags_vfunc() const;
@@ -171,7 +179,7 @@ class NaviHier: public Gtk::TreeView
     public:
 	typedef sigc::signal<void, Elem*> tSigCompSelected;
     public:
-	NaviHier();
+	NaviHier(MMdlObserver* aDesObs);
 	virtual ~NaviHier();
 	void SetDesEnv(MEnv* aDesEnv);
 	// TODO [YB] To move out to iface like MHierNavigator, and implement, the same for MDrp
@@ -183,7 +191,10 @@ class NaviHier: public Gtk::TreeView
 	virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);
     protected:
 	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
+	void on_des_env_changed();
     private:
+	// DES observer
+	MMdlObserver* iDesObs;
 	// DES environment
 	MEnv* iDesEnv; 
 	int iPressX, iPressY;
@@ -205,7 +216,7 @@ class ModulesTreeClrec: public Gtk::TreeModelColumnRecord
 class NaviModules: public Gtk::TreeView
 {
     public:
-	NaviModules();
+	NaviModules(MMdlObserver* aDesObs);
 	virtual ~NaviModules();
 	void SetDesEnv(MEnv* aDesEnv);
     protected:
@@ -215,7 +226,10 @@ class NaviModules: public Gtk::TreeView
     protected:
 	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
 	static int FilterModulesDirEntries(const struct dirent *aEntry);
+	void on_des_env_changed();
     private:
+	// DES observer
+	MMdlObserver* iDesObs;
 	// DES environment
 	MEnv* iDesEnv; 
 	// Column record, contains info of column types
@@ -227,13 +241,13 @@ class NaviModules: public Gtk::TreeView
 class Navi: public Gtk::Notebook
 {
     public:
-	Navi();
+	Navi(MMdlObserver* aDesObs);
 	virtual ~Navi();
 	void SetDesEnv(MEnv* aDesEnv);
 	NaviHier& NatHier();
     private:
-	// DES environment
-	MEnv* iDesEnv; 
+	// DES observer
+	MMdlObserver* iDesObs;
 	// Navigation tree of native nodes
 	NaviNatN* iNatn;
 	ScrolledWindow iNatnSw;

@@ -214,13 +214,20 @@ bool NatnTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
 
 
 // Native nodes navigation widget
-NaviNatN::NaviNatN()
+NaviNatN::NaviNatN(MMdlObserver* aDesObs): iDesObs(aDesObs)
 {
     set_headers_visible(false);
+    SetDesEnv(iDesObs->DesEnv());
+    iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &NaviNatN::on_des_env_changed));
 }
 
 NaviNatN::~NaviNatN()
 {
+}
+
+void NaviNatN::on_des_env_changed()
+{
+    SetDesEnv(iDesObs->DesEnv());
 }
 
 void NaviNatN::SetDesEnv(MEnv* aDesEnv)
@@ -229,12 +236,6 @@ void NaviNatN::SetDesEnv(MEnv* aDesEnv)
 	unset_model();
 	remove_all_columns();
 	Glib::RefPtr<TreeModel> curmdl = get_model();
-	/*
-	TreeModel* curmdlp = curmdl.operator ->();
-	if (curmdlp != NULL) {
-	    delete curmdlp;
-	}
-	*/
 	curmdl.reset();
 	iDesEnv = aDesEnv;
 	if (iDesEnv != NULL) {
@@ -243,6 +244,8 @@ void NaviNatN::SetDesEnv(MEnv* aDesEnv)
 	    bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
 	    set_model(mdl);
 	    append_column( "one", mdl->ColRec().name);
+	    enable_model_drag_source();
+	    drag_source_set (Gtk::ArrayHandle_TargetEntry(targetentries));
 	}
     }
 }
@@ -292,9 +295,11 @@ void NaviNatN::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context, G
 const ModulesTreeClrec NaviModules::iColRec;
 
 // Modules navigation widget
-NaviModules::NaviModules()
+NaviModules::NaviModules(MMdlObserver* aDesObs): iDesObs(aDesObs)
 {
     set_headers_visible(false);
+    SetDesEnv(iDesObs->DesEnv());
+    iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &NaviModules::on_des_env_changed));
 }
 
 NaviModules::~NaviModules()
@@ -314,6 +319,8 @@ void NaviModules::SetDesEnv(MEnv* aDesEnv)
 	    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
 	    set_model(mdl);
 	    append_column( "one", iColRec.name);
+	    enable_model_drag_source();
+	    drag_source_set (Gtk::ArrayHandle_TargetEntry(KModListTargets, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY);
 	    // Fill out the model
 	    // List modules directory
 	    struct dirent **entlist;
@@ -389,6 +396,11 @@ void NaviModules::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context
     selection_data.set_text(data);
 }
 
+void NaviModules::on_des_env_changed()
+{
+    SetDesEnv(iDesObs->DesEnv());
+}
+
 
 
 // Current hier tree model
@@ -399,12 +411,10 @@ HierTreeMdl::HierTreeMdl(MEnv* aDesEnv): Glib::ObjectBase(typeid(HierTreeMdl)), 
     iStamp(55)
 {
     iRoot = iDesEnv->Root();
-    iRoot->SetObserver(this);
 }
 
 HierTreeMdl::~HierTreeMdl()
 {
-    iRoot->SetObserver(NULL);
 }
 
 Glib::RefPtr<HierTreeMdl> HierTreeMdl::create(MEnv* aDesEnv)
@@ -690,16 +700,37 @@ void HierTreeMdl::OnCompChanged(Elem& aComp)
     UpdateStamp();
 }
 
+void HierTreeMdl::on_comp_deleting(Elem* aComp)
+{
+    OnCompChanged(*aComp);
+}
+
+void HierTreeMdl::on_comp_adding(Elem* aComp)
+{
+    OnCompAdding(*aComp);
+}
+
+void HierTreeMdl::on_comp_changed(Elem* aComp)
+{
+    OnCompChanged(*aComp);
+}
 
 
 // Current hier navigation widget
-NaviHier::NaviHier(): iDesEnv(NULL)
+NaviHier::NaviHier(MMdlObserver* aDesObs): iDesEnv(NULL), iDesObs(aDesObs)
 {
     set_headers_visible(false);
+    SetDesEnv(iDesObs->DesEnv());
+    iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &NaviHier::on_des_env_changed));
 }
 
 NaviHier::~NaviHier()
 {
+}
+
+void NaviHier::on_des_env_changed()
+{
+    SetDesEnv(iDesObs->DesEnv());
 }
 
 void NaviHier::SetDesEnv(MEnv* aDesEnv)
@@ -717,10 +748,16 @@ void NaviHier::SetDesEnv(MEnv* aDesEnv)
 	iDesEnv = aDesEnv;
 	if (iDesEnv != NULL) {
 	    Glib::RefPtr<HierTreeMdl> mdl = HierTreeMdl::create(iDesEnv);
+	    HierTreeMdl* hmdl = mdl.operator ->();
 	    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
 	    bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
 	    set_model(mdl);
 	    append_column( "one", mdl->ColRec().name);
+	    enable_model_drag_source();
+	    drag_source_set (Gtk::ArrayHandle_TargetEntry(targetentries));
+	    iDesObs->SignalCompDeleted().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_deleting));
+	    iDesObs->SignalCompAdded().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_adding));
+	    iDesObs->SignalCompChanged().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_changed));
 	}
     }
 }
@@ -782,20 +819,20 @@ NaviHier::tSigCompSelected NaviHier::SignalCompSelected()
 
 
 // Navigation widget
-Navi::Navi(): iNatn(NULL), iDesEnv(NULL)
+Navi::Navi(MMdlObserver* aDesObs): iNatn(NULL), iDesObs(aDesObs)
 {
     // Native nodes
-    iNatn = new NaviNatN();
+    iNatn = new NaviNatN(iDesObs);
     iNatn->show();
     iNatnSw.add(*iNatn);
     iNatnSw.show();
     append_page(iNatnSw, "Native");
     // Modules
-    iNatMod = new NaviModules();
+    iNatMod = new NaviModules(iDesObs);
     iNatMod->show();
     append_page(*iNatMod, "Modules");
     // Current hier
-    iNatHier = new NaviHier();
+    iNatHier = new NaviHier(iDesObs);
     iNatHier->show();
     iNatHierSw.add(*iNatHier);
     iNatHierSw.show();
@@ -806,7 +843,7 @@ Navi::~Navi()
 {
     delete iNatn;
 }
-
+/*
 void Navi::SetDesEnv(MEnv* aDesEnv)
 {
     assert(aDesEnv == NULL || aDesEnv != NULL && iDesEnv == NULL);
@@ -821,6 +858,7 @@ void Navi::SetDesEnv(MEnv* aDesEnv)
     iNatHier->enable_model_drag_source();
     iNatHier->drag_source_set (Gtk::ArrayHandle_TargetEntry(targetentries));
 }
+*/
 
 NaviHier& Navi::NatHier()
 {

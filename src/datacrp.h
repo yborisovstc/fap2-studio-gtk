@@ -21,7 +21,7 @@ class DataCrp: public IncapsCrp
 	static const string& Type();
 	static string EType();
     public:
-	DataCrp(Elem* aElem);
+	DataCrp(Elem* aElem, MMdlObserver* aMdlObs);
 	virtual ~DataCrp();
     protected:
 	virtual void Construct();

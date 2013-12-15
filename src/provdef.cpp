@@ -56,8 +56,10 @@ MDrp* DefDrpProv::CreateRp(Elem& aElem) const
 }
 
 
+const string KStateEType = "Incaps:State";
+const string KStateDataUri = "Confirmed/Value";
 
-DefCrpProv::DefCrpProv(): iSenv(NULL)
+DefCrpProv::DefCrpProv(MMdlObserver* aMdlObs): iSenv(NULL), iMdlObs(aMdlObs)
 {
 }
 
@@ -83,13 +85,16 @@ MCrp* DefCrpProv::CreateRp(Elem& aElem, const MCrpMgr* aMgr) const
 {
     MCrp* res = NULL;
     if (aElem.IsHeirOf(DataCrp::EType()) && aMgr->IsTypeAllowed(DataCrp::EType())) {
-	res = new DataCrp(&aElem);
+	res = new DataCrp(&aElem, iMdlObs);
+    }
+    else if (aElem.IsHeirOf(KStateEType) && aMgr->IsTypeAllowed(IncapsCrp::EType())) {
+	res = new IncapsCrp(&aElem, iMdlObs, KStateDataUri);
     }
     else if (aElem.IsHeirOf(IncapsCrp::EType()) && aMgr->IsTypeAllowed(IncapsCrp::EType())) {
-	res = new IncapsCrp(&aElem);
+	res = new IncapsCrp(&aElem, iMdlObs);
     }
     else if (aElem.IsHeirOf(SysCrp::EType()) && aMgr->IsTypeAllowed(SysCrp::EType())) {
-	res = new SysCrp(&aElem);
+	res = new SysCrp(&aElem, iMdlObs);
     }
     else if (aElem.IsHeirOf(ExtdCrp::EType()) && aMgr->IsTypeAllowed(ExtdCrp::EType())) {
 	res = new ExtdCrp(&aElem);

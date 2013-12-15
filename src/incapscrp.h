@@ -13,7 +13,7 @@ class IncapsCrp: public SysCrp
 	static const string& Type();
 	static string EType();
     public:
-	IncapsCrp(Elem* aElem);
+	IncapsCrp(Elem* aElem, MMdlObserver* aMdlObs, const string& aDataUri = string());
 	virtual ~IncapsCrp();
     protected:
 	virtual void Construct();

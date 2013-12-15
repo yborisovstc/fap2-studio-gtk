@@ -1,7 +1,9 @@
+#include <mprop.h>
 #include <complex>
 #include <syst.h>
 #include "syscrp.h"
 #include "common.h"
+#include <iostream>
 
 //  Connection point representation
 CpRp::CpRp(Elem* aCp): iElem(aCp)
@@ -30,6 +32,26 @@ void CpRp::on_size_request(Gtk::Requisition* aRequisition)
 }
 
 
+//  Data (property) representation
+DataRp::DataRp(Elem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs)
+{
+    // Set text from Value
+    MProp* prop = iElem->GetObj(prop);
+    assert(prop != NULL);
+    set_text(prop->Value());
+    iMdlObs->SignalCompChanged().connect(sigc::mem_fun(*this, &DataRp::on_comp_changed));
+}
+
+void DataRp::on_comp_changed(Elem* aComp)
+{
+    if (aComp == iElem) {
+	//std::cout << "DataRp::on_comp_changed" << std::endl;
+	MProp* prop = iElem->GetObj(prop);
+	assert(prop != NULL);
+	set_text(prop->Value());
+    }
+}
+
 
 // System representation
 const string sSysCrpType = "SysCrp";
@@ -44,7 +66,8 @@ string SysCrp::EType()
     return Syst::PEType();
 }
 
-SysCrp::SysCrp(Elem* aElem): VertCompRp(aElem)
+SysCrp::SysCrp(Elem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): VertCompRp(aElem), iDataUri(aDataUri),
+    iDataRp(NULL), iMdlObs(aMdlObs)
 {
 }
 
@@ -60,10 +83,24 @@ void SysCrp::Construct()
 	    iCpRps[comp] = rp;
 	}
     }
+    // Add Data Crp
+    AddDataRp();
 }
 
 SysCrp::~SysCrp()
 {
+}
+
+void SysCrp::AddDataRp()
+{
+    if (!iDataUri.empty()) {
+	Elem* data = iElem->GetNode(iDataUri);
+	if (data != NULL) {
+	    iDataRp = new DataRp(data, iMdlObs);
+	    add(*iDataRp);
+	    iDataRp->show();
+	}    
+    }
 }
 
 void *SysCrp::DoGetObj(const string& aName)
@@ -148,13 +185,18 @@ void SysCrp::on_size_allocate(Gtk::Allocation& 	aAlloc)
     int cpaxb = aAlloc.get_width();
     //    CP allocation Y base: mid of Y position
     int cpayb = head_req.height + KViewCompEmptyBodyHight/2;
-
     for (tCpRps::iterator it = iCpRps.begin(); it != iCpRps.end(); it++) {
 	CpRp* cprp = it->second;
 	Gtk::Requisition cpreq = cprp->size_request();
 	Gtk::Allocation cpalc(cpaxb - cpreq.width, cpayb, cpreq.width, cpreq.height);
 	cpayb += cpreq.height + KViewConnGapHeight;
 	cprp->size_allocate(cpalc);
+    }
+    // Allocate data
+    if (iDataRp != NULL) {
+	Gtk::Allocation data_alc = Gtk::Allocation(iBodyAlc.get_x(), iBodyAlc.get_y() + head_req.height + KViewCompEmptyBodyHight/2,
+		iBodyAlc.get_width(), aAlloc.get_height() - head_req.height - KViewCompEmptyBodyHight);
+	iDataRp->size_allocate(data_alc);
     }
 }
 
@@ -167,6 +209,12 @@ void SysCrp::on_size_request(Gtk::Requisition* aReq)
 	CpRp* cprp = it->second;
 	Gtk::Requisition cpreq = cprp->size_request();
 	aReq->height += cpreq.height + KViewConnGapHeight;
+    }
+    // Add size of data rp
+    if (iDataRp != NULL) {
+	Gtk::Requisition data_req = iDataRp->size_request();
+	aReq->height = max(aReq->height, data_req.height);
+	aReq->width = max(aReq->width, data_req.width + 2*KViewElemCrpInnerBorder); 
     }
 }
 

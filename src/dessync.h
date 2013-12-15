@@ -19,6 +19,10 @@ class ADesSync: public Elem
 	// Signal handlers:
 	void on_action_run();
 	void on_action_stop();
+	void on_action_pause();
+	void on_action_next();
+    protected:
+	void DoStep();
     private:
 	MSDesEnv* iSDesEnv;
 };

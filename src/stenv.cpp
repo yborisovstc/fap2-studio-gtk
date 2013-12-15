@@ -1,9 +1,9 @@
 #include "stenv.h"
 #include "provdef.h"
 
-StEnv::StEnv()
+StEnv::StEnv(MMdlObserver* aMdlObs): iMdlObs(aMdlObs)
 {
-    iCrpProv = new DefCrpProv();
+    iCrpProv = new DefCrpProv(iMdlObs);
     iCrpProv->SetSenv(*this);
     iDrpProv = new DefDrpProv();
     iDrpProv->SetSenv(*this);

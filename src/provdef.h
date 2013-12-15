@@ -5,6 +5,7 @@
 // Default providers
 
 #include "mprov.h"
+#include "mdesobs.h"
 
 class DefDrpProv: public MDrpProvider
 {
@@ -23,13 +24,14 @@ class DefDrpProv: public MDrpProvider
 class DefCrpProv: public MCrpProvider
 {
     public:
-	DefCrpProv();
+	DefCrpProv(MMdlObserver* aMdlObs);
 	virtual ~DefCrpProv();
 	//  From MCrpProvider
 	virtual void SetSenv(MSEnv& aEnv);
 	virtual MCrp* CreateRp(Elem& aElem, const MCrpMgr* aMgr) const;
 	virtual int GetConfidence(const Elem& aElem) const;
     private:
+	MMdlObserver* iMdlObs;
 	MSEnv* iSenv;
 };
 

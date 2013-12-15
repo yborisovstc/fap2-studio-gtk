@@ -7,7 +7,11 @@
 #include "gtkmm/label.h"
 #include <elem.h>
 #include "mcrp.h"
+#include "mdesobs.h"
 #include "vertcrp.h"
+
+using namespace std;
+using namespace Gtk;
 
 //  Connection point representation
 class CpRp: public Gtk::Label
@@ -24,6 +28,20 @@ class CpRp: public Gtk::Label
 	Elem* iElem;
 };
 
+//  Data representation.
+class DataRp: public Gtk::Label
+{
+    public:
+	DataRp(Elem* aModel, MMdlObserver* aMdlObs);
+    protected:
+	// Model events handlers
+	void on_comp_changed(Elem* aComp);
+    protected:
+	Elem* iElem;
+	MMdlObserver* iMdlObs;
+};
+
+
 // System representation
 class SysCrp: public VertCompRp
 {
@@ -31,7 +49,7 @@ class SysCrp: public VertCompRp
 	static const string& Type();
 	static string EType();
     public:
-	SysCrp(Elem* aElem);
+	SysCrp(Elem* aElem, MMdlObserver* aMdlObs, const string& aDataUri = string());
 	virtual ~SysCrp();
     protected:
 	virtual void Construct();
@@ -47,8 +65,13 @@ class SysCrp: public VertCompRp
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
     protected:
+	void AddDataRp();
+    protected:
+	MMdlObserver* iMdlObs;
 	typedef std::map<Elem*, CpRp*> tCpRps;
 	tCpRps iCpRps; // CPs representations
+	string iDataUri;
+	DataRp* iDataRp;
 };
 
 #endif

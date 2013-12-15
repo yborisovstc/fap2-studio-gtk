@@ -13,9 +13,105 @@ const char* KRcFileName = "/usr/share/fap2-studio-gtk/conf/reg.rc";
 /* Time slice of FAP environment, in milliseconds */
 const gint KFapeTimeSlice = 50;
 
+
+const string sType = "DesObserver";
+
+const string& DesObserver::Type()
+{
+    return sType;
+}
+
+DesObserver::DesObserver(): iDesEnv(NULL)
+{
+}
+
+void DesObserver::SetDes(MEnv* aDesEnv)
+{
+    assert(aDesEnv != NULL && iDesEnv == NULL || aDesEnv == NULL);
+    if (iDesEnv != NULL) {
+	Elem* root = iDesEnv->Root();
+	root->SetObserver(NULL);
+	iDesEnv = NULL;
+    }
+    else {
+	iDesEnv = aDesEnv;
+	Elem* root = iDesEnv->Root();
+	root->SetObserver(this);
+    }
+    iSigDesEnvChanged.emit();
+}
+
+void *DesObserver::DoGetObj(const string& aName)
+{
+    void* res = NULL;
+    if (aName ==  Type()) {
+	res = this;
+    }
+    else if (aName ==  MMdlObserver::Type()) {
+	res = (MMdlObserver*) this;
+    }
+    else if (aName ==  MCompsObserver::Type()) {
+	res = (MCompsObserver*) this;
+    }
+    return res;
+}
+
+MEnv* DesObserver::DesEnv()
+{
+    return iDesEnv;
+}
+
+MMdlObserver::tSigDesEnvChanged DesObserver::SignalDesEnvChanged()
+{
+    return iSigDesEnvChanged;
+}
+
+MMdlObserver::tSigCompDeleted DesObserver::SignalCompDeleted()
+{
+    return iSigCompDeleted;
+}
+
+MMdlObserver::tSigCompAdded DesObserver::SignalCompAdded()
+{
+    return iSigCompAdded;
+}
+
+MMdlObserver::tSigCompChanged DesObserver::SignalCompChanged()
+{
+    return iSigCompChanged;
+}
+
+MMdlObserver::tSigCompRenamed DesObserver::SignalCompRenamed()
+{
+    return iSigCompRenamed;
+}
+
+void DesObserver::OnCompDeleting(Elem& aComp)
+{
+    iSigCompDeleted.emit(&aComp);
+}
+
+void DesObserver::OnCompAdding(Elem& aComp)
+{
+    iSigCompAdded.emit(&aComp);
+}
+
+void DesObserver::OnCompChanged(Elem& aComp)
+{
+    iSigCompChanged.emit(&aComp);
+}
+
+TBool DesObserver::OnCompRenamed(Elem& aComp, const string& aOldName)
+{
+    iSigCompRenamed.emit(&aComp, aOldName);
+}
+
+
 App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
+    // Create model observer
+    iDesObserver = new DesObserver();
     // Create studio environment
-    iStEnv = new StEnv();
+    iStEnv = new StEnv(iDesObserver);
     // Default logfilename
     iLogFileName = GetDefaultLogFileName();
     // Create main window
@@ -34,13 +130,14 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     iEnv = new Env("DesEnv", KSpecFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
     iEnv->ConstructSystem();
+    iDesObserver->SetDes(iEnv);
     // Open main hier detail view
     iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
     iHDetView->SetRoot(iEnv->Root());
     iHDetView->SetCursor(iEnv->Root());
     // Navigation pane
-    iNaviPane = new Navi();
-    iNaviPane->SetDesEnv(iEnv);
+    iNaviPane = new Navi(iDesObserver);
+    //iNaviPane->SetDesEnv(iEnv);
     iNaviPane->show();
     iMainWnd->SetNaviPane(*iNaviPane);
     iNaviPane->NatHier().SignalCompSelected().connect(sigc::mem_fun(*iHDetView, &HierDetailView::on_comp_selected));
@@ -54,6 +151,7 @@ App::~App() {
     delete iStEnv;
     delete iStDesEnv;
     delete iMdlProv;
+    delete iDesObserver;
 }
 
 void App::on_action(const Glib::RefPtr<Gtk::Action>& aAction)
@@ -107,13 +205,16 @@ string App::GetDefaultLogFileName() const
 void App::OpenFile(const string& aFileName, bool aAsTmp)
 {
     if (iEnv != NULL) {
-	iNaviPane->SetDesEnv(NULL);
+	//iNaviPane->SetDesEnv(NULL);
+	iDesObserver->SetDes(NULL);
 	delete iEnv;
 	iEnv = NULL;
     }
     iEnv = new Env("DesEnv", aFileName, iLogFileName);
+    iEnv->AddProvider(iMdlProv);
     iEnv->ConstructSystem();
-    iNaviPane->SetDesEnv(iEnv);
+    //iNaviPane->SetDesEnv(iEnv);
+    iDesObserver->SetDes(iEnv);
     iHDetView->SetRoot(iEnv->Root());
     iHDetView->SetCursor(iEnv->Root());
 }

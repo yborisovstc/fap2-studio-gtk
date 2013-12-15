@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Modules" parent="Elem">
+    <node id="DesMod" parent="file:/usr/share/grayb/modules/des.xml#"/>
+  </node>
+  <node id="IncapsRoot" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/IncapsComps:incapsmod/Syst:Incaps">
+    <node id="Ticker" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/Incaps:DesTicker"/>
+    <node id="Ticker_edge" parent="Edge"/>
+    <node id="DesRoot" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/Incaps:Des"/>
+    <cont node="Edge:Ticker_edge/Prop:P2" val="Des:DesRoot/Elem:Capsule/ConnPoint:Sync"/>
+    <cont node="Edge:Ticker_edge/Prop:P1" val="DesTicker:Ticker/Elem:Capsule/ConnPoint:Out"/>
+  </node>
+  <rm node="Start"/>
+</node>

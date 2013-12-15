@@ -3,6 +3,7 @@
 #define __FAPSTU_GTK_APP_H
 
 #include <env.h>
+#include <melem.h>
 #include <string.h>
 
 #include "mainwnd.h"
@@ -10,7 +11,36 @@
 #include "hierdetailview.h"
 #include "navi.h"
 #include "mdlprov.h"
+#include "mdesobs.h"
 
+// Simple extender of DES root events
+class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
+{
+    public:
+	static const string& Type();
+	DesObserver();
+	void SetDes(MEnv* aDesEnv);
+	virtual void *DoGetObj(const std::string& aName);
+	// From MMdlObserver
+	virtual tSigDesEnvChanged SignalDesEnvChanged();
+	virtual tSigCompDeleted SignalCompDeleted();
+	virtual tSigCompAdded SignalCompAdded();
+	virtual tSigCompChanged SignalCompChanged();
+	virtual tSigCompRenamed SignalCompRenamed();
+	virtual MEnv* DesEnv();
+	// From MCompsObserver
+	virtual void OnCompDeleting(Elem& aComp);
+	virtual void OnCompAdding(Elem& aComp);
+	virtual void OnCompChanged(Elem& aComp);
+	virtual TBool OnCompRenamed(Elem& aComp, const string& aOldName);
+    protected:
+	MEnv* iDesEnv;
+	tSigDesEnvChanged iSigDesEnvChanged;
+	tSigCompDeleted iSigCompDeleted;
+	tSigCompAdded iSigCompAdded;
+	tSigCompChanged iSigCompChanged;
+	tSigCompRenamed iSigCompRenamed;
+};
 
 class App
 {
@@ -41,6 +71,8 @@ class App
 	Navi* iNaviPane;
 	// Model nodes provider
 	MdlProv* iMdlProv;
+	// Model observer
+	DesObserver* iDesObserver;
 };
 
 
