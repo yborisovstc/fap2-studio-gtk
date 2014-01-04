@@ -55,12 +55,15 @@ void LogView::OnFileContentChanged()
 {
     // Get the new content from file 
     iLogBuffer[0] = 0x00;
-    gssize size = iInpStream->read(iLogBuffer, KLogViewBufLen);
-    iBuffer->insert(iBuffer->end(), (const gchar*) iLogBuffer, &iLogBuffer[size]);
+    gssize size = 1;
+    TextBuffer::iterator it;
+    while (size != 0) {
+	size = iInpStream->read(iLogBuffer, KLogViewBufLen);
+	it = iBuffer->insert(iBuffer->end(), (const gchar*) iLogBuffer, &iLogBuffer[size]);
+    }
     // TODO YB hack
     while(gtk_events_pending()) gtk_main_iteration();
-    TextBuffer::iterator it = iBuffer->end();
-    gboolean res = scroll_to_iter(it, 0.5);
+    gboolean res = scroll_to(it, 0.0);
 }
 
 

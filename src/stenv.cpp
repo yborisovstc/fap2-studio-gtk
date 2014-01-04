@@ -7,6 +7,8 @@ StEnv::StEnv(MMdlObserver* aMdlObs): iMdlObs(aMdlObs)
     iCrpProv->SetSenv(*this);
     iDrpProv = new DefDrpProv();
     iDrpProv->SetSenv(*this);
+    iErpProv = new DefErpProv(iMdlObs);
+    iErpProv->SetSenv(*this);
 }
 
 StEnv::~StEnv()
@@ -24,6 +26,10 @@ MDrpProvider& StEnv::DrpProvider()
     return *iDrpProv;
 }
 
+MErpProvider& StEnv::ErpProvider()
+{
+    return *iErpProv;
+}
 
 StDesEnv::StDesEnv(const Glib::RefPtr<UIManager>& aUiMgr): iUiMgr(aUiMgr)
 {

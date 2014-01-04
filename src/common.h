@@ -5,9 +5,6 @@
 #include <gtkmm/main.h>
 
 // Parameters of view
-const gint KViewNameLineHeight = 20;
-const gint KViewExtLineHeight = 20;
-const gint KViewExtAreaWidth = 90;
 const gint KViewCompAreaWidth = 200;
 const gint KViewCompGapHight = 20;
 const gint KViewStateWidth = 300;
@@ -47,6 +44,10 @@ const gint KEdgePointWidth = 9;
 const gint KEdgeBorderWidth = 4;
 // Edges grid cell size
 const gint KEdgeGridCell = 10;
+// Minimal width of CRPs body
+const gint KCrpBodyMinWidth = 10;
+// DRP Internal padding
+const gint KDrpPadding = 8;
 
 // Targets entries infos for drag-drop
 const gint KTei_EdgeCp = 4;

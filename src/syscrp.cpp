@@ -36,9 +36,14 @@ void CpRp::on_size_request(Gtk::Requisition* aRequisition)
 DataRp::DataRp(Elem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs)
 {
     // Set text from Value
+    /*
     MProp* prop = iElem->GetObj(prop);
     assert(prop != NULL);
     set_text(prop->Value());
+    */
+    string cont;
+    iElem->GetCont(cont);
+    set_text(cont);
     iMdlObs->SignalCompChanged().connect(sigc::mem_fun(*this, &DataRp::on_comp_changed));
 }
 
@@ -46,9 +51,14 @@ void DataRp::on_comp_changed(Elem* aComp)
 {
     if (aComp == iElem) {
 	//std::cout << "DataRp::on_comp_changed" << std::endl;
+	/*
 	MProp* prop = iElem->GetObj(prop);
 	assert(prop != NULL);
 	set_text(prop->Value());
+	*/
+	string cont;
+	iElem->GetCont(cont);
+	set_text(cont);
     }
 }
 
@@ -175,16 +185,17 @@ bool SysCrp::on_expose_event(GdkEventExpose* event)
     VertCompRp::on_expose_event(event);
 }
 
-void SysCrp::on_size_allocate(Gtk::Allocation& 	aAlloc)
+void SysCrp::on_size_allocate(Gtk::Allocation& aAlloc)
 {
     // Base allocation
     VertCompRp::on_size_allocate(aAlloc);
-    // Allocating CPs
     Gtk::Requisition head_req = iHead->size_request();
+    int c_x = iBodyAlc.get_x(), c_y = iBodyAlc.get_y() + head_req.height;
+    // Allocating CPs
     //    CP allocation X base: X of right position
     int cpaxb = aAlloc.get_width();
     //    CP allocation Y base: mid of Y position
-    int cpayb = head_req.height + KViewCompEmptyBodyHight/2;
+    int cpayb = c_y + KViewCompEmptyBodyHight/2;
     for (tCpRps::iterator it = iCpRps.begin(); it != iCpRps.end(); it++) {
 	CpRp* cprp = it->second;
 	Gtk::Requisition cpreq = cprp->size_request();
@@ -192,11 +203,13 @@ void SysCrp::on_size_allocate(Gtk::Allocation& 	aAlloc)
 	cpayb += cpreq.height + KViewConnGapHeight;
 	cprp->size_allocate(cpalc);
     }
-    // Allocate data
+    c_y = cpayb;
+    // Allocating data
     if (iDataRp != NULL) {
-	Gtk::Allocation data_alc = Gtk::Allocation(iBodyAlc.get_x(), iBodyAlc.get_y() + head_req.height + KViewCompEmptyBodyHight/2,
-		iBodyAlc.get_width(), aAlloc.get_height() - head_req.height - KViewCompEmptyBodyHight);
+	Requisition data_r = iDataRp->size_request();
+	Allocation data_alc = Allocation(c_x, c_y, iBodyAlc.get_width(), data_r.height);
 	iDataRp->size_allocate(data_alc);
+	c_y += data_r.height;
     }
 }
 
@@ -204,17 +217,24 @@ void SysCrp::on_size_request(Gtk::Requisition* aReq)
 {
     // Base size
     VertCompRp::on_size_request(aReq);
-    // Add height of CPs
+    // Add size of CPs
+    int cp_height = 0, cp_width = 0;
     for (tCpRps::iterator it = iCpRps.begin(); it != iCpRps.end(); it++) {
 	CpRp* cprp = it->second;
 	Gtk::Requisition cpreq = cprp->size_request();
-	aReq->height += cpreq.height + KViewConnGapHeight;
+	cp_height += cpreq.height + KViewConnGapHeight;
+	cp_width = max(cp_width, cpreq.width);
     }
+    aReq->height += cp_height;
+    aReq->width = max(aReq->width, cp_width + KCrpBodyMinWidth);
     // Add size of data rp
+    int data_h = 0, data_w = 0;
     if (iDataRp != NULL) {
 	Gtk::Requisition data_req = iDataRp->size_request();
-	aReq->height = max(aReq->height, data_req.height);
-	aReq->width = max(aReq->width, data_req.width + 2*KViewElemCrpInnerBorder); 
+	data_h = data_req.height;
+	data_w = data_req.width;
+	aReq->height +=  data_h;
+	aReq->width += data_w + 2*KViewElemCrpInnerBorder; 
     }
 }
 

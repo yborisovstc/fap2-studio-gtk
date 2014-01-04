@@ -19,12 +19,14 @@ class StEnv: public MSEnv
 	// From MSEnv
 	virtual MCrpProvider& CrpProvider();
 	virtual MDrpProvider& DrpProvider();
+	virtual MErpProvider& ErpProvider();
     private:
 	MMdlObserver* iMdlObs;
 	// Compact representaions provider
 	// TODO [YB] To replace default provider with full provider
 	DefCrpProv* iCrpProv;
 	DefDrpProv* iDrpProv;
+	DefErpProv* iErpProv;
 };
 
 // Studio DES Environment

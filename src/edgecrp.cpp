@@ -254,7 +254,7 @@ bool EdgeCompRp_v3::on_expose_event(GdkEventExpose* aEvent)
 void EdgeCompRp_v3::on_size_request(Gtk::Requisition* aReq)
 {
    // aReq->width = KConnHorizSpreadMin; 
-    aReq->width = 2*KEdgeBorderWidth; 
+    aReq->width = KEdgeGridCell + 2*KEdgeBorderWidth; 
     aReq->height = KViewCompGapHight;
 }
 

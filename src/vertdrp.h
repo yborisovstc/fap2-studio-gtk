@@ -42,6 +42,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual Gtk::Widget& Widget();
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();
+	virtual tSigDragMotion SignalDragMotion();
 	virtual void Udno();
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
@@ -82,6 +83,7 @@ class VertDrp: public MDrp
 	virtual Gtk::Widget& Widget();
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();
+	virtual tSigDragMotion SignalDragMotion();
     private:
 	VertDrpw_v1* iRp;
 };

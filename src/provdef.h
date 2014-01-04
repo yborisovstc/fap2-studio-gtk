@@ -35,4 +35,18 @@ class DefCrpProv: public MCrpProvider
 	MSEnv* iSenv;
 };
 
+class DefErpProv: public MErpProvider
+{
+    public:
+	DefErpProv(MMdlObserver* aMdlObs);
+	virtual ~DefErpProv();
+	//  From MErpProvider
+	virtual void SetSenv(MSEnv& aEnv);
+	virtual MErp* CreateRp(Elem& aElem, const MErpMgr* aMgr) const;
+	virtual int GetConfidence(const Elem& aElem) const;
+    private:
+	MMdlObserver* iMdlObs;
+	MSEnv* iSenv;
+};
+
 #endif

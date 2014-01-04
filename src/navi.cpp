@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include "navi.h"
+#include "common.h"
 #include <gtkmm/treerowreference.h>
 #include <grayb/mprov.h>
 #include <dirent.h>
@@ -650,7 +651,9 @@ bool HierTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::Selectio
     Elem* node = (Elem*) (*iter).get_value(ColRec().elem);
     GUri uri;
     node->GetUri(uri);
-    selection_data.set_text(uri.GetUri());
+    //selection_data.set_text(uri.GetUri());
+    selection_data.set(KDnDTarg_Comp, uri.GetUri());
+
     //
     /*
     int row_index = path[0];
@@ -696,13 +699,13 @@ void HierTreeMdl::OnCompAdding(Elem& aComp)
 
 void HierTreeMdl::OnCompChanged(Elem& aComp)
 {
-    std::cout << "HierTreeMdl::OnCompChanged" << std::endl;
+    //std::cout << "HierTreeMdl::OnCompChanged" << std::endl;
     UpdateStamp();
 }
 
 void HierTreeMdl::on_comp_deleting(Elem* aComp)
 {
-    OnCompChanged(*aComp);
+    OnCompDeleting(*aComp);
 }
 
 void HierTreeMdl::on_comp_adding(Elem* aComp)
@@ -714,6 +717,11 @@ void HierTreeMdl::on_comp_changed(Elem* aComp)
 {
     OnCompChanged(*aComp);
 }
+
+static GtkTargetEntry sNaviHierDnDTarg[] =
+{
+    { (gchar*) KDnDTarg_Comp, 0, 0 },
+};
 
 
 // Current hier navigation widget
@@ -754,7 +762,7 @@ void NaviHier::SetDesEnv(MEnv* aDesEnv)
 	    set_model(mdl);
 	    append_column( "one", mdl->ColRec().name);
 	    enable_model_drag_source();
-	    drag_source_set (Gtk::ArrayHandle_TargetEntry(targetentries));
+	    drag_source_set (Gtk::ArrayHandle_TargetEntry(sNaviHierDnDTarg, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
 	    iDesObs->SignalCompDeleted().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_deleting));
 	    iDesObs->SignalCompAdded().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_adding));
 	    iDesObs->SignalCompChanged().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_changed));

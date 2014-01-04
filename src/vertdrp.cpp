@@ -243,7 +243,7 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
 void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
 {
     // Calculate size of regular comps and edges
-    int comp_w = 0, comp_h = 2*KViewCompGapHight;
+    int comp_w = 0, comp_h = KViewCompGapHight;
     int edge_w = 0, edge_h = 0;
     for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	MCrp* crp = it->second;
@@ -251,7 +251,7 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
 	if (medgecrp == NULL) {
 	    Gtk::Widget* cpw = &(crp->Widget());
 	    Gtk::Requisition req = cpw->size_request();
-	    edge_w = max(edge_w, req.width);
+	    comp_w = max(comp_w, req.width);
 	    comp_h += req.height + KViewCompGapHight;
 	}
 	else {
@@ -266,8 +266,10 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
 	    edge_h = max(edge_h, req.height);
 	}
     }
-    aReq->width = comp_w + edge_w; 
-    aReq->height = max(comp_h, edge_h);
+    // Doubling edge_w - taking into account the left area
+    aReq->width = comp_w + 2 * (edge_w + KDrpPadding); 
+//    aReq->height = max(comp_h, edge_h);
+    aReq->height = comp_h;
 }
 
 bool VertDrpw_v1::AreCpsCompatible(Elem* aCp1, Elem* aCp2)
@@ -521,6 +523,10 @@ void VertDrpw_v1::Udno()
 {
 }
 
+MDrp::tSigDragMotion VertDrpw_v1::SignalDragMotion()
+{
+    return iSigDragMotion;
+}
 
 
 
@@ -572,4 +578,7 @@ Elem* VertDrp::Model()
     return iRp->iElem;
 }
 
-
+MDrp::tSigDragMotion VertDrp::SignalDragMotion()
+{
+    return iRp->iSigDragMotion;
+}

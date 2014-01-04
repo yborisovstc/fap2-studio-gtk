@@ -4,13 +4,25 @@
 #include "common.h"
 
 //  Connection point representation
-ValueRp::ValueRp(Elem* aModel): iElem(aModel)
+ValueRp::ValueRp(Elem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs)
 {
     // Set text from Value
     MProp* prop = iElem->GetObj(prop);
     assert(prop != NULL);
     set_text(prop->Value());
+    iMdlObs->SignalCompChanged().connect(sigc::mem_fun(*this, &ValueRp::on_comp_changed));
 }
+
+void ValueRp::on_comp_changed(Elem* aComp)
+{
+    if (aComp == iElem) {
+	//std::cout << "DataRp::on_comp_changed" << std::endl;
+	MProp* prop = iElem->GetObj(prop);
+	assert(prop != NULL);
+	set_text(prop->Value());
+    }
+}
+
 
 
 const string DataCrp::KModelName = "DataS";
@@ -44,7 +56,7 @@ void DataCrp::Construct()
     // Add CPs
     Elem* val = iElem->GetNode(KValueUri);
     assert(val != NULL);
-    iValue = new ValueRp(val);
+    iValue = new ValueRp(val, iMdlObs);
     add(*iValue);
     iValue->show();
 }

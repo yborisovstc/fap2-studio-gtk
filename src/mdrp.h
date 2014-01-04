@@ -15,10 +15,12 @@ class MDrp: public MBase
 	static std::string Type() { return "MDrp";};
     public:
 	typedef sigc::signal<void, Elem*> tSigCompSelected;
+	typedef sigc::signal<void, Gtk::Widget&, int, int> tSigDragMotion;
     public:
 	virtual Gtk::Widget& Widget() = 0;
 	virtual Elem* Model() = 0;
 	virtual tSigCompSelected SignalCompSelected() = 0;
+	virtual tSigDragMotion SignalDragMotion() = 0;
 	virtual void Udno() = 0;
 };
 

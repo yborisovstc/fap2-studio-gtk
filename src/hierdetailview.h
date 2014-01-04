@@ -18,7 +18,7 @@
 class HierDetailView
 {
     public:
-	HierDetailView(MSEnv& aStEnv, Gtk::Container& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr);
+	HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr);
 	virtual ~HierDetailView();
 	void SetRoot(Elem* aRoot);
 	void SetCursor(Elem* aRoot);
@@ -29,10 +29,12 @@ class HierDetailView
 	void on_action_up();
 	void on_action_undo();
 	void on_action_redo();
+	void on_cont_size_alocated(Allocation& alloc);
+	void on_drp_drag_motion(Gtk::Widget& widget, int x, int y);
     private:
 	// Environment
 	MSEnv& iStEnv;
-	Gtk::Container& iContWnd;
+	Gtk::ScrolledWindow& iContWnd;
 	Gtk::Alignment* iAlignent;
 	Glib::RefPtr<Gtk::UIManager> iUiMgr;
 	Elem* iRoot;

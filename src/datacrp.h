@@ -3,14 +3,19 @@
 #define __FAP2STU_DATACRP_H
 
 #include "incapscrp.h"
+#include "mdesobs.h"
 
 //  Value representation
 class ValueRp: public Gtk::Label
 {
     public:
-	ValueRp(Elem* aModel);
+	ValueRp(Elem* aModel, MMdlObserver* aMdlObs);
+    protected:
+	// Model events handlers
+	void on_comp_changed(Elem* aComp);
     protected:
 	Elem* iElem;
+	MMdlObserver* iMdlObs;
 };
 
 // Data incaps compact representation

@@ -38,6 +38,10 @@ void IncapsDrp::Construct()
 	add(rpw);
 	iCompRps[comp] = rp;
 	rpw.show();
+	MCrpConnectable* crpc = rp->GetObj(crpc);
+	if (crpc != NULL) {
+	    crpc->SetIsInt(false);
+	}
     }
 }
 
@@ -242,14 +246,49 @@ void IncapsDrp::on_size_allocate(Gtk::Allocation& aAllc)
 
 void IncapsDrp::on_size_request(Gtk::Requisition* aRequisition)
 {
-    SysDrp::on_size_request(aRequisition);
-    // Exclude capsula size 
+    int comp_w = 0, comp_h = KViewCompGapHight;
+    int edge_w = 0, edge_h = 0;
+    int bnd_w = 0, bnd_h = KViewCompGapHight;
     Elem* caps = Model()->GetNode(KCapsUri);
     assert(caps != NULL);
-    MCrp* capscrp = iCompRps.at(caps);
-    assert(capscrp != NULL);
-    Requisition req = capscrp->Widget().size_request();
-    aRequisition->height -= req.height + KViewCompGapHight;
+
+    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+	Elem* ecmp = *it;
+	MCrp* crp = iCompRps.at(ecmp);
+	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	if (medgecrp == NULL) {
+	    // Comps excluding caplule
+	    if (crp->Model() != caps) {
+		Gtk::Widget* comp = &(crp->Widget());
+		Gtk::Requisition req = comp->size_request();
+		comp_w = max(comp_w, req.width);
+		comp_h += req.height + KViewCompGapHight;
+	    }
+	}
+	else {
+	    Gtk::Widget* cpw = &(crp->Widget());
+	    Gtk::Requisition req = cpw->size_request();
+	    if (edge_w == 0) {
+		edge_w = KConnHorizSpreadMin;
+	    }
+	    else {
+		edge_w += KEdgeGridCell;
+	    }
+	    edge_h = max(edge_h, req.height);
+	}
+    }
+    // Boundary - capsule comps
+    for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
+	Elem* ecmp = *it;
+	MCrp* crp = iCompRps.at(ecmp);
+	Gtk::Widget* comp = &(crp->Widget());
+	Gtk::Requisition req = comp->size_request();
+	bnd_w = max(bnd_w, req.width);
+	bnd_h += req.height + KViewCompGapHight;
+    }
+    // Doubling of bnd_width is because internal comps to be centered
+    aRequisition->width = comp_w + 2 * (edge_w + KDrpPadding + bnd_w);
+    aRequisition->height = max(comp_h, bnd_h);
 }
 
 Elem* IncapsDrp::GetCompOwning(Elem* aElem)

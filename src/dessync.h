@@ -24,6 +24,7 @@ class ADesSync: public Elem
     protected:
 	void DoStep();
     private:
+	int iCount;
 	MSDesEnv* iSDesEnv;
 };
 

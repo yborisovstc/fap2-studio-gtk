@@ -6,12 +6,14 @@
 
 class MCrpProvider;
 class MDrpProvider;
+class MErpProvider;
 
 class MSEnv
 {
     public:
 	virtual MCrpProvider& CrpProvider() = 0;
 	virtual MDrpProvider& DrpProvider() = 0;
+	virtual MErpProvider& ErpProvider() = 0;
 };
 
 #endif

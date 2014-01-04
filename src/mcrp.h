@@ -18,6 +18,17 @@ class MCrp: public MBase
 	    EA_Remove,
 	    EA_Edit_Content
 	};
+	// TODO To implement CRP layout type: some typical layout scheme are defined. So it is possible
+	// for DRP to classify its CRP and then layout basing on the layout type. This would allow to 
+	// reuse DRP super classes layout methods.
+	// Layout area
+	enum tLArea {
+	    EUnspecified,
+	    EVMain, // Main vertical layout area
+	    EVRight, // Right zone
+	    EVLeft, // Left zone
+	    EOvlHGrid, // Overlayed, layouting horizontally by grid
+	};
     public:
 	typedef sigc::signal<void, GdkEventButton*> tSigButtonPressName;
 	typedef sigc::signal<void, GdkEventButton*> tSigButtonPress;

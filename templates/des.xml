@@ -10,5 +10,4 @@
     <cont node="Edge:Ticker_edge/Prop:P2" val="Des:DesRoot/Elem:Capsule/ConnPoint:Sync"/>
     <cont node="Edge:Ticker_edge/Prop:P1" val="DesTicker:Ticker/Elem:Capsule/ConnPoint:Out"/>
   </node>
-  <rm node="Start"/>
 </node>

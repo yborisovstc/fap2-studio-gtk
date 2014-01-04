@@ -14,6 +14,7 @@
 #include "extdcrp.h"
 #include "propcrp.h"
 #include "mcrp.h"
+#include "cperp.h"
 
 DefDrpProv::DefDrpProv(): iSenv(NULL)
 {
@@ -58,6 +59,10 @@ MDrp* DefDrpProv::CreateRp(Elem& aElem) const
 
 const string KStateEType = "Incaps:State";
 const string KStateDataUri = "Confirmed/Value";
+const string KTFuncIntEType = "Incaps:TFuncInt";
+const string KTFuncIntDataUri = "Agents/func_agt";
+const string KDataSEType = "Incaps:DataS";
+const string KDataSDataUri = "Value";
 
 DefCrpProv::DefCrpProv(MMdlObserver* aMdlObs): iSenv(NULL), iMdlObs(aMdlObs)
 {
@@ -87,8 +92,16 @@ MCrp* DefCrpProv::CreateRp(Elem& aElem, const MCrpMgr* aMgr) const
     if (aElem.IsHeirOf(DataCrp::EType()) && aMgr->IsTypeAllowed(DataCrp::EType())) {
 	res = new DataCrp(&aElem, iMdlObs);
     }
+    /*
+    if (aElem.IsHeirOf(KDataSEType) && aMgr->IsTypeAllowed(IncapsCrp::EType())) {
+	res = new IncapsCrp(&aElem, iMdlObs, KDataSDataUri);
+    }
+    */
     else if (aElem.IsHeirOf(KStateEType) && aMgr->IsTypeAllowed(IncapsCrp::EType())) {
 	res = new IncapsCrp(&aElem, iMdlObs, KStateDataUri);
+    }
+    else if (aElem.IsHeirOf(KTFuncIntEType) && aMgr->IsTypeAllowed(IncapsCrp::EType())) {
+	res = new IncapsCrp(&aElem, iMdlObs, KTFuncIntDataUri);
     }
     else if (aElem.IsHeirOf(IncapsCrp::EType()) && aMgr->IsTypeAllowed(IncapsCrp::EType())) {
 	res = new IncapsCrp(&aElem, iMdlObs);
@@ -97,7 +110,7 @@ MCrp* DefCrpProv::CreateRp(Elem& aElem, const MCrpMgr* aMgr) const
 	res = new SysCrp(&aElem, iMdlObs);
     }
     else if (aElem.IsHeirOf(ExtdCrp::EType()) && aMgr->IsTypeAllowed(ExtdCrp::EType())) {
-	res = new ExtdCrp(&aElem);
+	res = new ExtdCrp(&aElem, iSenv->ErpProvider());
     }
     else if (aElem.IsHeirOf(CpCrp::EType()) && aMgr->IsTypeAllowed(CpCrp::EType())) {
 	res = new CpCrp(&aElem);
@@ -113,6 +126,39 @@ MCrp* DefCrpProv::CreateRp(Elem& aElem, const MCrpMgr* aMgr) const
     }
     else if (aElem.IsHeirOf(ElemCrp::EType()) && aMgr->IsTypeAllowed(ElemCrp::EType())) {
 	res = new ElemCrp(&aElem);
+    }
+    return res;
+}
+
+// Default Erp provider
+
+DefErpProv::DefErpProv(MMdlObserver* aMdlObs): iSenv(NULL), iMdlObs(aMdlObs)
+{
+}
+
+DefErpProv::~DefErpProv()
+{
+}
+
+void DefErpProv::SetSenv(MSEnv& aEnv)
+{
+    iSenv = &aEnv;
+}
+
+int DefErpProv::GetConfidence(const Elem& aElem) const
+{
+    int res = 0;
+    return res;
+}
+
+MErp* DefErpProv::CreateRp(Elem& aElem, const MErpMgr* aMgr) const
+{
+    MErp* res = NULL;
+    if (aElem.IsHeirOf(CpErp::EType()) && aMgr->IsTypeAllowed(CpErp::EType())) {
+	res = new CpErp(&aElem);
+    }
+    else if (aElem.IsHeirOf(SockErp::EType()) && aMgr->IsTypeAllowed(SockErp::EType())) {
+	res = new SockErp(&aElem, *this);
     }
     return res;
 }

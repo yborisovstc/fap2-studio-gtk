@@ -19,7 +19,7 @@ class MainWnd : public Gtk::Window
 	MainWnd();
 	virtual ~MainWnd();
 	Glib::RefPtr<Gtk::UIManager> UIManager() const;
-	Gtk::Container& ClientWnd();
+	Gtk::ScrolledWindow& ClientWnd();
 	void SetNaviPane(Gtk::Widget& aWidget);
 	void SetEnvLog(const string& aLogFileName);
     protected:

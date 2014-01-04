@@ -18,8 +18,8 @@ Glib::ustring sUiHierDview =
 "</ui>";
 
 
-HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::Container& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr): 
-    iStEnv(aStEnv), iContWnd(aCont), iUiMgr(aUiMgr), iDetRp(NULL), iAlignent()
+HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr): 
+    iStEnv(aStEnv), iContWnd(aCont), iUiMgr(aUiMgr), iDetRp(NULL), iAlignent(NULL)
 {
     // Addig toolbar
     irActionGroup = Gtk::ActionGroup::create("ElemDrpActGroup");
@@ -49,9 +49,37 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::Container& aCont, const Glib:
     pToolBar->insert(*iTbParent, pos++);
     
     // Adding alignment
-    iAlignent = new Gtk::Alignment(1.0, 1.0, 1.0, 1.0);
+    // TODO [YB] To consider if we need the alignment here
+    iAlignent = new Gtk::Alignment(0.0, 0.0, 1.0, 1.0);
     iContWnd.add(*iAlignent);
     iAlignent->show();
+
+    iContWnd.signal_size_allocate().connect(sigc::mem_fun(*this, &HierDetailView::on_cont_size_alocated));
+}
+
+void HierDetailView::on_cont_size_alocated(Allocation& alloc) {
+    if (iDetRp != NULL)  {
+	Requisition rreq = iDetRp->Widget().size_request();
+    }
+}
+
+void HierDetailView::on_drp_drag_motion(Gtk::Widget& widget, int x, int y)
+{
+    Widget& drpw = iDetRp->Widget();
+    Allocation ralc = drpw.get_allocation();
+    Allocation salc = iContWnd.get_allocation();
+    Gtk::Adjustment* vadj = iContWnd.get_vadjustment();
+    std::cout << "HierDetailView: on_drp_dragging_over_border, y: " << y << ", va value: " << vadj->get_value() <<  ", va pg: " << vadj->get_page_size() << std::endl;
+    if (y > (vadj->get_value() + vadj->get_page_size() - 1)) {
+	double val = vadj->get_value();
+	std::cout << "ADJUSTING" << std::endl;
+	vadj->set_value(val + vadj->get_step_increment());
+    }
+    else if (y < (vadj->get_value() + 1)) {
+	double val = vadj->get_value();
+	std::cout << "ADJUSTING" << std::endl;
+	vadj->set_value(val - vadj->get_step_increment());
+    }
 }
 
 HierDetailView::~HierDetailView()
@@ -71,14 +99,22 @@ void HierDetailView::SetCursor(Elem* aElem)
     assert(aElem != NULL);
     if (iDetRp != NULL) {
 	iAlignent->remove();
+	//iContWnd.remove(iDetRp->Widget());
 	delete iDetRp;
 	iDetRp = NULL;
     }
     MDrpProvider& prov = iStEnv.DrpProvider();
     iDetRp = prov.CreateRp(*aElem);
     iDetRp->SignalCompSelected().connect(sigc::mem_fun(*this, &HierDetailView::on_comp_selected));
+    iDetRp->SignalDragMotion().connect(sigc::mem_fun(*this, &HierDetailView::on_drp_drag_motion));
     iAlignent->add(iDetRp->Widget());
+    //iContWnd.add(iDetRp->Widget());
     iDetRp->Widget().show();
+    Allocation calc = iContWnd.get_allocation();
+    Allocation ralc = iDetRp->Widget().get_allocation();
+    Requisition rreq = iDetRp->Widget().size_request();
+    //std::cout << "HierDetailView, c_w: " << calc.get_width() << ", c_h: " << calc.get_height() << ", r_w: " << ralc.get_width() << ", r_h: " << ralc.get_height() << std::endl;
+    std::cout << "HierDetailView, c_w: " << calc.get_width() << ", c_h: " << calc.get_height() << ", r_w: " << rreq.width << ", r_h: " << rreq.height << std::endl;
     // Settng name and parent to the toolbar
     iTbName->Label().set_text(aElem->Name());
     iTbParent->Label().set_text(aElem->EType());
@@ -94,6 +130,9 @@ void HierDetailView::on_action_up()
 
 void HierDetailView::on_action_undo()
 {
+    Gtk::Adjustment* vadj = iContWnd.get_vadjustment();
+    double val = vadj->get_value();
+    vadj->set_value(val + vadj->get_step_increment());
 }
 
 void HierDetailView::on_action_redo()

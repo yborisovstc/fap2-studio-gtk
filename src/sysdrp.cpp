@@ -1,6 +1,7 @@
 
 #include <syst.h>
 
+#include <iostream>
 #include "common.h"
 #include "sysdrp.h"
 
@@ -233,7 +234,44 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 
 void SysDrp::on_size_request(Gtk::Requisition* aRequisition)
 {
-    VertDrpw_v1::on_size_request(aRequisition);
+    int comp_w = 0, comp_h = KViewCompGapHight;
+    int edge_w = 0, edge_h = 0;
+    int bnd_width = 0, bnd_heigth = KViewCompGapHight;
+
+    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	MCrp* crp = it->second;
+	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	if (medgecrp == NULL) {
+	    Gtk::Widget* comp = &(crp->Widget());
+	    Gtk::Requisition req = comp->size_request();
+	    MCrpConnectable* crpc = crp->GetObj(crpc);
+	    if (crpc != NULL && !crpc->GetIsInt()) {
+		// Boundary
+		bnd_width = max(bnd_width, req.width);
+		bnd_heigth += req.height + KViewCompGapHight;
+	    }
+	    else {
+		// Internal
+		comp_w = max(comp_w, req.width);
+		comp_h += req.height + KViewCompGapHight;
+	    }
+	}
+	else {
+	    Gtk::Widget* cpw = &(crp->Widget());
+	    Gtk::Requisition req = cpw->size_request();
+	    if (edge_w == 0) {
+		edge_w = KConnHorizSpreadMin;
+	    }
+	    else {
+		edge_w += KEdgeGridCell;
+	    }
+	    edge_h = max(edge_h, req.height);
+	}
+    }
+
+    // Doubling of bnd_width is because internal comps to be centered
+    aRequisition->width = comp_w + 2 * (edge_w + KDrpPadding + bnd_width);
+    aRequisition->height = max(comp_h, bnd_heigth);
 }
 
 bool SysDrp::AreCpsCompatible(Elem* aCp1, Elem* aCp2)
@@ -246,6 +284,7 @@ bool SysDrp::AreCpsCompatible(Elem* aCp1, Elem* aCp2)
 	MCompatChecker* c2 = aCp2->GetObj(c2);
 	res = (c1 == NULL || c1->IsCompatible(aCp2)) && (c2 == NULL || c2->IsCompatible(aCp1));
     }
+    //std::cout << "SysDrp::AreCpsCompatible, aCp1: " << aCp1->Name() << ", aCp2: " << aCp2->Name() << ", res: " << res << std::endl;
     return res;
 }
 

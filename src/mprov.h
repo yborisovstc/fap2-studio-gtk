@@ -7,6 +7,7 @@
 #include "msenv.h"
 #include "mcrp.h"
 #include "mdrp.h"
+#include "merp.h"
 
 class Elem;
 
@@ -41,6 +42,23 @@ class MCrpProvider: public MRpProvider
     public:
 	// Creates representation
 	virtual MCrp* CreateRp(Elem& aElem, const MCrpMgr* aMgr) const = 0;
+};
+
+// Manager of ERp
+class MErpMgr
+{
+    public:
+	// Verifies if Rp of given type is allowed
+	virtual bool IsTypeAllowed(const std::string& aType) const = 0;
+};
+
+
+// Embedded representation provider
+class MErpProvider: public MRpProvider
+{
+    public:
+	// Creates representation
+	virtual MErp* CreateRp(Elem& aElem, const MErpMgr* aMgr) const = 0;
 };
 
 #endif

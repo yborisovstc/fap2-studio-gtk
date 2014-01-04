@@ -81,14 +81,14 @@ Glib::RefPtr<Gtk::UIManager> MainWnd::UIManager() const
     return irUiMgr;
 }
 
-Gtk::Container& MainWnd::ClientWnd()
+Gtk::ScrolledWindow& MainWnd::ClientWnd()
 {
     return *irMainClientWnd;
 }
 
 void MainWnd::SetNaviPane(Gtk::Widget& aWidget)
 {
-    iHPanG.pack1(aWidget, Gtk::EXPAND);
+    iHPanG.pack1(aWidget, Gtk::SHRINK);
 }
 
 void MainWnd::SetEnvLog(const string& aLogFileName)

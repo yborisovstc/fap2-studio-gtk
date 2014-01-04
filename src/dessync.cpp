@@ -25,7 +25,7 @@ string ADesSync::PEType()
     return Elem::PEType() + GUri::KParentSep + Type();
 }
 
-ADesSync::ADesSync(const string& aName, Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): Elem(aName, aMan, aEnv), iSDesEnv(aSDesEnv)
+ADesSync::ADesSync(const string& aName, Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): Elem(aName, aMan, aEnv), iSDesEnv(aSDesEnv), iCount(0)
 {
     SetEType(Type(), Elem::PEType());
     SetParent(Type());
@@ -72,6 +72,7 @@ void ADesSync::DoStep() {
     Elem* eout = GetNode("../../Elem:Capsule/ConnPoint:Out");
     MDesSyncable* out = eout->GetObj(out);
     if (eout != NULL) {
+	Logger()->Write(MLogRec::EDbg, this, "Step %d", iCount++);
 	if (out->IsActive()) {
 	    out->Update();
 	}

@@ -3,6 +3,7 @@
 #include "common.h"
 #include "elemdetrp.h"
 #include "dlgbase.h"
+#include <edge.h>
 
 // [YB] GTK_TREE_MODEL_ROW is the only target supported by tree view model
 // All tree views in navigation panel sources are overwritted for now, so this target
@@ -193,12 +194,16 @@ bool ElemDetRp::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, i
     Gdk::DragAction action = context->get_action();
     Gdk::DragAction saction = context->get_suggested_action();
     //std::cout << "ElemDetRp on_drag_motion, iDnDTarg: " << iDnDTarg << ", action: " << action << ", s_action " << saction << std::endl;
+    Gtk::Allocation alc = get_allocation();
+    Adjustment* adj = get_vadjustment();
+    //std::cout << "ElemDetRp on_drag_motion, vadj, low: " << adj->get_lower() << ", upp: " << adj->get_upper() << ", step: " << adj->get_step_increment() << ", val: " << adj->get_value() << ", pg: " << adj->get_page_size() << std::endl;
+    iSigDragMotion.emit(*this, x, y);
     if (iDnDTarg == EDT_Unknown) {
 	// Detect target type
 	drag_get_data(context, targ, time);
     }
     else {
-	//std::cout << "ElemDetRp on_drag_motion: targ detected: " << iDnDTarg << ", x: " << x << ", y: " << y << std::endl;
+	//std::cout << "ElemDetRp on_drag_motion: targ detected: " << iDnDTarg << ", x: " << x << ", y: " << y << ", wy: " << alc.get_height() << std::endl;
 	if (iDnDTarg == EDT_Node) {
 	    // Find the nearest node and highligh it
 	    MCrp* cand = NULL;
@@ -300,75 +305,144 @@ void ElemDetRp::on_node_dropped(const std::string& aUri)
 
 void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNewName)
 {
-    MChromo& mut = iElem->Mutation();
-    ChromoNode smutr = mut.Root();
+    Elem* mutelem = iElem->GetAttachingMgr();
+    GUri duri;
+    iElem->GetUri(duri, mutelem);
+    ChromoNode smutr = mutelem->Mutation().Root();
+    GUri nuri = duri + GUri(aNodeUri);
     ChromoNode change = smutr.AddChild(ENt_Change);
-    change.SetAttr(ENa_MutNode, aNodeUri);
+    change.SetAttr(ENa_MutNode, nuri.GetUri());
     change.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
     change.SetAttr(ENa_MutVal, aNewName);
-    iElem->Mutate();
+    mutelem->Mutate();
     Refresh();
 }
 
 void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeighborUri)
 {
-    // Ask for name
-    ParEditDlg* dlg = new ParEditDlg("Enter name", "");
-    int res = dlg->run();
-    if (res == Gtk::RESPONSE_OK) {
-	std::string name;
-	dlg->GetData(name);
-	delete dlg;
-	// Mutate appending
-	MChromo& mut = iElem->Mutation();
-	ChromoNode smut = mut.Root().AddChild(ENt_Node);
-	smut.SetAttr(ENa_Parent, aParentUri);
-	smut.SetAttr(ENa_Id, name);
-	if (!aNeighborUri.empty()) {
-	    ChromoNode change = mut.Root().AddChild(ENt_Move);
-	    GUri puri(aParentUri);
-	    GUri suri;
-	    suri.AppendElem(puri.GetName(), name);
-	    change.SetAttr(ENa_Id, suri.GetUri());
-	    change.SetAttr(ENa_MutNode, aNeighborUri);
+    // TODO [YB] Full type (PEType) needs to be used here. This relates to more serious problem
+    // that grayb default provider gives us the types of native but not full type, ref ModulesPath()
+    int pos = aParentUri.find(Edge::Type());
+    bool use_default_name = pos != string::npos;
+    std::string name;
+    bool name_ok = true;
+    if (use_default_name) {
+    }
+    else  {
+	// Ask for name
+	ParEditDlg* dlg = new ParEditDlg("Enter name", "");
+	int res = dlg->run();
+	if (res == Gtk::RESPONSE_OK) {
+	    dlg->GetData(name);
 	}
-	// Mutate moving
-	iElem->Mutate();
+	else {
+	    name_ok = false;
+	}
+	delete dlg;
+    }
+    if (name_ok) {
+	do_add_node(name, aParentUri, aNeighborUri);
 	Refresh();
     }
-    else {
-	delete dlg;
+}
+
+void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri)
+{
+    Elem* mutelem = iElem;
+    ChromoNode rmut = mutelem->Mutation().Root();
+    // Mutate appending
+    if (!mutelem->IsChromoAttached()) {
+	mutelem = mutelem->GetAttachingMgr();
+	if (mutelem != NULL) {
+	    ChromoNode mut = mutelem->Mutation().Root();
+	    rmut = mut.AddChild(ENt_Add);
+	    GUri nodeuri;
+	    iElem->GetUri(nodeuri, mutelem);
+	    string snodeuri = nodeuri.GetUri();
+	    rmut.SetAttr(ENa_MutNode, snodeuri);
+	}
     }
+    ChromoNode smut = rmut.AddChild(ENt_Node);
+    smut.SetAttr(ENa_Parent, aParentUri);
+    smut.SetAttr(ENa_Id, aName);
+    if (!aNeighborUri.empty() && !aName.empty()) {
+	// Mutate moving
+	GUri duri;
+	iElem->GetUri(duri, mutelem);
+	GUri puri(aParentUri);
+	GUri suri = duri;
+	suri.AppendElem(puri.GetName(), aName);
+	GUri nuri = duri + GUri(aNeighborUri);
+	ChromoNode rmut = mutelem->Mutation().Root();
+	ChromoNode change = rmut.AddChild(ENt_Move);
+	change.SetAttr(ENa_Id, suri.GetUri());
+	change.SetAttr(ENa_MutNode, nuri.GetUri());
+    }
+    mutelem->Mutate();
 }
 
 void ElemDetRp::remove_node(const std::string& aNodeUri)
 {
-    MChromo& mut = iElem->Mutation();
-    ChromoNode mutn = mut.Root().AddChild(ENt_Rm);
-    mutn.SetAttr(ENa_MutNode, aNodeUri);
-    iElem->Mutate();
+    Elem* mutelem = iElem->GetAttachingMgr();
+    GUri duri;
+    iElem->GetUri(duri, mutelem);
+    GUri nuri = duri + GUri(aNodeUri);
+    ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
+    mutn.SetAttr(ENa_MutNode, nuri.GetUri());
+    mutelem->Mutate();
     Refresh();
 }
 
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent)
 {
+    /*
     MChromo& mut = iElem->Mutation();
     ChromoNode smutr = mut.Root();
     ChromoNode change = smutr.AddChild(ENt_Cont);
     change.SetAttr(ENa_MutNode, aNodeUri);
     change.SetAttr(ENa_MutVal, aNewContent);
     iElem->Mutate();
+    */
+    Elem* mutelem = iElem->GetAttachingMgr();
+    GUri duri;
+    iElem->GetUri(duri, mutelem);
+    GUri nuri = duri + GUri(aNodeUri);
+    MChromo& mut = iElem->Mutation();
+    ChromoNode change = mutelem->Mutation().Root().AddChild(ENt_Cont);
+    change.SetAttr(ENa_MutNode, nuri.GetUri());
+    change.SetAttr(ENa_MutVal, aNewContent);
+    mutelem->Mutate();
     Refresh();
 }
 
 void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestUri)
 {
-    MChromo& mut = iElem->Mutation();
-    ChromoNode smutr = mut.Root();
-    ChromoNode change = smutr.AddChild(ENt_Move);
-    change.SetAttr(ENa_Id, aNodeUri);
-    change.SetAttr(ENa_MutNode, aDestUri);
-    iElem->Mutate();
+    Elem* node = iElem->GetNode(aNodeUri);
+    Elem* srcmgr = node->GetMan();
+    if (srcmgr == iElem) {
+	// Moving node locally
+	Elem* mutelem = iElem->GetAttachingMgr();
+	GUri duri;
+	iElem->GetUri(duri, mutelem);
+	GUri nuri = duri + GUri(aNodeUri);
+	GUri desturi = duri + GUri(aDestUri);
+	ChromoNode rmut = mutelem->Mutation().Root();
+	ChromoNode change = rmut.AddChild(ENt_Move);
+	change.SetAttr(ENa_Id, nuri.GetUri());
+	change.SetAttr(ENa_MutNode, desturi.GetUri());
+	mutelem->Mutate();
+    }
+    else {
+	// Moving from one mgr to another one. Actually it is not simple mutation
+	// but creating the same node in dest mgr and then remove src
+	// Appending "clone" of the moved node
+	do_add_node(node->Name(), node->PName(), aDestUri);
+	// Remove node from source mgr
+	MChromo& srcmut = srcmgr->Mutation();
+	ChromoNode mutn = srcmut.Root().AddChild(ENt_Rm);
+	mutn.SetAttr(ENa_MutNode, aNodeUri);
+	srcmgr->Mutate();
+    }
     Refresh();
 }
 
@@ -436,6 +510,8 @@ void ElemDetRp::DoUdno()
 {
 }
 
+
+
 const string sElemDrpType = "ElemDrp";
 
 const string& ElemDrp::Type()
@@ -488,5 +564,10 @@ Elem* ElemDrp::Model()
 void ElemDrp::Udno()
 {
     iRp->DoUdno();
+}
+
+MDrp::tSigDragMotion ElemDrp::SignalDragMotion()
+{
+    return iRp->iSigDragMotion;
 }
 
