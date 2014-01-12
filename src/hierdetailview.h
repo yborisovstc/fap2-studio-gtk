@@ -22,6 +22,8 @@ class HierDetailView
 	virtual ~HierDetailView();
 	void SetRoot(Elem* aRoot);
 	void SetCursor(Elem* aRoot);
+	void SetCursor(const string& aUri);
+	string GetCursor() const;
 	// Signal handlers:
 	void on_comp_selected(Elem* aComp);
     protected:
@@ -38,6 +40,7 @@ class HierDetailView
 	Gtk::Alignment* iAlignent;
 	Glib::RefPtr<Gtk::UIManager> iUiMgr;
 	Elem* iRoot;
+	string iCursor;
 	// Node detail representation
 	MDrp* iDetRp;
 	Glib::RefPtr<Gtk::ActionGroup> irActionGroup;

@@ -69,7 +69,7 @@ void HierDetailView::on_drp_drag_motion(Gtk::Widget& widget, int x, int y)
     Allocation ralc = drpw.get_allocation();
     Allocation salc = iContWnd.get_allocation();
     Gtk::Adjustment* vadj = iContWnd.get_vadjustment();
-    std::cout << "HierDetailView: on_drp_dragging_over_border, y: " << y << ", va value: " << vadj->get_value() <<  ", va pg: " << vadj->get_page_size() << std::endl;
+    //std::cout << "HierDetailView: on_drp_dragging_over_border, y: " << y << ", va value: " << vadj->get_value() <<  ", va pg: " << vadj->get_page_size() << std::endl;
     if (y > (vadj->get_value() + vadj->get_page_size() - 1)) {
 	double val = vadj->get_value();
 	std::cout << "ADJUSTING" << std::endl;
@@ -94,6 +94,18 @@ void HierDetailView::SetRoot(Elem* aRoot)
     iRoot = aRoot;
 }
 
+string HierDetailView::GetCursor() const
+{
+    return iCursor;
+}
+
+void HierDetailView::SetCursor(const string& aUri)
+{
+    Elem* node = iRoot->GetNode(aUri);
+    assert(node != NULL);
+    SetCursor(node);
+}
+
 void HierDetailView::SetCursor(Elem* aElem)
 {
     assert(aElem != NULL);
@@ -104,6 +116,7 @@ void HierDetailView::SetCursor(Elem* aElem)
 	iDetRp = NULL;
     }
     MDrpProvider& prov = iStEnv.DrpProvider();
+    iCursor = aElem->GetUri();
     iDetRp = prov.CreateRp(*aElem);
     iDetRp->SignalCompSelected().connect(sigc::mem_fun(*this, &HierDetailView::on_comp_selected));
     iDetRp->SignalDragMotion().connect(sigc::mem_fun(*this, &HierDetailView::on_drp_drag_motion));

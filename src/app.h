@@ -20,6 +20,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
 	static const string& Type();
 	DesObserver();
 	void SetDes(MEnv* aDesEnv);
+	bool IsModelChanged() const;
 	virtual void *DoGetObj(const std::string& aName);
 	// From MMdlObserver
 	virtual tSigDesEnvChanged SignalDesEnvChanged();
@@ -27,12 +28,14 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
 	virtual tSigCompAdded SignalCompAdded();
 	virtual tSigCompChanged SignalCompChanged();
 	virtual tSigCompRenamed SignalCompRenamed();
+	virtual tSigContentChanged SignalContentChanged();
 	virtual MEnv* DesEnv();
 	// From MCompsObserver
 	virtual void OnCompDeleting(Elem& aComp);
 	virtual void OnCompAdding(Elem& aComp);
 	virtual void OnCompChanged(Elem& aComp);
 	virtual TBool OnCompRenamed(Elem& aComp, const string& aOldName);
+	virtual void OnContentChanged(Elem& aComp);
     protected:
 	MEnv* iDesEnv;
 	tSigDesEnvChanged iSigDesEnvChanged;
@@ -40,6 +43,8 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
 	tSigCompAdded iSigCompAdded;
 	tSigCompChanged iSigCompChanged;
 	tSigCompRenamed iSigCompRenamed;
+	tSigContentChanged iSigContentChanged;
+	bool iChanged;
 };
 
 class App
@@ -51,12 +56,16 @@ class App
 	MainWnd& Wnd() const {return *iMainWnd;};
     private:
 	string GetDefaultLogFileName() const;
+	string GetDefaultTmpFileName() const;
+	void SaveTmp();
     private:
 	void on_action(const Glib::RefPtr<Gtk::Action>& aAction);
 	void on_action_open();
 	void on_action_saveas();
+	void on_action_recreate();
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
 	void SaveFile(const string& aFileName);
+	string FormTitle(const string& aFilePath);
     private:
 	// DES environment
 	Env* iEnv;
@@ -73,6 +82,7 @@ class App
 	MdlProv* iMdlProv;
 	// Model observer
 	DesObserver* iDesObserver;
+	bool iSaved;
 };
 
 

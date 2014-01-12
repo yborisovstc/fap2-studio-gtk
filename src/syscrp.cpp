@@ -33,7 +33,8 @@ void CpRp::on_size_request(Gtk::Requisition* aRequisition)
 
 
 //  Data (property) representation
-DataRp::DataRp(Elem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs)
+DataRp::DataRp(Elem* aModel, const string& aDataName, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs),
+    iDataName(aDataName)
 {
     // Set text from Value
     /*
@@ -43,8 +44,9 @@ DataRp::DataRp(Elem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdl
     */
     string cont;
     iElem->GetCont(cont);
-    set_text(cont);
+    set_text(iDataName + ": " + cont);
     iMdlObs->SignalCompChanged().connect(sigc::mem_fun(*this, &DataRp::on_comp_changed));
+    iMdlObs->SignalContentChanged().connect(sigc::mem_fun(*this, &DataRp::on_comp_changed));
 }
 
 void DataRp::on_comp_changed(Elem* aComp)
@@ -58,7 +60,7 @@ void DataRp::on_comp_changed(Elem* aComp)
 	*/
 	string cont;
 	iElem->GetCont(cont);
-	set_text(cont);
+	set_text(iDataName + ": " + cont);
     }
 }
 
@@ -77,7 +79,7 @@ string SysCrp::EType()
 }
 
 SysCrp::SysCrp(Elem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): VertCompRp(aElem), iDataUri(aDataUri),
-    iDataRp(NULL), iMdlObs(aMdlObs)
+    iMdlObs(aMdlObs)
 {
 }
 
@@ -106,10 +108,27 @@ void SysCrp::AddDataRp()
     if (!iDataUri.empty()) {
 	Elem* data = iElem->GetNode(iDataUri);
 	if (data != NULL) {
-	    iDataRp = new DataRp(data, iMdlObs);
-	    add(*iDataRp);
-	    iDataRp->show();
+	    DataRp* rp = new DataRp(data, "Data", iMdlObs);
+	    add(*rp);
+	    rp->show();
+	    iDataRps[data] = rp;
 	}    
+    }
+    Elem* vdata = iElem->GetNode("Vert:ViewData");
+    if (vdata != NULL) {
+	for (vector<Elem*>::iterator it = vdata->Comps().begin(); it != vdata->Comps().end(); it++) {
+	    Elem* comp = *it;
+	    MProp* pcomp = comp->GetObj(pcomp);
+	    if (pcomp != NULL) {
+		Elem* data = iElem->GetNode(pcomp->Value());
+		if (data != NULL) {
+		    DataRp* rp = new DataRp(data, comp->Name(), iMdlObs);
+		    add(*rp);
+		    rp->show();
+		    iDataRps[data] = rp;
+		}    
+	    }
+	}
     }
 }
 
@@ -205,11 +224,14 @@ void SysCrp::on_size_allocate(Gtk::Allocation& aAlloc)
     }
     c_y = cpayb;
     // Allocating data
-    if (iDataRp != NULL) {
-	Requisition data_r = iDataRp->size_request();
-	Allocation data_alc = Allocation(c_x, c_y, iBodyAlc.get_width(), data_r.height);
-	iDataRp->size_allocate(data_alc);
-	c_y += data_r.height;
+    if (!iDataRps.empty()) {
+	for (tDataRps::iterator it = iDataRps.begin(); it != iDataRps.end(); it++) {
+	    DataRp* rp = it->second;
+	    Requisition data_r = rp->size_request();
+	    Allocation data_alc = Allocation(c_x, c_y, iBodyAlc.get_width(), data_r.height);
+	    rp->size_allocate(data_alc);
+	    c_y += data_r.height;
+	}
     }
 }
 
@@ -229,12 +251,15 @@ void SysCrp::on_size_request(Gtk::Requisition* aReq)
     aReq->width = max(aReq->width, cp_width + KCrpBodyMinWidth);
     // Add size of data rp
     int data_h = 0, data_w = 0;
-    if (iDataRp != NULL) {
-	Gtk::Requisition data_req = iDataRp->size_request();
-	data_h = data_req.height;
-	data_w = data_req.width;
-	aReq->height +=  data_h;
-	aReq->width += data_w + 2*KViewElemCrpInnerBorder; 
+    if (!iDataRps.empty()) {
+	for (tDataRps::iterator it = iDataRps.begin(); it != iDataRps.end(); it++) {
+	    DataRp* rp = it->second;
+	    Requisition data_req = rp->size_request();
+	    data_h = data_req.height;
+	    data_w = data_req.width;
+	    aReq->height +=  data_h;
+	    aReq->width = max(aReq->width, data_w + 2*KViewElemCrpInnerBorder); 
+	}
     }
 }
 

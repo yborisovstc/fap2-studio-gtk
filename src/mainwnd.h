@@ -9,9 +9,11 @@
 #include <gtkmm/uimanager.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/paned.h>
+#include <gtkmm/notebook.h>
 #include "logview.h"
 
 using namespace std;
+using namespace Gtk;
 
 class MainWnd : public Gtk::Window
 {
@@ -19,6 +21,7 @@ class MainWnd : public Gtk::Window
 	MainWnd();
 	virtual ~MainWnd();
 	Glib::RefPtr<Gtk::UIManager> UIManager() const;
+	Container& VisWindow();
 	Gtk::ScrolledWindow& ClientWnd();
 	void SetNaviPane(Gtk::Widget& aWidget);
 	void SetEnvLog(const string& aLogFileName);
@@ -33,6 +36,10 @@ class MainWnd : public Gtk::Window
 	Gtk::VPaned iVPanG;
 	// Base horisontal layout: left for tree/list, right for detail 
 	Gtk::HPaned iHPanG;
+	// Base services window
+	Notebook iServ;
+	// Model visualization window
+	ScrolledWindow iVis;
 	Glib::RefPtr<Gtk::ActionGroup> irActionGroup;
 	Glib::RefPtr<Gtk::UIManager> irUiMgr;
 	// Client window for main view - normally hier detail view

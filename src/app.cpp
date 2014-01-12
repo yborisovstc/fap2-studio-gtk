@@ -21,7 +21,7 @@ const string& DesObserver::Type()
     return sType;
 }
 
-DesObserver::DesObserver(): iDesEnv(NULL)
+DesObserver::DesObserver(): iDesEnv(NULL), iChanged(false)
 {
 }
 
@@ -39,6 +39,11 @@ void DesObserver::SetDes(MEnv* aDesEnv)
 	root->SetObserver(this);
     }
     iSigDesEnvChanged.emit();
+}
+
+bool DesObserver::IsModelChanged() const
+{
+    return iChanged;
 }
 
 void *DesObserver::DoGetObj(const string& aName)
@@ -86,28 +91,42 @@ MMdlObserver::tSigCompRenamed DesObserver::SignalCompRenamed()
     return iSigCompRenamed;
 }
 
+MMdlObserver::tSigContentChanged DesObserver::SignalContentChanged()
+{
+    return iSigContentChanged;
+}
+
 void DesObserver::OnCompDeleting(Elem& aComp)
 {
     iSigCompDeleted.emit(&aComp);
+    iChanged = true;
 }
 
 void DesObserver::OnCompAdding(Elem& aComp)
 {
     iSigCompAdded.emit(&aComp);
+    iChanged = true;
 }
 
 void DesObserver::OnCompChanged(Elem& aComp)
 {
     iSigCompChanged.emit(&aComp);
+    iChanged = true;
 }
 
 TBool DesObserver::OnCompRenamed(Elem& aComp, const string& aOldName)
 {
     iSigCompRenamed.emit(&aComp, aOldName);
+    iChanged = true;
 }
 
+void DesObserver::OnContentChanged(Elem& aComp)
+{
+    iSigContentChanged.emit(&aComp);
+}
 
-App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
+App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false)
+{
     // Create model observer
     iDesObserver = new DesObserver();
     // Create studio environment
@@ -122,19 +141,13 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL) {
     iMainWnd->UIManager()->get_action("ui/ToolBar/Open")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_open));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
     // Create studio DES environment
-    iStDesEnv = new StDesEnv(iMainWnd->UIManager());
+    iStDesEnv = new StDesEnv(iMainWnd->UIManager(), iMainWnd->VisWindow());
+    iStDesEnv->SigActionRecreate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
     // Model specific nodes provider
     iMdlProv = new MdlProv("MdlProv", iStDesEnv);
     // Create model
-    iSpecFileName = KSpecFileName;
-    iEnv = new Env("DesEnv", KSpecFileName, iLogFileName);
-    iEnv->AddProvider(iMdlProv);
-    iEnv->ConstructSystem();
-    iDesObserver->SetDes(iEnv);
-    // Open main hier detail view
     iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
-    iHDetView->SetRoot(iEnv->Root());
-    iHDetView->SetCursor(iEnv->Root());
+    OpenFile(KSpecFileName);
     // Navigation pane
     iNaviPane = new Navi(iDesObserver);
     //iNaviPane->SetDesEnv(iEnv);
@@ -170,9 +183,20 @@ void App::on_action_open()
     dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
     int result = dialog.run();
     if (result == Gtk::RESPONSE_OK) {
-	std::string filename = dialog.get_filename();
-	OpenFile(filename, false);
+	std::string iSpecFileName = dialog.get_filename();
+	OpenFile(iSpecFileName, false);
+	iSaved = EFalse;
     }
+}
+
+void App::on_action_recreate()
+{
+    if (!iSaved || iDesObserver->IsModelChanged()) {
+	SaveTmp();
+    }
+    string cursor = iHDetView->GetCursor();
+    OpenFile(GetDefaultTmpFileName(), ETrue);
+    iHDetView->SetCursor(cursor);
 }
 
 void App::on_action_saveas()
@@ -202,10 +226,28 @@ string App::GetDefaultLogFileName() const
     return string(home) + "/" + KLogFileName;
 }
 
+string App::GetDefaultTmpFileName() const
+{
+    const gchar* home = g_getenv("HOME");
+    return string(home) + "/" + KTmpFileName;
+}
+
+string App::FormTitle(const string& aFilePath)
+{
+    size_t pos = aFilePath.find_last_of("/");
+    string filename = pos != string::npos ? aFilePath.substr(pos + 1) : aFilePath;
+    return string(KAppName) + " [" + filename + "]";
+}
+
+void App::SaveTmp()
+{
+    SaveFile(GetDefaultTmpFileName());
+    iSaved = ETrue;
+}
+
 void App::OpenFile(const string& aFileName, bool aAsTmp)
 {
     if (iEnv != NULL) {
-	//iNaviPane->SetDesEnv(NULL);
 	iDesObserver->SetDes(NULL);
 	delete iEnv;
 	iEnv = NULL;
@@ -213,10 +255,13 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv = new Env("DesEnv", aFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
     iEnv->ConstructSystem();
-    //iNaviPane->SetDesEnv(iEnv);
     iDesObserver->SetDes(iEnv);
     iHDetView->SetRoot(iEnv->Root());
     iHDetView->SetCursor(iEnv->Root());
+    if (!aAsTmp) {
+	iSpecFileName = aFileName;
+	iMainWnd->set_title(FormTitle(aFileName));
+    }
 }
 
 void App::SaveFile(const string& aFileName)

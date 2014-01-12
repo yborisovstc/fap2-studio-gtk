@@ -88,6 +88,12 @@ Requisition CpErp::GetCpCoord(Elem* aCp)
 
 int CpErp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
 {
+    int res = 0;
+    Gtk::Requisition cpcoord = GetCpCoord(iElem);
+    std::complex<int> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
+    res = std::abs(sub);
+    aCp = iElem;
+    return res;
 }
 
 void CpErp::HighlightCp(Elem* aCp, bool aSet)

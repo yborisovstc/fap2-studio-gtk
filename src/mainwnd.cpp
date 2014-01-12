@@ -46,6 +46,12 @@ MainWnd::MainWnd()
     iLogView = new LogView();
     iLogWnd->add(*iLogView);
     iLogWnd->show();
+    // Visualization
+    iVis.show();
+    // Services window
+    iServ.show();
+    iServ.append_page(*iLogWnd, "Log");
+    iServ.append_page(iVis, "Visualization");
 
     iVPanG.show();
     // Base vertical layout: main horisontal layout
@@ -55,7 +61,7 @@ MainWnd::MainWnd()
     // Detail view pane
     iHPanG.pack2(*irMainClientWnd, Gtk::EXPAND);
     iVPanG.pack1(iHPanG, Gtk::EXPAND);
-    iVPanG.pack2(*iLogWnd, Gtk::EXPAND);
+    iVPanG.pack2(iServ, Gtk::EXPAND);
 
     pMenuBar->show();
     pToolBar->show();
@@ -94,5 +100,10 @@ void MainWnd::SetNaviPane(Gtk::Widget& aWidget)
 void MainWnd::SetEnvLog(const string& aLogFileName)
 {
     iLogView->SetLogFileName(aLogFileName);
+}
+
+Container& MainWnd::VisWindow()
+{
+    return iVis;
 }
 

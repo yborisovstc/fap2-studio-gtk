@@ -52,6 +52,8 @@ fap2_studio_gtk_SOURCES = \
 		 datacrp.cpp \
 		 dessync.h \
 		 dessync.cpp \
+		 desvis.h \
+		 desvis.cpp \
 		 mdlprov.h \
 		 mdlprov.cpp \
 		 mainwnd.h \

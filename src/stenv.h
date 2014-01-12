@@ -34,12 +34,16 @@ class StEnv: public MSEnv
 class StDesEnv: public MSDesEnv
 {
     public:
-	StDesEnv(const Glib::RefPtr<UIManager>& aUiMgr);
+	StDesEnv(const Glib::RefPtr<UIManager>& aUiMgr, Container& aVisWindow);
 	virtual ~StDesEnv();
 	// From MSDesEnv
 	virtual Glib::RefPtr<UIManager> UiMgr();
+	virtual Container& VisWindow();
+	virtual tSigActionRecreate SigActionRecreate();
     private:
 	Glib::RefPtr<UIManager> iUiMgr;
+	tSigActionRecreate iSigActionRecreate;
+	Container& iVisWindow;
 };
 
 

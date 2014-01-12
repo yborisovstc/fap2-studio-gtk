@@ -184,6 +184,12 @@
           <node id="985106610" parent="Edge"/>
           <cont node="Edge:985106610/Prop:P2" val="Elem:Capsule/StIntInp:Inp/StInpSocket:Int"/>
           <cont node="Edge:985106610/Prop:P1" val="StateInt:Mass/Elem:Capsule/StIntInp:Inp_OthersCoord"/>
+          <node id="ViewData" parent="Vert">
+            <node id="Mass" parent="Prop"/>
+            <cont node="Prop:Mass" val="Mass/Confirmed/Value"/>
+            <node id="Coord" parent="Prop"/>
+            <cont node="Prop:Coord" val="Coord/Confirmed/Value"/>
+          </node>
         </node>
       </node>
       <node id="SysConsts" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/IncapsComps:incapsmod/Syst:Incaps">

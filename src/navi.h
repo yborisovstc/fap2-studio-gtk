@@ -121,8 +121,7 @@ class HierTreeClrec: public Gtk::TreeModelColumnRecord
 };
 
 // Current hier tree model
-class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource, 
-    public MCompsObserver
+class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource/*, public MCompsObserver*/
 {
     public:
 	static Glib::RefPtr<HierTreeMdl> create(MEnv* aDesEnv);

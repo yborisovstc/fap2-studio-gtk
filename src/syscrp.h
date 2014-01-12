@@ -32,12 +32,13 @@ class CpRp: public Gtk::Label
 class DataRp: public Gtk::Label
 {
     public:
-	DataRp(Elem* aModel, MMdlObserver* aMdlObs);
+	DataRp(Elem* aModel, const string& aDataName, MMdlObserver* aMdlObs);
     protected:
 	// Model events handlers
 	void on_comp_changed(Elem* aComp);
     protected:
 	Elem* iElem;
+	string iDataName;
 	MMdlObserver* iMdlObs;
 };
 
@@ -69,9 +70,10 @@ class SysCrp: public VertCompRp
     protected:
 	MMdlObserver* iMdlObs;
 	typedef std::map<Elem*, CpRp*> tCpRps;
+	typedef std::map<Elem*, DataRp*> tDataRps;
 	tCpRps iCpRps; // CPs representations
 	string iDataUri;
-	DataRp* iDataRp;
+	tDataRps iDataRps;
 };
 
 #endif

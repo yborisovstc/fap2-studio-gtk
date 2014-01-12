@@ -31,7 +31,7 @@ MErpProvider& StEnv::ErpProvider()
     return *iErpProv;
 }
 
-StDesEnv::StDesEnv(const Glib::RefPtr<UIManager>& aUiMgr): iUiMgr(aUiMgr)
+StDesEnv::StDesEnv(const Glib::RefPtr<UIManager>& aUiMgr, Container& aVisWindow): iUiMgr(aUiMgr), iVisWindow(aVisWindow)
 {
 }
 
@@ -42,5 +42,15 @@ StDesEnv::~StDesEnv()
 Glib::RefPtr<UIManager> StDesEnv::UiMgr()
 {
     return iUiMgr;
+}
+
+MSDesEnv::tSigActionRecreate StDesEnv::SigActionRecreate()
+{
+    return iSigActionRecreate;
+}
+
+Container& StDesEnv::VisWindow()
+{
+    return iVisWindow;
 }
 
