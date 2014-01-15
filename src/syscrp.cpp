@@ -173,7 +173,7 @@ int SysCrp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
     for (tCpRps::iterator it = iCpRps.begin(); it != iCpRps.end(); it++) {
 	Elem* cp = it->first;
 	Gtk::Requisition cpcoord = GetCpCoord(cp);
-	std::complex<int> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
+	std::complex<float> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
 	int dist = std::abs(sub);
 	if (res == -1 || dist < res) {
 	    res = dist;

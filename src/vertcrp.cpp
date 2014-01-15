@@ -133,12 +133,20 @@ void VertCompRp::SetIsInt(bool aIsInt)
     }
 }
 
+static int dist(int x, int y)
+{
+    return sqrt(x*x + y*y);
+}
+
 int VertCompRp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
 {
     int res = -1;
     Gtk::Requisition cpcoord = GetCpCoord(NULL);
+    /*
     std::complex<int> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
     res = std::abs(sub);
+    */
+    res = dist(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
     aCp = iElem;
     return res;
 }

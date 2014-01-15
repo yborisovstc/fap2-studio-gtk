@@ -90,7 +90,7 @@ int CpErp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
 {
     int res = 0;
     Gtk::Requisition cpcoord = GetCpCoord(iElem);
-    std::complex<int> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
+    std::complex<float> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
     res = std::abs(sub);
     aCp = iElem;
     return res;
@@ -243,7 +243,7 @@ int SockErp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
     int res = -1;
     Elem* ncp = NULL; // Nearest CP
     Gtk::Requisition cpcoord = GetCpCoord(iElem);
-    std::complex<int> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
+    std::complex<float> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
     int dist = std::abs(sub);
     if (res == -1 || dist < res) {
 	res = dist;
@@ -252,7 +252,7 @@ int SockErp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
     for (tPinRps::iterator it = iPinRps.begin(); it != iPinRps.end(); it++) {
 	Elem* cp = it->first;
 	Gtk::Requisition cpcoord = GetCpCoord(cp);
-	std::complex<int> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
+	std::complex<float> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
 	int dist = std::abs(sub);
 	if (res == -1 || dist < res) {
 	    res = dist;
