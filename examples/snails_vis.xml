@@ -1,24 +1,27 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem">
   <node id="Modules" parent="Elem">
+    <node id="SysMod" parent="file:/usr/share/grayb/modules/syst.xml#"/>
+    <node id="IncapsMod" parent="file:/usr/share/grayb/modules/capsula.xml#"/>
+    <node id="DataMod" parent="file:/usr/share/grayb/modules/data.xml#"/>
     <node id="DesMod" parent="file:/usr/share/grayb/modules/des.xml#"/>
     <node id="FuncMod" parent="file:/usr/share/grayb/modules/func.xml#"/>
     <node id="vismod" parent="file:/usr/share/grayb/modules/vis.xml#"/>
   </node>
-  <node id="IncapsRoot" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/IncapsComps:incapsmod/Syst:Incaps">
+  <node id="IncapsRoot" parent="**/IncapsComps:*/Syst:Incaps">
     <node id="Ticker" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/Incaps:DesTicker"/>
     <node id="Ticker_edge" parent="Edge"/>
     <node id="DesRoot" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/Incaps:Des">
       <node id="About" parent="Description"/>
       <cont node="Description:About" val="This is DES test of Racing Snails. The only int transitions are used."/>
       <node id="Components" parent="Vert">
-        <node id="Inp" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/SysComps:sysmod/ConnPointBase:ConnPoint">
+	  <node id="Inp" parent="/Root/Modules/SysComps:SysMod/ConnPointBase:ConnPoint">
           <cont node="Prop:Provided" val="MDIntGet"/>
         </node>
-        <node id="OutPin" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/SysComps:sysmod/ConnPointBase:ConnPoint">
+        <node id="OutPin" parent="/Root/Modules/SysComps:SysMod/ConnPointBase:ConnPoint">
           <cont node="Prop:Required" val="MDIntGet"/>
         </node>
-        <node id="SysConstInpSocket" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/SysComps:sysmod/Vert:Socket">
+        <node id="SysConstInpSocket" parent="/Root/Modules/SysComps:SysMod/Vert:Socket">
           <node id="Socket that is used for snail as input of constants" parent="Description"/>
           <change node="Socket that is used for snail as input of constants" attr="id" val="About"/>
           <cont node="Description:About" val="Socket that is used for snail as input of constants"/>
@@ -26,16 +29,16 @@
           <node id="MinMass" parent="/Elem:Root/Incaps:IncapsRoot/Des:DesRoot/Vert:Components/ConnPoint:Inp"/>
           <node id="MaxMass" parent="/Elem:Root/Incaps:IncapsRoot/Des:DesRoot/Vert:Components/ConnPoint:Inp"/>
         </node>
-        <node id="SysConstOutSocket" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/SysComps:sysmod/Vert:Socket">
+        <node id="SysConstOutSocket" parent="/Root/Modules/SysComps:SysMod/Vert:Socket">
           <node id="MaxFeed" parent="/Elem:Root/Incaps:IncapsRoot/Des:DesRoot/Vert:Components/ConnPoint:OutPin"/>
           <node id="MinMass" parent="/Elem:Root/Incaps:IncapsRoot/Des:DesRoot/Vert:Components/ConnPoint:OutPin"/>
           <node id="MaxMass" parent="/Elem:Root/Incaps:IncapsRoot/Des:DesRoot/Vert:Components/ConnPoint:OutPin"/>
         </node>
-        <node id="SysConstInp" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/SysComps:sysmod/Vert:Extender">
+        <node id="SysConstInp" parent="/Root/Modules/SysComps:SysMod/Vert:Extender">
           <rm node="Int"/>
           <node id="Int" parent="/Elem:Root/Incaps:IncapsRoot/Des:DesRoot/Vert:Components/Socket:SysConstInpSocket"/>
         </node>
-        <node id="SysConstOut" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/SysComps:sysmod/Vert:Extender">
+        <node id="SysConstOut" parent="/Root/Modules/SysComps:SysMod/Vert:Extender">
           <rm node="Int"/>
           <node id="Int" parent="/Elem:Root/Incaps:IncapsRoot/Des:DesRoot/Vert:Components/Socket:SysConstOutSocket"/>
         </node>
@@ -325,7 +328,7 @@
             <node id="Sub" parent="/Elem:Root/Elem:Modules/FuncComps:FuncMod/TFuncInt:TFSubInt"/>
             <node id="Sub2" parent="/Elem:Root/Elem:Modules/FuncComps:FuncMod/TFuncInt:TFSubInt"/>
             <node id="Lim" parent="/Elem:Root/Elem:Modules/FuncComps:FuncMod/TFuncInt:TFLimInt"/>
-            <node id="Data_Const1" parent="/Elem:Root/Elem:Modules/FuncComps:FuncMod/DataComps:datamod/DataSC:DataSCInt"/>
+            <node id="Data_Const1" parent="**/DataComps:*/DataSC:DataSCInt"/>
             <node id="802052081" parent="Edge"/>
             <cont node="Edge:802052081/Prop:P2" val="TFConvInt:Conv/Elem:Capsule/Out_TFInt:out"/>
             <cont node="Edge:802052081/Prop:P2" val="TFConvInt:Conv/Elem:Capsule/Inp_TFInt:inp"/>
@@ -469,16 +472,16 @@
           <cont node="Edge:1928176632/Prop:P1" val="Snail_Picture:Picture/Elem:Capsule/StIntInp:Inp_Y"/>
         </node>
       </node>
-      <node id="SysConsts" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/IncapsComps:incapsmod/Syst:Incaps">
+      <node id="SysConsts" parent="**/IncapsComps:*/Syst:Incaps">
         <add node="Capsule">
 		    <node id="Out" parent="../../Components/SysConstOut"/> 
 		</add>
         <node id="e3" parent="Edge"/>
         <node id="About" parent="Description"/>
-        <node id="Data_MaxMass" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/DataComps:datamod/DataSC:DataSCInt"/>
+        <node id="Data_MaxMass" parent="**/DataComps:*/DataSC:DataSCInt"/>
         <node id="e2" parent="Edge"/>
-        <node id="Data_MinMass" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/DataComps:datamod/DataSC:DataSCInt"/>
-        <node id="Data_MaxFeed" parent="/Elem:Root/Elem:Modules/DesComps:DesMod/DataComps:datamod/DataSC:DataSCInt"/>
+        <node id="Data_MinMass" parent="**/DataComps:*/DataSC:DataSCInt"/>
+        <node id="Data_MaxFeed" parent="**/DataComps:*/DataSC:DataSCInt"/>
         <node id="e1" parent="Edge"/>
         <cont node="Edge:e1/Prop:P2" val="DataSCInt:Data_MaxFeed/Elem:Capsule/ConnPoint:Out"/>
         <cont node="Edge:e1/Prop:P1" val="Elem:Capsule/SysConstOut:Out/SysConstOutSocket:Int/OutPin:MaxFeed"/>
@@ -499,7 +502,7 @@
 		    <node parent="Elem" id="Logspec"/>
 		</add>
         <add node="StateInt:Mass/TFConvInt:Conv/Elem:Logspec">
-		    <node parent="/Elem:Root/Elem:Modules/FuncComps:FuncMod/DataComps:datamod/Elem:DataLogevent" id="Update"/>
+		    <node parent="**/DataComps:*/Elem:DataLogevent" id="Update"/>
 		</add>
         <cont node="StateInt:Coord_Y/DataSCInt:Prepared/Prop:Value" val="1"/>
         <cont node="StateInt:Coord_Y/DataSCInt:Confirmed/Prop:Value" val="1"/>
