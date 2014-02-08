@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
 <node id="testroot" parent="Elem">
-  <node id="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
-  <node id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
-  <node id="file:/usr/share/grayb/modules/data.xml#DataComps"/>
-  <node id="file:/usr/share/grayb/modules/func.xml#FuncComps"/>
-  <node id="file:/usr/share/grayb/modules/des.xml#DesComps"/>
+
+  <move id="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
+  <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
+  <move id="file:/usr/share/grayb/modules/data.xml#DataComps"/>
+  <move id="file:/usr/share/grayb/modules/func.xml#FuncComps"/>
+  <move id="file:/usr/share/grayb/modules/des.xml#DesComps"/>
+
   <node id="test" parent="IncapsComps/Incaps">
     <node id="State1" parent="../DesComps/StateInt">
       <node id="Logspec" parent="Elem">

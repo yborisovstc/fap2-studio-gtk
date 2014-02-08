@@ -363,7 +363,9 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	}
     }
     ChromoNode smut = rmut.AddChild(ENt_Node);
-    smut.SetAttr(ENa_Parent, aParentUri);
+    if (!aParentUri.empty()) {
+	smut.SetAttr(ENa_Parent, aParentUri);
+    }
     smut.SetAttr(ENa_Id, aName);
     if (!aNeighborUri.empty() && !aName.empty()) {
 	// Mutate moving
@@ -417,32 +419,47 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 
 void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestUri)
 {
+    /*
     Elem* node = iElem->GetNode(aNodeUri);
-    Elem* srcmgr = node->GetMan();
-    if (srcmgr == iElem) {
-	// Moving node locally
-	Elem* mutelem = iElem->GetAttachingMgr();
-	GUri duri;
-	iElem->GetUri(duri, mutelem);
-	GUri nuri = duri + GUri(aNodeUri);
-	GUri desturi = duri + GUri(aDestUri);
-	ChromoNode rmut = mutelem->Mutation().Root();
-	ChromoNode change = rmut.AddChild(ENt_Move);
-	change.SetAttr(ENa_Id, nuri.GetUri());
-	change.SetAttr(ENa_MutNode, desturi.GetUri());
-	mutelem->Mutate();
+    if (node != NULL) {
+	// Local node, moving
+	Elem* srcmgr = node->GetMan();
+	if (srcmgr == iElem) {
+	    // Moving node locally
+	    Elem* mutelem = iElem->GetAttachingMgr();
+	    GUri duri;
+	    iElem->GetUri(duri, mutelem);
+	    GUri nuri = duri + GUri(aNodeUri);
+	    GUri desturi = duri + GUri(aDestUri);
+	    ChromoNode rmut = mutelem->Mutation().Root();
+	    ChromoNode change = rmut.AddChild(ENt_Move);
+	    change.SetAttr(ENa_Id, nuri.GetUri());
+	    change.SetAttr(ENa_MutNode, desturi.GetUri());
+	    mutelem->Mutate();
+	}
+	else {
+	    // Moving from one mgr to another one. Actually it is not simple mutation
+	    // but creating the same node in dest mgr and then remove src
+	    // Appending "clone" of the moved node
+	    do_add_node(node->Name(), node->PName(), aDestUri);
+	    // Remove node from source mgr
+	    MChromo& srcmut = srcmgr->Mutation();
+	    ChromoNode mutn = srcmut.Root().AddChild(ENt_Rm);
+	    mutn.SetAttr(ENa_MutNode, aNodeUri);
+	    srcmgr->Mutate();
+	}
     }
     else {
-	// Moving from one mgr to another one. Actually it is not simple mutation
-	// but creating the same node in dest mgr and then remove src
-	// Appending "clone" of the moved node
-	do_add_node(node->Name(), node->PName(), aDestUri);
-	// Remove node from source mgr
-	MChromo& srcmut = srcmgr->Mutation();
-	ChromoNode mutn = srcmut.Root().AddChild(ENt_Rm);
-	mutn.SetAttr(ENa_MutNode, aNodeUri);
-	srcmgr->Mutate();
+	// Remote node, embedding
+	do_add_node(aNodeUri, string(), aDestUri);
     }
+    */
+    ChromoNode rmut = mutelem->Mutation().Root();
+    ChromoNode change = rmut.AddChild(ENt_Move);
+    change.SetAttr(ENa_Id, aNodeUri);
+    change.SetAttr(ENa_MutNode, aDestUri);
+    mutelem->Mutate();
+
     Refresh();
 }
 

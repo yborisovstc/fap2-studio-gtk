@@ -18,7 +18,6 @@ static GtkTargetEntry targetentries[] =
 static GtkTargetEntry KModListTargets[] =
 {
     { (gchar*) "STRING",        0, 0 },
-    //{ (gchar*) "GTK_TREE_MODEL_ROW", 0, 3 },
 };
 
 
@@ -321,7 +320,7 @@ void NaviModules::SetDesEnv(MEnv* aDesEnv)
 	    set_model(mdl);
 	    append_column( "one", iColRec.name);
 	    enable_model_drag_source();
-	    drag_source_set (Gtk::ArrayHandle_TargetEntry(KModListTargets, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY);
+	    drag_source_set (Gtk::ArrayHandle_TargetEntry(KModListTargets, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
 	    // Fill out the model
 	    // List modules directory
 	    struct dirent **entlist;
@@ -851,22 +850,6 @@ Navi::~Navi()
 {
     delete iNatn;
 }
-/*
-void Navi::SetDesEnv(MEnv* aDesEnv)
-{
-    assert(aDesEnv == NULL || aDesEnv != NULL && iDesEnv == NULL);
-    iDesEnv = aDesEnv;
-    iNatn->SetDesEnv(iDesEnv);
-    iNatn->enable_model_drag_source();
-    iNatn->drag_source_set (Gtk::ArrayHandle_TargetEntry(targetentries));
-    iNatMod->SetDesEnv(iDesEnv);
-    iNatMod->enable_model_drag_source();
-    iNatMod->drag_source_set (Gtk::ArrayHandle_TargetEntry(KModListTargets, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY);
-    iNatHier->SetDesEnv(iDesEnv);
-    iNatHier->enable_model_drag_source();
-    iNatHier->drag_source_set (Gtk::ArrayHandle_TargetEntry(targetentries));
-}
-*/
 
 NaviHier& Navi::NatHier()
 {
