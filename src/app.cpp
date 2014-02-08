@@ -144,7 +144,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false)
     iStDesEnv = new StDesEnv(iMainWnd->UIManager(), iMainWnd->VisWindow());
     iStDesEnv->SigActionRecreate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
     // Model specific nodes provider
-    iMdlProv = new MdlProv("MdlProv", iStDesEnv);
+    iMdlProv = new MdlProv("MdlProv", iStDesEnv, NULL);
     // Create model
     iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
     OpenFile(KSpecFileName);

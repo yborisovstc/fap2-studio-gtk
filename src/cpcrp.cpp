@@ -19,7 +19,7 @@ string CpCrp::EType()
 CpCrp::CpCrp(Elem* aElem): VertCompRp(aElem)
 {
     // Prepare data of "provided"
-    Elem* prov = iElem->GetNode("Prop:Provided");
+    Elem* prov = iElem->GetNode("Provided");
     assert(prov != NULL);
     MProp* mprop = prov->GetObj(mprop);
     assert(mprop != NULL);
@@ -29,7 +29,7 @@ CpCrp::CpCrp(Elem* aElem): VertCompRp(aElem)
     add(*iLabProv);
     iLabProv->show();
     // Prepare data of "required"
-    Elem* req = iElem->GetNode("Prop:Required");
+    Elem* req = iElem->GetNode("Required");
     assert(req != NULL);
     mprop = req->GetObj(mprop);
     assert(mprop != NULL);

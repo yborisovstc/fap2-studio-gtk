@@ -40,6 +40,21 @@ ADesSync::ADesSync(const string& aName, Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesE
     iUiId = iSDesEnv->UiMgr()->add_ui_from_string(sUi);
 }
 
+ADesSync::ADesSync(Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
+    Elem(Type(), aMan, aEnv), iSDesEnv(aSDesEnv), iCount(0), iRunning(false), iStopped(true)
+{
+    SetEType(Elem::PEType());
+    SetParent(Elem::PEType());
+    // Addig toolbar
+    iActionGroup = ActionGroup::create("DesSyncActGroup");
+    iActionGroup->add(Gtk::Action::create("Run", Stock::MEDIA_PLAY, "Run"), sigc::mem_fun(*this, &ADesSync::on_action_run));
+    iActionGroup->add(Gtk::Action::create("Stop", Stock::MEDIA_STOP, "Stop"), sigc::mem_fun(*this, &ADesSync::on_action_stop));
+    iActionGroup->add(Gtk::Action::create("Pause", Stock::MEDIA_PAUSE, "Pause"), sigc::mem_fun(*this, &ADesSync::on_action_pause));
+    iActionGroup->add(Gtk::Action::create("Next", Stock::MEDIA_NEXT, "Next"), sigc::mem_fun(*this, &ADesSync::on_action_next));
+    iSDesEnv->UiMgr()->insert_action_group(iActionGroup);
+    iUiId = iSDesEnv->UiMgr()->add_ui_from_string(sUi);
+}
+
 ADesSync::~ADesSync()
 {
     iSDesEnv->UiMgr()->remove_ui(iUiId);
@@ -106,7 +121,7 @@ void ADesSync::on_action_next()
 }
 
 void ADesSync::DoStep() {
-    Elem* eout = GetNode("../../Elem:Capsule/ConnPoint:Out");
+    Elem* eout = GetNode("../../Capsule/Out");
     MDesSyncable* out = eout->GetObj(out);
     if (eout != NULL) {
 	Logger()->Write(MLogRec::EDbg, this, "Step %d", iCount++);

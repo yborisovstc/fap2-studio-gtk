@@ -17,6 +17,13 @@ AWindow::AWindow(const string& aName, Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv
     SetParent(Type());
 }
 
+AWindow::AWindow(Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
+    Elem(Type(), aMan, aEnv), iSDesEnv(aSDesEnv)
+{
+    SetEType(Elem::PEType());
+    SetParent(Elem::PEType());
+}
+
 void *AWindow::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
 {
     void* res = NULL;
@@ -59,6 +66,15 @@ AVisWidget::AVisWidget(const string& aName, Elem* aMan, MEnv* aEnv): Elem(aName,
 {
     SetEType(Type(), Elem::PEType());
     SetParent(Type());
+    iParProvW.SetData(ParentSizeProv::ED_W, this);
+    iParProvH.SetData(ParentSizeProv::ED_H, this);
+}
+
+AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
+    iWidget(NULL), iX(0), iY(0), iH(10), iW(10)
+{
+    SetEType(Elem::PEType());
+    SetParent(Elem::PEType());
     iParProvW.SetData(ParentSizeProv::ED_W, this);
     iParProvH.SetData(ParentSizeProv::ED_H, this);
 }
@@ -124,7 +140,7 @@ TInt AVisWidget::GetParData(ParentSizeProv::TData aData)
     // info of local connection change, but not the whole connection chain change. Ref grayb uc_010
     Container* parent = iWidget->get_parent();
     if (parent == NULL) {
-	Elem* eprntcp = GetNode("../../ConnPoint:Child");
+	Elem* eprntcp = GetNode("../../Child");
 	if (eprntcp != NULL) {
 	    MVisContainer* mcont = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
 	    if (mcont != NULL) {
@@ -155,7 +171,7 @@ int AVisWidget::GetParInt(TPar aPar)
 MVisContainer* AVisWidget::GetVisContainer()
 {
     MVisContainer* res = NULL;
-    Elem* eprntcp = Host()->GetNode("ConnPoint:Child");
+    Elem* eprntcp = Host()->GetNode("Child");
     if (eprntcp != NULL) {
 	res = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
     }
@@ -168,7 +184,7 @@ MVisContainer* AVisWidget::GetVisContainer()
 TBool AVisWidget::HandleCompChanged(Elem& aContext, Elem& aComp)
 {
     TBool res = EFalse;
-    Elem* eprntcp = aContext.GetNode("ConnPoint:Child");
+    Elem* eprntcp = aContext.GetNode("Child");
     if (eprntcp != NULL) {
 	if (eprntcp == &aComp || eprntcp->IsComp(&aComp)) {
 	    MVisContainer* mcont = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
@@ -289,6 +305,16 @@ AVisFixed::AVisFixed(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidget(aN
     iWidget->show();
 }
 
+AVisFixed::AVisFixed(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
+{
+    SetEType(AVisWidget::PEType());
+    SetParent(AVisWidget::PEType());
+    Fixed* fx = new Fixed(); 
+    fx->set_reallocate_redraws(true);
+    iWidget = fx;
+    iWidget->show();
+}
+
 void *AVisFixed::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
 {
     void* res = NULL;
@@ -355,6 +381,15 @@ AVisDrawing::AVisDrawing(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidge
 {
     SetEType(Type(), AVisWidget::PEType());
     SetParent(Type());
+    iWidget = new VisDrwArea(); 
+    iWidget->set_size_request(iW, iH);
+    iWidget->show();
+}
+
+AVisDrawing::AVisDrawing(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
+{
+    SetEType(AVisWidget::PEType());
+    SetParent(AVisWidget::PEType());
     iWidget = new VisDrwArea(); 
     iWidget->set_size_request(iW, iH);
     iWidget->show();

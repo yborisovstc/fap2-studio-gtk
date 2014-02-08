@@ -14,6 +14,7 @@ class ADesSync: public Elem
 	static const char* Type() { return "ADesSync";};
 	static string PEType();
 	ADesSync(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
+	ADesSync(Elem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
 	virtual ~ADesSync();
     protected:
 	// From Base

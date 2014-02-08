@@ -2,7 +2,7 @@
 #include "incapscrp.h"
 #include "common.h"
 
-const string IncapsCrp::KCapsUri = "Elem:Capsule";
+const string IncapsCrp::KCapsUri = "Capsule";
 
 const string sCrpType = "IncapsCrp";
 

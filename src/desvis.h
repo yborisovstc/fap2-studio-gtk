@@ -42,6 +42,7 @@ class AWindow: public Elem, public MVisContainer
 	static const char* Type() { return "AWindow";};
 	static string PEType();
 	AWindow(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
+	AWindow(Elem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
 	// From MVisContainer
 	virtual Container& GetContainer();
 	virtual void OnChildChanged(Widget* aChild, MVisChild::TPar aPar);
@@ -70,6 +71,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	static const char* Type() { return "AVisWidget";};
 	static string PEType();
 	AVisWidget(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisWidget(Elem* aMan = NULL, MEnv* aEnv = NULL);
 	// From MVisChild
 	virtual Widget& GetChild();
 	virtual int GetParInt(TPar);
@@ -110,6 +112,7 @@ class AVisFixed: public AVisWidget, public MVisContainer
 	static const char* Type() { return "AVisFixed";};
 	static string PEType();
 	AVisFixed(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisFixed(Elem* aMan = NULL, MEnv* aEnv = NULL);
 	Fixed* GetFixed();
 	// From MVisContainer
 	virtual Container& GetContainer();
@@ -136,6 +139,7 @@ class AVisDrawing: public AVisWidget
 	static const char* Type() { return "AVisDrawing";};
 	static string PEType();
 	AVisDrawing(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisDrawing(Elem* aMan = NULL, MEnv* aEnv = NULL);
 	VisDrwArea* GetDrawing();
     protected:
 	virtual void OnUpdated_X(int aX);

@@ -5,7 +5,7 @@
 #include "incapsdrp.h"
 
 
-const string IncapsDrp::KCapsUri = "Elem:Capsule";
+const string IncapsDrp::KCapsUri = "Capsule";
 const string IncapsDrp::KIncapsType = Syst::PEType() + ":Incaps";
 const string IncapsDrp::KExtdType = "Elem:Vert:Extender";
 

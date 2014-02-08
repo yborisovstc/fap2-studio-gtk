@@ -11,7 +11,7 @@
     <node id="v2" parent="Vert"/>
     <node id="v4" parent="v2"/>
     <node id="v5" parent="v2"/>
-    <node parent="Edge"> <cont node="Prop:P1" val="Vert:v2"/> <cont node="Prop:P2" val="Vert:v1"/> </node>
+    <node parent="Edge"> <cont node="P1" val="v2"/> <cont node="P2" val="v1"/> </node>
     <node parent="Edge"> <cont node="P1" val="v1"/> <cont node="P2" val="v3_long_long_name"/> </node>
     <node parent="Edge"> <cont node="P1" val="v1"/> <cont node="P2" val="v4"/> </node>
     <node parent="Edge"> <cont node="P1" val="v1"/> <cont node="P2" val="v5"/> </node>

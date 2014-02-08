@@ -9,9 +9,10 @@
 class MdlProv: public GProvider
 {
     public:
-	MdlProv(const string &aName, MSDesEnv* aSDesEnv);
+	MdlProv(const string &aName, MSDesEnv* aSDesEnv, MEnv* aEnv);
 	// From MProvider
 	virtual Elem* CreateNode(const string& aType, const string& aName, Elem* aMan, MEnv* aEnv);
+	virtual Elem* GetNode(const string& aUri);
 	virtual void AppendNodesInfo(vector<string>& aInfo);
     private:
 	vector<string> iNodesInfo;

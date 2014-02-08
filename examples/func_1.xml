@@ -7,46 +7,46 @@
 
 <node id="testroot" parent="Elem">
     <!-- Module containing components of system layer -->
-    <node id="sysmod" parent="file:/usr/share/grayb/modules/syst.xml#SysComps" />
+    <node id="file:/usr/share/grayb/modules/syst.xml#SysComps" />
     <!-- Module containing components of incaps layer -->
-    <node id="incapsmod" parent="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
+    <node id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
     <!-- Module containing components of data -->
-    <node id="datamod" parent="file:/usr/share/grayb/modules/data.xml#DataComps" />
+    <node id="file:/usr/share/grayb/modules/data.xml#DataComps" />
     <!-- Module containing components of func -->
-    <node id="funcmod" parent="file:/usr/share/grayb/modules/func.xml#FuncComps" />
+    <node id="file:/usr/share/grayb/modules/func.xml#FuncComps" />
 
-    <node id="test" parent="IncapsComps:incapsmod/Syst:Incaps">
+    <node id="test" parent="IncapsComps/Incaps">
 
-	<node id="DataS_Int_1" parent="../DataComps:datamod/DataS:DataSInt">
-	    <cont node="Prop:Value" val="34"/> 
+	<node id="DataS_Int_1" parent="../DataComps/DataSInt">
+	    <cont node="Value" val="34"/> 
 	</node>
 
-	<node id="Incr" parent="../funcmod/FuncIncInt"/>
+	<node id="Incr" parent="../FuncComps/FuncIncInt"/>
 
-	<node id="Incr2" parent="../FuncComps:funcmod/Incaps:FuncIncInt"/>
+	<node id="Incr2" parent="../FuncComps/FuncIncInt"/>
 
-	<node id="Result" parent="../*:funcmod/*:FuncIntRes"/>
+	<node id="Result" parent="../FuncComps/FuncIntRes"/>
 
-	<node id="ResData" parent="../DataComps:datamod/DataS:DataSInt"/>
-
-	<node parent="Edge"> 
-	    <cont node="Prop:P1" val="DataSInt:DataS_Int_1/Elem:Capsule/ConnPoint:out"/> 
-	    <cont node="Prop:P2" val="FuncIncInt:Incr/Elem:Capsule/ConnPoint:inp"/> 
-	</node>
+	<node id="ResData" parent="../DataComps/DataSInt"/>
 
 	<node parent="Edge"> 
-	    <cont node="Prop:P1" val="FuncIncInt:Incr/Elem:Capsule/ConnPoint:out"/> 
-	    <cont node="Prop:P2" val="FuncIncInt:Incr2/Elem:Capsule/ConnPoint:inp"/> 
+	    <cont node="P1" val="DataS_Int_1/Capsule/out"/> 
+	    <cont node="P2" val="Incr/Capsule/inp"/> 
 	</node>
 
 	<node parent="Edge"> 
-	    <cont node="Prop:P1" val="FuncIncInt:Incr2/Elem:Capsule/ConnPoint:out"/> 
-	    <cont node="Prop:P2" val="FuncIntRes:Result/Elem:Capsule/ConnPoint:inp"/> 
+	    <cont node="P1" val="Incr/Capsule/out"/> 
+	    <cont node="P2" val="Incr2/Capsule/inp"/> 
 	</node>
 
 	<node parent="Edge"> 
-	    <cont node="Prop:P1" val="FuncIntRes:Result/Elem:Capsule/ConnPoint:out"/> 
-	    <cont node="Prop:P2" val="DataSInt:ResData/Elem:Capsule/ConnPoint:inp"/> 
+	    <cont node="P1" val="Incr2/Capsule/out"/> 
+	    <cont node="P2" val="Result/Capsule/inp"/> 
+	</node>
+
+	<node parent="Edge"> 
+	    <cont node="P1" val="Result/Capsule/out"/> 
+	    <cont node="P2" val="ResData/Capsule/inp"/> 
 	</node>
 
     </node>

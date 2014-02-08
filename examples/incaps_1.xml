@@ -8,42 +8,35 @@
 
 <node id="testroot" parent="Elem">
     <!-- Module containing components of system layer -->
-    <node id="sysmod" parent="file:/usr/share/grayb/modules/syst.xml#SysComps" />
+    <node id="file:/usr/share/grayb/modules/syst.xml#SysComps" />
     <!-- Module containing components of incaps layer -->
-    <node id="incapsmod" parent="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
+    <node id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
 
-    <!-- <node id="test" parent="IncapsComps:incapsmod/IncapsBase:Incaps"> -->
-    <node id="test" parent="IncapsComps:incapsmod/Syst:Incaps">
-	<node id="Ics1" parent="../IncapsComps:incapsmod/Syst:Incaps">
-	    <node id="cp_int" parent="../../SysComps:sysmod/ConnPointBase:ConnPoint"> 
-		<cont node="Prop:Provided" val="Role3"/> <cont node="Prop:Required" val="Role4"/>
+    <node id="test" parent="IncapsComps/Incaps">
+	<node id="Ics1" parent="../IncapsComps/Incaps">
+	    <node id="cp_int" parent="../../SysComps/ConnPoint"> 
+		<cont node="Provided" val="Role3"/> <cont node="Required" val="Role4"/>
 	    </node>
 	    <add node="Capsule">
-		<node id="ep" parent="../../../SysComps:sysmod/Vert:Extender"> 
-		    <cont node="ConnPoint:Int/Prop:Provided" val="Role4"/> <cont node="ConnPoint:Int/Prop:Required" val="Role3"/>
+		<node id="ep" parent="../../../SysComps/Extender"> 
+		    <cont node="Int/Provided" val="Role4"/> <cont node="Int/Required" val="Role3"/>
 		</node>
 	    </add>
 	</node>
 
-	<node id="Ics2" parent="../IncapsComps:incapsmod/Syst:Incaps">
+	<node id="Ics2" parent="../IncapsComps/Incaps">
 	    <add node="Capsule">
-		<node id="ep" parent="../../../SysComps:sysmod/Vert:Extender"> 
-		    <cont node="ConnPoint:Int/Prop:Provided" val="Role3"/> <cont node="ConnPoint:Int/Prop:Required" val="Role4"/>
+		<node id="ep" parent="../../../SysComps/Extender"> 
+		    <cont node="Int/Provided" val="Role3"/> <cont node="Int/Required" val="Role4"/>
 		</node>
 	    </add>
 	</node>
 
 	<!-- Trying to connect extention points from capsules - right way to connect -->
-	<node parent="Edge"> 
-	    <cont node="Prop:P1" val="Incaps:Ics1/Elem:Capsule/Extender:ep"/> 
-	    <cont node="Prop:P2" val="Incaps:Ics2/Elem:Capsule/Extender:ep"/> 
-	</node>
+	<node parent="Edge"> <cont node="P1" val="Ics1/Capsule/ep"/> <cont node="P2" val="Ics2/Capsule/ep"/> </node>
 
 	<!-- Trying to connect internal conn points - that should be refused by incapsulated system -->
-	<node parent="Edge"> 
-	    <cont node="Prop:P1" val="Incaps:Ics1/ConnPoint:cp_int"/> 
-	    <cont node="Prop:P2" val="Incaps:Ics2/Elem:Capsule/Extender:ep"/> 
-	</node>
+	<node parent="Edge"> <cont node="P1" val="Ics1/cp_int"/> <cont node="P2" val="Ics2/Capsule/ep"/> </node>
 
     </node>
 </node>
