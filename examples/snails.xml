@@ -1,16 +1,15 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem">
-  <node id="Modules" parent="Elem">
+    <node id="Modules" parent="Elem">
+	<move id="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
+	<move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
+	<move id="file:/usr/share/grayb/modules/data.xml#DataComps"/>
+	<move id="file:/usr/share/grayb/modules/func.xml#FuncComps"/>
+	<move id="file:/usr/share/grayb/modules/des.xml#DesComps"/>
+    </node>
 
-  <node id="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
-  <node id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
-  <node id="file:/usr/share/grayb/modules/data.xml#DataComps"/>
-  <node id="file:/usr/share/grayb/modules/func.xml#FuncComps"/>
-  <node id="file:/usr/share/grayb/modules/des.xml#DesComps"/>
-
-  </node>
-  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
+    <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+	<node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
     <node id="Ticker_edge" parent="Edge"/>
     <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
       <node id="About" parent="Description"/>

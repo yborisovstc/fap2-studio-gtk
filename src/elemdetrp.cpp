@@ -373,7 +373,7 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	iElem->GetUri(duri, mutelem);
 	GUri puri(aParentUri);
 	GUri suri = duri;
-	suri.AppendElem(puri.GetName(), aName);
+	suri.AppendElem(puri.GetName(), GUri::KParentSep, aName);
 	GUri nuri = duri + GUri(aNeighborUri);
 	ChromoNode rmut = mutelem->Mutation().Root();
 	ChromoNode change = rmut.AddChild(ENt_Move);
@@ -454,11 +454,11 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 	do_add_node(aNodeUri, string(), aDestUri);
     }
     */
-    ChromoNode rmut = mutelem->Mutation().Root();
+    ChromoNode rmut = iElem->Mutation().Root();
     ChromoNode change = rmut.AddChild(ENt_Move);
     change.SetAttr(ENa_Id, aNodeUri);
     change.SetAttr(ENa_MutNode, aDestUri);
-    mutelem->Mutate();
+    iElem->Mutate();
 
     Refresh();
 }

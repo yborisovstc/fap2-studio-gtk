@@ -13,7 +13,7 @@
     <node id="Logspec" parent="Elem"> <node id="Creation" parent="Elem"/> </node>
 
     <!-- Module containing components of system layer -->
-    <node id="file:/usr/share/grayb/modules/syst.xml#SysComps" />
+    <move id="file:/usr/share/grayb/modules/syst.xml#SysComps" />
 
     <node id="Syst1" parent="Syst">
 	<node id="Logspec" parent="Elem">

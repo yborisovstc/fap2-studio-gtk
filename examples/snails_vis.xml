@@ -2,12 +2,12 @@
 <node id="Root" parent="Elem">
   <node id="Modules" parent="Elem">
 
-  <node id="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
-  <node id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
-  <node id="file:/usr/share/grayb/modules/data.xml#DataComps"/>
-  <node id="file:/usr/share/grayb/modules/func.xml#FuncComps"/>
-  <node id="file:/usr/share/grayb/modules/des.xml#DesComps"/>
-  <node id="file:/usr/share/grayb/modules/vis.xml#VisComps"/>
+  <move id="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
+  <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
+  <move id="file:/usr/share/grayb/modules/data.xml#DataComps"/>
+  <move id="file:/usr/share/grayb/modules/func.xml#FuncComps"/>
+  <move id="file:/usr/share/grayb/modules/des.xml#DesComps"/>
+  <move id="file:/usr/share/grayb/modules/vis.xml#VisComps"/>
 
   </node>
   <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">

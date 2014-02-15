@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <node id="testroot" parent="Elem">
-  <node id="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
-  <node id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
+  <move id="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
+  <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
   <node id="test" parent="IncapsComps/Incaps">
     <node id="Ics1" parent="../IncapsComps/Incaps">
       <node id="D_1" parent="Description"/>

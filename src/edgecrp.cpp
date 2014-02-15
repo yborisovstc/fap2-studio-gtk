@@ -56,10 +56,10 @@ void EdgeCompRp_v3::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk:
 	GUri uri;
 	Elem* pte = NULL;
 	if (iDraggedPart == EDp_Cp1) {
-	    pte = iElem->GetNode("Prop:P1");
+	    pte = iElem->GetNode("P1");
 	}
 	else {
-	    pte = iElem->GetNode("Prop:P2");
+	    pte = iElem->GetNode("P2");
 	}
 	pte->GetUri(uri, iElem->GetMan());
 	std::string suri = uri.GetUri();

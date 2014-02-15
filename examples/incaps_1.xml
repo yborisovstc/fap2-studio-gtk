@@ -8,9 +8,9 @@
 
 <node id="testroot" parent="Elem">
     <!-- Module containing components of system layer -->
-    <node id="file:/usr/share/grayb/modules/syst.xml#SysComps" />
+    <move id="file:/usr/share/grayb/modules/syst.xml#SysComps" />
     <!-- Module containing components of incaps layer -->
-    <node id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
+    <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
 
     <node id="test" parent="IncapsComps/Incaps">
 	<node id="Ics1" parent="../IncapsComps/Incaps">
