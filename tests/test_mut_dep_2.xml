@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<!-- Test for securing that mutation will not breake model consistency 
+node "test" depends on elem2 because "test"s mutation -add- refers to elem2.
+So client tries to mutate elem1 by removing elem2 but there is dep on elem2- breakage 
+Client (Studio) must handle this request from the user correctly: get dependency and
+apply the mutation to the node with rank not less that dep rank. In our case it
+can mutate node "test"
+-->
+
+
+<!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+
+<node id="test" parent="Elem">
+    <node id="elem1" parent="Elem">
+	<node id="elem2" parent="Elem"/>
+    </node>
+    <!-- Dependency of type "object of change" -->
+    <add node="elem1/elem2">
+	<node id="elem4" parent="Elem"/>
+    </add>
+</node>
+

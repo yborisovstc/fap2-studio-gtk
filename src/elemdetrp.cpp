@@ -4,6 +4,7 @@
 #include "elemdetrp.h"
 #include "dlgbase.h"
 #include <edge.h>
+#include <gtkmm/messagedialog.h>
 
 // [YB] GTK_TREE_MODEL_ROW is the only target supported by tree view model
 // All tree views in navigation panel sources are overwritted for now, so this target
@@ -16,6 +17,12 @@ static GtkTargetEntry targetentries[] =
     { (gchar*) "text/uri-list", 0, 2 },
 //    { (gchar*) "GTK_TREE_MODEL_ROW", 0, 3 },
 };
+
+static const Glib::ustring KDlgMsg_Rm_F1 = 
+"Attemting to delete node which is referred from another node [%1].\n\nIn order to keep system consistency the mutation will be applied to [%1]. Perform mutation ?";
+
+static const Glib::ustring KDlgMsg_Rm_F2 = 
+"Attemting to delete node which has children.\n\nPerform mutation ?";
 
 /*
    static const Gtk::TargetEntry targetentries[] =
@@ -64,15 +71,17 @@ void ElemDetRp::Construct()
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
 	assert(comp != NULL);
-	MCrp* rp = iCrpProv.CreateRp(*comp, this);
-	Gtk::Widget& rpw = rp->Widget();
-	//rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
-	// Using specific signal for button press instead of standard because some Crps can have complex layout
-	rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
-	rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
-	add(rpw);
-	iCompRps[comp] = rp;
-	rpw.show();
+	if (!comp->IsRemoved()) {
+	    MCrp* rp = iCrpProv.CreateRp(*comp, this);
+	    Gtk::Widget& rpw = rp->Widget();
+	    //rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
+	    // Using specific signal for button press instead of standard because some Crps can have complex layout
+	    rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
+	    rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
+	    add(rpw);
+	    iCompRps[comp] = rp;
+	    rpw.show();
+	}
     }
 }
 
@@ -133,13 +142,16 @@ void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
     // Allocate components
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	MCrp* crp = iCompRps.at(*it);
-	Gtk::Widget* comp = &(crp->Widget());
-	Gtk::Requisition req = comp->size_request();
-	int comp_body_center_x = req.width / 2;
-	Gtk::Allocation allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, req.height);
-	comp->size_allocate(allc);
-	compb_y += req.height + KViewCompGapHight;
+	Elem* comp = *it;
+	if (!comp->IsRemoved()) {
+	    MCrp* crp = iCompRps.at(*it);
+	    Gtk::Widget* comp = &(crp->Widget());
+	    Gtk::Requisition req = comp->size_request();
+	    int comp_body_center_x = req.width / 2;
+	    Gtk::Allocation allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, req.height);
+	    comp->size_allocate(allc);
+	    compb_y += req.height + KViewCompGapHight;
+	}
     }
 }
 
@@ -208,11 +220,16 @@ bool ElemDetRp::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, i
 	    // Find the nearest node and highligh it
 	    MCrp* cand = NULL;
 	    for (vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && cand == NULL; it++) {
-		MCrp* crp = iCompRps.at(*it);
-		Widget& crpw = crp->Widget();
-		Allocation alc = crpw.get_allocation();
-		if (y < alc.get_y()) {
-		    cand = crp;
+		Elem* comp = *it;
+		__ASSERT(comp != NULL);
+		if (!comp->IsRemoved()) {
+		    __ASSERT(iCompRps.count(comp) != 0);
+		    MCrp* crp = iCompRps.at(comp);
+		    Widget& crpw = crp->Widget();
+		    Allocation alc = crpw.get_allocation();
+		    if (y < alc.get_y()) {
+			cand = crp;
+		    }
 		}
 	    }
 	    if (cand != NULL && (cand != iDropBaseCandidate)) {
@@ -305,7 +322,17 @@ void ElemDetRp::on_node_dropped(const std::string& aUri)
 
 void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNewName)
 {
-    Elem* mutelem = iElem->GetAttachingMgr();
+    // Get major dependency
+    Elem* dnode = iElem->GetNode(aNodeUri);
+    Elem::TDep mdep = dnode->GetMajorDep();
+    Elem* mnode = mdep.first;
+    if (mnode == NULL) {
+	mnode = iElem;
+    }
+    else if (mdep.second == -1) {
+	mnode = mdep.first->GetMan();
+    }
+    Elem* mutelem = mnode->GetAttachingMgr();
     GUri duri;
     iElem->GetUri(duri, mutelem);
     ChromoNode smutr = mutelem->Mutation().Root();
@@ -367,6 +394,8 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	smut.SetAttr(ENa_Parent, aParentUri);
     }
     smut.SetAttr(ENa_Id, aName);
+    // TODO [YB] To replace comps order with another mechanism
+    /*
     if (!aNeighborUri.empty() && !aName.empty()) {
 	// Mutate moving
 	GUri duri;
@@ -380,31 +409,50 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	change.SetAttr(ENa_Id, suri.GetUri());
 	change.SetAttr(ENa_MutNode, nuri.GetUri());
     }
+    */
     mutelem->Mutate();
 }
 
 void ElemDetRp::remove_node(const std::string& aNodeUri)
 {
-    Elem* mutelem = iElem->GetAttachingMgr();
-    GUri duri;
-    iElem->GetUri(duri, mutelem);
-    GUri nuri = duri + GUri(aNodeUri);
-    ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
-    mutn.SetAttr(ENa_MutNode, nuri.GetUri());
-    mutelem->Mutate();
-    Refresh();
+    // Node to be deleted
+    Elem* dnode = iElem->GetNode(aNodeUri);
+    // Get major dependency
+    Elem::TDep mdep = dnode->GetMajorDep();
+    Elem* mnode = mdep.first;
+    if (mnode == NULL) {
+	mnode = iElem;
+    }
+    else if (mdep.second == -1) {
+	mnode = mdep.first->GetMan();
+    }
+    int dres = RESPONSE_OK;
+    if (mdep.first != NULL &&  mdep.second == -1) {
+	MessageDialog* dlg = new MessageDialog(KDlgMsg_Rm_F2, false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+	dres = dlg->run();
+	delete dlg;
+    }
+    if (dres == RESPONSE_OK) {
+	Elem* mutelem = mnode->GetAttachingMgr();
+	GUri duri;
+	iElem->GetUri(duri, mutelem);
+	GUri nuri = duri + GUri(aNodeUri);
+	if (mnode != iElem) {
+	    MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_Rm_F1, mnode->GetUri()), false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+	    dres = dlg->run();
+	    delete dlg;
+	}
+	if (dres == RESPONSE_OK) {
+	    ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
+	    mutn.SetAttr(ENa_MutNode, nuri.GetUri());
+	    mutelem->Mutate();
+	    Refresh();
+	}
+    }
 }
 
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent)
 {
-    /*
-    MChromo& mut = iElem->Mutation();
-    ChromoNode smutr = mut.Root();
-    ChromoNode change = smutr.AddChild(ENt_Cont);
-    change.SetAttr(ENa_MutNode, aNodeUri);
-    change.SetAttr(ENa_MutVal, aNewContent);
-    iElem->Mutate();
-    */
     Elem* mutelem = iElem->GetAttachingMgr();
     GUri duri;
     iElem->GetUri(duri, mutelem);
@@ -419,48 +467,21 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 
 void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestUri)
 {
-    /*
-    Elem* node = iElem->GetNode(aNodeUri);
-    if (node != NULL) {
-	// Local node, moving
-	Elem* srcmgr = node->GetMan();
-	if (srcmgr == iElem) {
-	    // Moving node locally
-	    Elem* mutelem = iElem->GetAttachingMgr();
-	    GUri duri;
-	    iElem->GetUri(duri, mutelem);
-	    GUri nuri = duri + GUri(aNodeUri);
-	    GUri desturi = duri + GUri(aDestUri);
-	    ChromoNode rmut = mutelem->Mutation().Root();
-	    ChromoNode change = rmut.AddChild(ENt_Move);
-	    change.SetAttr(ENa_Id, nuri.GetUri());
-	    change.SetAttr(ENa_MutNode, desturi.GetUri());
-	    mutelem->Mutate();
-	}
-	else {
-	    // Moving from one mgr to another one. Actually it is not simple mutation
-	    // but creating the same node in dest mgr and then remove src
-	    // Appending "clone" of the moved node
-	    do_add_node(node->Name(), node->PName(), aDestUri);
-	    // Remove node from source mgr
-	    MChromo& srcmut = srcmgr->Mutation();
-	    ChromoNode mutn = srcmut.Root().AddChild(ENt_Rm);
-	    mutn.SetAttr(ENa_MutNode, aNodeUri);
-	    srcmgr->Mutate();
-	}
+    Elem* snode = iElem->GetNode(aNodeUri);
+    if (snode->GetMan() == iElem) {
+	// Src is comp = changing comps order
     }
     else {
-	// Remote node, embedding
-	do_add_node(aNodeUri, string(), aDestUri);
+	Elem* cowner = iElem->GetCommonOwner(snode);
+	if (cowner != NULL) {
+	    ChromoNode rmut = cowner->Mutation().Root();
+	    ChromoNode change = rmut.AddChild(ENt_Move);
+	    change.SetAttr(ENa_Id, snode->GetUri(cowner));
+	    change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
+	    cowner->Mutate();
+	    Refresh();
+	}
     }
-    */
-    ChromoNode rmut = iElem->Mutation().Root();
-    ChromoNode change = rmut.AddChild(ENt_Move);
-    change.SetAttr(ENa_Id, aNodeUri);
-    change.SetAttr(ENa_MutNode, aDestUri);
-    iElem->Mutate();
-
-    Refresh();
 }
 
 void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp)

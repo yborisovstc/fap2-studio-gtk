@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<!-- Test for securing that mutation will not breake model consistency 
+node "test" depends on elem2 because "test"s mutation -node id="elem3"- refers to elem2 as a parent.
+So client tries to mutate elem1 by removing elem2 but there is dep on elem2 from test- breakage 
+Client (Studio) must handle this request from the user correctly: get dependency and
+apply the mutation to the node with rank not less that dep rank. In our case it
+can mutate node "test"
+Next test is to remove elem1 - it also elem3 as dependent node via elem1 component elem2
+Remove elem1 and verify the system remains consistent
+-->
+
+<!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+
+<node id="test" parent="Elem">
+    <node id="D_1" parent="Description">
+	<cont val="Test for securing that mutation will not breake model consistency\n
+	    node -test- depends on elem2 because -test-s component -elem3- refers to elem2 as a parent.
+	    1. Try to remove elem1/elem2 and verify the system remains consistent - just recreate system
+	    2. Try to remove elem1 and verify the system remains consistent"/></node>
+    <node id="elem1" parent="Elem">
+	<node id="elem2" parent="Elem">
+	    <node id="elem2_1" parent="Elem"/>
+	</node>
+    </node>
+    <!-- Dependency of type "child" -->
+    <node id="elem3" parent="elem1/elem2"/>
+</node>
+
+
