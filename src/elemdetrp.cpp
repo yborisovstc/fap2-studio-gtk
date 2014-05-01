@@ -373,13 +373,27 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
     }
 }
 
+Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
+    Elem* res = NULL;
+    Elem::TDep mdep = aNode->GetMajorDep();
+    res = mdep.first;
+    if (res == NULL) {
+	res = iElem;
+    }
+    else if (mdep.second == -1) {
+	res = mdep.first->GetMan();
+    }
+    return res;
+}
+
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri)
 {
     Elem* mutelem = iElem;
     ChromoNode rmut = mutelem->Mutation().Root();
     // Mutate appending
     if (!mutelem->IsChromoAttached()) {
-	mutelem = mutelem->GetAttachingMgr();
+	//mutelem = mutelem->GetAttachingMgr(); // TODO Do attch mgr also to be considered ?
+	mutelem = GetObjForSafeMut(iElem);
 	if (mutelem != NULL) {
 	    ChromoNode mut = mutelem->Mutation().Root();
 	    rmut = mut.AddChild(ENt_Add);
@@ -451,7 +465,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     }
 }
 
-void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent)
+void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
 {
     Elem* mutelem = iElem->GetAttachingMgr();
     GUri duri;
@@ -460,7 +474,7 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
     MChromo& mut = iElem->Mutation();
     ChromoNode change = mutelem->Mutation().Root().AddChild(ENt_Cont);
     change.SetAttr(ENa_MutNode, nuri.GetUri());
-    change.SetAttr(ENa_MutVal, aNewContent);
+    change.SetAttr(aRef ? ENa_Id : ENa_MutVal, aNewContent);
     mutelem->Mutate();
     Refresh();
 }
@@ -468,17 +482,28 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestUri)
 {
     Elem* snode = iElem->GetNode(aNodeUri);
-    if (snode->GetMan() == iElem) {
+    if (snode != NULL && snode->GetMan() == iElem) {
 	// Src is comp = changing comps order
     }
     else {
-	Elem* cowner = iElem->GetCommonOwner(snode);
-	if (cowner != NULL) {
-	    ChromoNode rmut = cowner->Mutation().Root();
+	if (snode != NULL) {
+	    Elem* cowner = iElem->GetCommonOwner(snode);
+	    if (cowner != NULL) {
+		ChromoNode rmut = cowner->Mutation().Root();
+		ChromoNode change = rmut.AddChild(ENt_Move);
+		change.SetAttr(ENa_Id, snode->GetUri(cowner));
+		change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
+		cowner->Mutate();
+		Refresh();
+	    }
+	}
+	else {
+	    // Probably external node
+	    // TODO [YB] To check explicitlly that it is external node but not wrong uri
+	    ChromoNode rmut = iElem->Mutation().Root();
 	    ChromoNode change = rmut.AddChild(ENt_Move);
-	    change.SetAttr(ENa_Id, snode->GetUri(cowner));
-	    change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
-	    cowner->Mutate();
+	    change.SetAttr(ENa_Id, aNodeUri);
+	    iElem->Mutate();
 	    Refresh();
 	}
     }

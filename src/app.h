@@ -62,9 +62,11 @@ class App
 	void on_action(const Glib::RefPtr<Gtk::Action>& aAction);
 	void on_action_open();
 	void on_action_saveas();
+	void on_action_compactas();
 	void on_action_recreate();
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
 	void SaveFile(const string& aFileName);
+	void CompactAndSaveFile(const string& aFileName);
 	string FormTitle(const string& aFilePath);
     private:
 	// DES environment

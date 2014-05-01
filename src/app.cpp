@@ -140,6 +140,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false)
     //iMainWnd->UIManager()->signal_post_activate().connect(sigc::mem_fun(*this, &App::on_action));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Open")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_open));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
+    iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Compact_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_compactas));
     // Create studio DES environment
     iStDesEnv = new StDesEnv(iMainWnd->UIManager(), iMainWnd->VisWindow());
     iStDesEnv->SigActionRecreate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
@@ -201,7 +202,7 @@ void App::on_action_recreate()
 
 void App::on_action_saveas()
 {
-    Gtk::FileChooserDialog dialog("Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
+    Gtk::FileChooserDialog dialog("Please choose a file", Gtk::FILE_CHOOSER_ACTION_SAVE);
     dialog.set_transient_for(*iMainWnd);
 
     //Add response buttons the the dialog:
@@ -217,6 +218,27 @@ void App::on_action_saveas()
     if (result == Gtk::RESPONSE_OK) {
 	std::string filename = dialog.get_filename();
 	SaveFile(filename);
+    }
+}
+
+void App::on_action_compactas()
+{
+    Gtk::FileChooserDialog dialog("Compacting chromo and save as - Please choose a file", Gtk::FILE_CHOOSER_ACTION_SAVE);
+    dialog.set_transient_for(*iMainWnd);
+
+    //Add response buttons the the dialog:
+    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog.add_button(Gtk::Stock::SAVE_AS, Gtk::RESPONSE_OK);
+    // Set filter
+    Gtk::FileFilter filter;
+    filter.set_name("DES model files");
+    filter.add_mime_type("application/xml");
+    dialog.add_filter(filter);
+
+    int result = dialog.run();
+    if (result == Gtk::RESPONSE_OK) {
+	std::string filename = dialog.get_filename();
+	CompactAndSaveFile(filename);
     }
 }
 
@@ -266,6 +288,12 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
 
 void App::SaveFile(const string& aFileName)
 {
+    iEnv->Root()->Chromos().Save(aFileName);
+}
+
+void App::CompactAndSaveFile(const string& aFileName)
+{
+    iEnv->Root()->CompactChromo();
     iEnv->Root()->Chromos().Save(aFileName);
 }
 

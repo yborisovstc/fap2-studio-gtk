@@ -29,6 +29,7 @@ class MainWnd : public Gtk::Window
 	// Signal handlers:
 	void on_action_open();
 	void on_action_saveas();
+	void on_action_compactas();
     private:
 	// Generic vertical layout: menu, toolbar, client
 	Gtk::VBox iVboxMain;

@@ -8,6 +8,7 @@ Glib::ustring sUiInfo =
 "    <menu action='MenuFile'>"
 "      <menuitem action='Open'/>"
 "      <menuitem action='Save_as'/>"
+"      <menuitem action='Compact_as'/>"
 "    </menu>"
 "  </menubar>"
 "  <toolbar  name='ToolBar'>"
@@ -25,6 +26,7 @@ MainWnd::MainWnd()
     irActionGroup->add(Gtk::Action::create("MenuFile", "_File"));
     irActionGroup->add(Gtk::Action::create("Open", Gtk::Stock::OPEN), sigc::mem_fun(*this, &MainWnd::on_action_open));
     irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS), sigc::mem_fun(*this, &MainWnd::on_action_saveas));
+    irActionGroup->add(Gtk::Action::create("Compact_as", "Compact&Save"), sigc::mem_fun(*this, &MainWnd::on_action_compactas));
     irUiMgr = Gtk::UIManager::create();
     irUiMgr->insert_action_group(irActionGroup);
     irUiMgr->add_ui_from_string(sUiInfo);
@@ -79,6 +81,10 @@ void MainWnd::on_action_open()
 }
 
 void MainWnd::on_action_saveas()
+{
+}
+
+void MainWnd::on_action_compactas()
 {
 }
 

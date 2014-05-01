@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<!-- Test for securing that mutation will not breake model consistency 
+node "test" depends on elem3 because "test"s mutation -add node="elem3"- refers to elem3 as an object,
+and also mutation -node id= "elem3" depends on elem3 as creation mutation.
+Please note elem3 is not attached to elem1
+If client tries to mutate elem1 by any mutation, it will breake  the system consistency
+Client (Studio) must handle this request from the user correctly: get dependency and
+apply the mutation to the node with rank not less that dep rank. In our case it
+can mutate node "test"
+How to test:  From Studio try to add to elem3 some node 
+Expected result: Studio will place mutation not in elem1 as attaching owner, but
+to -test- after dependent mutation. Try to save and reopen the mutated system - 
+no error can occur.
+-->
+
+<!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+
+<node id="test" parent="Elem">
+    <node id="elem1" parent="Elem">
+	<node id="elem2" parent="Elem">
+	    <node id="elem2_1" parent="Elem"/>
+	</node>
+    </node>
+    <add node="elem1">
+	<node id="elem3" parent="../elem1/elem2"/>
+    </add>
+</node>
+
+
