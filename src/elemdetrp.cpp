@@ -264,6 +264,9 @@ bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int 
 	    iDropBaseCandidate->SetHighlighted(false);
 	    iDropBaseCandidate->Model()->GetUri(uri, iElem);
 	}
+	else {
+	    iElem->GetUri(uri, iElem);
+	}
 	if (action == Gdk::ACTION_COPY) {
 	    add_node(iDndReceivedData, uri.GetUri());
 	}
@@ -324,13 +327,13 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 {
     // Get major dependency
     Elem* dnode = iElem->GetNode(aNodeUri);
-    Elem::TDep mdep = dnode->GetMajorDep();
-    Elem* mnode = mdep.first;
+    Elem::TMDep mdep = dnode->GetMajorDep();
+    Elem* mnode = mdep.first.first;
     if (mnode == NULL) {
 	mnode = iElem;
     }
     else if (mdep.second == -1) {
-	mnode = mdep.first->GetMan();
+	mnode = mdep.first.first->GetMan();
     }
     Elem* mutelem = mnode->GetAttachingMgr();
     GUri duri;
@@ -375,13 +378,13 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
 
 Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
     Elem* res = NULL;
-    Elem::TDep mdep = aNode->GetMajorDep();
-    res = mdep.first;
+    Elem::TMDep mdep = aNode->GetMajorDep();
+    res = mdep.first.first;
     if (res == NULL) {
 	res = iElem;
     }
     else if (mdep.second == -1) {
-	res = mdep.first->GetMan();
+	res = mdep.first.first->GetMan();
     }
     return res;
 }
@@ -432,16 +435,16 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     // Node to be deleted
     Elem* dnode = iElem->GetNode(aNodeUri);
     // Get major dependency
-    Elem::TDep mdep = dnode->GetMajorDep();
-    Elem* mnode = mdep.first;
+    Elem::TMDep mdep = dnode->GetMajorDep();
+    Elem* mnode = mdep.first.first;
     if (mnode == NULL) {
 	mnode = iElem;
     }
     else if (mdep.second == -1) {
-	mnode = mdep.first->GetMan();
+	mnode = mdep.first.first->GetMan();
     }
     int dres = RESPONSE_OK;
-    if (mdep.first != NULL &&  mdep.second == -1) {
+    if (mdep.first.first != NULL &&  mdep.second == -1) {
 	MessageDialog* dlg = new MessageDialog(KDlgMsg_Rm_F2, false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
 	dres = dlg->run();
 	delete dlg;
@@ -482,7 +485,9 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestUri)
 {
     Elem* snode = iElem->GetNode(aNodeUri);
-    if (snode != NULL && snode->GetMan() == iElem) {
+    Elem* dnode = iElem->GetNode(aDestUri);
+    //if (snode != NULL && snode->GetMan() == iElem) {
+    if (false) {
 	// Src is comp = changing comps order
     }
     else {
@@ -492,7 +497,8 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 		ChromoNode rmut = cowner->Mutation().Root();
 		ChromoNode change = rmut.AddChild(ENt_Move);
 		change.SetAttr(ENa_Id, snode->GetUri(cowner));
-		change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
+	//	change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
+		change.SetAttr(ENa_MutNode, dnode->GetUri(cowner));
 		cowner->Mutate();
 		Refresh();
 	    }

@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+
+<!-- Unit test for compacting of chromo: 
+squeezing of mutation of type -rn- -->
+
+
+<!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+
+<node id="test" parent="Elem">
+    <node id="elem1" parent="Elem">
+	<node id="elem2" parent="Elem"/>
+    </node>
+    <node id="elem3" parent="elem1/elem2">
+    </node>
+    <change node="elem1/elem2" attr="id" val="elem2_renamed"/>
+    <node id="elem4" parent="elem1/elem2_renamed">
+    </node>
+    <change node="elem1/elem2_renamed" attr="id" val="elem2_renamed2"/>
+</node>
+

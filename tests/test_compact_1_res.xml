@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<node id="test" parent="Elem">
+  <node id="elem1" parent="Elem">
+    <node id="elem2_renamed2" parent="Elem"/>
+  </node>
+  <node id="elem3" parent="(Elem:)elem1/(Elem:)elem2_renamed2"/>
+  <node id="elem4" parent="(Elem:)elem1/(Elem:)elem2_renamed2"/>
+</node>
