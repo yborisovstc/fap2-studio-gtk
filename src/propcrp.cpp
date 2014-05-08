@@ -21,7 +21,10 @@ PropCrp::PropCrp(Elem* aElem): ElemCompRp(aElem)
 
     MProp* prop = iElem->GetObj(prop);
     assert(prop != NULL);
+    /*
     Glib::RefPtr<Gtk::TextBuffer> buf = Gtk::TextBuffer::create();
+    string cont;
+    iElem->GetCont(cont);
     buf->set_text(prop->Value());
 //    iContent.set_single_line_mode(false);
 //    iContent.set_width_chars(iMaxWidthChars);
@@ -29,6 +32,7 @@ PropCrp::PropCrp(Elem* aElem): ElemCompRp(aElem)
     iContent.set_text(prop->Value());
     add(iContent);
     iContent.show();
+    */
 }
 
 PropCrp::~PropCrp()

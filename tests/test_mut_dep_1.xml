@@ -16,8 +16,8 @@ Remove elem1 and verify the system remains consistent
     <node id="D_1" parent="Description">
 	<cont val="Test for securing that mutation will not breake model consistency\n
 	    node -test- depends on elem2 because -test-s component -elem3- refers to elem2 as a parent.
-	    1. Try to remove elem1/elem2 and verify the system remains consistent - just recreate system
-	    2. Try to remove elem1 and verify the system remains consistent"/></node>
+	    &#xD;1. Try to remove elem1/elem2 and verify the system remains consistent - just recreate system
+	    &#xD;2. Try to remove elem1 and verify the system remains consistent"/></node>
     <node id="elem1" parent="Elem">
 	<node id="elem2" parent="Elem">
 	    <node id="elem2_1" parent="Elem"/>

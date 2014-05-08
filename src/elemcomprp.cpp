@@ -59,6 +59,14 @@ ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(fal
     iHead = new ElemCompHead(*iElem);
     add(*iHead);
     iHead->show();
+    // Add content
+    string cont;
+    iElem->GetCont(cont);
+    iContent.set_line_wrap(true);
+    iContent.set_text(cont);
+    add(iContent);
+    iContent.show();
+
     // Set events mask
     add_events(Gdk::BUTTON_PRESS_MASK);
     iHead->iName->signal_button_press_event().connect(sigc::mem_fun(*this, &ElemCompRp::on_name_button_press));
@@ -102,13 +110,15 @@ void ElemCompRp::on_size_allocate(Gtk::Allocation& aAllc)
 {
     Gtk::Layout::on_size_allocate(aAllc);
     Gtk::Requisition head_req = iHead->size_request();
-
     // Calculate allocation of comp body
     iBodyAlc = Gtk::Allocation(0, 0, aAllc.get_width(), aAllc.get_height());
-
     // Allocate header
     Gtk::Allocation head_alc = Gtk::Allocation(iBodyAlc.get_x(), iBodyAlc.get_y(), iBodyAlc.get_width(), head_req.height);
     iHead->size_allocate(head_alc);
+    // Allocate content
+    Gtk::Allocation cont_alc = Gtk::Allocation(iBodyAlc.get_x(), iBodyAlc.get_y() + head_alc.get_height() + KViewCompEmptyBodyHight/2,
+	    iBodyAlc.get_width(), aAllc.get_height() - head_req.height - KViewCompEmptyBodyHight);
+    iContent.size_allocate(cont_alc);
 }
 
 void ElemCompRp::on_size_request(Gtk::Requisition* aRequisition)
@@ -119,6 +129,10 @@ void ElemCompRp::on_size_request(Gtk::Requisition* aRequisition)
     TInt body_h = KViewCompEmptyBodyHight;
     aRequisition->width = body_w; 
     aRequisition->height = head_req.height + body_h;
+    // Updating with size of content
+    Gtk::Requisition cont_req = iContent.size_request();
+    aRequisition->height += cont_req.height;
+    aRequisition->width = max(aRequisition->width, cont_req.width + 2*KViewElemCrpInnerBorder); 
 }
 
 bool ElemCompRp::on_name_button_press(GdkEventButton* event)
@@ -209,7 +223,7 @@ MCrp::tSigUpdated ElemCrp::SignalUpdated()
 
 bool ElemCrp::IsActionSupported(Action aAction)
 {
-    return (aAction == EA_Remove || aAction == EA_Rename);
+    return (aAction == EA_Remove || aAction == EA_Rename || aAction == EA_Save_Chromo);
 }
 
 bool ElemCrp::Dragging()

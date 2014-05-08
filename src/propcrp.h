@@ -30,7 +30,7 @@ class PropCrp: public ElemCompRp, public MCrp
 	virtual Elem* Model();
     protected:
 	//Gtk::TextView iContent;
-	Gtk::Label iContent;
+//	Gtk::Label iContent;
 	static int iMaxWidthChars;
 };
 

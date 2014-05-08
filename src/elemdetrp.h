@@ -57,6 +57,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void on_comp_menu_rename();
 	void on_comp_menu_remove();
 	void on_comp_menu_edit_content();
+	void on_comp_menu_save_chromo();
     protected:
 	// Compact representations  provider
 	const MCrpProvider& iCrpProv;

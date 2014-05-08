@@ -56,6 +56,7 @@ class ElemCompRp: public Gtk::Layout
 	MCrp::tSigUpdated iSigUpdated;
 	Gtk::Menu iContextMenu; // Context menu
 	bool iHighlighted;
+	Gtk::Label iContent;
 };
 
 class ElemCrp: public MCrp

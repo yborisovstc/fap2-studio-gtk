@@ -4,7 +4,9 @@
 #include "elemdetrp.h"
 #include "dlgbase.h"
 #include <edge.h>
+#include <gtkmm.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/filechooserdialog.h>
 
 // [YB] GTK_TREE_MODEL_ROW is the only target supported by tree view model
 // All tree views in navigation panel sources are overwritted for now, so this target
@@ -44,9 +46,12 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), 
     Gtk::Menu_Helpers::MenuElem e_rename("_Rename", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_rename));
     Gtk::Menu_Helpers::MenuElem e_remove("_Remove", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_remove));
     Gtk::Menu_Helpers::MenuElem e_editcont("_Edit content", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_edit_content));
+    // TODO [YB] Consider saving from app - saving current app context instead of using context menu
+    Gtk::Menu_Helpers::MenuElem e_save_chromo("_Save chromo", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_save_chromo));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Rename, e_rename));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Remove, e_remove));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Edit_Content, e_editcont));
+    iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Save_Chromo, e_save_chromo));
     // Setup components context menu
     Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
     /*
@@ -332,9 +337,6 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
     if (mnode == NULL) {
 	mnode = iElem;
     }
-    else if (mdep.second == -1) {
-	mnode = mdep.first.first->GetMan();
-    }
     Elem* mutelem = mnode->GetAttachingMgr();
     GUri duri;
     iElem->GetUri(duri, mutelem);
@@ -434,37 +436,33 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 {
     // Node to be deleted
     Elem* dnode = iElem->GetNode(aNodeUri);
-    // Get major dependency
+    // Checking mutation safety
+    bool ismutsafe = iElem->IsMutSafe(dnode);
     Elem::TMDep mdep = dnode->GetMajorDep();
     Elem* mnode = mdep.first.first;
     if (mnode == NULL) {
 	mnode = iElem;
     }
-    else if (mdep.second == -1) {
-	mnode = mdep.first.first->GetMan();
-    }
+    Elem* mutelem = mnode->GetAttachingMgr();
+    /*
+    GUri duri;
+    iElem->GetUri(duri, mutelem);
+    GUri nuri = duri + GUri(aNodeUri);
+    */
+    GUri nuri;
+    dnode->GetUri(nuri, mutelem);
     int dres = RESPONSE_OK;
-    if (mdep.first.first != NULL &&  mdep.second == -1) {
-	MessageDialog* dlg = new MessageDialog(KDlgMsg_Rm_F2, false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+    if (!ismutsafe) {
+	MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_Rm_F1, mnode->GetUri()), 
+		false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
 	dres = dlg->run();
 	delete dlg;
     }
     if (dres == RESPONSE_OK) {
-	Elem* mutelem = mnode->GetAttachingMgr();
-	GUri duri;
-	iElem->GetUri(duri, mutelem);
-	GUri nuri = duri + GUri(aNodeUri);
-	if (mnode != iElem) {
-	    MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_Rm_F1, mnode->GetUri()), false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
-	    dres = dlg->run();
-	    delete dlg;
-	}
-	if (dres == RESPONSE_OK) {
-	    ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
-	    mutn.SetAttr(ENa_MutNode, nuri.GetUri());
-	    mutelem->Mutate();
-	    Refresh();
-	}
+	ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
+	mutn.SetAttr(ENa_MutNode, nuri.GetUri());
+	mutelem->Mutate();
+	Refresh();
     }
 }
 
@@ -530,6 +528,9 @@ void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp)
     if (crp->IsActionSupported(MCrp::EA_Edit_Content)) {
 	menulist.push_back(iCompMenuElems.at(MCrp::EA_Edit_Content));
     }
+    if (crp->IsActionSupported(MCrp::EA_Save_Chromo)) {
+	menulist.push_back(iCompMenuElems.at(MCrp::EA_Save_Chromo));
+    }
     iCrpContextMenu.popup(event->button, event->time);
 }
 
@@ -574,6 +575,32 @@ void ElemDetRp::on_comp_menu_edit_content()
     delete dlg;
     iCompSelected = NULL;
 }
+
+void ElemDetRp::on_comp_menu_save_chromo()
+{
+    assert(iCompSelected != NULL);
+
+    Gtk::FileChooserDialog dialog("Saving chromo - Please choose a file", Gtk::FILE_CHOOSER_ACTION_SAVE);
+    //dialog.set_transient_for(*this);
+
+    //Add response buttons the the dialog:
+    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog.add_button(Gtk::Stock::SAVE_AS, Gtk::RESPONSE_OK);
+    // Set filter
+    Gtk::FileFilter filter;
+    filter.set_name("DES model files");
+    filter.add_mime_type("application/xml");
+    dialog.add_filter(filter);
+
+    int result = dialog.run();
+    if (result == Gtk::RESPONSE_OK) {
+	std::string filename = dialog.get_filename();
+	iCompSelected->Chromos().Save(filename);
+    }
+
+    iCompSelected = NULL;
+}
+
 
 void ElemDetRp::DoUdno()
 {

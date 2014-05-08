@@ -16,7 +16,8 @@ class MCrp: public MBase
 	enum Action {
 	    EA_Rename,
 	    EA_Remove,
-	    EA_Edit_Content
+	    EA_Edit_Content,
+	    EA_Save_Chromo
 	};
 	// TODO To implement CRP layout type: some typical layout scheme are defined. So it is possible
 	// for DRP to classify its CRP and then layout basing on the layout type. This would allow to 
