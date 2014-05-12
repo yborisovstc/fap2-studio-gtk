@@ -30,23 +30,23 @@
 	<node id="ResData" parent="../DataComps/DataSInt"/>
 
 	<node parent="Edge"> 
-	    <cont node="P1" val="DataS_Int_1/Capsule/out"/> 
-	    <cont node="P2" val="Incr/Capsule/inp"/> 
+	    <cont node="P1" ref="../../DataS_Int_1/Capsule/out"/> 
+	    <cont node="P2" ref="../../Incr/Capsule/inp"/> 
 	</node>
 
 	<node parent="Edge"> 
-	    <cont node="P1" val="Incr/Capsule/out"/> 
-	    <cont node="P2" val="Incr2/Capsule/inp"/> 
+	    <cont node="P1" ref="../../Incr/Capsule/out"/> 
+	    <cont node="P2" ref="../../Incr2/Capsule/inp"/> 
 	</node>
 
 	<node parent="Edge"> 
-	    <cont node="P1" val="Incr2/Capsule/out"/> 
-	    <cont node="P2" val="Result/Capsule/inp"/> 
+	    <cont node="P1" ref="../../Incr2/Capsule/out"/> 
+	    <cont node="P2" ref="../../Result/Capsule/inp"/> 
 	</node>
 
 	<node parent="Edge"> 
-	    <cont node="P1" val="Result/Capsule/out"/> 
-	    <cont node="P2" val="ResData/Capsule/inp"/> 
+	    <cont node="P1" ref="../../Result/Capsule/out"/> 
+	    <cont node="P2" ref="../../ResData/Capsule/inp"/> 
 	</node>
 
     </node>
