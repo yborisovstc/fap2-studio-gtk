@@ -410,8 +410,9 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    // Reset highlighting of drop candidate
 	    conn->HighlightCp(iEdgeDropCpCandidate, false);
 	    Elem* targ = iEdgeDropCpCandidate;
+	    Elem* node = iElem->GetNode(iDndReceivedData);
 	    GUri uri;
-	    targ->GetUri(uri, iElem);
+	    targ->GetUri(uri, node);
 	    res = true;
 	    context->drag_finish(res, false, time);
 	    std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;

@@ -475,7 +475,7 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
     MChromo& mut = iElem->Mutation();
     ChromoNode change = mutelem->Mutation().Root().AddChild(ENt_Cont);
     change.SetAttr(ENa_MutNode, nuri.GetUri());
-    change.SetAttr(aRef ? ENa_Id : ENa_MutVal, aNewContent);
+    change.SetAttr(aRef ? ENa_Ref : ENa_MutVal, aNewContent);
     mutelem->Mutate();
     Refresh();
 }
