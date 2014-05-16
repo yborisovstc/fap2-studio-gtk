@@ -284,7 +284,7 @@ bool SysDrp::AreCpsCompatible(Elem* aCp1, Elem* aCp2)
 	MCompatChecker* c2 = aCp2->GetObj(c2);
 	res = (c1 == NULL || c1->IsCompatible(aCp2)) && (c2 == NULL || c2->IsCompatible(aCp1));
     }
-    //std::cout << "SysDrp::AreCpsCompatible, aCp1: " << aCp1->Name() << ", aCp2: " << aCp2->Name() << ", res: " << res << std::endl;
+    std::cout << "SysDrp::AreCpsCompatible, aCp1: " << aCp1->Name() << ", aCp2: " << aCp2->Name() << ", res: " << res << std::endl;
     return res;
 }
 

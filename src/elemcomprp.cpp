@@ -223,7 +223,8 @@ MCrp::tSigUpdated ElemCrp::SignalUpdated()
 
 bool ElemCrp::IsActionSupported(Action aAction)
 {
-    return (aAction == EA_Remove || aAction == EA_Rename || aAction == EA_Save_Chromo);
+    return (aAction == EA_Remove || aAction == EA_Rename || aAction == EA_Save_Chromo
+	    || aAction == EA_Edit_Content);
 }
 
 bool ElemCrp::Dragging()
