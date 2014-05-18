@@ -440,7 +440,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     bool ismutsafe = iElem->IsMutSafe(dnode);
     Elem::TMDep mdep = dnode->GetMajorDep();
     Elem* mnode = mdep.first.first;
-    if (mnode == NULL) {
+    if (mnode == NULL || ismutsafe) {
 	mnode = iElem;
     }
     Elem* mutelem = mnode->GetAttachingMgr();
