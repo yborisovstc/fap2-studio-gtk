@@ -33,10 +33,10 @@
 	</node>
 
 	<!-- Trying to connect extention points from capsules - right way to connect -->
-	<node parent="Edge"> <cont node="P1" val="Ics1/Capsule/ep"/> <cont node="P2" val="Ics2/Capsule/ep"/> </node>
+	<node parent="Edge"> <cont node="P1" ref="../../Ics1/Capsule/ep"/> <cont node="P2" ref="../../Ics2/Capsule/ep"/> </node>
 
 	<!-- Trying to connect internal conn points - that should be refused by incapsulated system -->
-	<node parent="Edge"> <cont node="P1" val="Ics1/cp_int"/> <cont node="P2" val="Ics2/Capsule/ep"/> </node>
+	<node parent="Edge"> <cont node="P1" ref="../../Ics1/cp_int"/> <cont node="P2" ref="../../Ics2/Capsule/ep"/> </node>
 
     </node>
 </node>
