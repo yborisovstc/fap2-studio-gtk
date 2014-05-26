@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Note" parent="Description">
+    <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [IRoot]"/>
+  </node>
+  <node id="Modules" parent="Elem">
+    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
+    <move id="file:/usr/share/grayb/modules/data.xml#"/>
+    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+  </node>
+  <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Result" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+    <cont node="(DataTVar:)Result/(Prop)Value" val="F 0.0"/>
+    <node id="If" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FSwitchVar"/>
+    <node id="Control" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+    <cont node="(DataTVar:)Control/(Prop)Value" val="B false"/>
+    <node id="Case1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+    <node id="Case2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+    <node id="1940241559" parent="Edge"/>
+    <cont node="(Edge:)1940241559/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/(ConnPoint:)inp"/>
+    <cont node="(Edge:)1940241559/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FSwitchVar:)If/(Elem:)Capsule/(Out_FVar:)out"/>
+    <node id="2047879454" parent="Edge"/>
+    <cont node="(Edge:)2047879454/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FSwitchVar:)If/(Elem:)Capsule/(Inp_FVar:)Sel"/>
+    <cont node="(Edge:)2047879454/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Control/(Elem:)Capsule/(ConnPoint:)out"/>
+    <node id="73447618" parent="Edge"/>
+    <cont node="(Edge:)73447618/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FSwitchVar:)If/(Elem:)Capsule/(Inp_FVar:)Inp1"/>
+    <cont node="(Edge:)73447618/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Case1/(Elem:)Capsule/(ConnPoint:)out"/>
+    <node id="746877308" parent="Edge"/>
+    <cont node="(Edge:)746877308/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FSwitchVar:)If/(Elem:)Capsule/(Inp_FVar:)Inp2"/>
+    <cont node="(Edge:)746877308/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Case2/(Elem:)Capsule/(ConnPoint:)out"/>
+    <cont node="(DataTVar:)Case1/(Prop)Value" val="F 2.4"/>
+    <cont node="(DataTVar:)Case2/(Prop)Value" val="F 5.1"/>
+  </node>
+</node>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Note" parent="Description">
+    <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [IRoot]"/>
+  </node>
+  <node id="Modules" parent="Elem">
+    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
+    <move id="file:/usr/share/grayb/modules/data.xml#"/>
+    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+  </node>
+  <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Result" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+    <cont node="(DataTVar:)Result/(Prop)Value" val="B false"/>
+    <node id="GT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FGTVar"/>
+    <node id="1755579854" parent="Edge"/>
+    <cont node="(Edge:)1755579854/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Out_FVar:)out"/>
+    <cont node="(Edge:)1755579854/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/(ConnPoint:)inp"/>
+    <node id="Arg1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+    <cont node="(DataTVar:)Arg1/(Prop)Value" val="I 5"/>
+    <node id="15875288" parent="Edge"/>
+    <cont node="(Edge:)15875288/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg1/(Elem:)Capsule/(ConnPoint:)out"/>
+    <cont node="(Edge:)15875288/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp1"/>
+    <node id="Arg2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+    <cont node="(DataTVar:)Arg2/(Prop)Value" val="F 3.6"/>
+    <node id="531785159" parent="Edge"/>
+    <cont node="(Edge:)531785159/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg2/(Elem:)Capsule/(ConnPoint:)out"/>
+    <cont node="(Edge:)531785159/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp2"/>
+    <cont node="(Edge:)531785159/(Prop:)P1" val=""/>
+    <cont node="(Edge:)15875288/(Prop:)P1" val=""/>
+    <cont node="(Edge:)531785159/(Prop:)P1" val=""/>
+    <cont node="(Edge:)15875288/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp2"/>
+    <cont node="(Edge:)531785159/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp1"/>
+    <cont node="(Edge:)15875288/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp1"/>
+    <cont node="(Edge:)15875288/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp2"/>
+    <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FAddVar"/>
+    <cont node="(Edge:)531785159/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
+    <node id="992089358" parent="Edge"/>
+    <cont node="(Edge:)992089358/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Out_FVar:)out"/>
+    <cont node="(Edge:)992089358/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg1/(Elem:)Capsule/(ConnPoint:)inp"/>
+    <cont node="(Edge:)992089358/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp1"/>
+    <cont node="(DataTVar:)Arg1/(Prop)Value" val="I 4"/>
+    <node id="Arg3" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+    <node id="728016577" parent="Edge"/>
+    <cont node="(Edge:)728016577/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg3/(Elem:)Capsule/(ConnPoint:)out"/>
+    <cont node="(Edge:)728016577/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
+    <cont node="(DataTVar:)Arg3/(Prop)Value" val="I 12"/>
+    <cont node="(DataTVar:)Arg3/(Prop)Value" val="I 1"/>
+  </node>
+  <cont node="(Description:)Note" val="This is example of simple function of variable type. The function agent adjust itself using simple negotiation: &#10;from root to leaves passes request of two kinds: 1. for type if most hierarched func arg type is determined, &#10;2 - asking what type can be provided if agrs type is not known yet. Funtion [GT] is the example of the function&#10;which args type is not known yet."/>
+</node>
