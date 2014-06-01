@@ -469,6 +469,20 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
 {
     Elem* mutelem = iElem->GetAttachingMgr();
+    Elem* node = iElem->GetNode(aNodeUri);
+    if (!mutelem->IsMutSafe(node)) {
+	Elem::TMDep mdep = node->GetMajorDep();
+	mutelem = mdep.first.first;
+    }
+    if (aRef) {
+	Elem* rnode = node->GetNode(aNewContent);
+	if (aRef && !mutelem->IsRefSafe(rnode)) {
+	    Elem::TMDep rdep;
+	    rnode->GetDep(rdep, ENa_Id);
+	    mutelem = rdep.first.first;
+	}
+    }
+
     GUri duri;
     iElem->GetUri(duri, mutelem);
     GUri nuri = duri + GUri(aNodeUri);
