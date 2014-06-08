@@ -31,6 +31,11 @@
         <cont node="(DataSCVar:)Confirmed/(Prop)Value" val="F 0"/>
         <cont node="(DataSCVar:)Prepared/(Prop)Value" val="F 0"/>
         <cont node="(DataSUVar:)Const1/(Prop)Value" val="F 0.1"/>
+        <node id="LE" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(TrVar:)TrLEVar"/>
+        <node id="LT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(TrVar:)TrLTVar"/>
+        <node id="Const_MAX" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSU:)DataSUVar"/>
+        <cont node="(DataSUVar:)Const_MAX/(Prop)Value" val="F 5.5"/>
+        <node id="IF" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(TrVar:)TrSwitchVar"/>
       </node>
       <node id="1197245649" parent="Edge"/>
       <cont node="(Edge:)1197245649/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/(Extender:)Out"/>
@@ -52,50 +57,19 @@
           <node id="357816" parent="Edge"/>
           <cont node="(Edge:)357816/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(TrAddVar:)vel_add/(ConnPoint:)Inp"/>
           <cont node="(Edge:)357816/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(Extender:)Inp/(StInpSocket:)Int/(ConnPoint:)PinData"/>
+          <cont node="(DataSCVar:)Confirmed/(Prop)Value" val="VF 200 200"/>
         </node>
         <node id="415576437" parent="Edge"/>
         <node id="1951942035" parent="Edge"/>
         <node id="1031975171" parent="Edge"/>
-        <cont node="(Edge:)415576437/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1951942035/(Prop:)P2" val=""/>
-        <cont node="(Edge:)415576437/(Prop:)P2" val=""/>
         <cont node="(Edge:)415576437/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(ConnPoint:)Sync"/>
         <cont node="(Edge:)415576437/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(Extender:)Inp"/>
         <cont node="(Edge:)415576437/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(Extender:)Out"/>
-        <cont node="(Edge:)1031975171/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1031975171/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1031975171/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1031975171/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1951942035/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1951942035/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1951942035/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1951942035/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1031975171/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1031975171/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1031975171/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1951942035/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1031975171/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1031975171/(Prop:)P2" val=""/>
         <cont node="(Edge:)1951942035/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(Extender:)Inp"/>
         <rm node="(Edge:)1951942035"/>
         <cont node="(Edge:)1031975171/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(Extender:)Inp"/>
         <rm node="(Edge:)1031975171"/>
         <node id="1759788633" parent="Edge"/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1759788633/(Prop:)P2" val=""/>
         <cont node="(Edge:)1759788633/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(ConnPoint:)Sync"/>
         <rm node="(Edge:)1759788633"/>
         <node id="coords" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVar">
@@ -108,29 +82,47 @@
           <node id="97900293" parent="Edge"/>
           <cont node="(Edge:)1189626103/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(TrAddVar:)coords_add/(ConnPoint:)Inp"/>
           <cont node="(Edge:)1189626103/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(Extender:)Inp/(StInpSocket:)Int/(ConnPoint:)PinData"/>
-          <cont node="(Edge:)97900293/(Prop:)P2" val=""/>
+          <node id="add_coord" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(TrVar:)TrAddVar"/>
+          <cont node="(Edge:)97900293/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(TrAddVar:)add_coord/(ConnPoint:)Inp"/>
+          <cont node="(Edge:)97900293/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(Extender:)Inp"/>
+          <cont node="(Edge:)97900293/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(DataSCVar:)Confirmed/(Elem:)Capsule/(ConnPoint:)Inp"/>
+          <cont node="(Edge:)97900293/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(DataSCVar:)Confirmed/(Elem:)Capsule/(ConnPoint:)Inp"/>
+          <rm node="(TrAddVar:)add_coord"/>
           <cont node="(Edge:)97900293/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(TrAddVar:)coords_add/(ConnPoint:)Inp"/>
-          <node id="115499158" parent="Edge"/>
-          <cont node="(Edge:)115499158/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(TrAddVar:)coords_add/(ConnPoint:)Out"/>
+          <node id="471569185" parent="Edge"/>
+          <cont node="(Edge:)471569185/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(TrAddVar:)coords_add/(ConnPoint:)Out"/>
         </node>
         <node id="1621218668" parent="Edge"/>
         <node id="499176667" parent="Edge"/>
         <node id="1062108333" parent="Edge"/>
-        <cont node="(Edge:)1621218668/(Prop:)P2" val=""/>
-        <cont node="(Edge:)1621218668/(Prop:)P2" val=""/>
         <cont node="(Edge:)1621218668/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(ConnPoint:)Sync"/>
         <rm node="(Edge:)1621218668"/>
-        <cont node="(Edge:)499176667/(Prop:)P2" val=""/>
         <cont node="(Edge:)499176667/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(ConnPoint:)Sync"/>
         <cont node="(Edge:)499176667/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(Extender:)Inp"/>
         <cont node="(Edge:)499176667/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(Extender:)Out"/>
         <add node="(StateVar:)coords/(Elem:)Capsule">
-          <node parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Extender:)StVarInp" id="Inp_Velocity"/>
+          <node parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Extender:)StVarInp" id="Inp_velocity"/>
         </add>
-        <cont node="(StateVar:)coords/(Edge:)97900293/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(StVarInp:)Inp_Velocity/(StInpSocket:)Int/(ConnPoint:)PinData"/>
-        <cont node="(StateVar:)coords/(Edge:)115499158/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(DataSCVar:)Prepared/(Elem:)Capsule/(ConnPoint:)Inp"/>
-        <cont node="(Edge:)1062108333/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(StVarInp:)Inp_Velocity"/>
-        <cont node="(Edge:)1062108333/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(Extender:)Out"/>
+        <cont node="(StateVar:)coords/(Edge:)97900293/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(StVarInp:)Inp_velocity/(StInpSocket:)Int/(ConnPoint:)PinData"/>
+        <cont node="(StateVar:)coords/(Edge:)471569185/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(DataSCVar:)Prepared/(Elem:)Capsule/(ConnPoint:)Inp"/>
+        <node id="2036272685" parent="Edge"/>
+        <cont node="(Edge:)1062108333/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(ConnPoint:)Sync"/>
+        <rm node="(Edge:)1062108333"/>
+        <cont node="(Edge:)2036272685/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(StVarInp:)Inp_velocity"/>
+        <cont node="(Edge:)2036272685/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)velocity/(Elem:)Capsule/(Extender:)Out"/>
+        <cont node="(StateVar:)coords/(Edge:)97900293/(Prop:)P1" val=""/>
+        <cont node="(StateVar:)coords/(Edge:)97900293/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(StVarInp:)Inp_velocity/(StInpSocket:)Int/(ConnPoint:)PinData"/>
+        <cont node="(StateVar:)coords/(Edge:)97900293/(Prop:)P1" val=""/>
+        <cont node="(StateVar:)coords/(Edge:)97900293/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(StVarInp:)Inp_velocity/(StInpSocket:)Int/(ConnPoint:)PinData"/>
+        <change node="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/rock" attr="id" val="rock_simple"/>
+      </node>
+      <node id="rock_vis" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des">
+        <node id="Components" parent="Vert">
+          <node id="Scaled_coord_2d" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVar">
+            <cont node="(DataSCVar:)Prepared/(Prop)Value" val="VF 0 0"/>
+            <cont node="(DataSCVar:)Confirmed/(Prop)Value" val="VF 0 0"/>
+          </node>
+        </node>
       </node>
     </node>
     <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
