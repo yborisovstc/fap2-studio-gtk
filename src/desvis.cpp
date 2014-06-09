@@ -123,7 +123,7 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	res = DoGetObj(aName.c_str(), EFalse, aCtx);
     }
     if (res != NULL) {
-	InsertIfCache(aName, ToCacheRCtx(aCtx), this, res);
+	InsertIfCache(aName, aCtx, this, res);
     }
 }
 
