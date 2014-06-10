@@ -36,6 +36,30 @@
         <node id="Const_MAX" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSU:)DataSUVar"/>
         <cont node="(DataSUVar:)Const_MAX/(Prop)Value" val="F 5.5"/>
         <node id="IF" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(TrVar:)TrSwitchVar"/>
+        <cont node="(Edge:)969163775/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(ConnPoint:)Out"/>
+        <node id="783972875" parent="Edge"/>
+        <cont node="(Edge:)783972875/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrLTVar:)LT/(ConnPoint:)Out"/>
+        <cont node="(Edge:)783972875/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(ConnPoint:)Sel"/>
+        <cont node="(Edge:)969163775/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUVar:)Const1/(Elem:)Capsule/(ConnPoint:)out"/>
+        <cont node="(Edge:)820889547/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(ConnPoint:)Out"/>
+        <node id="341106784" parent="Edge"/>
+        <cont node="(Edge:)341106784/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrAddVar:)Add/(ConnPoint:)Out"/>
+        <cont node="(Edge:)341106784/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrLTVar:)LT/(ConnPoint:)Inp1"/>
+        <node id="1077009242" parent="Edge"/>
+        <cont node="(Edge:)1077009242/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrLTVar:)LT/(TrVarInp:)Inp2"/>
+        <cont node="(Edge:)1077009242/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUVar:)Const_MAX/(Elem:)Capsule/(ConnPoint:)out"/>
+        <node id="1269001587" parent="Edge"/>
+        <node id="2114282516" parent="Edge"/>
+        <cont node="(Edge:)2114282516/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrAddVar:)Add/(ConnPoint:)Out"/>
+        <cont node="(Edge:)2114282516/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(TrVarInp:)Inp1"/>
+        <cont node="(Edge:)1269001587/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUVar:)Const_MAX/(Elem:)Capsule/(ConnPoint:)out"/>
+        <cont node="(Edge:)1269001587/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(TrVarInp:)Inp2"/>
+        <cont node="(Edge:)2114282516/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(TrVarInp:)Inp2"/>
+        <cont node="(Edge:)1269001587/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(TrVarInp:)Inp1"/>
+        <cont node="(Edge:)1269001587/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(TrVarInp:)Inp2"/>
+        <cont node="(Edge:)2114282516/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(TrVarInp:)Inp1"/>
+        <cont node="(Edge:)1269001587/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(TrVarInp:)Inp1"/>
+        <cont node="(Edge:)2114282516/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(TrSwitchVar:)IF/(TrVarInp:)Inp2"/>
       </node>
       <node id="1197245649" parent="Edge"/>
       <cont node="(Edge:)1197245649/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/(Extender:)Out"/>
