@@ -114,13 +114,13 @@ void SysCrp::AddDataRp()
 	    iDataRps[data] = rp;
 	}    
     }
-    Elem* vdata = iElem->GetNode("Vert:ViewData");
+    Elem* vdata = iElem->GetNode("ViewData");
     if (vdata != NULL) {
 	for (vector<Elem*>::iterator it = vdata->Comps().begin(); it != vdata->Comps().end(); it++) {
 	    Elem* comp = *it;
 	    MProp* pcomp = comp->GetObj(pcomp);
 	    if (pcomp != NULL) {
-		Elem* data = iElem->GetNode(pcomp->Value());
+		Elem* data = comp->GetNode(pcomp->Value());
 		if (data != NULL) {
 		    DataRp* rp = new DataRp(data, comp->Name(), iMdlObs);
 		    add(*rp);

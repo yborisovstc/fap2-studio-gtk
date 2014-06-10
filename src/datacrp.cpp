@@ -11,6 +11,7 @@ ValueRp::ValueRp(Elem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aM
     assert(prop != NULL);
     set_text(prop->Value());
     iMdlObs->SignalCompChanged().connect(sigc::mem_fun(*this, &ValueRp::on_comp_changed));
+    iMdlObs->SignalContentChanged().connect(sigc::mem_fun(*this, &ValueRp::on_comp_changed));
 }
 
 void ValueRp::on_comp_changed(Elem* aComp)
