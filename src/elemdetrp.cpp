@@ -379,43 +379,51 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
 }
 
 Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
-    Elem* res = NULL;
-    Elem::TMDep mdep = aNode->GetMajorDep();
-    res = mdep.first.first;
-    if (res == NULL) {
-	res = iElem;
-    }
-    else if (mdep.second == -1) {
-	res = mdep.first.first->GetMan();
+    Elem* res = aNode;
+    Elem::TMDep dep = aNode->GetMajorDep();
+    if (dep.first.first != NULL) {
+	Rank rank;
+	res->GetRank(rank);
+	Rank deprank;
+	ChromoNode depnode = aNode->Chromos().CreateNode(dep.first.second);
+	// Using combined calc of rank because of possibility that mut can be deattached
+	dep.first.first->GetRank(deprank, depnode);
+	if (deprank > rank && !deprank.IsRankOf(rank)) {
+	    res = dep.first.first;
+	}
     }
     return res;
 }
 
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri)
 {
-    Elem* mutelem = iElem;
-    ChromoNode rmut = mutelem->Mutation().Root();
     // Mutate appending
+    Elem* mutelem = GetObjForSafeMut(iElem);
     if (!mutelem->IsChromoAttached()) {
-	//mutelem = mutelem->GetAttachingMgr(); // TODO Do attch mgr also to be considered ?
-	mutelem = GetObjForSafeMut(iElem);
-	if (mutelem != NULL) {
-	    ChromoNode mut = mutelem->Mutation().Root();
-	    rmut = mut.AddChild(ENt_Add);
-	    GUri nodeuri;
-	    iElem->GetUri(nodeuri, mutelem);
-	    string snodeuri = nodeuri.GetUri();
-	    rmut.SetAttr(ENa_MutNode, snodeuri);
+	mutelem = mutelem->GetAttachingMgr(); 
+    }
+    __ASSERT(mutelem != NULL);
+    if (mutelem != NULL) {
+	ChromoNode mut = mutelem->Mutation().Root();
+	ChromoNode rmut = mut.AddChild(ENt_Add);
+	GUri nodeuri;
+	iElem->GetUri(nodeuri, mutelem);
+	string snodeuri = nodeuri.GetUri();
+	rmut.SetAttr(ENa_MutNode, snodeuri);
+	ChromoNode smut = rmut.AddChild(ENt_Node);
+	if (!aParentUri.empty()) {
+	    smut.SetAttr(ENa_Parent, aParentUri);
 	}
-    }
-    ChromoNode smut = rmut.AddChild(ENt_Node);
-    if (!aParentUri.empty()) {
-	smut.SetAttr(ENa_Parent, aParentUri);
-    }
-    smut.SetAttr(ENa_Id, aName);
-    // TODO [YB] To replace comps order with another mechanism
-    /*
-    if (!aNeighborUri.empty() && !aName.empty()) {
+	string sname(aName);
+	if (sname.empty()) {
+	    stringstream ss;
+	    ss << rand();
+	    sname = ss.str();
+	}
+	smut.SetAttr(ENa_Id, sname);
+	// TODO [YB] To replace comps order with another mechanism
+	/*
+	   if (!aNeighborUri.empty() && !aName.empty()) {
 	// Mutate moving
 	GUri duri;
 	iElem->GetUri(duri, mutelem);
@@ -427,9 +435,10 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	ChromoNode change = rmut.AddChild(ENt_Move);
 	change.SetAttr(ENa_Id, suri.GetUri());
 	change.SetAttr(ENa_MutNode, nuri.GetUri());
+	}
+	*/
+	mutelem->Mutate();
     }
-    */
-    mutelem->Mutate();
 }
 
 void ElemDetRp::remove_node(const std::string& aNodeUri)
@@ -445,10 +454,10 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     }
     Elem* mutelem = mnode->GetAttachingMgr();
     /*
-    GUri duri;
-    iElem->GetUri(duri, mutelem);
-    GUri nuri = duri + GUri(aNodeUri);
-    */
+       GUri duri;
+       iElem->GetUri(duri, mutelem);
+       GUri nuri = duri + GUri(aNodeUri);
+       */
     GUri nuri;
     dnode->GetUri(nuri, mutelem);
     int dres = RESPONSE_OK;
@@ -573,17 +582,19 @@ void ElemDetRp::on_comp_menu_edit_content()
 {
     assert(iCompSelected != NULL);
     string sCont;
-    iCompSelected->GetCont(sCont);
+    //iCompSelected->GetCont(sCont);
+    MCrp* crp = iCompRps.at(iCompSelected);
+    GUri uri;
+    iCompSelected->GetUri(uri, iElem);
+    GUri uri_cont;
+    crp->GetContentUri(uri_cont);
+    uri += uri_cont;
+    Elem* cnode = iElem->GetNode(uri);
+    cnode->GetCont(sCont);
     TextEditDlg* dlg = new TextEditDlg("Edit content", sCont);
     int res = dlg->run();
     if (res == Gtk::RESPONSE_OK) {
 	dlg->GetData(sCont);
-	MCrp* crp = iCompRps.at(iCompSelected);
-	GUri uri;
-	iCompSelected->GetUri(uri, iElem);
-	GUri uri_cont;
-	crp->GetContentUri(uri_cont);
-	uri += uri_cont;
 	change_content(uri.GetUri(), sCont);
     }
     delete dlg;
