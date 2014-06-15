@@ -9,32 +9,20 @@
         <cont node="Provided" val="Role3"/>
         <cont node="Required" val="Role4"/>
       </node>
-      <add node="Capsule">
-		<node id="ep" parent="../../../SysComps/Extender"> 
-		    <cont node="Int/Provided" val="Role4"/> <cont node="Int/Required" val="Role3"/>
-		</node>
-	    </add>
+      <node node="Capsule" id="ep" parent="../../SysComps/Extender"> 
+	  <cont node="Int/Provided" val="Role4"/> <cont node="Int/Required" val="Role3"/>
+      </node>
       <cont node="D_1" val="This is test incapsulated sysytem"/>
     </node>
     <node id="Ics2" parent="../IncapsComps/Incaps">
-      <add node="Capsule">
-		<node id="ep" parent="../../../SysComps/Extender"> 
-		    <cont node="Int/Provided" val="Role3"/> <cont node="Int/Required" val="Role4"/>
-		</node>
-	    </add>
+	<node node="Capsule" id="ep" parent="../../SysComps/Extender"> 
+	    <cont node="Int/Provided" val="Role3"/> <cont node="Int/Required" val="Role4"/>
+	</node>
     </node>
-    <add node="Capsule">
-	    <node id="ep" parent="../../SysComps/Extender"> 
-		<cont node="Int/Provided" val="Role3"/> <cont node="Int/Required" val="Role4"/>
-	    </node>
-	</add>
-    <node id="1231400494" parent="Edge">
-      <cont node="P1" val="Ics1/Capsule/ep"/>
-      <cont node="P2" val="Ics2/Capsule/ep"/>
+    <node node="Capsule" id="ep" parent="../SysComps/Extender"> 
+	<cont node="Int/Provided" val="Role3"/> <cont node="Int/Required" val="Role4"/>
     </node>
-    <node id="518673730" parent="Edge">
-      <cont node="P1" val="Ics2/Capsule/ep"/>
-      <cont node="P2" val="Capsule/ep/Int"/>
-    </node>
+    <node id="1231400494" parent="Edge"> <cont node="P1" ref="../../Ics1/Capsule/ep"/> <cont node="P2" ref="../../Ics2/Capsule/ep"/> </node>
+    <node id="518673730" parent="Edge"> <cont node="P1" ref="../../Ics2/Capsule/ep"/> <cont node="P2" ref="../../Capsule/ep/Int"/> </node>
   </node>
 </node>
