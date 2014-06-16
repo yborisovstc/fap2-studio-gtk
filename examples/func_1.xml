@@ -29,22 +29,22 @@
 
 	<node id="ResData" parent="../DataComps/DataSInt"/>
 
-	<node parent="Edge"> 
+	<node id="E1" parent="Edge"> 
 	    <cont node="P1" ref="../../DataS_Int_1/Capsule/out"/> 
 	    <cont node="P2" ref="../../Incr/Capsule/inp"/> 
 	</node>
 
-	<node parent="Edge"> 
+	<node id="E2" parent="Edge"> 
 	    <cont node="P1" ref="../../Incr/Capsule/out"/> 
 	    <cont node="P2" ref="../../Incr2/Capsule/inp"/> 
 	</node>
 
-	<node parent="Edge"> 
+	<node id="E3" parent="Edge"> 
 	    <cont node="P1" ref="../../Incr2/Capsule/out"/> 
 	    <cont node="P2" ref="../../Result/Capsule/inp"/> 
 	</node>
 
-	<node parent="Edge"> 
+	<node id="E4" parent="Edge"> 
 	    <cont node="P1" ref="../../Result/Capsule/out"/> 
 	    <cont node="P2" ref="../../ResData/Capsule/inp"/> 
 	</node>

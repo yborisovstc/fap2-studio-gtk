@@ -392,6 +392,10 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
 	    res = dep.first.first;
 	}
     }
+    if (!res->IsChromoAttached()) {
+	res = res->GetAttachingMgr(); 
+    }
+    res = res->GetCommonOwner(aNode);
     return res;
 }
 
@@ -399,20 +403,18 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 {
     // Mutate appending
     Elem* mutelem = GetObjForSafeMut(iElem);
-    if (!mutelem->IsChromoAttached()) {
-	mutelem = mutelem->GetAttachingMgr(); 
-    }
     __ASSERT(mutelem != NULL);
     if (mutelem != NULL) {
 	ChromoNode mut = mutelem->Mutation().Root();
-	ChromoNode rmut = mut.AddChild(ENt_Add);
-	GUri nodeuri;
-	iElem->GetUri(nodeuri, mutelem);
-	string snodeuri = nodeuri.GetUri();
-	rmut.SetAttr(ENa_MutNode, snodeuri);
-	ChromoNode smut = rmut.AddChild(ENt_Node);
+	ChromoNode rmut = mut.AddChild(ENt_Node);
+	if (mutelem != iElem) {
+	    GUri nodeuri;
+	    iElem->GetUri(nodeuri, mutelem);
+	    string snodeuri = nodeuri.GetUri();
+	    rmut.SetAttr(ENa_MutNode, snodeuri);
+	}
 	if (!aParentUri.empty()) {
-	    smut.SetAttr(ENa_Parent, aParentUri);
+	    rmut.SetAttr(ENa_Parent, aParentUri);
 	}
 	string sname(aName);
 	if (sname.empty()) {
@@ -420,7 +422,7 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	    ss << rand();
 	    sname = ss.str();
 	}
-	smut.SetAttr(ENa_Id, sname);
+	rmut.SetAttr(ENa_Id, sname);
 	// TODO [YB] To replace comps order with another mechanism
 	/*
 	   if (!aNeighborUri.empty() && !aName.empty()) {
@@ -477,12 +479,17 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
 {
+    /*
     Elem* mutelem = iElem->GetAttachingMgr();
     Elem* node = iElem->GetNode(aNodeUri);
     if (!mutelem->IsMutSafe(node)) {
 	Elem::TMDep mdep = node->GetMajorDep();
 	mutelem = mdep.first.first;
     }
+    */
+    Elem* node = iElem->GetNode(aNodeUri);
+    Elem* mutelem = GetObjForSafeMut(node);
+    __ASSERT(mutelem != NULL);
     if (aRef) {
 	Elem* rnode = node->GetNode(aNewContent);
 	if (aRef && !mutelem->IsRefSafe(rnode)) {

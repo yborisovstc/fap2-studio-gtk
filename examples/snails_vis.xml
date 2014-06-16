@@ -59,12 +59,8 @@
             <node id="65940741" parent="Edge"/>
 	    <cont node="65940741/P2" ref="../../Mpl/Out"/>
 	    <cont node="65940741/P1" ref="../../Prepared/Capsule/Inp"/>
-            <add node="Capsule">
-		<node parent="/Root/Modules/DesComps/StIntInp" id="Inp_Par"/>
-	    </add>
-	    <add node="Capsule">
-		<node parent="/Root/Modules/DesComps/StIntInp" id="Inp_Par_LW"/>
-	    </add>
+	    <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Par"/>
+	    <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Par_LW"/>
             <node id="784924948" parent="Edge"/>
 	    <cont node="784924948/P2" ref="../../Capsule/Inp_Par/Int/PinData"/>
             <cont node="784924948/P1" ref="../../Mpl/Inp"/>
@@ -87,32 +83,24 @@
           <node id="1817470566" parent="Edge"/>
           <cont node="1817470566/P2" ref="../../Scale_coord/Capsule/Out"/>
           <cont node="1817470566/P1" ref="../../Scaled_coord/Capsule/Inp"/>
-          <add node="Capsule">
-			<node parent="/Root/Modules/DesComps/StIntInp" id="Inp_X"/>
-		    </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_X"/>
           <node id="966413212" parent="Edge"/>
           <cont node="966413212/P2" ref="../../Capsule/Inp_X/Int"/>
           <cont node="966413212/P1" ref="../../Scaled_coord/Capsule/Inp"/>
           <node id="Drw" parent="/Root/Modules/VisComps/Drawing"/>
-          <add node="Capsule">
-			<node parent="/Root/Modules/VisComps/(Extender:)Child" id="Vis_Child"/>
-		    </add>
+	  <node node="Capsule" parent="/Root/Modules/VisComps/(Extender:)Child" id="Vis_Child"/>
           <node id="1807927956" parent="Edge"/>
           <cont node="1807927956/P2" ref="../../Capsule/Vis_Child/Int"/>
           <cont node="1807927956/P1" ref="../../Drw/Child"/>
           <node id="833264185" parent="Edge"/>
           <cont node="833264185/P2" ref="../../Scaled_coord/Capsule/Out"/>
           <cont node="833264185/P1" ref="../../Drw/Inp_X"/>
-          <add node="Capsule">
-	      <node parent="/Root/Modules/DesComps/StIntInp" id="Inp_Size"/>
-	  </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Size"/>
           <node id="1178187138" parent="Edge"/>
           <cont node="1178187138/P1" ref="../../Drw/Inp_W"/>
           <node id="2048203594" parent="Edge"/>
           <cont node="2048203594/P1" ref="../../Drw/Inp_H"/>
-          <add node="Capsule">
-	      <node parent="/Root/Modules/DesComps/StIntInp" id="Par_W"/>
-	  </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Par_W"/>
           <rm node="Scale_coord"/>
           <cont node="1817470566/P2" ref="../../Drw/Prov_PW"/>
           <cont node="1817470566/P1" ref="../../Scaled_coord/Capsule/Inp_Par"/>
@@ -121,12 +109,8 @@
           <cont node="986346340/P2" ref="../../Capsule/Par_W/Int/PinData"/>
           <cont node="986346340/P2" ref="../../Capsule/Par_W/Int"/>
           <cont node="986346340/P1" ref="../../Scaled_coord/Capsule/Inp_Par_LW"/>
-          <add node="Capsule">
-	      <node parent="/Root/Modules/DesComps/StIntInp" id="Inp_Y"/>
-	  </add>
-          <add node="Capsule">
-			<node parent="/Root/Modules/DesComps/StIntInp" id="Par_H"/>
-		    </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Y"/>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Par_H"/>
           <node id="Scaled_Y" parent="Scaled_coord">
             <node id="Sub" parent="/Root/Modules/DesComps/TrSubInt"/>
             <cont node="1243361684/P2" ref="../../Sub/Out"/>
@@ -153,24 +137,16 @@
           <cont node="1812411450/P1" ref="../../Drw/Inp_Y"/>
           <cont node="1817470566/P1" ref="../../Scaled_coord/Capsule/Inp_Par"/>
           <cont node="627436751/P1" ref="../../Scaled_Y/Capsule/Inp_Par"/>
-          <add node="Capsule">
-	      <node parent="/Root/Modules/DesComps/StIntInp" id="&#x428;&#x442;&#x437;_&#x426;"/>
-	  </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="&#x428;&#x442;&#x437;_&#x426;"/>
           <change node="Capsule/&#x428;&#x442;&#x437;_&#x426;" attr="id" val="Inp_W"/>
-          <add node="Capsule">
-	      <node parent="/Root/Modules/DesComps/StIntInp" id="Inp_H"/>
-	  </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_H"/>
           <rm node="Capsule/Inp_Size"/>
-          <add node="Capsule">
-			<node parent="/Root/Modules/DesComps/TrIntInp" id="Scale_WH"/>
-		    </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/TrIntInp" id="Scale_WH"/>
           <node id="Scaled_W" parent="Scaled_coord">
-            <add node="Capsule">
-		<node parent="/Root/Modules/DesComps/StIntInp" id="Inp_Scale"/>
-	    </add>
-            <node id="457550627" parent="Edge"/>
-            <cont node="457550627/P2" ref="../../Capsule/Inp_Scale/Int/PinData"/>
-            <cont node="457550627/P1" ref="../../Mpl/Inp"/>
+	      <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Scale"/>
+	      <node id="457550627" parent="Edge"/>
+	      <cont node="457550627/P2" ref="../../Capsule/Inp_Scale/Int/PinData"/>
+	      <cont node="457550627/P1" ref="../../Mpl/Inp"/>
           </node>
           <cont node="1178187138/P2" ref="../../Scaled_W/Capsule/Out"/>
           <node id="20552902" parent="Edge"/>
@@ -181,9 +157,7 @@
           <cont node="709678016/P1" ref="../../Scaled_W/Capsule/Inp_Par"/>
           <node id="313104659" parent="Edge"/>
           <rm node="Capsule/Scale_WH"/>
-          <add node="Capsule">
-	      <node parent="/Root/Modules/DesComps/StIntInp" id="Scale_WH"/>
-	  </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Scale_WH"/>
           <cont node="313104659/P2" ref="../../Capsule/Scale_WH/Int"/>
           <cont node="313104659/P1" ref="../../Scaled_W/Capsule/Inp_Scale"/>
           <node id="1336366819" parent="Edge"/>
@@ -216,15 +190,9 @@
         </node>
         <node id="Snail_Picture" parent="/Root/Modules/DesComps/Des">
           <node id="Picture" parent="/Root/IncapsRoot/DesRoot/Components/Pic"/>
-          <add node="Capsule">
-			<node parent="/Root/Modules/DesComps/StIntInp" id="Inp_X"/>
-		    </add>
-          <add node="Capsule">
-			<node parent="/Root/Modules/VisComps/(Extender:)Child" id="Vis_Child"/>
-		    </add>
-          <add node="Capsule">
-			<node parent="/Root/Modules/DesComps/StIntInp" id="Inp_Y"/>
-		    </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_X"/>
+	  <node node="Capsule" parent="/Root/Modules/VisComps/(Extender:)Child" id="Vis_Child"/>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Y"/>
           <node id="1881392624" parent="Edge"/>
           <cont node="1881392624/P2" ref="../../Capsule/Vis_Child/Int"/>
           <cont node="1881392624/P1" ref="../../Picture/Capsule/Vis_Child"/>
@@ -248,9 +216,7 @@
           <node id="1421111666" parent="Edge"/>
           <cont node="1421111666/P2" ref="../../Par_H/Capsule/Out"/>
           <cont node="1421111666/P1" ref="../../Picture/Capsule/Par_H"/>
-          <add node="Capsule">
-			<node parent="/Root/Modules/DesComps/StIntInp" id="Inp_Sz"/>
-		    </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Sz"/>
           <node id="1707671142" parent="Edge"/>
           <cont node="1707671142/P2" ref="../../Capsule/Inp_Sz/Int"/>
           <cont node="1707671142/P1" ref="../../Picture/Capsule/Inp_W"/>
@@ -268,28 +234,14 @@
         <node id="Snail" parent="/Root/Modules/DesComps/Des">
           <node id="About" parent="Description"/>
           <cont node="About" val="This is DES system modelling a snail."/>
-          <add node="Capsule">
-			<node parent="/Root/Modules/DesComps/StIntInp" id="Inp"/>
-		    </add>
-          <add node="Capsule">
-			<node parent="/Root/IncapsRoot/DesRoot/Components/SysConstInp" id="Inp_SysPars"/>
-		    </add>
-          <add node="Capsule">
-			<node parent="/Root/Modules/DesComps/StIntOut" id="Out"/>
-		    </add>
-          <add node="Capsule">
-			<node parent="/Root/Modules/DesComps/StIntOut" id="Out_Mass"/>
-		    </add>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp"/>
+	  <node node="Capsule" parent="/Root/IncapsRoot/DesRoot/Components/SysConstInp" id="Inp_SysPars"/>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntOut" id="Out"/>
+	  <node node="Capsule" parent="/Root/Modules/DesComps/StIntOut" id="Out_Mass"/>
           <node id="Mass" parent="/Root/Modules/DesComps/StateInt">
-            <add node="Capsule">
-			    <node parent="/Root/Modules/DesComps/StIntInp" id="Inp_SelfCoord"/>
-			</add>
-            <add node="Capsule">
-			    <node parent="/Root/Modules/DesComps/StIntInp" id="Inp_OthersCoord"/>
-			</add>
-            <add node="Capsule">
-			    <node parent="/Root/IncapsRoot/DesRoot/Components/SysConstInp" id="Inp_SysPars"/>
-			</add>
+	      <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_SelfCoord"/>
+	      <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_OthersCoord"/>
+	      <node node="Capsule" parent="/Root/IncapsRoot/DesRoot/Components/SysConstInp" id="Inp_SysPars"/>
             <node id="Conv" parent="/Root/Modules/FuncComps/TFConvInt"/>
             <node id="Comp" parent="/Root/Modules/FuncComps/TFGTInt"/>
             <node id="ToInt" parent="/Root/Modules/FuncComps/TFBoolToInt"/>
@@ -346,12 +298,8 @@
             <cont node="Data_Const1/Value" val="1"/>
           </node>
           <node id="&#x421;&#x449;&#x449;&#x43A;&#x432;" parent="/Root/Modules/DesComps/StateInt">
-            <add node="Capsule">
-			    <node parent="/Root/Modules/DesComps/StIntInp" id="Inp_Mass"/>
-			</add>
-            <add node="Capsule">
-			    <node parent="/Root/IncapsRoot/DesRoot/Components/SysConstInp" id="Inp_SysPars"/>
-			</add>
+	      <node node="Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Mass"/>
+	      <node node="Capsule" parent="/Root/IncapsRoot/DesRoot/Components/SysConstInp" id="Inp_SysPars"/>
             <node id="Div" parent="/Root/Modules/FuncComps/TFDivInt"/>
             <node id="AddM1" parent="/Root/Modules/FuncComps/TFAddInt"/>
             <node id="1300007943" parent="Edge"/>
@@ -417,9 +365,7 @@
             <node id="Coord" parent="Prop"/>
             <cont node="Coord" val="Coord/Confirmed/Value"/>
           </node>
-          <add node="Capsule">
-			<node parent="/Root/Modules/VisComps/(Extender:)Child" id="Vis_Child"/>
-		    </add>
+	  <node node="Capsule" parent="/Root/Modules/VisComps/(Extender:)Child" id="Vis_Child"/>
           <node id="1022218378" parent="Edge"/>
           <cont node="1022218378/P2" ref="../../Picture/Capsule/Vis_Child"/>
           <cont node="1022218378/P1" ref="../../Capsule/Vis_Child/Int"/>
@@ -436,9 +382,7 @@
         </node>
       </node>
       <node id="SysConsts" parent="/Root/Modules/IncapsComps/Incaps">
-        <add node="Capsule">
-		    <node id="Out" parent="../../Components/SysConstOut"/> 
-		</add>
+	  <node node="Capsule" id="Out" parent="../Components/SysConstOut"/> 
         <node id="e3" parent="Edge"/>
         <node id="About" parent="Description"/>
         <node id="Data_MaxMass" parent="/Root/Modules/DataComps/DataSCInt"/>
@@ -461,12 +405,8 @@
       <node id="Snail_1" parent="/Root/IncapsRoot/DesRoot/Components/Snail">
         <cont node="Mass/Confirmed/Value" val="1"/>
         <cont node="Coord/Confirmed/Value" val="2"/>
-        <add node="Mass/Conv">
-		    <node parent="Elem" id="Logspec"/>
-		</add>
-        <add node="Mass/Conv/Logspec">
-		    <node parent="/Root/Modules/DataComps/DataLogevent" id="Update"/>
-		</add>
+	<node node="Mass/Conv" parent="Elem" id="Logspec"/>
+	<node node="Mass/Conv/Logspec" parent="/Root/Modules/DataComps/DataLogevent" id="Update"/>
         <cont node="Coord_Y/Prepared/Value" val="1"/>
         <cont node="Coord_Y/Confirmed/Value" val="1"/>
         <cont node="Coord_Y/Prepared/Value" val="30"/>
@@ -479,9 +419,7 @@
         <cont node="Coord_Y/Prepared/Value" val="60"/>
         <cont node="Coord_Y/Confirmed/Value" val="60"/>
       </node>
-      <add node="Capsule">
-		<node parent="/Root/Modules/DesComps/StIntOut" id="Out"/>
-	    </add>
+      <node node="Capsule" parent="/Root/Modules/DesComps/StIntOut" id="Out"/>
       <node id="159196426" parent="Edge"/>
       <cont node="159196426/P2" ref="../../Snail_1/Capsule/Out_Mass"/>
       <cont node="159196426/P1" ref="../../Capsule/Out/Int"/>
