@@ -378,8 +378,9 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
     }
 }
 
-Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
+Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeAttr& aDepType) {
     Elem* res = aNode;
+    aDepType = ENa_Unknown;
     Elem::TMDep dep = aNode->GetMajorDep();
     if (dep.first.first != NULL) {
 	Rank rank;
@@ -391,20 +392,29 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
 	if (deprank > rank && !deprank.IsRankOf(rank)) {
 	    res = dep.first.first;
 	}
+	aDepType = dep.second;
     }
     if (!res->IsChromoAttached()) {
 	res = res->GetAttachingMgr(); 
+	aDepType = ENa_Unknown;
     }
-    res = res->GetCommonOwner(aNode);
+    Elem* cmnowner = res->GetCommonOwner(aNode);
+    if (cmnowner != res && aDepType != ENa_Unknown) {
+	aDepType = ENa_Unknown;
+    }
+    res = cmnowner;
     return res;
 }
 
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri)
 {
     // Mutate appending
-    Elem* mutelem = GetObjForSafeMut(iElem);
+    TNodeAttr deptype = ENa_Unknown;
+    Elem* mutelem = GetObjForSafeMut(iElem, deptype);
     __ASSERT(mutelem != NULL);
     if (mutelem != NULL) {
+	if (mutelem != iElem && deptype == ENa_Parent) {
+	} 
 	ChromoNode mut = mutelem->Mutation().Root();
 	ChromoNode rmut = mut.AddChild(ENt_Node);
 	if (mutelem != iElem) {
@@ -488,7 +498,8 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
     }
     */
     Elem* node = iElem->GetNode(aNodeUri);
-    Elem* mutelem = GetObjForSafeMut(node);
+    TNodeAttr deptype = ENa_Unknown;
+    Elem* mutelem = GetObjForSafeMut(node, deptype);
     __ASSERT(mutelem != NULL);
     if (aRef) {
 	Elem* rnode = node->GetNode(aNewContent);

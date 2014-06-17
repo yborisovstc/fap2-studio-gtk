@@ -10,6 +10,8 @@ const char* KTemplDirName = "/usr/share/fap2-studio-gtk/templ";
 const char* KAppName = "fap2-studio";
 const char* KRcFileName = "/usr/share/fap2-studio-gtk/conf/reg.rc";
 
+const string KTitleUnsaved = "unsaved";
+
 /* Time slice of FAP environment, in milliseconds */
 const gint KFapeTimeSlice = 50;
 
@@ -138,7 +140,9 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false)
     iMainWnd->maximize();
     iMainWnd->SetEnvLog(iLogFileName);
     //iMainWnd->UIManager()->signal_post_activate().connect(sigc::mem_fun(*this, &App::on_action));
+    iMainWnd->UIManager()->get_action("ui/ToolBar/New")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_new));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Open")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_open));
+    iMainWnd->UIManager()->get_action("ui/ToolBar/Save")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_save));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
     iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Compact_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_compactas));
     // Create studio DES environment
@@ -148,7 +152,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false)
     iMdlProv = new MdlProv("MdlProv", iStDesEnv, NULL);
     // Create model
     iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
-    OpenFile(KSpecFileName);
+    //OpenFile(KSpecFileName);
     // Navigation pane
     iNaviPane = new Navi(iDesObserver);
     //iNaviPane->SetDesEnv(iEnv);
@@ -173,6 +177,22 @@ void App::on_action(const Glib::RefPtr<Gtk::Action>& aAction)
     std::cout << "Action" << std::endl;
 }
 
+void App::on_action_new()
+{
+    Gtk::FileChooserDialog dialog("Please choose a template for new system", Gtk::FILE_CHOOSER_ACTION_OPEN);
+    dialog.set_transient_for(*iMainWnd);
+
+    //Add response buttons the the dialog:
+    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
+    int result = dialog.run();
+    if (result == Gtk::RESPONSE_OK) {
+	std::string filename = dialog.get_filename();
+	OpenFile(filename, true);
+	iSaved = EFalse;
+    }
+}
+
 void App::on_action_open()
 {
     std::cout << "Action Open" << std::endl;
@@ -184,8 +204,8 @@ void App::on_action_open()
     dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
     int result = dialog.run();
     if (result == Gtk::RESPONSE_OK) {
-	std::string iSpecFileName = dialog.get_filename();
-	OpenFile(iSpecFileName, false);
+	string filename = dialog.get_filename();
+	OpenFile(filename, false);
 	iSaved = EFalse;
     }
 }
@@ -200,9 +220,19 @@ void App::on_action_recreate()
     iHDetView->SetCursor(cursor);
 }
 
+void App::on_action_save()
+{
+    if (!iSpecFileName.empty()) {
+	SaveFile(iSpecFileName);
+    }
+    else {
+	on_action_saveas();
+    }
+}
+
 void App::on_action_saveas()
 {
-    Gtk::FileChooserDialog dialog("Please choose a file", Gtk::FILE_CHOOSER_ACTION_SAVE);
+    Gtk::FileChooserDialog dialog("Saving as - Please choose a file", Gtk::FILE_CHOOSER_ACTION_SAVE);
     dialog.set_transient_for(*iMainWnd);
 
     //Add response buttons the the dialog:
@@ -218,6 +248,8 @@ void App::on_action_saveas()
     if (result == Gtk::RESPONSE_OK) {
 	std::string filename = dialog.get_filename();
 	SaveFile(filename);
+	iSpecFileName = filename;
+	iMainWnd->set_title(FormTitle(filename));
     }
 }
 
@@ -283,6 +315,9 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     if (!aAsTmp) {
 	iSpecFileName = aFileName;
 	iMainWnd->set_title(FormTitle(aFileName));
+    }
+    else {
+	iMainWnd->set_title(FormTitle(KTitleUnsaved));
     }
 }
 

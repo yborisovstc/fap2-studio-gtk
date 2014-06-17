@@ -27,7 +27,9 @@ class MainWnd : public Gtk::Window
 	void SetEnvLog(const string& aLogFileName);
     protected:
 	// Signal handlers:
+	void on_action_new();
 	void on_action_open();
+	void on_action_save();
 	void on_action_saveas();
 	void on_action_compactas();
     private:

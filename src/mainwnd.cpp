@@ -6,13 +6,17 @@ Glib::ustring sUiInfo =
 "<ui>"
 "  <menubar name='MenuBar'>"
 "    <menu action='MenuFile'>"
+"      <menuitem action='New'/>"
 "      <menuitem action='Open'/>"
+"      <menuitem action='Save'/>"
 "      <menuitem action='Save_as'/>"
 "      <menuitem action='Compact_as'/>"
 "    </menu>"
 "  </menubar>"
 "  <toolbar  name='ToolBar'>"
+"    <toolitem action='New'/>"
 "    <toolitem action='Open'/>"
+"    <toolitem action='Save'/>"
 "    <toolitem action='Save_as'/>"
 "  </toolbar>"
 "</ui>";
@@ -24,7 +28,9 @@ MainWnd::MainWnd()
 
     irActionGroup = Gtk::ActionGroup::create("ActionGroup");
     irActionGroup->add(Gtk::Action::create("MenuFile", "_File"));
+    irActionGroup->add(Gtk::Action::create("New", Gtk::Stock::NEW), sigc::mem_fun(*this, &MainWnd::on_action_new));
     irActionGroup->add(Gtk::Action::create("Open", Gtk::Stock::OPEN), sigc::mem_fun(*this, &MainWnd::on_action_open));
+    irActionGroup->add(Gtk::Action::create("Save", Gtk::Stock::SAVE), sigc::mem_fun(*this, &MainWnd::on_action_save));
     irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS), sigc::mem_fun(*this, &MainWnd::on_action_saveas));
     irActionGroup->add(Gtk::Action::create("Compact_as", "Compact&Save"), sigc::mem_fun(*this, &MainWnd::on_action_compactas));
     irUiMgr = Gtk::UIManager::create();
@@ -75,9 +81,17 @@ MainWnd::~MainWnd()
 {
 }
 
+void MainWnd::on_action_new()
+{
+}
+
 void MainWnd::on_action_open()
 {
     std::cout << "Action Open triggered" << std::endl;
+}
+
+void MainWnd::on_action_save()
+{
 }
 
 void MainWnd::on_action_saveas()

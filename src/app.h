@@ -60,7 +60,9 @@ class App
 	void SaveTmp();
     private:
 	void on_action(const Glib::RefPtr<Gtk::Action>& aAction);
+	void on_action_new();
 	void on_action_open();
+	void on_action_save();
 	void on_action_saveas();
 	void on_action_compactas();
 	void on_action_recreate();
