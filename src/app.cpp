@@ -144,6 +144,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false)
     iMainWnd->UIManager()->get_action("ui/ToolBar/Open")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_open));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_save));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
+    iMainWnd->UIManager()->get_action("ui/ToolBar/Reload")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
     iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Compact_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_compactas));
     // Create studio DES environment
     iStDesEnv = new StDesEnv(iMainWnd->UIManager(), iMainWnd->VisWindow());
@@ -216,7 +217,7 @@ void App::on_action_recreate()
 	SaveTmp();
     }
     string cursor = iHDetView->GetCursor();
-    OpenFile(GetDefaultTmpFileName(), ETrue);
+    OpenFile(GetDefaultTmpFileName(), false);
     iHDetView->SetCursor(cursor);
 }
 

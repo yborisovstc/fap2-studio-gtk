@@ -26,6 +26,13 @@ static const Glib::ustring KDlgMsg_Rm_F1 =
 static const Glib::ustring KDlgMsg_Rm_F2 = 
 "Attemting to delete node which has children.\n\nPerform mutation ?";
 
+static const Glib::ustring KDlgMsg_Mut_F2 = 
+"Changed node has childs. There are two options of applying the change:\n\
+1. Make mutation, please note that you'll need then to refresh the the model to actualize the changes in childs\n\
+2. Make phenotypic modification, the change will be for this node only, not propagated to childs\n\n\
+Make mutation ? Oherwise phonotype modification";
+
+
 /*
    static const Gtk::TargetEntry targetentries[] =
    {
@@ -378,13 +385,13 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
     }
 }
 
-Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeAttr& aDepType) {
+Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
     Elem* res = aNode;
-    aDepType = ENa_Unknown;
+    TNodeAttr deptype = ENa_Unknown;
     Elem::TMDep dep = aNode->GetMajorDep();
     if (dep.first.first != NULL) {
 	Rank rank;
-	res->GetRank(rank);
+	res->GetRank(rank, res->Chromos().Root());
 	Rank deprank;
 	ChromoNode depnode = aNode->Chromos().CreateNode(dep.first.second);
 	// Using combined calc of rank because of possibility that mut can be deattached
@@ -392,29 +399,55 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeAttr& aDepType) {
 	if (deprank > rank && !deprank.IsRankOf(rank)) {
 	    res = dep.first.first;
 	}
-	aDepType = dep.second;
+	deptype = dep.second;
     }
     if (!res->IsChromoAttached()) {
 	res = res->GetAttachingMgr(); 
-	aDepType = ENa_Unknown;
+	deptype = ENa_Unknown;
     }
-    Elem* cmnowner = res->GetCommonOwner(aNode);
-    if (cmnowner != res && aDepType != ENa_Unknown) {
-	aDepType = ENa_Unknown;
+    if (res != aNode && deptype == ENa_Parent) {
+	// Taking into account options of change: geno or pheno, ref fap2 uc_038
+	MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
+		false, MESSAGE_INFO, BUTTONS_YES_NO, true);
+	int dres = dlg->run();
+	delete dlg;
+	if (dres == RESPONSE_YES) {
+	    res = iElem;
+	}
+	else {
+	    res = res->GetCommonOwner(aNode);
+	}
+    } 
+    else {
+	res = res->GetCommonOwner(aNode);
     }
-    res = cmnowner;
     return res;
 }
 
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri)
 {
     // Mutate appending
-    TNodeAttr deptype = ENa_Unknown;
-    Elem* mutelem = GetObjForSafeMut(iElem, deptype);
+    Elem* mutelem = GetObjForSafeMut(iElem);
     __ASSERT(mutelem != NULL);
     if (mutelem != NULL) {
+	/*
 	if (mutelem != iElem && deptype == ENa_Parent) {
+	    // Taking into account options of change: geno or pheno, ref fap2 uc_038
+	    MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
+		    false, MESSAGE_INFO, BUTTONS_YES_NO, true);
+	    int dres = dlg->run();
+	    delete dlg;
+	    if (dres == RESPONSE_YES) {
+		mutelem = iElem;
+	    }
+	    else {
+		mutelem = mutelem->GetCommonOwner(iElem);
+	    }
 	} 
+	else {
+	    mutelem = mutelem->GetCommonOwner(iElem);
+	}
+	*/
 	ChromoNode mut = mutelem->Mutation().Root();
 	ChromoNode rmut = mut.AddChild(ENt_Node);
 	if (mutelem != iElem) {
@@ -498,8 +531,7 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
     }
     */
     Elem* node = iElem->GetNode(aNodeUri);
-    TNodeAttr deptype = ENa_Unknown;
-    Elem* mutelem = GetObjForSafeMut(node, deptype);
+    Elem* mutelem = GetObjForSafeMut(node);
     __ASSERT(mutelem != NULL);
     if (aRef) {
 	Elem* rnode = node->GetNode(aNewContent);

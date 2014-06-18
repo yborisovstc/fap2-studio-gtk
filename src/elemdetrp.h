@@ -46,7 +46,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	virtual void DoUdno();
 	void Erase();
 	void Refresh();
-	Elem* GetObjForSafeMut(Elem* aNode, TNodeAttr& aDepType);
+	Elem* GetObjForSafeMut(Elem* aNode);
 	void do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri);
 	void add_node(const std::string& aParentUri, const std::string& aNeighborUri = string());
 	void rename_node(const std::string& aNodeUri, const std::string& aNewName);
