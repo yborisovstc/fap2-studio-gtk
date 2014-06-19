@@ -430,24 +430,6 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
     Elem* mutelem = GetObjForSafeMut(iElem);
     __ASSERT(mutelem != NULL);
     if (mutelem != NULL) {
-	/*
-	if (mutelem != iElem && deptype == ENa_Parent) {
-	    // Taking into account options of change: geno or pheno, ref fap2 uc_038
-	    MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
-		    false, MESSAGE_INFO, BUTTONS_YES_NO, true);
-	    int dres = dlg->run();
-	    delete dlg;
-	    if (dres == RESPONSE_YES) {
-		mutelem = iElem;
-	    }
-	    else {
-		mutelem = mutelem->GetCommonOwner(iElem);
-	    }
-	} 
-	else {
-	    mutelem = mutelem->GetCommonOwner(iElem);
-	}
-	*/
 	ChromoNode mut = mutelem->Mutation().Root();
 	ChromoNode rmut = mut.AddChild(ENt_Node);
 	if (mutelem != iElem) {
@@ -522,14 +504,6 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
 {
-    /*
-    Elem* mutelem = iElem->GetAttachingMgr();
-    Elem* node = iElem->GetNode(aNodeUri);
-    if (!mutelem->IsMutSafe(node)) {
-	Elem::TMDep mdep = node->GetMajorDep();
-	mutelem = mdep.first.first;
-    }
-    */
     Elem* node = iElem->GetNode(aNodeUri);
     Elem* mutelem = GetObjForSafeMut(node);
     __ASSERT(mutelem != NULL);
@@ -541,13 +515,11 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 	    mutelem = rdep.first.first;
 	}
     }
-
-    GUri duri;
-    iElem->GetUri(duri, mutelem);
-    GUri nuri = duri + GUri(aNodeUri);
+    GUri nuri;
+    node->GetUri(nuri, mutelem);
     MChromo& mut = iElem->Mutation();
     ChromoNode change = mutelem->Mutation().Root().AddChild(ENt_Cont);
-    change.SetAttr(ENa_MutNode, nuri.GetUri());
+    change.SetAttr(ENa_MutNode, nuri.GetUri(true));
     change.SetAttr(aRef ? ENa_Ref : ENa_MutVal, aNewContent);
     mutelem->Mutate();
     Refresh();

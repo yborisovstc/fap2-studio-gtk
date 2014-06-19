@@ -412,11 +412,11 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    Elem* targ = iEdgeDropCpCandidate;
 	    Elem* node = iElem->GetNode(iDndReceivedData);
 	    GUri uri;
-	    targ->GetUri(uri, node);
+	    targ->GetRUri(uri, node);
 	    res = true;
 	    context->drag_finish(res, false, time);
 	    std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
-	    change_content(iDndReceivedData, uri.GetUri(), true);
+	    change_content(iDndReceivedData, uri.GetUri(true), true);
 	}
 	else {
 	    // Disconnect edge if it is connected
