@@ -20,6 +20,8 @@
 	<revhistory>
 	    <revision> <revnumber>0.01</revnumber> <date>03-Mar-2013</date> <authorinitials>Yuri Borisov</authorinitials>
 		<revremark>Initial version</revremark> </revision>
+	    <revision> <revnumber>0.02</revnumber> <date>20-Jun-2014</date> <authorinitials>Yuri Borisov</authorinitials>
+		<revremark>Added <xref linkend="sec_drp_custagt"/></revremark> </revision>
 	</revhistory>
 
     </articleinfo>
@@ -43,6 +45,58 @@
 	    <simpara>Application uses standard MVC scheme. In most cases view acts as controller, handling user actions and notifiactions from model.
 		Application can create a set of views to exposure system to user: system views, log views, visualization view etc,
 		ref <ulink url="../requirements/index.html#uc_002"/></simpara>
+	</sect2>
+    </sect1>
+
+    <sect1 id="sec_drp_custagt"><title>Detail representation customization agent</title>
+	<sect2><title>Intro</title>
+	    <simpara>Ref <ulink url="../requirements/index.html#uc_039"/> for use-case</simpara>
+	</sect2>
+	<sect2><title>Discussing of approaches</title>
+	    <itemizedlist>
+		<listitem>Specific agent using speific model of customization. Ref <xref linkend="sec_drp_custagt_sag"/>.</listitem>
+	    </itemizedlist>
+	</sect2>
+	<sect2 id="sec_drp_custagt_sag"><title>Specific agent using speific model of customization</title>
+	    <sect3><title>Desing question to be considered</title>
+		<orderedlist>
+		    <listitem>Do we need to use refs? How to implement ref?</listitem>
+		    <listitem>What would be model of components order?</listitem>
+		    <listitem>Do we need specific agent or studio should handle customization model by itself?</listitem>
+		    <listitem>How to ensure keeping all cust model mutaions locally in the model?</listitem>
+		</orderedlist>
+	    </sect3>
+	    <sect3 id="sec_drp_custagt_sag_ofm"><title>Model of components order: full embedded model</title>
+		<simpara>One of the options is that the model constist of the updates of native order. The update describes moving some node near to another node. Acutially it is
+		    directional "near" relation, where "near" means that the given nodes is placed in direct closeness of target node. </simpara>
+		<simpara>So there will be ordering relationship defined for each component [given_comp, next_comp]. Each time the comp has got reordered,
+		    there will be 3 mutations agaings the relations: </simpara>
+		<itemizedlist>
+		    <listitem>given_comp changed  to next_comp in [previous_comp, given_comp] </listitem>
+		    <listitem>next_comp changed to given_comp in [new given_comp, next_comp] </listitem>
+		    <listitem>next_comp changed to new next_comp in [given_comp, next_comp] </listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3 id="sec_drp_custagt_sag_im"><title>Another model of comps ordering: agents internal model</title>
+		<simpara>Let's assume that customization agent keeps the ordered refs to comps, kind of internal model of customization. The mutation of this internal model can be done
+		    in form of content change. In reality it will not be whole content change but some change IN content.</simpara>
+		<simpara>The weakness of this approach is that it will contradict to the base algorithm of chromo squeezing. All these mutation will be squeezed completelly.</simpara>
+		<simpara>This problem can be avoided by small modification of the approach. Let's have not one content but auxiliary set of nodes eanch one is ref to the corresponding comp, 
+		    the content of this node will be relational position of the conp, i.e. the previos_comp. So now we can apply mutation to the particular ref, 
+		    the mutation would be changing</simpara>
+		<simpara>This approach seems to the same as <xref linkend="sec_drp_custagt_sag_ofm"/> but it's not true. The difference is that here the we doesn't have full model embedded but
+		    internal model in agent, so agent needs to handle all the mutation of the nodes of auxiliary set. This approach is near to what was in earlier version of agent base - it 
+		    was suppoting the order of its comps. There was specific mutation for changing position of some comp in the order.</simpara>
+		<simpara>How about dependencies to the comps when mutating the auxiliary nodes? There will be such deps because the aux nodes contains refs to comps. But this ref could be 
+		avoided also. We can use position in native order for referencing comps. (Not sure, what about removing comps - position in native order will be changed) </simpara>
+	    </sect3>
+	    <sect3><title>How to ensure keeping all cust model mutaions locally in the model?</title>
+		<simpara>If we use refs for comps order model then we will face the problem that all that comps order model nodes need to be placed in chromo after the comps. This
+		    makes some inconvenience because of messing up the model.</simpara>
+		<simpara>One of the solutions would be that we use special node in template. This node rank would be bigger in template than the models root. But the solution has one serious 
+		    disadvantage: the customisation model is not in chromo of the customised model, so not kept in childs.</simpara>
+		<simpara>Another solution is to modify incaps to add special node for body and then node for customization.</simpara>
+	    </sect3>
 	</sect2>
     </sect1>
 

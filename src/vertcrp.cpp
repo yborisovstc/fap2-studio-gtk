@@ -49,7 +49,7 @@ string VertCompRp::EType()
     return Vert::PEType();
 }
 
-VertCompRp::VertCompRp(Elem* aElem): ElemCompRp(aElem), iIsInt(true)
+VertCompRp::VertCompRp(Elem* aElem): ElemCompRp(aElem), iIsInt(true), mCpType(ECpGeneric)
 {
 }
 
@@ -130,6 +130,18 @@ void VertCompRp::SetIsInt(bool aIsInt)
 {
     if (aIsInt != iIsInt) {
 	iIsInt = aIsInt;
+    }
+}
+
+MCrpConnectable::TCpType VertCompRp::GetCpType() const
+{
+    return mCpType;
+}
+
+void VertCompRp::SetCpType(TCpType aType)
+{
+    if (aType != mCpType) {
+	mCpType = aType;
     }
 }
 

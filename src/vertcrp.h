@@ -49,10 +49,13 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
 	virtual bool GetIsInt() const;
 	virtual void SetIsInt(bool aIsInt);
+	virtual TCpType GetCpType() const;
+	virtual void SetCpType(TCpType aType);
 	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp);
 	virtual void HighlightCp(Elem* aCp, bool aSet);
     protected:
 	bool iIsInt;
+	TCpType mCpType;
 };
 
 /*

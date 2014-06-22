@@ -49,10 +49,10 @@ class MCrp: public MBase
 class MCrpConnectable
 {
     public:
-	enum CpType{
-	    CpGeneric,
-	    CpInp,
-	    CpOutp
+	enum TCpType{
+	    ECpGeneric,
+	    ECpInp,
+	    ECpOutp
 	};
     public:
 	static std::string Type() { return "MCrpConnectable";};
@@ -62,6 +62,10 @@ class MCrpConnectable
 	virtual bool GetIsInt() const = 0;
 	// Set internal/boundary
 	virtual void SetIsInt(bool aIsInt) = 0;
+	// Get Cp type
+	virtual TCpType GetCpType() const = 0;
+	// Set Cp type
+	virtual void SetCpType(TCpType aType) = 0;
 	// Get nearest CP, returns distance to checking positon
 	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp) = 0;
 	// Highlight CP
