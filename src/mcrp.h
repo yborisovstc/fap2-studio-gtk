@@ -19,16 +19,12 @@ class MCrp: public MBase
 	    EA_Edit_Content,
 	    EA_Save_Chromo
 	};
-	// TODO To implement CRP layout type: some typical layout scheme are defined. So it is possible
-	// for DRP to classify its CRP and then layout basing on the layout type. This would allow to 
-	// reuse DRP super classes layout methods.
-	// Layout area
-	enum tLArea {
-	    EUnspecified,
-	    EVMain, // Main vertical layout area
-	    EVRight, // Right zone
-	    EVLeft, // Left zone
-	    EOvlHGrid, // Overlayed, layouting horizontally by grid
+	// Layout area, vertical based
+	enum TLArea {
+	    EOverlay = -1, // Overlay, e.g. edge
+	    ELeft = 0, // Left boundary zone
+	    ERight = 1, // Right boundary zone
+	    EMain = 2, // Main vertical layout area
 	};
     public:
 	typedef sigc::signal<void, GdkEventButton*> tSigButtonPressName;
@@ -44,12 +40,14 @@ class MCrp: public MBase
 	virtual bool Dragging() = 0;
 	virtual void SetHighlighted(bool aSet) = 0;
 	virtual Elem* Model() = 0;
+	virtual void SetLArea(int aArea) = 0;
+	virtual int GetLArea() const = 0;
 };
 
 class MCrpConnectable
 {
     public:
-	enum TCpType{
+	enum TCpDir {
 	    ECpGeneric,
 	    ECpInp,
 	    ECpOutp
@@ -63,9 +61,9 @@ class MCrpConnectable
 	// Set internal/boundary
 	virtual void SetIsInt(bool aIsInt) = 0;
 	// Get Cp type
-	virtual TCpType GetCpType() const = 0;
+	virtual TCpDir GetCpDir() const = 0;
 	// Set Cp type
-	virtual void SetCpType(TCpType aType) = 0;
+	virtual void SetCpDir(TCpDir aType) = 0;
 	// Get nearest CP, returns distance to checking positon
 	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp) = 0;
 	// Highlight CP

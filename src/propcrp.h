@@ -25,6 +25,8 @@ class PropCrp: public ElemCompRp, public MCrp
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
 	virtual Elem* Model();
+	virtual void SetLArea(int aArea);
+	virtual int GetLArea() const;
     protected:
 	//Gtk::TextView iContent;
 //	Gtk::Label iContent;

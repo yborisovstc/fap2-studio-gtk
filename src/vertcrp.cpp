@@ -49,7 +49,7 @@ string VertCompRp::EType()
     return Vert::PEType();
 }
 
-VertCompRp::VertCompRp(Elem* aElem): ElemCompRp(aElem), iIsInt(true), mCpType(ECpGeneric)
+VertCompRp::VertCompRp(Elem* aElem): ElemCompRp(aElem), iIsInt(true), mCpDir(ECpGeneric)
 {
 }
 
@@ -133,15 +133,15 @@ void VertCompRp::SetIsInt(bool aIsInt)
     }
 }
 
-MCrpConnectable::TCpType VertCompRp::GetCpType() const
+MCrpConnectable::TCpDir VertCompRp::GetCpDir() const
 {
-    return mCpType;
+    return mCpDir;
 }
 
-void VertCompRp::SetCpType(TCpType aType)
+void VertCompRp::SetCpDir(TCpDir aDir)
 {
-    if (aType != mCpType) {
-	mCpType = aType;
+    if (aDir != mCpDir) {
+	mCpDir = aDir;
     }
 }
 
@@ -256,3 +256,12 @@ void VertCompRp::GetContentUri(GUri& aUri)
 {
 }
 
+void VertCompRp::SetLArea(int aArea)
+{
+    iLArea = aArea;
+}
+
+int VertCompRp::GetLArea() const
+{
+    return iLArea;
+}

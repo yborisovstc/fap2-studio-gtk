@@ -245,3 +245,13 @@ Elem* ElemCrp::Model()
 void ElemCrp::GetContentUri(GUri& aUri)
 {
 }
+
+void ElemCrp::SetLArea(int aArea)
+{
+    iRp->iLArea = aArea;
+}
+
+int ElemCrp::GetLArea() const
+{
+    return iRp->iLArea;
+}

@@ -132,6 +132,7 @@ void IncapsDrp::on_size_allocate(Gtk::Allocation& aAllc)
     }
 
     // Allocating edges
+#if 0
     int edge_wd = 0;
     int redge_wd = 0; // Right edges x-coord
     int edge_mpb = (bcompb_x - bcomps_w_max - (compb_x + comps_w_max/2 + KConnHorizSpreadMin)) / 2; // Left-right edges mid-point base
@@ -242,6 +243,7 @@ void IncapsDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	    comp->size_allocate(allc);
 	}
     }
+#endif
 }
 
 void IncapsDrp::on_size_request(Gtk::Requisition* aRequisition)

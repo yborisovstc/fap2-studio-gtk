@@ -57,6 +57,7 @@ class ElemCompRp: public Gtk::Layout
 	Gtk::Menu iContextMenu; // Context menu
 	bool iHighlighted;
 	Gtk::Label iContent;
+	int iLArea;
 };
 
 class ElemCrp: public MCrp
@@ -78,6 +79,8 @@ class ElemCrp: public MCrp
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
 	virtual Elem* Model();
+	virtual void SetLArea(int aArea);
+	virtual int GetLArea() const;
     private:
 	ElemCompRp* iRp;
 };

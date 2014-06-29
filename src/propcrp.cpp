@@ -92,3 +92,12 @@ void PropCrp::GetContentUri(GUri& aUri)
 {
 }
 
+void PropCrp::SetLArea(int aArea)
+{
+    iLArea = aArea;
+}
+
+int PropCrp::GetLArea() const
+{
+    return iLArea;
+}
