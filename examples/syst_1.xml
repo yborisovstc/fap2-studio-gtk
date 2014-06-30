@@ -20,7 +20,10 @@
 	    <node id="Creation" parent="Elem">
 	    </node>
 	</node>
-	<node id="cp" parent="../SysComps/ConnPoint"> 
+	<node id="Inp1" parent="../SysComps/ConnPointInp"> 
+	    <cont node="Provided" val="Role2"/> <cont node="Required" val="Role1"/>
+	</node>
+	<node id="cp" parent="../SysComps/ConnPointOut"> 
 	    <cont node="Provided" val="Role1"/> <cont node="Required" val="Role2"/>
 	</node>
 	<node id="ep" parent="../SysComps/Extender"> 
@@ -49,12 +52,12 @@
 	<cont node="Provided" val="Role4"/> <cont node="Required" val="Role3"/></node>
 
     <node id="EE" parent="Edge"/>
-    <!--
     <node id="EI1" parent="Edge"> <cont node="P1" val="../../cp_inp1"/> <cont node="P2" val="../../cp2"/> </node>
     <node id="E1" parent="Edge"> <cont node="P1" val="../../cp1"/> <cont node="P2" val="../../cp2"/> </node>
     <node id="E2" parent="Edge"> <cont node="P1" val="../../Syst1/cp"/> <cont node="P2" val="../../Syst2/cp"/> </node>
     <node id="E3" parent="Edge"> <cont node="P1" val="../../Syst1/cp"/> <cont node="P2" val="../../cp2"/> </node>
     <node id="E4" parent="Edge"> <cont node="P1" val="../../Syst1/ep"/> <cont node="P2" val="../../cp3"/> </node>
+    <!--
     -->
 
 </node>

@@ -13,29 +13,14 @@
       <node id="Logspec" parent="Elem">
         <node id="Creation" parent="Elem"/>
       </node>
-      <add node="Confirmed">
-		<node id="Logspec" parent="Elem">
-		    <node id="Update" parent="../../../../DataComps/DataLogevent">
-		    </node>
-		</node>
-	    </add>
+      <node node="Confirmed" id="Logspec" parent="Elem">
+	  <node id="Update" parent="../../../../DataComps/DataLogevent"/>
+      </node>
       <node id="Trans" parent="../../DesComps/TrIncInt"/>
-      <node id="1219987303" parent="Edge">
-        <cont node="P1" val="Trans/Inp"/>
-        <cont node="P2" val="Capsule/Inp/Int/PinData"/>
-      </node>
-      <node id="188350694" parent="Edge">
-        <cont node="P1" val="Trans/Out"/>
-        <cont node="P2" val="Prepared/Capsule/Inp"/>
-      </node>
+      <node id="1219987303" parent="Edge"> <cont node="P1" ref="../../Trans/Inp"/> <cont node="P2" ref="../../Capsule/Inp/Int/PinData"/> </node>
+      <node id="188350694" parent="Edge"> <cont node="P1" ref="../../Trans/Out"/> <cont node="P2" ref="../../Prepared/Capsule/Inp"/> </node>
     </node>
-    <node id="1712574952" parent="Edge">
-      <cont node="P1" val="State1/Capsule/Out"/>
-      <cont node="P2" val="State1/Capsule/Inp"/>
-    </node>
+    <node id="1712574952" parent="Edge"> <cont node="P1" ref="../../State1/Capsule/Out"/> <cont node="P2" ref="../../State1/Capsule/Inp"/> </node>
     <node id="Ticker" parent="/testroot/DesComps/DesTicker"/>
-    <node id="ee" parent="Edge"/>
-    <cont node="ee/P2" val="Ticker/Capsule/Out"/>
-    <cont node="ee/P1" val="State1/Capsule/Sync"/>
-  </node>
+    <node id="ee" parent="Edge"/> <cont node="ee/P2" ref="../../Ticker/Capsule/Out"/> <cont node="ee/P1" ref="../../State1/Capsule/Sync"/> </node>
 </node>

@@ -111,7 +111,7 @@ Gtk::Requisition VertCompRp::GetCpCoord(Elem* aCp)
     Gtk::Requisition head_req = iHead->size_request();
     TInt body_h = KViewCompEmptyBodyHight;
     Gtk::Requisition res;
-    res.width = alc.get_x() + (iIsInt ? alc.get_width() : 0);
+    res.width = alc.get_x() + (iLArea == ELeft ? alc.get_width() : 0);
     res.height = alc.get_y() + head_req.height + body_h / 2;
     return res;
 }

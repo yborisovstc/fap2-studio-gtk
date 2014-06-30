@@ -17,6 +17,12 @@
 
     <node id="test" parent="IncapsComps/Incaps">
 
+	<node node="Capsule" id="Inp" parent="../SysComps/ConnPointInp">
+	</node>
+
+	<node node="Capsule" id="Out" parent="../SysComps/ConnPointOut">
+	</node>
+
 	<node id="DataS_Int_1" parent="../DataComps/DataSInt">
 	    <cont node="Value" val="34"/> 
 	</node>

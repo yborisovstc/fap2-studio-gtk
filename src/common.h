@@ -30,6 +30,8 @@ const gint KEdgeGridCell = 10;
 const gint KCrpBodyMinWidth = 10;
 // DRP Internal padding
 const gint KDrpPadding = 8;
+// Gap between vertical layout area and vertical edges tunnel
+const gint KEvtGap = 2*KEdgeGridCell;
 
 // Targets entries infos for drag-drop
 const gint KTei_EdgeCp = 4;

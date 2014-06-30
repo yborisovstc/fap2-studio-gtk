@@ -6,6 +6,7 @@
 #include <gtkmm/box.h>
 #include "gtkmm/label.h"
 #include <elem.h>
+#include <mvert.h>
 #include "mcrp.h"
 #include "mdesobs.h"
 #include "vertcrp.h"
@@ -19,6 +20,7 @@ class CpRp: public Gtk::Label
     public:
 	CpRp(Elem* aCp);
 	virtual ~CpRp();
+	MCompatChecker::TDir GetDir() const;
     protected:
 	// From Layout
 	virtual bool on_expose_event(GdkEventExpose* event);

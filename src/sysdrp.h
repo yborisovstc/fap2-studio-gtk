@@ -5,34 +5,6 @@
 #include "vertdrp.h"
 
 using namespace Gtk;
-#if 0
-class SysDrp: public VertDrpw_v1
-{
-    public:
-	static std::string Type() { return string("SysDrp");};
-    public:
-	static string EType();
-    public:
-	SysDrp(Elem* aElem, const MCrpProvider& aCrpProv);
-	virtual ~SysDrp();
-    protected:
-	virtual void Construct();
-	virtual bool AreCpsCompatible(Elem* aCp1, Elem* aCp2);
-	// From MCrpMgr
-	virtual bool IsTypeAllowed(const std::string& aType) const;
-	// From MDrp
-	virtual void *DoGetObj(const string& aName);
-	virtual Gtk::Widget& Widget();
-	virtual Elem* Model();
-	virtual tSigCompSelected SignalCompSelected();
-	//  From VertDrpw
-	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
-	virtual void on_size_request(Gtk::Requisition* aRequisition);
-    protected:
-	static const string KCpEType;
-	static const string KExtdEType;
-};
-#endif
 
 // System DRP with boundary direction support
 class SysDrp: public VertDrpw_v1
@@ -54,8 +26,9 @@ class SysDrp: public VertDrpw_v1
 	virtual void Construct();
 	virtual bool AreCpsCompatible(Elem* aCp1, Elem* aCp2);
 	TEvtInfo GetEvtInfo(Requisition aCoord);
-	int GetEvtWidth() const;
-	int GetEvtLineX(MCrp* aEdge, int aTunnel, int aP1, int aP2);
+	static int GetEvtWidth();
+	static int GetAvzMinGapWidth();
+	int GetEvtLineX(MCrp* aEdge, int aTunnel, int aP1, int aP2, bool aFromRight = false);
 	int GetEvtX(int aTnlCnt) const;
 	static bool AreIntervalsIntersecting(int aA1, int aA2, int aB1, int aB2);
 	void GetEdgeAlloc(MEdgeCrp* aEdge, Allocation& aAlloc);

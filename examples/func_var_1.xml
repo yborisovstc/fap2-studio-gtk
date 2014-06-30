@@ -21,11 +21,11 @@
     <node id="34541368" parent="Edge"/>
     <node id="1575836229" parent="Edge"/>
     <cont node="(Edge:)934924337/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Out_FVar:)out"/>
-    <cont node="(Edge:)934924337/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/(ConnPoint:)inp"/>
+    <cont node="(Edge:)934924337/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/inp"/>
     <cont node="(Edge:)34541368/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
-    <cont node="(Edge:)34541368/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_1/(Elem:)Capsule/(ConnPoint:)out"/>
+    <cont node="(Edge:)34541368/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_1/(Elem:)Capsule/out"/>
     <cont node="(Edge:)1575836229/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
-    <cont node="(Edge:)1575836229/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_2/(Elem:)Capsule/(ConnPoint:)out"/>
+    <cont node="(Edge:)1575836229/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_2/(Elem:)Capsule/out"/>
   </node>
   <cont node="(Description:)Note" val="This is exampe of using variable type functions and data"/>
 </node>

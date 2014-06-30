@@ -15,16 +15,16 @@
     <node id="GT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FGTVar"/>
     <node id="1755579854" parent="Edge"/>
     <cont node="(Edge:)1755579854/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Out_FVar:)out"/>
-    <cont node="(Edge:)1755579854/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/(ConnPoint:)inp"/>
+    <cont node="(Edge:)1755579854/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/inp"/>
     <node id="Arg1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
     <cont node="(DataTVar:)Arg1/(Prop)Value" val="I 5"/>
     <node id="15875288" parent="Edge"/>
-    <cont node="(Edge:)15875288/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg1/(Elem:)Capsule/(ConnPoint:)out"/>
+    <cont node="(Edge:)15875288/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg1/(Elem:)Capsule/out"/>
     <cont node="(Edge:)15875288/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp1"/>
     <node id="Arg2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
     <cont node="(DataTVar:)Arg2/(Prop)Value" val="F 3.6"/>
     <node id="531785159" parent="Edge"/>
-    <cont node="(Edge:)531785159/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg2/(Elem:)Capsule/(ConnPoint:)out"/>
+    <cont node="(Edge:)531785159/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg2/(Elem:)Capsule/out"/>
     <cont node="(Edge:)531785159/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp2"/>
     <cont node="(Edge:)531785159/(Prop:)P1" val=""/>
     <cont node="(Edge:)15875288/(Prop:)P1" val=""/>
@@ -37,12 +37,12 @@
     <cont node="(Edge:)531785159/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
     <node id="992089358" parent="Edge"/>
     <cont node="(Edge:)992089358/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Out_FVar:)out"/>
-    <cont node="(Edge:)992089358/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg1/(Elem:)Capsule/(ConnPoint:)inp"/>
+    <cont node="(Edge:)992089358/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg1/(Elem:)Capsule/inp"/>
     <cont node="(Edge:)992089358/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FGTVar:)GT/(Elem:)Capsule/(Inp_FVar:)Inp1"/>
     <cont node="(DataTVar:)Arg1/(Prop)Value" val="I 4"/>
     <node id="Arg3" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
     <node id="728016577" parent="Edge"/>
-    <cont node="(Edge:)728016577/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg3/(Elem:)Capsule/(ConnPoint:)out"/>
+    <cont node="(Edge:)728016577/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Arg3/(Elem:)Capsule/out"/>
     <cont node="(Edge:)728016577/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
     <cont node="(DataTVar:)Arg3/(Prop)Value" val="I 12"/>
     <cont node="(DataTVar:)Arg3/(Prop)Value" val="I 1"/>

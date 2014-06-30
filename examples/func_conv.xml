@@ -66,23 +66,23 @@
 	<node id="Result" parent="../FuncComps/FuncIntRes"/>
 	<node id="ResData" parent="../DataComps/DataSInt"/>
 
-	<node parent="Edge"> <cont node="P1" val="DataS_Int_1/Capsule/out"/> <cont node="P2" val="Conv/Capsule/inp"/> </node>
-	<node parent="Edge"> <cont node="P1" val="DataS_Int_2/Capsule/out"/> <cont node="P2" val="Conv/Capsule/inp"/> </node>
-	<node parent="Edge"> <cont node="P1" val="DataS_Int_3/Capsule/out"/> <cont node="P2" val="Conv/Capsule/inp"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Conv/Capsule/Out_WFarg"/> <cont node="P2" val="Comp/Capsule/Inp1"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Data_SelfCoord/Capsule/out"/> <cont node="P2" val="Comp/Capsule/Inp2"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Comp/Capsule/out"/> <cont node="P2" val="ToInt/Capsule/Inp"/> </node>
-	<node parent="Edge"> <cont node="P1" val="ToInt/Capsule/out"/> <cont node="P2" val="Conv/Capsule/Inp_WFres"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Conv/Capsule/out"/> <cont node="P2" val="Sub/Capsule/InpN"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Data_MaxFeed/Capsule/out"/> <cont node="P2" val="Sub/Capsule/InpP"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Data_SelfMass/Capsule/out"/> <cont node="P2" val="Sub2/Capsule/InpP"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Sub/Capsule/out"/> <cont node="P2" val="Sub2/Capsule/InpP"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Data_Const1/Capsule/out"/> <cont node="P2" val="Sub2/Capsule/InpN"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Sub2/Capsule/out"/> <cont node="P2" val="Lim/Capsule/Inp"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Data_MinMass/Capsule/out"/> <cont node="P2" val="Lim/Capsule/Inp_LimL"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Data_MaxMass/Capsule/out"/> <cont node="P2" val="Lim/Capsule/Inp_LimU"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Lim/Capsule/out"/> <cont node="P2" val="Result/Capsule/inp"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Result/Capsule/out"/> <cont node="P2" val="ResData/Capsule/inp"/> </node>
+	<node id="E01" parent="Edge"> <cont node="P1" ref="../../DataS_Int_1/Capsule/out"/> <cont node="P2" ref="../../Conv/Capsule/inp"/> </node>
+	<node id="E02" parent="Edge"> <cont node="P1" ref="../../DataS_Int_2/Capsule/out"/> <cont node="P2" ref="../../Conv/Capsule/inp"/> </node>
+	<node id="E03" parent="Edge"> <cont node="P1" ref="../../DataS_Int_3/Capsule/out"/> <cont node="P2" ref="../../Conv/Capsule/inp"/> </node>
+	<node id="E04" parent="Edge"> <cont node="P1" ref="../../Conv/Capsule/Out_WFarg"/> <cont node="P2" ref="../../Comp/Capsule/Inp1"/> </node>
+	<node id="E05" parent="Edge"> <cont node="P1" ref="../../Data_SelfCoord/Capsule/out"/> <cont node="P2" ref="../../Comp/Capsule/Inp2"/> </node>
+	<node id="E06" parent="Edge"> <cont node="P1" ref="../../Comp/Capsule/out"/> <cont node="P2" ref="../../ToInt/Capsule/Inp"/> </node>
+	<node id="E07" parent="Edge"> <cont node="P1" ref="../../ToInt/Capsule/out"/> <cont node="P2" ref="../../Conv/Capsule/Inp_WFres"/> </node>
+	<node id="E08" parent="Edge"> <cont node="P1" ref="../../Conv/Capsule/out"/> <cont node="P2" ref="../../Sub/Capsule/InpN"/> </node>
+	<node id="E09" parent="Edge"> <cont node="P1" ref="../../Data_MaxFeed/Capsule/out"/> <cont node="P2" ref="../../Sub/Capsule/InpP"/> </node>
+	<node id="E10" parent="Edge"> <cont node="P1" ref="../../Data_SelfMass/Capsule/out"/> <cont node="P2" ref="../../Sub2/Capsule/InpP"/> </node>
+	<node id="E11" parent="Edge"> <cont node="P1" ref="../../Sub/Capsule/out"/> <cont node="P2" ref="../../Sub2/Capsule/InpP"/> </node>
+	<node id="E12" parent="Edge"> <cont node="P1" ref="../../Data_Const1/Capsule/out"/> <cont node="P2" ref="../../Sub2/Capsule/InpN"/> </node>
+	<node id="E13" parent="Edge"> <cont node="P1" ref="../../Sub2/Capsule/out"/> <cont node="P2" ref="../../Lim/Capsule/Inp"/> </node>
+	<node id="E14" parent="Edge"> <cont node="P1" ref="../../Data_MinMass/Capsule/out"/> <cont node="P2" ref="../../Lim/Capsule/Inp_LimL"/> </node>
+	<node id="E15" parent="Edge"> <cont node="P1" ref="../../Data_MaxMass/Capsule/out"/> <cont node="P2" ref="../../Lim/Capsule/Inp_LimU"/> </node>
+	<node id="E16" parent="Edge"> <cont node="P1" ref="../../Lim/Capsule/out"/> <cont node="P2" ref="../../Result/Capsule/inp"/> </node>
+	<node id="E17" parent="Edge"> <cont node="P1" ref="../../Result/Capsule/out"/> <cont node="P2" ref="../../ResData/Capsule/inp"/> </node>
 
 	<!-- Coord transion -->
 
@@ -98,10 +98,10 @@
 	<node id="DivRes" parent="../FuncComps/FuncIntRes"/>
 	<node id="DivResData" parent="../DataComps/DataSInt"/>
 
-	<node parent="Edge"> <cont node="P1" val="Data_DD/Capsule/out"/> <cont node="P2" val="Div/Capsule/Inp_DD"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Data_DR/Capsule/out"/> <cont node="P2" val="Div/Capsule/Inp_DR"/> </node>
-	<node parent="Edge"> <cont node="P1" val="Div/Capsule/out"/> <cont node="P2" val="DivRes/Capsule/inp"/> </node>
-	<node parent="Edge"> <cont node="P1" val="DivRes/Capsule/out"/> <cont node="P2" val="DivResData/Capsule/inp"/> </node>
+	<node id="E20" parent="Edge"> <cont node="P1" ref="../../Data_DD/Capsule/out"/> <cont node="P2" ref="../../Div/Capsule/Inp_DD"/> </node>
+	<node id="E21" parent="Edge"> <cont node="P1" ref="../../Data_DR/Capsule/out"/> <cont node="P2" ref="../../Div/Capsule/Inp_DR"/> </node>
+	<node id="E22" parent="Edge"> <cont node="P1" ref="../../Div/Capsule/out"/> <cont node="P2" ref="../../DivRes/Capsule/inp"/> </node>
+	<node id="E23" parent="Edge"> <cont node="P1" ref="../../DivRes/Capsule/out"/> <cont node="P2" ref="../../DivResData/Capsule/inp"/> </node>
 
     </node>
 
