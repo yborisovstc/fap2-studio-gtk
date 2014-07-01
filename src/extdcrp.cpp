@@ -18,7 +18,8 @@ string ExtdCrp::EType()
     return "Elem:Vert:Extender";
 }
 
-ExtdCrp::ExtdCrp(Elem* aElem, MErpProvider& aErpProv): VertCompRp(aElem), iErpProv(aErpProv), iInt(NULL)
+ExtdCrp::ExtdCrp(Elem* aElem, MErpProvider& aErpProv): VertCompRp(aElem), iErpProv(aErpProv), iInt(NULL),
+    iExtPos(MErp::EPos_Left)
 {
     // Prepare data of "Internal"
     Elem* intr = iElem->GetNode("Int");
@@ -30,6 +31,18 @@ ExtdCrp::ExtdCrp(Elem* aElem, MErpProvider& aErpProv): VertCompRp(aElem), iErpPr
     //add(*iLabInt);
     //iLabInt->show();
     add(iInt->Widget());
+    MErp::TPos pos = MErp::EPos_Right;
+    if (iInt->GetMdlDir() == MCompatChecker::EInp) {
+	pos = MErp::EPos_Left;
+	iExtPos = MErp::EPos_Right;
+    }
+    else if (iInt->GetMdlDir() == MCompatChecker::ERegular) {
+	if (GetLArea() == ERight) {
+	    pos = MErp::EPos_Left;
+	    iExtPos = MErp::EPos_Right;
+	}
+    }
+    iInt->SetPos(pos);
     iInt->Widget().show();
     // Prepare data of "Extended"
     iLabExt = new Gtk::Label("Ext", Gtk::ALIGN_LEFT);
@@ -53,6 +66,31 @@ void *ExtdCrp::DoGetObj(const string& aName)
     return res;
 }
 
+void ExtdCrp::SetLArea(int aArea)
+{
+    if (iLArea != aArea) {
+	iLArea = aArea;
+	// Update position of ERPs
+	iExtPos = MErp::EPos_Left;
+	MErp::TPos pos = MErp::EPos_Right;
+	if (iInt->GetMdlDir() == MCompatChecker::EInp) {
+	    pos = MErp::EPos_Left;
+	    iExtPos = MErp::EPos_Right;
+	}
+	else if (iInt->GetMdlDir() == MCompatChecker::ERegular) {
+	    if (GetLArea() == ERight) {
+		pos = MErp::EPos_Left;
+		iExtPos = MErp::EPos_Left;
+	    }
+	    else {
+		pos = MErp::EPos_Right;
+		iExtPos = MErp::EPos_Right;
+	    }
+	}
+	iInt->SetPos(pos);
+    }
+}
+
 void ExtdCrp::on_size_allocate(Gtk::Allocation& aAlloc)
 {
     VertCompRp::on_size_allocate(aAlloc);
@@ -60,14 +98,20 @@ void ExtdCrp::on_size_allocate(Gtk::Allocation& aAlloc)
     // Allocate size of "Internal"
     Gtk::Requisition lint_size = iIntw->size_request();
     int lint_x = KViewElemCrpInnerBorder;
+    if (iInt->GetPos() == MErp::EPos_Right) {
+	lint_x = aAlloc.get_width() - KViewElemCrpInnerBorder - lint_size.width;
+    }
     int lint_y = head_req.height + KViewCompEmptyBodyHight/2;
-    int lint_w = aAlloc.get_width() - 2* KViewElemCrpInnerBorder;
+    int lint_w = lint_size.width;
     int lint_h = lint_size.height;
     Gtk::Allocation lint_alc(lint_x, lint_y, lint_w, lint_h);
     iIntw->size_allocate(lint_alc);
     // Allocate size of "Extended"
     Gtk::Requisition lext_size = iLabExt->size_request();
     int lext_x = KViewElemCrpInnerBorder;
+    if (iExtPos == MErp::EPos_Right) {
+	lext_x = aAlloc.get_width() - KViewElemCrpInnerBorder - lext_size.width;
+    }
     int lext_y = lint_y + lint_h + KViewElemContLinesVGap;
     int lext_w = aAlloc.get_width() - 2* KViewElemCrpInnerBorder;
     int lext_h = lext_size.height;
@@ -105,7 +149,7 @@ Gtk::Requisition ExtdCrp::GetCpCoord(Elem* aCp)
 	MErpConnectable* erpc = iInt->GetObj(erpc);
 	if (erpc != NULL) {
 	    Requisition cpres = erpc->GetCpCoord(aCp);
-	    res.width = alc.get_x();
+	    res.width = iInt->GetPos() == MErp::EPos_Left ? alc.get_x() : alc.get_x() + alc.get_width();
 	    res.height = alc.get_y() + cpres.height;
 	}
     }

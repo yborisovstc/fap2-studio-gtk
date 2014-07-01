@@ -24,6 +24,7 @@ class ExtdCrp: public VertCompRp, public MErpMgr
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
 	// From MCrp
 	virtual void *DoGetObj(const string& aName);
+	virtual void SetLArea(int aArea);
 	// From MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
 	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp);
@@ -36,6 +37,7 @@ class ExtdCrp: public VertCompRp, public MErpMgr
 	Gtk::Widget* iIntw;
 	//Gtk::Label* iLabInt;
 	Gtk::Label* iLabExt;
+	MErp::TPos iExtPos;
 };
 
 #endif

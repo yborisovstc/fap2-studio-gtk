@@ -15,7 +15,7 @@ string CpErp::EType()
     return "Elem:Vert:ConnPointBase:ConnPoint";
 }
 
-CpErp::CpErp(Elem* aElem): Label(), iElem(aElem), iPos(EPos_Left), iHighlighted(false)
+CpErp::CpErp(Elem* aElem): Label(), iElem(aElem), iPos(EPos_Right), iHighlighted(false)
 {
     set_label(iElem->Name());
     AlignmentEnum xalign = ALIGN_LEFT;
@@ -73,7 +73,21 @@ void CpErp::SetPos(MErp::TPos aPos)
     if (iPos != aPos) {
 	iPos = aPos;
     }
+}
 
+MErp::TPos CpErp::GetPos() const
+{
+    return iPos;
+}
+
+MCompatChecker::TDir CpErp::GetMdlDir() const
+{
+    MCompatChecker::TDir res = MCompatChecker::ERegular;
+    MCompatChecker* cc = iElem->GetObj(cc);
+    if (cc != NULL) {
+	res = cc->GetDir();
+    }
+    return res;
 }
 
 Requisition CpErp::GetCpCoord(Elem* aCp) 
@@ -81,7 +95,7 @@ Requisition CpErp::GetCpCoord(Elem* aCp)
     Gtk::Allocation alc = get_allocation();
     Gtk::Requisition res;
     assert(aCp == iElem);
-    res.width = alc.get_x();
+    res.width = (GetPos() == MErp::EPos_Left) ? alc.get_x() : alc.get_x() + alc.get_width();
     res.height = alc.get_y() + alc.get_height()/2;
     return res;
 }
@@ -142,6 +156,7 @@ SockErp::SockErp(Elem* aElem, const MErpProvider& aErpProv): VBox(), iElem(aElem
 	    MErp* pinrp = iErpProv.CreateRp(*comp, this);
 	    if (pinrp != NULL) {
 		iPinRps[comp] = pinrp;
+		pinrp->SetPos(GetPos());
 		Alignment* alg = new Alignment(xalign, ALIGN_CENTER); 
 		alg->set_padding(0, 0, kPinPadding, 0);
 		alg->add(pinrp->Widget());
@@ -200,8 +215,27 @@ void SockErp::SetPos(MErp::TPos aPos)
 {
     if (iPos != aPos) {
 	iPos = aPos;
+	for (tPinRps::iterator it = iPinRps.begin(); it != iPinRps.end(); it++) {
+	    MErp* rp = it->second;
+	    rp->SetPos(iPos);
+	}
     }
 
+}
+
+MErp::TPos SockErp::GetPos() const
+{
+    return iPos;
+}
+
+MCompatChecker::TDir SockErp::GetMdlDir() const
+{
+    MCompatChecker::TDir res = MCompatChecker::ERegular;
+    MCompatChecker* cc = iElem->GetObj(cc);
+    if (cc != NULL) {
+	res = cc->GetDir();
+    }
+    return res;
 }
 
 bool SockErp::IsTypeAllowed(const std::string& aType) const
@@ -235,6 +269,10 @@ Requisition SockErp::GetCpCoord(Elem* aCp)
 	    MErp* rp = it->second;
 	}
     }
+    /*
+    res.width += alc.get_x();
+    res.height += alc.get_y();
+    */
     return res;
 }
 

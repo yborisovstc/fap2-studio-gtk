@@ -28,6 +28,8 @@ class CpErp: public Label, public MErp, public MErpConnectable
 	virtual void SetHighlighted(bool aSet);
 	virtual Elem* Model();
 	virtual void SetPos(TPos aPos);
+	virtual TPos GetPos() const;
+	virtual MCompatChecker::TDir GetMdlDir() const;
 	// From MErpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
 	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp);
@@ -57,6 +59,8 @@ class SockErp: public VBox, public MErp, public MErpMgr, public MErpConnectable
 	virtual void SetHighlighted(bool aSet);
 	virtual Elem* Model();
 	virtual void SetPos(TPos aPos);
+	virtual TPos GetPos() const;
+	virtual MCompatChecker::TDir GetMdlDir() const;
 	// From MErpMgr
 	virtual bool IsTypeAllowed(const std::string& aType) const;
 	// From MErpConnectable

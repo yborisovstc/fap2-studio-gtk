@@ -31,16 +31,16 @@
           <node id="MinMass" parent="/Root/IncapsRoot/DesRoot/Components/Inp"/>
           <node id="MaxMass" parent="/Root/IncapsRoot/DesRoot/Components/Inp"/>
         </node>
-        <node id="SysConstOutSocket" parent="/Root/Modules/SysComps/Socket">
+        <node id="SysConstOutSocket" parent="/Root/Modules/SysComps/SocketInp">
           <node id="MaxFeed" parent="/Root/IncapsRoot/DesRoot/Components/OutPin"/>
           <node id="MinMass" parent="/Root/IncapsRoot/DesRoot/Components/OutPin"/>
           <node id="MaxMass" parent="/Root/IncapsRoot/DesRoot/Components/OutPin"/>
         </node>
-        <node id="SysConstInp" parent="/Root/Modules/SysComps/Extender">
+        <node id="SysConstInp" parent="/Root/Modules/SysComps/ExtenderInp">
           <rm node="Int"/>
           <node id="Int" parent="/Root/IncapsRoot/DesRoot/Components/SysConstInpSocket"/>
         </node>
-        <node id="SysConstOut" parent="/Root/Modules/SysComps/Extender">
+        <node id="SysConstOut" parent="/Root/Modules/SysComps/ExtenderOut">
           <rm node="Int"/>
           <node id="Int" parent="/Root/IncapsRoot/DesRoot/Components/SysConstOutSocket"/>
         </node>

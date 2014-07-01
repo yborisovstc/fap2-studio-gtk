@@ -4,6 +4,7 @@
 
 #include <string>
 #include <elem.h>
+#include <mvert.h>
 #include <gtkmm/widget.h>
 #include "mbase.h"
 
@@ -23,6 +24,8 @@ class MErp: public MBase
 	virtual void SetHighlighted(bool aSet) = 0;
 	virtual Elem* Model() = 0;
 	virtual void SetPos(TPos aPos) = 0;
+	virtual TPos GetPos() const = 0;
+	virtual MCompatChecker::TDir GetMdlDir() const = 0;
 };
 
 // TODO To combine MErpConnectable and MCrpConnectable

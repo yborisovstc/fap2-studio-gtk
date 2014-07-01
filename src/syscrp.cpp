@@ -245,7 +245,7 @@ void SysCrp::on_size_allocate(Gtk::Allocation& aAlloc)
 	}
 	cprp->size_allocate(cpalc);
     }
-    c_y = cpayb;
+    c_y = max(cpayb, cpalyb);
     // Allocating data
     if (!iDataRps.empty()) {
 	for (tDataRps::iterator it = iDataRps.begin(); it != iDataRps.end(); it++) {
@@ -285,11 +285,11 @@ void SysCrp::on_size_request(Gtk::Requisition* aReq)
 	for (tDataRps::iterator it = iDataRps.begin(); it != iDataRps.end(); it++) {
 	    DataRp* rp = it->second;
 	    Requisition data_req = rp->size_request();
-	    data_h = data_req.height;
-	    data_w = data_req.width;
-	    aReq->height +=  data_h;
-	    aReq->width = max(aReq->width, data_w + 2*KViewElemCrpInnerBorder); 
+	    data_h += data_req.height;
+	    data_w = max(data_w, data_req.width);
 	}
     }
+    aReq->height += data_h;
+    aReq->width = max(aReq->width, data_w + 2*KViewElemCrpInnerBorder); 
 }
 
