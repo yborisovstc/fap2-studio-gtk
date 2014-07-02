@@ -13,6 +13,20 @@ const string SysDrp::KCpEType = "Elem:Vert:ConnPointBase:ConnPoint";
 const string SysDrp::KExtdEType = "Elem:Vert:Extender";
 const int SysDrp::KETnlCap = 5;
 
+bool SysDrp::Cmp::operator() (MCrp*& aA, MCrp*& aB) const
+{
+    bool res = false;
+    res = mHost.GetCrpRelsCount(aA) > mHost.GetCrpRelsCount(aB);
+    return res;
+}
+
+bool SysDrp::CmpMain::operator() (MCrp*& aA, MCrp*& aB) const
+{
+    bool res = false;
+    res = mHost.GetCrpRelsCount(aA) > mHost.GetCrpRelsCount(aB);
+    return res;
+}
+
 string SysDrp::EType()
 {
     return ":Elem:Vert:Syst";
@@ -26,22 +40,28 @@ SysDrp::~SysDrp()
 {
 }
 
-void SysDrp::Construct()
+int SysDrp::GetCrpRelsCount(MCrp* aCrp) const
 {
-    VertDrpw_v1::Construct();
+    return  iRpRels.count(aCrp);
+}
+
+void SysDrp::PreLayoutRps()
+{
     // Pre-layout the components
+    // There are two phase of pre-layouting: allocating to areas, ordering in areas
+    // Scheme of areas is selected by the user, the default one is 3-areas scheme: inp, body, out
     iLaPars.resize(3);
     for (TLAreasPars::iterator zit = iLaPars.begin(); zit != iLaPars.end(); zit++) {
 	zit->first = Allocation();
 	zit->second.clear(); 
     }
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	Elem* ecmp = *it;
-	assert(iCompRps.count(ecmp) > 0);
-	MCrp* crp = iCompRps.at(ecmp);
+    // Phase 1: allocating RPs to areas
+    for (tCrps::const_iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	MCrp* crp = it->second;
 	MEdgeCrp* ecrp = crp->GetObj(ecrp);
 	if (ecrp == NULL) {
-	    MCompatChecker* cc = ecmp->GetObj(cc);
+	    Elem* mdl = crp->Model();
+	    MCompatChecker* cc = mdl->GetObj(cc);
 	    int narea = 1;
 	    MCrp::TLArea larea = MCrp::EMain;
 	    if (cc != NULL) {
@@ -52,6 +72,54 @@ void SysDrp::Construct()
 	    TLAreaPar& area = iLaPars.at(narea);
 	    crp->SetLArea(larea);
 	    area.second.push_back(crp);
+	}
+    }
+    // Sorting out area
+    Cmp cmp(*this);
+    TVectCrps& crps_out = iLaPars.at(2).second;;
+    crps_out.sort(cmp);
+    CmpMain cmp_main(*this);
+    TVectCrps& crps_main = iLaPars.at(1).second;;
+    crps_main.sort(cmp_main);
+}
+
+void SysDrp::Construct()
+{
+    VertDrpw_v1::Construct();
+    UpdateRpsRelatios();
+    PreLayoutRps();
+}
+
+void SysDrp::UpdateRpsRelatios()
+{
+    iRpRels.clear();
+    iRpRelms.clear();
+    for (tCrps::const_iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	MCrp* crp = it->second;
+	MEdgeCrp* ecrp = crp->GetObj(ecrp);
+	if (ecrp != NULL) {
+	    Elem* p1 = ecrp->Point1();
+	    Elem* p2 = ecrp->Point2();
+	    p1 = p1 != NULL ? GetCompOwning(p1): NULL;
+	    p2 = p2 != NULL ? GetCompOwning(p2): NULL;
+	    if (p1 != NULL && p2 != NULL) {
+		MCrp* rp1 = iCompRps.at(p1);
+		MCrp* rp2 = iCompRps.at(p2);
+		if (iRpRelms.count(TRpRel(rp1, rp2)) != 0) {
+		    // Relation already registered, just update
+		    int& cnt = iRpRelms.at(TRpRel(rp1, rp2));
+		    cnt++;
+		    int& cnti = iRpRelms.at(TRpRel(rp2, rp1));
+		    cnti++;
+		}
+		else {
+		    // Relation is not registered, add it
+		    iRpRels.insert(TRpRel(rp1, rp2));
+		    iRpRelms.insert(TRpRelm(TRpRel(rp1, rp2),1));
+		    iRpRels.insert(TRpRel(rp2, rp1));
+		    iRpRelms.insert(TRpRelm(TRpRel(rp2, rp1),1));
+		}
+	    }
 	}
     }
 }
@@ -105,6 +173,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
     }
 
     // Allocate edges
+    bool relayout_required = false;
     Allocation& avz0_alc = iLaPars.begin()->first;
     int edge_park_x = avz0_alc.get_x() + avz0_alc.get_width();
     int edge_park_y = KViewCompGapHight/2;
@@ -134,7 +203,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	    }
 	    else if (!crp->Dragging()) {
 		p1coord.width = edge_park_x;
-	       	p1coord.height =  edge_park_y;
+		p1coord.height =  edge_park_y;
 		medgecrp->SetCp1Coord(p1coord);
 	    }
 
@@ -147,7 +216,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	    }
 	    else if (!crp->Dragging()) {
 		p2coord.width = edge_park_x + KEdgeGridCell;
-	       	p2coord.height =  edge_park_y;
+		p2coord.height =  edge_park_y;
 		medgecrp->SetCp2Coord(p2coord);
 	    }
 	    // Trace the edge, calculating the edges nodes, from left to right
@@ -172,6 +241,10 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		    // Final vertical tunnel hasn't been achieved yet
 		    // Find nearest horisontal tunnel available line
 		    fy = GetEhtLine(crp, evi_c.first, cur.height, end.height < cur.height);
+		    if (fy < 0) {
+			relayout_required = true;
+			break;
+		    }
 		    // Get next vertical tunnel entry
 		    fx = GetEvtEnty(evi_c.first + 1);
 		}
@@ -187,6 +260,9 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		ven.push_back(n2);
 		ven.push_back(n3);
 		cur.width = fx; cur.height = fy;
+	    }
+	    if (relayout_required) {
+		break;
 	    }
 	    // Allocate the edges widget
 	    GetEdgeAlloc(medgecrp, allc);
@@ -320,22 +396,13 @@ int SysDrp::GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp) const
     // Find base first
     int base = aUp ? 0: std::numeric_limits<int>::max();
     const TVectCrps& crps = iLaPars.at(aEvt).second;
-    for (TVectCrps::const_iterator it = crps.begin(); it != crps.end(); it++) {
-	MCrp* crp = *it;
+    TVectCrps::const_iterator rpit = crps.begin();
+    for (; rpit != crps.end(); rpit++) {
+	MCrp* crp = *rpit;
 	Allocation alc = crp->Widget().get_allocation();
-	int y;
-	if (aUp) {
-	    y = alc.get_y();
-	    if (y < aY) {
-		base = max(base, y);
-	    }
-	}
-	else {
-	    y = alc.get_y() + alc.get_height();
-	    if (y >= aY) {
-		base = min(base, y);
-	    }
-	}
+	base = aUp ? alc.get_y(): alc.get_y() + alc.get_height();
+	if (aUp && base + alc.get_height() >= aY || !aUp && base >= aY)
+	    break;
     }
     // Find available line
     int ly = base + (aUp ? (-KEdgeGridCell) : KEdgeGridCell);
@@ -362,9 +429,23 @@ int SysDrp::GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp) const
 	ly += (aUp ? (-KEdgeGridCell) : KEdgeGridCell);
     }
     if (isec) {
+	// TODO [YB] To implement dynamic increasing of horiz tunnel
+	// Shift CRPs to provide the additional line
+	/*
+	for (; rpit != crps.end(); rpit++) {
+	    MCrp* crp = *rpit;
+	    Allocation alc = crp->Widget().get_allocation();
+	    alc.set_y(alc.get_y() + KEdgeGridCell);
+	    crp->Widget().size_allocate(alc);
+	}
+	res = -1;
+	*/
 	ly = base + (aUp ? (-KEdgeGridCell-1) : KEdgeGridCell+1);
+	res = ly;
     }
-    res = ly;
+    else {
+	res = ly;
+    }
     return res;
 }
 

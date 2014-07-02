@@ -4,6 +4,7 @@
 
 #include <string>
 #include <elem.h>
+#include <mvert.h>
 #include <gtkmm/widget.h>
 #include "mbase.h"
 
@@ -47,23 +48,11 @@ class MCrp: public MBase
 class MCrpConnectable
 {
     public:
-	enum TCpDir {
-	    ECpGeneric,
-	    ECpInp,
-	    ECpOutp
-	};
-    public:
 	static std::string Type() { return "MCrpConnectable";};
     public:
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL) = 0;
-	// Is internal
-	virtual bool GetIsInt() const = 0;
-	// Set internal/boundary
-	virtual void SetIsInt(bool aIsInt) = 0;
 	// Get Cp type
-	virtual TCpDir GetCpDir() const = 0;
-	// Set Cp type
-	virtual void SetCpDir(TCpDir aType) = 0;
+	virtual MCompatChecker::TDir GetCpDir() const = 0;
 	// Get nearest CP, returns distance to checking positon
 	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp) = 0;
 	// Highlight CP

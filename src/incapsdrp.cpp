@@ -53,31 +53,8 @@ void IncapsDrp::Construct()
 	iCompRps[comp] = rp;
 	rpw.show();
     }
-
-    // Pre-layout the components
-    iLaPars.resize(3);
-    for (TLAreasPars::iterator zit = iLaPars.begin(); zit != iLaPars.end(); zit++) {
-	zit->first = Allocation();
-	zit->second.clear(); 
-    }
-    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
-	MCrp* crp = it->second;
-	MEdgeCrp* ecrp = crp->GetObj(ecrp);
-	if (ecrp == NULL) {
-	    Elem* ecmp = crp->Model();
-	    MCompatChecker* cc = ecmp->GetObj(cc);
-	    int narea = 1;
-	    MCrp::TLArea larea = MCrp::EMain;
-	    if (cc != NULL) {
-		MCompatChecker::TDir dir =  cc->GetDir();
-		narea = dir == MCompatChecker::EInp ? 0 : 2;
-		larea = dir == MCompatChecker::EInp ? MCrp::ELeft : MCrp::ERight;
-	    }
-	    TLAreaPar& area = iLaPars.at(narea);
-	    crp->SetLArea(larea);
-	    area.second.push_back(crp);
-	}
-    }
+    UpdateRpsRelatios();
+    PreLayoutRps();
 }
 
 void *IncapsDrp::DoGetObj(const string& aName)

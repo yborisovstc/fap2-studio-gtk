@@ -49,34 +49,10 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual int GetLArea() const;
 	// From MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
-	virtual bool GetIsInt() const;
-	virtual void SetIsInt(bool aIsInt);
-	virtual TCpDir GetCpDir() const;
-	virtual void SetCpDir(TCpDir aType);
+	virtual MCompatChecker::TDir GetCpDir() const;
 	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp);
 	virtual void HighlightCp(Elem* aCp, bool aSet);
-    protected:
-	bool iIsInt;
-	TCpDir mCpDir;
 };
 
-/*
-class VertCrp: public MCrp, public MCrpConnectable
-{
-    public:
-	static const string& Type();
-	static string EType();
-    public:
-	VertCrp(Elem* aElem);
-	virtual ~VertCrp();
-	// From MCrp
-	virtual Gtk::Widget& Widget();
-	virtual void *DoGetObj(const string& aName);
-	// From MCrpConnectable
-	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
-    private:
-	VertCompRp* iRp;
-};
-*/
 
 #endif

@@ -49,7 +49,7 @@ string VertCompRp::EType()
     return Vert::PEType();
 }
 
-VertCompRp::VertCompRp(Elem* aElem): ElemCompRp(aElem), iIsInt(true), mCpDir(ECpGeneric)
+VertCompRp::VertCompRp(Elem* aElem): ElemCompRp(aElem)
 {
 }
 
@@ -121,28 +121,16 @@ Gtk::Widget& VertCompRp::Widget()
     return *this;
 }
 
-bool VertCompRp::GetIsInt() const
+MCompatChecker::TDir VertCompRp::GetCpDir() const
 {
-    return iIsInt;
-}
-
-void VertCompRp::SetIsInt(bool aIsInt)
-{
-    if (aIsInt != iIsInt) {
-	iIsInt = aIsInt;
+    MCompatChecker::TDir res = MCompatChecker::ERegular;
+    MCompatChecker* cc = iElem->GetObj(cc);
+    if (cc != NULL) {
+	res = cc->GetDir();
     }
-}
+    return res;
 
-MCrpConnectable::TCpDir VertCompRp::GetCpDir() const
-{
-    return mCpDir;
-}
 
-void VertCompRp::SetCpDir(TCpDir aDir)
-{
-    if (aDir != mCpDir) {
-	mCpDir = aDir;
-    }
 }
 
 static int dist(int x, int y)

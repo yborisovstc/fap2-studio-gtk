@@ -3,20 +3,42 @@
 #define __FAP2STU_SYSDRP_H
 
 #include "vertdrp.h"
+#include <map>
 
+using namespace std;
 using namespace Gtk;
+
 
 // System DRP with boundary direction support
 class SysDrp: public VertDrpw_v1
 {
+    public:
+	// Layout area CRPs comparator 
+	struct Cmp {
+	    Cmp(SysDrp& aHost): mHost(aHost) {};
+	    bool operator() (MCrp*& aA, MCrp*& aB) const;
+	    SysDrp& mHost;
+	};
+	struct CmpMain {
+	    CmpMain(SysDrp& aHost): mHost(aHost) {};
+	    bool operator() (MCrp*& aA, MCrp*& aB) const;
+	    SysDrp& mHost;
+	};
     private:
 	// Edge vertical tunnel info: tunnel ind, left
 	typedef pair<int, bool> TEvtInfo;
     public:
 	// Parameters of layout of areas
-	typedef vector<MCrp*> TVectCrps;
+	typedef list<MCrp*> TVectCrps;
 	typedef pair<Allocation, TVectCrps> TLAreaPar;
 	typedef vector<TLAreaPar> TLAreasPars;
+	// CRPs relation: related CRP
+	typedef pair <MCrp*, MCrp*> TRpRel;
+	// CRPs relation metric: num of relation
+	typedef pair <TRpRel, int> TRpRelm;
+	// CRPs relations
+	typedef std::map<TRpRel, int> TRpRelms;
+	typedef multimap<MCrp*, MCrp*> TRpRels;
     public:
 	static std::string Type() { return string("SysDrp");};
 	static string EType();
@@ -34,6 +56,9 @@ class SysDrp: public VertDrpw_v1
 	void GetEdgeAlloc(MEdgeCrp* aEdge, Allocation& aAlloc);
 	int GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp) const;
 	int GetEvtEnty(int aEvtId) const;
+	void UpdateRpsRelatios();
+	int GetCrpRelsCount(MCrp* aCrp) const;
+	void PreLayoutRps();
 	// From MCrpMgr
 	virtual bool IsTypeAllowed(const std::string& aType) const;
 	// From MDrp
@@ -47,6 +72,9 @@ class SysDrp: public VertDrpw_v1
 	// Edges tunnel capacity (number separated edges allowed)
 	static const int KETnlCap;
 	TLAreasPars iLaPars;
+	// CRPs relations, used for layouting
+	TRpRels iRpRels;
+	TRpRelms iRpRelms;
 };
 
 #endif

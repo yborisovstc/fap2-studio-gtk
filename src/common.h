@@ -6,7 +6,7 @@
 
 // Parameters of view
 const gint KViewCompAreaWidth = 200;
-const gint KViewCompGapHight = 20;
+const gint KViewCompGapHight = 30;
 const gint KViewConnGapWidth = 3;
 const gint KViewConnGapHeight = 1;
 const gint KViewCompEmptyBodyHight = 20;
