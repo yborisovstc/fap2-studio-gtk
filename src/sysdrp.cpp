@@ -153,6 +153,14 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	get_bin_window()->resize(aAllc.get_width(), aAllc.get_height());
     }
 
+    // Calculate vertical tunnel width + gaps
+    int areas_w = 0;
+    for (TLAreasPars::iterator zit = iLaPars.begin(); zit != iLaPars.end(); zit++) {
+	Allocation& zal = zit->first;
+	areas_w += zal.get_width();
+    }
+    int evt_w = (aAllc.get_width() - areas_w - 2*KBoundCompGapWidth) / (iLaPars.size() - 1);
+
     // Allocate components excluding edges
     int cur_x = KBoundCompGapWidth;
     for (TLAreasPars::iterator zit = iLaPars.begin(); zit != iLaPars.end(); zit++) {
@@ -169,7 +177,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	    compb_y += req.height + KViewCompGapHight;
 	    comp->size_allocate(allc);
 	}
-	cur_x += zal.get_width() + GetAvzMinGapWidth();
+	cur_x += zal.get_width() + evt_w;
     }
 
     // Allocate edges
@@ -246,7 +254,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 			break;
 		    }
 		    // Get next vertical tunnel entry
-		    fx = GetEvtEnty(evi_c.first + 1);
+		    fx = GetEvtX(evi_c.first + 1);
 		}
 		// Find available line within the vertical tunnel
 		Requisition n3 = {fx, fy};
@@ -292,42 +300,30 @@ void SysDrp::GetEdgeAlloc(MEdgeCrp* aEdge, Allocation& aAlloc)
     }
 }
 
-int SysDrp::GetEvtWidth()
+int SysDrp::GetEvtMinWidth()
 {
     return KETnlCap*KEdgeGridCell;
 }
 
 int SysDrp::GetAvzMinGapWidth()
 {
-    return 2* KEvtGap + GetEvtWidth();
-}
-
-int SysDrp::GetEvtEnty(int aEvtId) const
-{
-    int res = 0;
-    int tw = GetEvtWidth();
-    for (int cnt = 0; cnt < aEvtId; cnt++) {
-	const Allocation& zal = iLaPars.at(cnt).first;
-	res += (cnt == 0 ? 0 : tw) + zal.get_width();
-    }
-    return res;
+    return 2* KEvtGap + GetEvtMinWidth();
 }
 
 SysDrp::TEvtInfo SysDrp::GetEvtInfo(Requisition aCoord)
 {
     TEvtInfo res(iLaPars.size() - 1, true);
-    int tw = GetAvzMinGapWidth();
     int x = aCoord.width;
-    int cx = 0;
     for (int cnt = 0; cnt < iLaPars.size(); cnt++) {
 	Allocation& zal = iLaPars.at(cnt).first;
 	int zw = zal.get_width();
+	int cx = zal.get_x();
+	int tw = cnt == 0 ? 0: cx - iLaPars.at(cnt-1).first.get_x();
 	if (x < cx + zw/2) {
 	    res.first = cnt;
 	    res.second = x < (cx - tw/2);
 	    break;
 	}
-	cx += zw + tw;
     }
     return res;
 }
@@ -335,14 +331,15 @@ SysDrp::TEvtInfo SysDrp::GetEvtInfo(Requisition aCoord)
 int SysDrp::GetEvtX(int aTnlCnt) const
 {
     __ASSERT(aTnlCnt <= iLaPars.size());
-    int res = 0;
-    int tw = GetAvzMinGapWidth();
-    for (int cnt = 0; cnt < aTnlCnt; cnt++) {
-	const Allocation& zal = iLaPars.at(cnt).first;
-	int zw = zal.get_width();
-	res += zw + (cnt == 0 ? 0: tw);
-    }
-    return res + KEvtGap;
+    const Allocation& zal = iLaPars.at(aTnlCnt - 1).first;
+    return  zal.get_x() + zal.get_width() + KEvtGap;
+}
+
+int SysDrp::GetEvtEnd(int aTnlCnt) const
+{
+    __ASSERT(aTnlCnt <= iLaPars.size());
+    const Allocation& zal = iLaPars.at(aTnlCnt).first;
+    return  zal.get_x() - KEvtGap;
 }
 
 bool SysDrp::AreIntervalsIntersecting(int aA1, int aA2, int aB1, int aB2)
@@ -356,13 +353,14 @@ bool SysDrp::AreIntervalsIntersecting(int aA1, int aA2, int aB1, int aB2)
 
 int SysDrp::GetEvtLineX(MCrp* aEdge, int aTunnel, int aP1, int aP2, bool aFromRight) 
 {
-    int lx_base = GetEvtX(aTunnel) + (aFromRight ? GetEvtWidth() : 0);
+    int lx_base = aFromRight ? GetEvtEnd(aTunnel) : GetEvtX(aTunnel);
     int lx = lx_base;
     bool isec = false;
     int ptop = min(aP1, aP2);
     int pbottom = max(aP1, aP2);
-    for (int lidi = 0; lidi < KETnlCap; lidi++) {
-	int lid = aFromRight ? KETnlCap-lidi-1 : lidi;
+    int tnlcap = (GetEvtEnd(aTunnel) - GetEvtX(aTunnel)) / KEdgeGridCell;
+    for (int lidi = 0; lidi < tnlcap; lidi++) {
+	int lid = aFromRight ? tnlcap-lidi-1 : lidi;
 	Requisition top = {lx, ptop};
 	Requisition bottom = {lx, pbottom};
 	isec = false;
@@ -451,22 +449,25 @@ int SysDrp::GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp) const
 
 void SysDrp::on_size_request(Gtk::Requisition* aRequisition)
 {
-    aRequisition->width = iLaPars.size() * GetAvzMinGapWidth();
+    aRequisition->width = (iLaPars.size() - 1) * GetAvzMinGapWidth() + 2*KBoundCompGapWidth;
     aRequisition->height = 0;
 
     for (TLAreasPars::iterator ait = iLaPars.begin(); ait != iLaPars.end(); ait++) {
 	Allocation& alc = ait->first;
 	alc = Allocation();
 	TVectCrps& rps = ait->second;
+	int area_w = 0, area_h = 0;
 	for (TVectCrps::iterator it = rps.begin(); it != rps.end(); it++) {
 	    MCrp* crp = *it;
 	    Gtk::Widget* comp = &(crp->Widget());
 	    Gtk::Requisition req = comp->size_request();
-	    alc.set_width(max(alc.get_width(), req.width));
-	    alc.set_height(alc.get_height() + req.height + KViewCompGapHight);
+	    area_w = max(area_w, req.width);
+	    area_h += req.height + KViewCompGapHight;
 	}
-	aRequisition->width += alc.get_width();
-	aRequisition->height = max(aRequisition->height, alc.get_height());
+	alc.set_width(area_w);
+	alc.set_height(area_h);
+	aRequisition->width += area_w;
+	aRequisition->height = max(aRequisition->height, area_h);
     }
 }
 

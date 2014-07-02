@@ -48,14 +48,14 @@ class SysDrp: public VertDrpw_v1
 	virtual void Construct();
 	virtual bool AreCpsCompatible(Elem* aCp1, Elem* aCp2);
 	TEvtInfo GetEvtInfo(Requisition aCoord);
-	static int GetEvtWidth();
+	static int GetEvtMinWidth();
 	static int GetAvzMinGapWidth();
 	int GetEvtLineX(MCrp* aEdge, int aTunnel, int aP1, int aP2, bool aFromRight = false);
 	int GetEvtX(int aTnlCnt) const;
+	int GetEvtEnd(int aTnlCnt) const;
 	static bool AreIntervalsIntersecting(int aA1, int aA2, int aB1, int aB2);
 	void GetEdgeAlloc(MEdgeCrp* aEdge, Allocation& aAlloc);
 	int GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp) const;
-	int GetEvtEnty(int aEvtId) const;
 	void UpdateRpsRelatios();
 	int GetCrpRelsCount(MCrp* aCrp) const;
 	void PreLayoutRps();
