@@ -34,6 +34,7 @@ string SysDrp::EType()
 
 SysDrp::SysDrp(Elem* aElem, const MCrpProvider& aCrpProv): VertDrpw_v1(aElem, aCrpProv)
 {
+    iLaNum = 6;
 }
 
 SysDrp::~SysDrp()
@@ -50,37 +51,84 @@ void SysDrp::PreLayoutRps()
     // Pre-layout the components
     // There are two phase of pre-layouting: allocating to areas, ordering in areas
     // Scheme of areas is selected by the user, the default one is 3-areas scheme: inp, body, out
-    iLaPars.resize(3);
+    iLaPars.resize(iLaNum);
     for (TLAreasPars::iterator zit = iLaPars.begin(); zit != iLaPars.end(); zit++) {
 	zit->first = Allocation();
 	zit->second.clear(); 
     }
     // Phase 1: allocating RPs to areas
+    // Inputs and outputs
     for (tCrps::const_iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	MCrp* crp = it->second;
 	MEdgeCrp* ecrp = crp->GetObj(ecrp);
 	if (ecrp == NULL) {
 	    Elem* mdl = crp->Model();
 	    MCompatChecker* cc = mdl->GetObj(cc);
-	    int narea = 1;
 	    MCrp::TLArea larea = MCrp::EMain;
 	    if (cc != NULL) {
 		MCompatChecker::TDir dir =  cc->GetDir();
-		narea = dir == MCompatChecker::EInp ? 0 : 2;
+		int narea = dir == MCompatChecker::EInp ? 0 : iLaNum - 1;
 		larea = dir == MCompatChecker::EInp ? MCrp::ELeft : MCrp::ERight;
+		TLAreaPar& area = iLaPars.at(narea);
+		crp->SetLArea(larea);
+		area.second.push_back(crp);
 	    }
-	    TLAreaPar& area = iLaPars.at(narea);
-	    crp->SetLArea(larea);
-	    area.second.push_back(crp);
 	}
     }
-    // Sorting out area
+    // Sorting inp/out area
     Cmp cmp(*this);
-    TVectCrps& crps_out = iLaPars.at(2).second;;
+    TVectCrps& crps_out = iLaPars.at(iLaNum - 1).second;;
     crps_out.sort(cmp);
+
+    // Body
     CmpMain cmp_main(*this);
-    TVectCrps& crps_main = iLaPars.at(1).second;;
-    crps_main.sort(cmp_main);
+    for (int ia = iLaNum - 2; ia > 0; ia--) {
+	TLAreaPar& area = iLaPars.at(ia);
+	for (tCrps::const_iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	    MCrp* crp = it->second;
+	    MEdgeCrp* ecrp = crp->GetObj(ecrp);
+	    if (ecrp == NULL && crp->GetLArea() == MCrp::EUnknown) {
+		MCompatChecker* cc = crp->Model()->GetObj(cc);
+		if (cc == NULL) {
+		    if (ia == 1 || HasRelToArea(crp, ia + 1)) {
+			crp->SetLArea(MCrp::EMain);
+			area.second.push_back(crp);
+		    }
+		}
+	    }
+	}
+	TVectCrps& crps = area.second;;
+	crps.sort(cmp_main);
+    }
+}
+
+void SysDrp::BodyPreLayoutAut() 
+{
+}
+
+bool SysDrp::HasRelToArea(MCrp* aCrp, int aAreaId) 
+{
+    bool res = false;
+    TVectCrps& crps = iLaPars.at(aAreaId).second;;
+    for (TVectCrps::iterator it = crps.begin(); it != crps.end() && !res; it++) {
+	MCrp* crp = *it;
+	res = iRpRelms.count(TRpRel(aCrp, crp)) > 0;
+    }
+    return res;
+}
+
+bool SysDrp::AreUnallocRpsRelToArea(int aAreaId) 
+{
+    bool res = false;
+    for (tCrps::const_iterator it = iCompRps.begin(); it != iCompRps.end() && !res; it++) {
+	MCrp* crp = it->second;
+	MEdgeCrp* ecrp = crp->GetObj(ecrp);
+	if (ecrp == NULL && crp->GetLArea() == MCrp::EUnknown) {
+	    MCompatChecker* cc = crp->Model()->GetObj(cc);
+	    res = (cc == NULL && HasRelToArea(crp, aAreaId));
+	}
+    }
+    return res;
 }
 
 void SysDrp::Construct()
@@ -162,6 +210,114 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
     int evt_w = (aAllc.get_width() - areas_w - 2*KBoundCompGapWidth) / (iLaPars.size() - 1);
 
     // Allocate components excluding edges
+    AllocateComps(evt_w);
+
+    // Allocate edges
+    bool relayout_required = false;
+    do {
+	relayout_required = false;
+	Allocation& avz0_alc = iLaPars.begin()->first;
+	int edge_park_x = avz0_alc.get_x() + avz0_alc.get_width();
+	int edge_park_y = KViewCompGapHight/2;
+	for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	    MCrp* crp = it->second;
+	    Gtk::Widget* comp = &(crp->Widget());
+	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	    Allocation allc;
+	    if (medgecrp != NULL) {
+		// Set the points
+		MEdgeCrp* medgecrp1 = crp->GetObj(medgecrp1);
+		Gtk::Widget* comp = &(crp->Widget());
+		Gtk::Requisition req = comp->size_request();
+		Elem* p1 = medgecrp->Point1();
+		Elem* p2 = medgecrp->Point2();
+		Elem* op1 = p1 != NULL ? GetCompOwning(p1): NULL;
+		Elem* op2 = p2 != NULL ? GetCompOwning(p2): NULL;
+
+		Gtk::Requisition p1coord = medgecrp->Cp1Coord();
+		Gtk::Requisition p2coord = medgecrp->Cp2Coord();
+		if (p1 != NULL) {
+		    MCrp* pcrp = iCompRps.at(op1);
+		    MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
+		    assert(pcrpcbl != NULL);
+		    p1coord = pcrpcbl->GetCpCoord(p1);
+		    medgecrp->SetCp1Coord(p1coord);
+		}
+		else if (!crp->Dragging()) {
+		    p1coord.width = edge_park_x;
+		    p1coord.height =  edge_park_y;
+		    medgecrp->SetCp1Coord(p1coord);
+		}
+
+		if (p2 != NULL) {
+		    MCrp* pcrp = iCompRps.at(op2);
+		    MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
+		    assert(pcrpcbl != NULL);
+		    p2coord = pcrpcbl->GetCpCoord(p2);
+		    medgecrp->SetCp2Coord(p2coord);
+		}
+		else if (!crp->Dragging()) {
+		    p2coord.width = edge_park_x + KEdgeGridCell;
+		    p2coord.height =  edge_park_y;
+		    medgecrp->SetCp2Coord(p2coord);
+		}
+		// Trace the edge, calculating the edges nodes, from left to right
+		// Tracing step is from entry of the current vert tunnel till the entry to next one (Z form)
+		bool done = false;
+		Requisition start = p1coord.width < p2coord.width ? p1coord : p2coord;
+		Requisition end = p1coord.width < p2coord.width ? p2coord : p1coord;
+		MEdgeCrp::TVectEn& ven = medgecrp->VectEn();
+		ven.clear();
+		ven.push_back(start);
+		Requisition cur = start;
+		TEvtInfo evi_e = GetEvtInfo(end);
+		while (!done) {
+		    TEvtInfo evi_c = GetEvtInfo(cur);
+		    int fy, fx; // Tracing step final point
+		    if (evi_c.first == evi_e.first) {
+			fx = end.width;
+			fy = end.height;
+			done = true;
+		    }
+		    else {
+			// Final vertical tunnel hasn't been achieved yet
+			// Find nearest horisontal tunnel available line
+			fy = GetEhtLine(crp, evi_c.first, cur.height, end.height < cur.height);
+			if (fy < 0) {
+			    relayout_required = true;
+			    break;
+			}
+			// Get next vertical tunnel entry
+			fx = GetEvtX(evi_c.first + 1);
+		    }
+		    // Find available line within the vertical tunnel
+		    Requisition n3 = {fx, fy};
+		    TEvtInfo evi_n3 = GetEvtInfo(n3);
+		    bool from_right = (evi_c.first == evi_n3.first) && !evi_c.second && !evi_n3.second || 
+			(evi_c.first != evi_n3.first) && !evi_c.second;
+		    int lx = GetEvtLineX(crp, evi_c.first, cur.height, fy, from_right);
+		    Requisition n1 = {lx, cur.height};
+		    Requisition n2 = {lx, fy};
+		    ven.push_back(n1);
+		    ven.push_back(n2);
+		    ven.push_back(n3);
+		    cur.width = fx; cur.height = fy;
+		}
+		if (relayout_required) {
+		    break;
+		}
+		// Allocate the edges widget
+		GetEdgeAlloc(medgecrp, allc);
+		comp->size_allocate(allc);
+	    }
+	}
+    }
+    while (relayout_required);
+}
+
+void SysDrp::AllocateComps(int aEvtW) 
+{
+    int evt_w = aEvtW;
     int cur_x = KBoundCompGapWidth;
     for (TLAreasPars::iterator zit = iLaPars.begin(); zit != iLaPars.end(); zit++) {
 	Allocation& zal = zit->first;
@@ -178,104 +334,6 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	    comp->size_allocate(allc);
 	}
 	cur_x += zal.get_width() + evt_w;
-    }
-
-    // Allocate edges
-    bool relayout_required = false;
-    Allocation& avz0_alc = iLaPars.begin()->first;
-    int edge_park_x = avz0_alc.get_x() + avz0_alc.get_width();
-    int edge_park_y = KViewCompGapHight/2;
-    for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
-	MCrp* crp = it->second;
-	Gtk::Widget* comp = &(crp->Widget());
-	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
-	Allocation allc;
-	if (medgecrp != NULL) {
-	    // Set the points
-	    MEdgeCrp* medgecrp1 = crp->GetObj(medgecrp1);
-	    Gtk::Widget* comp = &(crp->Widget());
-	    Gtk::Requisition req = comp->size_request();
-	    Elem* p1 = medgecrp->Point1();
-	    Elem* p2 = medgecrp->Point2();
-	    Elem* op1 = p1 != NULL ? GetCompOwning(p1): NULL;
-	    Elem* op2 = p2 != NULL ? GetCompOwning(p2): NULL;
-
-	    Gtk::Requisition p1coord = medgecrp->Cp1Coord();
-	    Gtk::Requisition p2coord = medgecrp->Cp2Coord();
-	    if (p1 != NULL) {
-		MCrp* pcrp = iCompRps.at(op1);
-		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
-		assert(pcrpcbl != NULL);
-		p1coord = pcrpcbl->GetCpCoord(p1);
-		medgecrp->SetCp1Coord(p1coord);
-	    }
-	    else if (!crp->Dragging()) {
-		p1coord.width = edge_park_x;
-		p1coord.height =  edge_park_y;
-		medgecrp->SetCp1Coord(p1coord);
-	    }
-
-	    if (p2 != NULL) {
-		MCrp* pcrp = iCompRps.at(op2);
-		MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
-		assert(pcrpcbl != NULL);
-		p2coord = pcrpcbl->GetCpCoord(p2);
-		medgecrp->SetCp2Coord(p2coord);
-	    }
-	    else if (!crp->Dragging()) {
-		p2coord.width = edge_park_x + KEdgeGridCell;
-		p2coord.height =  edge_park_y;
-		medgecrp->SetCp2Coord(p2coord);
-	    }
-	    // Trace the edge, calculating the edges nodes, from left to right
-	    // Tracing step is from entry of the current vert tunnel till the entry to next one (Z form)
-	    bool done = false;
-	    Requisition start = p1coord.width < p2coord.width ? p1coord : p2coord;
-	    Requisition end = p1coord.width < p2coord.width ? p2coord : p1coord;
-	    MEdgeCrp::TVectEn& ven = medgecrp->VectEn();
-	    ven.clear();
-	    ven.push_back(start);
-	    Requisition cur = start;
-	    TEvtInfo evi_e = GetEvtInfo(end);
-	    while (!done) {
-		TEvtInfo evi_c = GetEvtInfo(cur);
-		int fy, fx; // Tracing step final point
-		if (evi_c.first == evi_e.first) {
-		    fx = end.width;
-		    fy = end.height;
-		    done = true;
-		}
-		else {
-		    // Final vertical tunnel hasn't been achieved yet
-		    // Find nearest horisontal tunnel available line
-		    fy = GetEhtLine(crp, evi_c.first, cur.height, end.height < cur.height);
-		    if (fy < 0) {
-			relayout_required = true;
-			break;
-		    }
-		    // Get next vertical tunnel entry
-		    fx = GetEvtX(evi_c.first + 1);
-		}
-		// Find available line within the vertical tunnel
-		Requisition n3 = {fx, fy};
-		TEvtInfo evi_n3 = GetEvtInfo(n3);
-		bool from_right = (evi_c.first == evi_n3.first) && !evi_c.second && !evi_n3.second || 
-		    (evi_c.first != evi_n3.first) && !evi_c.second;
-		int lx = GetEvtLineX(crp, evi_c.first, cur.height, fy, from_right);
-		Requisition n1 = {lx, cur.height};
-		Requisition n2 = {lx, fy};
-		ven.push_back(n1);
-		ven.push_back(n2);
-		ven.push_back(n3);
-		cur.width = fx; cur.height = fy;
-	    }
-	    if (relayout_required) {
-		break;
-	    }
-	    // Allocate the edges widget
-	    GetEdgeAlloc(medgecrp, allc);
-	    comp->size_allocate(allc);
-	}
     }
 }
 
@@ -318,7 +376,11 @@ SysDrp::TEvtInfo SysDrp::GetEvtInfo(Requisition aCoord)
 	Allocation& zal = iLaPars.at(cnt).first;
 	int zw = zal.get_width();
 	int cx = zal.get_x();
-	int tw = cnt == 0 ? 0: cx - iLaPars.at(cnt-1).first.get_x();
+	int tw = 0;
+	if (cnt != 0) {
+	    Allocation& zal_prev = iLaPars.at(cnt - 1).first;
+	    tw = cx - zal_prev.get_x() - zal_prev.get_width();
+	}
 	if (x < cx + zw/2) {
 	    res.first = cnt;
 	    res.second = x < (cx - tw/2);
@@ -388,61 +450,86 @@ int SysDrp::GetEvtLineX(MCrp* aEdge, int aTunnel, int aP1, int aP2, bool aFromRi
     return lx;
 }
 
-int SysDrp::GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp) const
+int SysDrp::GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp)
 {
-    int res = -1; 
+    int res = 0; 
     // Find base first
     int base = aUp ? 0: std::numeric_limits<int>::max();
+    int tnlw = KViewCompGapHight;
+    Allocation& aalc = iLaPars.at(aEvt).first;
+    Requisition size = size_request();
     const TVectCrps& crps = iLaPars.at(aEvt).second;
     TVectCrps::const_iterator rpit = crps.begin();
-    for (; rpit != crps.end(); rpit++) {
-	MCrp* crp = *rpit;
-	Allocation alc = crp->Widget().get_allocation();
-	base = aUp ? alc.get_y(): alc.get_y() + alc.get_height();
-	if (aUp && base + alc.get_height() >= aY || !aUp && base >= aY)
-	    break;
+    if (rpit == crps.end()) {
+	// Empty area, just to stay the same line
+	res = aY;
     }
-    // Find available line
-    int ly = base + (aUp ? (-KEdgeGridCell) : KEdgeGridCell);
-    bool isec = false;
-    int tnlcap = KViewCompGapHight / KEdgeGridCell - 1;
-    for (int lid = 0; lid < tnlcap; lid++) {
-	isec = false;
-	for (std::map<Elem*, MCrp*>::const_iterator it = iCompRps.begin(); it != iCompRps.end() && !isec; it++) {
-	    MCrp* crp = it->second;
-	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
-	    if (medgecrp != NULL && crp != aEdge) {
-		MEdgeCrp::TVectEn& ven = medgecrp->VectEn();
-		Requisition p1 = {0, 0};
-		Requisition p2 = {0, 0};
-		for (MEdgeCrp::TVectEn::iterator nit = ven.begin(); nit != ven.end() && !isec; nit++) {
-		    p1 = p2;
-		    p2 = *nit;
-		    isec = p1.height == ly && p2.height == ly;
-		}
-	    }
-	}
-	if (!isec) 
-	    break;
-	ly += (aUp ? (-KEdgeGridCell) : KEdgeGridCell);
-    }
-    if (isec) {
-	// TODO [YB] To implement dynamic increasing of horiz tunnel
-	// Shift CRPs to provide the additional line
-	/*
+    else {
 	for (; rpit != crps.end(); rpit++) {
 	    MCrp* crp = *rpit;
 	    Allocation alc = crp->Widget().get_allocation();
-	    alc.set_y(alc.get_y() + KEdgeGridCell);
-	    crp->Widget().size_allocate(alc);
+	    Allocation alc_nxt = alc;
+	    TVectCrps::const_iterator itnxt = rpit;
+	    if (++itnxt != crps.end()) {
+		MCrp* crpnxt = *itnxt;
+		alc_nxt = crpnxt->Widget().get_allocation();
+	    }
+	    else {
+		alc_nxt.set_y(aalc.get_y() + aalc.get_height());
+		alc_nxt.set_height(size.height);
+	    }
+	    base = aUp ? alc_nxt.get_y(): alc.get_y() + alc.get_height();
+	    if (aUp && base + alc_nxt.get_height() >= aY || !aUp && base >= aY) {
+		tnlw = alc_nxt.get_y() - alc.get_y() - alc.get_height();
+		break;
+	    }
 	}
-	res = -1;
-	*/
-	ly = base + (aUp ? (-KEdgeGridCell-1) : KEdgeGridCell+1);
-	res = ly;
-    }
-    else {
-	res = ly;
+	// Find available line
+	int ly = base + (aUp ? (-KEdgeGridCell) : KEdgeGridCell);
+	bool isec = false;
+	int tnlcap = tnlw / KEdgeGridCell - 1;
+	for (int lid = 0; lid < tnlcap; lid++) {
+	    isec = false;
+	    for (std::map<Elem*, MCrp*>::const_iterator it = iCompRps.begin(); it != iCompRps.end() && !isec; it++) {
+		MCrp* crp = it->second;
+		MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+		if (medgecrp != NULL && crp != aEdge) {
+		    MEdgeCrp::TVectEn& ven = medgecrp->VectEn();
+		    Requisition p1 = {0, 0};
+		    Requisition p2 = {0, 0};
+		    for (MEdgeCrp::TVectEn::iterator nit = ven.begin(); nit != ven.end() && !isec; nit++) {
+			p1 = p2;
+			p2 = *nit;
+			isec = p1.height == ly && p2.height == ly;
+		    }
+		}
+	    }
+	    if (!isec) 
+		break;
+	    ly += (aUp ? (-KEdgeGridCell) : KEdgeGridCell);
+	}
+	if (isec) {
+	    if (tnlw < KViewCompGapHightMax) {
+		// There is still possibility to extend the tunnel
+		// Shift CRPs to provide the additional line
+		for (++rpit; rpit != crps.end(); rpit++) {
+		    MCrp* crp = *rpit;
+		    Allocation alc = crp->Widget().get_allocation();
+		    alc.set_y(alc.get_y() + KEdgeGridCell);
+		    crp->Widget().size_allocate(alc);
+		}
+		aalc.set_height(aalc.get_height() + KEdgeGridCell);
+		res = -1;
+	    }
+	    else {
+		// Tunnel is of max size, to squeeze the line
+		ly = base + (aUp ? (-KEdgeGridCell-1) : KEdgeGridCell+1);
+		res = ly;
+	    }
+	}
+	else {
+	    res = ly;
+	}
     }
     return res;
 }
@@ -452,6 +539,7 @@ void SysDrp::on_size_request(Gtk::Requisition* aRequisition)
     aRequisition->width = (iLaPars.size() - 1) * GetAvzMinGapWidth() + 2*KBoundCompGapWidth;
     aRequisition->height = 0;
 
+    // Calculate size of components
     for (TLAreasPars::iterator ait = iLaPars.begin(); ait != iLaPars.end(); ait++) {
 	Allocation& alc = ait->first;
 	alc = Allocation();
@@ -466,8 +554,22 @@ void SysDrp::on_size_request(Gtk::Requisition* aRequisition)
 	}
 	alc.set_width(area_w);
 	alc.set_height(area_h);
+
+	// Calculate the potential height of edges if they are layouting into the horiz tunnels
+	// TODO [YB] This is temporarily solution only. To consider solid solution instead:
+	// one variant is to do pre-allocation including edges (this will do correction in comp areas height)
+	// in Construct and then calculate size basing on allocation data
+	int edges_h = 0;
+	for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	    MCrp* crp = it->second;
+	    Gtk::Widget* comp = &(crp->Widget());
+	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	    if (medgecrp != NULL) {
+		edges_h += KEdgeGridCell;
+	    }
+	}
 	aRequisition->width += area_w;
-	aRequisition->height = max(aRequisition->height, area_h);
+	aRequisition->height = max(aRequisition->height, area_h + edges_h);
     }
 }
 

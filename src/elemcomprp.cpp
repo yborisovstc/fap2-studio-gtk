@@ -51,7 +51,7 @@ bool ElemCompHead::on_expose_event(GdkEventExpose* aEvent)
 }
 
 
-ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(false)
+ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(false), iLArea(MCrp::EUnknown)
 {
     // Set name
     set_name("ElemCompRp");

@@ -46,6 +46,10 @@ class SysDrp: public VertDrpw_v1
 	virtual ~SysDrp();
     protected:
 	virtual void Construct();
+	void AllocateComps(int aEvtW);
+	void BodyPreLayoutAut();
+	bool HasRelToArea(MCrp* aCrp, int aAreaId); 
+	bool AreUnallocRpsRelToArea(int aAreaId);
 	virtual bool AreCpsCompatible(Elem* aCp1, Elem* aCp2);
 	TEvtInfo GetEvtInfo(Requisition aCoord);
 	static int GetEvtMinWidth();
@@ -55,7 +59,7 @@ class SysDrp: public VertDrpw_v1
 	int GetEvtEnd(int aTnlCnt) const;
 	static bool AreIntervalsIntersecting(int aA1, int aA2, int aB1, int aB2);
 	void GetEdgeAlloc(MEdgeCrp* aEdge, Allocation& aAlloc);
-	int GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp) const;
+	int GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp);
 	void UpdateRpsRelatios();
 	int GetCrpRelsCount(MCrp* aCrp) const;
 	void PreLayoutRps();
@@ -75,6 +79,7 @@ class SysDrp: public VertDrpw_v1
 	// CRPs relations, used for layouting
 	TRpRels iRpRels;
 	TRpRelms iRpRelms;
+	int iLaNum;
 };
 
 #endif

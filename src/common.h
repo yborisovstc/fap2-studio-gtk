@@ -6,7 +6,10 @@
 
 // Parameters of view
 const gint KViewCompAreaWidth = 200;
-const gint KViewCompGapHight = 30;
+// Size of vertical tunnel between component representation - minimum
+const gint KViewCompGapHight = 20;
+// Size of vertical tunnel between component representation - maximum
+const gint KViewCompGapHightMax = 100;
 const gint KViewConnGapWidth = 3;
 const gint KViewConnGapHeight = 1;
 const gint KViewCompEmptyBodyHight = 20;

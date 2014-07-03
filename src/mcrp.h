@@ -22,6 +22,7 @@ class MCrp: public MBase
 	};
 	// Layout area, vertical based
 	enum TLArea {
+	    EUnknown = -2,
 	    EOverlay = -1, // Overlay, e.g. edge
 	    ELeft = 0, // Left boundary zone
 	    ERight = 1, // Right boundary zone
