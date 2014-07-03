@@ -34,7 +34,7 @@ string SysDrp::EType()
 
 SysDrp::SysDrp(Elem* aElem, const MCrpProvider& aCrpProv): VertDrpw_v1(aElem, aCrpProv)
 {
-    iLaNum = 6;
+    iLaNum = 2;
 }
 
 SysDrp::~SysDrp()
@@ -81,6 +81,8 @@ void SysDrp::PreLayoutRps()
     crps_out.sort(cmp);
 
     // Body
+    BodyPreLayoutAut();
+    /*
     CmpMain cmp_main(*this);
     for (int ia = iLaNum - 2; ia > 0; ia--) {
 	TLAreaPar& area = iLaPars.at(ia);
@@ -100,10 +102,55 @@ void SysDrp::PreLayoutRps()
 	TVectCrps& crps = area.second;;
 	crps.sort(cmp_main);
     }
+    */
 }
 
 void SysDrp::BodyPreLayoutAut() 
 {
+    // Areas
+    CmpMain cmp_main(*this);
+    int ia = 1; 
+    while (AreUnallocRpsRelToArea(ia)) {
+	TLAreaPar area;
+	for (tCrps::const_iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	    MCrp* crp = it->second;
+	    MEdgeCrp* ecrp = crp->GetObj(ecrp);
+	    if (ecrp == NULL && crp->GetLArea() == MCrp::EUnknown) {
+		MCompatChecker* cc = crp->Model()->GetObj(cc);
+		if (cc == NULL) {
+		    if (HasRelToArea(crp, ia)) {
+			crp->SetLArea(MCrp::EMain);
+			area.second.push_back(crp);
+		    }
+		}
+	    }
+	}
+	TVectCrps& crps = area.second;;
+	crps.sort(cmp_main);
+	TLAreasPars::iterator ait = iLaPars.begin();
+	iLaPars.insert(++ait, area);
+    }
+    // Adding remaining (not connected) comps to first area
+    if (iLaPars.size() == iLaNum) {
+	// Main areas still not created - to create
+	TLAreaPar area;
+	TLAreasPars::iterator ait = iLaPars.begin();
+	iLaPars.insert(++ait, area);
+    }
+    TLAreaPar& area = iLaPars.at(1);
+    for (tCrps::const_iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	MCrp* crp = it->second;
+	MEdgeCrp* ecrp = crp->GetObj(ecrp);
+	if (ecrp == NULL && crp->GetLArea() == MCrp::EUnknown) {
+	    MCompatChecker* cc = crp->Model()->GetObj(cc);
+	    if (cc == NULL) {
+		crp->SetLArea(MCrp::EMain);
+		area.second.push_back(crp);
+	    }
+	}
+    }
+    TVectCrps& crps = area.second;;
+    crps.sort(cmp_main);
 }
 
 bool SysDrp::HasRelToArea(MCrp* aCrp, int aAreaId) 
