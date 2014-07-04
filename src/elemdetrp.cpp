@@ -235,12 +235,17 @@ bool ElemDetRp::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, i
 		Elem* comp = *it;
 		__ASSERT(comp != NULL);
 		if (!comp->IsRemoved()) {
-		    __ASSERT(iCompRps.count(comp) != 0);
-		    MCrp* crp = iCompRps.at(comp);
-		    Widget& crpw = crp->Widget();
-		    Allocation alc = crpw.get_allocation();
-		    if (y < alc.get_y()) {
-			cand = crp;
+		    if (iCompRps.count(comp) != 0) {
+			MCrp* crp = iCompRps.at(comp);
+			Widget& crpw = crp->Widget();
+			Allocation alc = crpw.get_allocation();
+			if (y < alc.get_y()) {
+			    cand = crp;
+			}
+		    }
+		    else {
+			// This actually is not error, some DRPs avoid creating CRPs for unused comps
+			//std::cout << "ElemDetRp [" << iElem->GetUri() << "] : ERROR: rps for comp == 0, comp: " << comp->GetUri() << std::endl;
 		    }
 		}
 	    }
