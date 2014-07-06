@@ -11,11 +11,18 @@
     <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
     <node id="Ticker_edge" parent="Edge"/>
     <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
-      <node id="Given_vect" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
-        <cont node="Value" val="VF 2 3"/>
-      </node>
-      <node id="Result" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
-        <cont node="Value" val="MDF 0 0 "/>
+      <node id="State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
+        <cont node="Data/Prepared/Value" val="VF 0 0"/>
+        <cont node="Data/Confirmed/Value" val="VF 0 0"/>
+        <node id="Mpl_martix_on_vect" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
+        <node id="Matrix_1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+          <cont node="Value" val="MDF 1.1 1.1"/>
+        </node>
+        <node id="761926173" parent="Edge">
+          <cont node="P1" ref="../../Matrix_1/Capsule/Out"/>
+          <cont node="P2" val=""/>
+          <cont node="P2" val=""/>
+        </node>
       </node>
     </node>
     <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
