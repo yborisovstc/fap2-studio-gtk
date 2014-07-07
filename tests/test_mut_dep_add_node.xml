@@ -8,10 +8,15 @@ If client tries to mutate elem1 by any mutation, it will breake  the system cons
 Client (Studio) must handle this request from the user correctly: get dependency and
 apply the mutation to the node with rank not less that dep rank. In our case it
 can mutate node "test"
-How to test:  From Studio try to add to elem3 some node 
-Expected result: Studio will place mutation not in elem1 as attaching owner, but
+How to test:  
+1. From Studio try to add to elem3 some node 
+Expected result: Studio will detect that there is critical dep. If pheno modif is disabled then 
+Studio will notify the user that it cannot make mutation but will do modif. 
+Then Studio will place mutation not in elem1 as attaching owner, but
 to -test- after dependent mutation. Try to save and reopen the mutated system - 
 no error can occur.
+2. Try to add some node to elem2. Studio will detect that there are affecting dep (of type ENa_Parent,
+from child creatng mut). If pheno modif is disabled then Studio will notify the user that he will need to refresh the system.
 -->
 
 <!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 

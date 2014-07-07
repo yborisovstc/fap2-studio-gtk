@@ -28,9 +28,9 @@ static const Glib::ustring KDlgMsg_Rm_F2 =
 "Attemting to delete node which has children.\n\nPerform mutation ?";
 
 static const Glib::ustring KDlgMsg_Mut_F2 = 
-"Changed node has childs. There are two options of applying the change:\n\
+"Changed node can affect other nodes. There are two options of applying the change:\n\
 1. Make mutation, please note that you'll need then to refresh the the model to actualize the changes in childs\n\
-2. Make phenotypic modification, the change will be for this node only, not propagated to childs\n\n\
+2. Make phenotypic modification, the change will be for this node only, not affecting other nodes\n\n\
 Make mutation ? Oherwise phonotype modification";
 
 static const Glib::ustring KDlgMsg_Rld = 
@@ -426,29 +426,57 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeType aMutType) {
 	    res = NULL;
 	}
     }
-    /*
-       if (!ena_pheno) {
-	   if (res != aNode) {
-	// There are some deps, notify the user of nececcity of reload
-	res = aNode;
-	MessageDialog* dlg = new MessageDialog(KDlgMsg_Rld, false, MESSAGE_INFO, BUTTONS_OK, true);
-	dlg->run();
-	delete dlg;
+    // Checking affecting deps
+    if (res != NULL && res == aNode) {
+	dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Affecting);
+	if (dep.first.first != NULL) {
+	    Rank rank;
+	    res->GetRank(rank, res->Chromos().Root());
+	    Rank deprank;
+	    ChromoNode depnode = aNode->Chromos().CreateNode(dep.first.second);
+	    // Using combined calc of rank because of possibility that mut can be deattached
+	    dep.first.first->GetRank(deprank, depnode);
+	    if (deprank > rank && !deprank.IsRankOf(rank)) {
+		res = dep.first.first;
+	    }
+	}
+	if (res != aNode) {
+		// There is affecting dep
+	    if (!ena_pheno) {
+		// Pheno modif are disabled, notify the user of nececcity of reload
+		res = aNode;
+		MessageDialog* dlg = new MessageDialog(KDlgMsg_Rld, false, MESSAGE_INFO, BUTTONS_OK, true);
+		dlg->run();
+		delete dlg;
+	    }
+	    else {
+		// Pheno modif are disabled, asking the user for the choice: mut or modif
+		int dres = RESPONSE_YES;
+		MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
+			false, MESSAGE_INFO, BUTTONS_YES_NO, true);
+		dres = dlg->run();
+		delete dlg;
+		if (dres == RESPONSE_YES) {
+		    res = aNode;
+		}
+		else {
+		    res = res->GetCommonOwner(aNode);
+		}
+	    }
 	}
     }
-    */
     if (res != NULL) {
 	if (!res->IsChromoAttached()) {
 	    res = res->GetAttachingMgr(); 
-	    deptype = ENa_Unknown;
 	}
-	if (!ena_pheno && res != aNode && deptype == ENa_Parent) {
-	    // Taking into account options of change: geno or pheno, ref fap2 uc_038
-	    MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
-		    false, MESSAGE_INFO, BUTTONS_YES_NO, true);
-	    int dres = dlg->run();
-	    delete dlg;
-	    if (dres == RESPONSE_YES) {
+	/*
+	   if (!ena_pheno && res != aNode && deptype == ENa_Parent) {
+    // Taking into account options of change: geno or pheno, ref fap2 uc_038
+    MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
+    false, MESSAGE_INFO, BUTTONS_YES_NO, true);
+    int dres = dlg->run();
+    delete dlg;
+    if (dres == RESPONSE_YES) {
 		res = iElem;
 	    }
 	    else {
@@ -458,6 +486,8 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeType aMutType) {
 	else {
 	    res = res->GetCommonOwner(aNode);
 	}
+	*/
+	res = res->GetCommonOwner(aNode);
     }
     return res;
 }
