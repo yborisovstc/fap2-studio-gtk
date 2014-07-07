@@ -20,7 +20,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
     public:
     typedef std::map<Elem*, MCrp*> tCrps;
     public:
-	ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv);
+	ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~ElemDetRp();
 	Elem* GetElem();
     public:
@@ -46,7 +46,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	virtual void DoUdno();
 	void Erase();
 	void Refresh();
-	Elem* GetObjForSafeMut(Elem* aNode);
+	Elem* GetObjForSafeMut(Elem* aNode, TNodeType aMutType);
 	void do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri);
 	void add_node(const std::string& aParentUri, const std::string& aNeighborUri = string());
 	void rename_node(const std::string& aNodeUri, const std::string& aNewName);
@@ -59,6 +59,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void on_comp_menu_edit_content();
 	void on_comp_menu_save_chromo();
     protected:
+	MSEnv& mStEnv;
 	// Compact representations  provider
 	const MCrpProvider& iCrpProv;
 	Elem* iElem;
@@ -79,7 +80,7 @@ class ElemDrp: public MDrp
 	static const string& Type();
 	static string EType();
     public:
-	ElemDrp(Elem* aElem, const MCrpProvider& aCrpProv);
+	ElemDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~ElemDrp();
 	// From MDrp
 	virtual void *DoGetObj(const string& aName);

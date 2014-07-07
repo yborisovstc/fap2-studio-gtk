@@ -28,7 +28,7 @@ VertDrpw_v1::ConnInfo::ConnInfo(int aOrder): iCompOrder(aOrder) { }
 VertDrpw_v1::ConnInfo::ConnInfo(const ConnInfo& aCInfo): iCompOrder(aCInfo.iCompOrder) { }
 
 
-VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv): ElemDetRp(aElem, aCrpProv), iEdgeDropCandidate(NULL),
+VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): ElemDetRp(aElem, aCrpProv, aStEnv), iEdgeDropCandidate(NULL),
     iEdgeDropCpCandidate(NULL)
 {
     // Set dest with avoiding DestDefaults flags. These flags are only for some trivial DnD 
@@ -469,9 +469,9 @@ string VertDrp::EType()
     return ":Elem:Vert";
 }
 
-VertDrp::VertDrp(Elem* aElem, const MCrpProvider& aCrpProv)
+VertDrp::VertDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv)
 {
-    iRp = new VertDrpw_v1(aElem, aCrpProv);
+    iRp = new VertDrpw_v1(aElem, aCrpProv, aStEnv);
 }
 
 VertDrp::~VertDrp()

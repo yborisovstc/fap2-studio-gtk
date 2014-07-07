@@ -8,8 +8,35 @@
 #include "msdesenv.h"
 #include "provdef.h"
 #include "mdesobs.h"
+#include "msset.h"
+#include <gtkmm.h>
 
 using namespace Gtk;
+
+template <typename T> class StSetting: public MStSetting<T>
+{
+    public:
+	StSetting() {};
+	typedef sigc::signal<void> tSigChanged;
+	virtual const T& Get(const T& aSetting) const;
+	virtual void Set(const T& aSetting);
+	virtual tSigChanged SigChanged() { return mSigChanged; };
+    protected:
+	T mData;
+	tSigChanged mSigChanged;
+};
+
+class StSettings: public MStSettings
+{
+    public:
+	StSettings() {};
+	virtual ~StSettings();
+    public:
+	// From MStSettings
+	virtual void* DoGetSetting(TStSett aSettId);
+    protected:
+	 StSetting<bool> mEnablePhenoModif;
+};
 
 class StEnv: public MSEnv
 {
@@ -20,6 +47,7 @@ class StEnv: public MSEnv
 	virtual MCrpProvider& CrpProvider();
 	virtual MDrpProvider& DrpProvider();
 	virtual MErpProvider& ErpProvider();
+	virtual MStSettings& Settings() { return mSettings;};
     private:
 	MMdlObserver* iMdlObs;
 	// Compact representaions provider
@@ -27,6 +55,7 @@ class StEnv: public MSEnv
 	DefCrpProv* iCrpProv;
 	DefDrpProv* iDrpProv;
 	DefErpProv* iErpProv;
+	StSettings mSettings;
 };
 
 // Studio DES Environment

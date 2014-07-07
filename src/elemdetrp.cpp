@@ -3,6 +3,7 @@
 #include "common.h"
 #include "elemdetrp.h"
 #include "dlgbase.h"
+#include "msset.h"
 #include <edge.h>
 #include <gtkmm.h>
 #include <gtkmm/messagedialog.h>
@@ -32,6 +33,12 @@ static const Glib::ustring KDlgMsg_Mut_F2 =
 2. Make phenotypic modification, the change will be for this node only, not propagated to childs\n\n\
 Make mutation ? Oherwise phonotype modification";
 
+static const Glib::ustring KDlgMsg_Rld = 
+"This change can affect other parts of the system, please reload system to see the result.";
+
+static const Glib::ustring KDlgMsg_CritDep = 
+"There is critical dependency [%1] for this change in the system. So, only phenotypic modification can be done. OK to do the change ?";
+
 
 /*
    static const Gtk::TargetEntry targetentries[] =
@@ -42,8 +49,8 @@ Make mutation ? Oherwise phonotype modification";
    };
    */
 
-ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv),
-    iDnDTarg(EDT_Unknown), iDropBaseCandidate(NULL)
+ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv),
+    mStEnv(aStEnv), iDnDTarg(EDT_Unknown), iDropBaseCandidate(NULL)
 {
     // Set dest with avoiding DestDefaults flags. These flags are only for some trivial DnD 
     // scenarious, but we need to implement requesting edges data during drop motion
@@ -390,10 +397,13 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
     }
 }
 
-Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
+Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeType aMutType) {
     Elem* res = aNode;
+    MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
+    bool ena_pheno = ena_pheno_s.Get(ena_pheno);
     TNodeAttr deptype = ENa_Unknown;
-    Elem::TMDep dep = aNode->GetMajorDep();
+    // Checking critical deps
+    Elem::TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
     if (dep.first.first != NULL) {
 	Rank rank;
 	res->GetRank(rank, res->Chromos().Root());
@@ -406,25 +416,48 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
 	}
 	deptype = dep.second;
     }
-    if (!res->IsChromoAttached()) {
-	res = res->GetAttachingMgr(); 
-	deptype = ENa_Unknown;
-    }
-    if (res != aNode && deptype == ENa_Parent) {
-	// Taking into account options of change: geno or pheno, ref fap2 uc_038
-	MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
-		false, MESSAGE_INFO, BUTTONS_YES_NO, true);
-	int dres = dlg->run();
+    if (res != aNode && !ena_pheno) {
+	int dres = RESPONSE_OK;
+	MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
+		false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+	dres = dlg->run();
 	delete dlg;
-	if (dres == RESPONSE_YES) {
-	    res = iElem;
+	if (dres == RESPONSE_CANCEL) {
+	    res = NULL;
 	}
+    }
+    /*
+       if (!ena_pheno) {
+	   if (res != aNode) {
+	// There are some deps, notify the user of nececcity of reload
+	res = aNode;
+	MessageDialog* dlg = new MessageDialog(KDlgMsg_Rld, false, MESSAGE_INFO, BUTTONS_OK, true);
+	dlg->run();
+	delete dlg;
+	}
+    }
+    */
+    if (res != NULL) {
+	if (!res->IsChromoAttached()) {
+	    res = res->GetAttachingMgr(); 
+	    deptype = ENa_Unknown;
+	}
+	if (!ena_pheno && res != aNode && deptype == ENa_Parent) {
+	    // Taking into account options of change: geno or pheno, ref fap2 uc_038
+	    MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
+		    false, MESSAGE_INFO, BUTTONS_YES_NO, true);
+	    int dres = dlg->run();
+	    delete dlg;
+	    if (dres == RESPONSE_YES) {
+		res = iElem;
+	    }
+	    else {
+		res = res->GetCommonOwner(aNode);
+	    }
+	} 
 	else {
 	    res = res->GetCommonOwner(aNode);
 	}
-    } 
-    else {
-	res = res->GetCommonOwner(aNode);
     }
     return res;
 }
@@ -432,8 +465,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode) {
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri)
 {
     // Mutate appending
-    Elem* mutelem = GetObjForSafeMut(iElem);
-    __ASSERT(mutelem != NULL);
+    Elem* mutelem = GetObjForSafeMut(iElem, ENt_Node);
     if (mutelem != NULL) {
 	ChromoNode mut = mutelem->Mutation().Root();
 	ChromoNode rmut = mut.AddChild(ENt_Node);
@@ -510,7 +542,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
 {
     Elem* node = iElem->GetNode(aNodeUri);
-    Elem* mutelem = GetObjForSafeMut(node);
+    Elem* mutelem = GetObjForSafeMut(node, ENt_Cont);
     __ASSERT(mutelem != NULL);
     if (aRef) {
 	Elem* rnode = node->GetNode(aNewContent);
@@ -672,9 +704,9 @@ string ElemDrp::EType()
     return Elem::PEType();
 }
 
-ElemDrp::ElemDrp(Elem* aElem, const MCrpProvider& aCrpProv)
+ElemDrp::ElemDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv)
 {
-    iRp = new ElemDetRp(aElem, aCrpProv);
+    iRp = new ElemDetRp(aElem, aCrpProv, aStEnv);
 }
 
 ElemDrp::~ElemDrp()

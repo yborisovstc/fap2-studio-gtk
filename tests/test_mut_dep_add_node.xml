@@ -22,9 +22,7 @@ no error can occur.
 	    <node id="elem2_1" parent="Elem"/>
 	</node>
     </node>
-    <add node="elem1">
-	<node id="elem3" parent="../elem1/elem2"/>
-    </add>
+    <node node="elem1" id="elem3" parent="elem1/elem2"/>
 </node>
 
 

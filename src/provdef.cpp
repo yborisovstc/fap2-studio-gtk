@@ -42,16 +42,16 @@ MDrp* DefDrpProv::CreateRp(Elem& aElem) const
 {
     MDrp* res = NULL;
     if (aElem.IsHeirOf(IncapsDrp::EType())) {
-	res = new IncapsDrp(&aElem, iSenv->CrpProvider());
+	res = new IncapsDrp(&aElem, iSenv->CrpProvider(), *iSenv);
     }
     else if (aElem.IsHeirOf(SysDrp::EType())) {
-	res = new SysDrp(&aElem, iSenv->CrpProvider());
+	res = new SysDrp(&aElem, iSenv->CrpProvider(), *iSenv);
     }
     else if (aElem.IsHeirOf(VertDrpw_v1::EType())) {
-	res = new VertDrpw_v1(&aElem, iSenv->CrpProvider());
+	res = new VertDrpw_v1(&aElem, iSenv->CrpProvider(), *iSenv);
     }
     else if (aElem.IsHeirOf(ElemDrp::EType())) {
-	res = new ElemDrp(&aElem, iSenv->CrpProvider());
+	res = new ElemDrp(&aElem, iSenv->CrpProvider(), *iSenv);
     }
     return res;
 }

@@ -32,7 +32,7 @@ string SysDrp::EType()
     return ":Elem:Vert:Syst";
 }
 
-SysDrp::SysDrp(Elem* aElem, const MCrpProvider& aCrpProv): VertDrpw_v1(aElem, aCrpProv)
+SysDrp::SysDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): VertDrpw_v1(aElem, aCrpProv, aStEnv)
 {
     iLaNum = 2;
 }

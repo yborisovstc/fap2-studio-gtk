@@ -11,7 +11,7 @@ class IncapsDrp: public SysDrp
     public:
 	static string EType();
     public:
-	IncapsDrp(Elem* aElem, const MCrpProvider& aCrpProv);
+	IncapsDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~IncapsDrp();
     protected:
 	virtual void Construct();

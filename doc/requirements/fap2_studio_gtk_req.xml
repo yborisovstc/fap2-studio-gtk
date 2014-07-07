@@ -34,127 +34,127 @@
 
     <sect1><title>Use cases</title>
 
-    <sect2 id="uc_001"><title>UC_001 Logging</title>
-	<sect3><title>Description</title>
-	    CLIENT requests logging and specifies logging parameters - SYSTEM provides CLIENT with logging data
-	</sect3>
-	<sect3><title>Extension of</title>
-	</sect3>
-	<sect3><title>Extended by</title>
-	    <itemizedlist>
-	    </itemizedlist>
-	</sect3>
-    </sect2>
+	<sect2 id="uc_001"><title>UC_001 Logging</title>
+	    <sect3><title>Description</title>
+		CLIENT requests logging and specifies logging parameters - SYSTEM provides CLIENT with logging data
+	    </sect3>
+	    <sect3><title>Extension of</title>
+	    </sect3>
+	    <sect3><title>Extended by</title>
+		<itemizedlist>
+		</itemizedlist>
+	    </sect3>
+	</sect2>
 
-    <sect2 id="uc_002"><title>UC_002 Views categories</title>
-	<sect3><title>Description</title>
-	    CLIENT requests SYSTEM for the views categories it can provides - SYSTEM can provides the following views categories:
-	    <itemizedlist>
-		<listitem>System view - views of system modelled</listitem>
-		<listitem>Log views</listitem>
-		<listitem>System visualization view - system visualize itself, it's trajectory, etc</listitem>
-	    </itemizedlist>
-	</sect3>
-	<sect3><title>Extension of</title>
-	</sect3>
-	<sect3><title>Extended by</title>
-	    <itemizedlist>
-	    </itemizedlist>
-	</sect3>
-    </sect2>
+	<sect2 id="uc_002"><title>UC_002 Views categories</title>
+	    <sect3><title>Description</title>
+		CLIENT requests SYSTEM for the views categories it can provides - SYSTEM can provides the following views categories:
+		<itemizedlist>
+		    <listitem>System view - views of system modelled</listitem>
+		    <listitem>Log views</listitem>
+		    <listitem>System visualization view - system visualize itself, it's trajectory, etc</listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Extension of</title>
+	    </sect3>
+	    <sect3><title>Extended by</title>
+		<itemizedlist>
+		</itemizedlist>
+	    </sect3>
+	</sect2>
 
-    <sect2 id="uc_003"><title>UC_003 System views</title>
-	<sect3><title>Description</title>
-	    CLIENT requests SYSTEM for the system views it can provides - SYSTEM can provides the following types of system views:
-	    <itemizedlist>
-		<listitem>Hierarchy view - views of system native hierarchy in form of tree</listitem>
-		<listitem>Detail views - shows system components</listitem>
-		<listitem>Inheritance view - shows the node inheritance chain</listitem>
-	    </itemizedlist>
-	</sect3>
-	<sect3><title>Extension of</title>
-	</sect3>
-	<sect3><title>Extended by</title>
-	    <itemizedlist>
-		<listitem> <xref linkend="uc_004"/> </listitem>
-	    </itemizedlist>
-	</sect3>
-    </sect2>
+	<sect2 id="uc_003"><title>UC_003 System views</title>
+	    <sect3><title>Description</title>
+		CLIENT requests SYSTEM for the system views it can provides - SYSTEM can provides the following types of system views:
+		<itemizedlist>
+		    <listitem>Hierarchy view - views of system native hierarchy in form of tree</listitem>
+		    <listitem>Detail views - shows system components</listitem>
+		    <listitem>Inheritance view - shows the node inheritance chain</listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Extension of</title>
+	    </sect3>
+	    <sect3><title>Extended by</title>
+		<itemizedlist>
+		    <listitem> <xref linkend="uc_004"/> </listitem>
+		</itemizedlist>
+	    </sect3>
+	</sect2>
 
-    <sect2 id="uc_004"><title>UC_004 Detail views selection</title>
-	<sect3><title>Description</title>
-	    CLIENT requests opening system specification - SYSTEM opens spec file and shows system in detail view.
-	    Type of detail view depends on type of system's root type. 
-	</sect3>
-	<sect3><title>Extension of</title>
-	    <xref linkend="uc_003"/>
-	</sect3>
-	<sect3><title>Extended by</title>
-	    <itemizedlist>
-	    </itemizedlist>
-	</sect3>
-    </sect2>
+	<sect2 id="uc_004"><title>UC_004 Detail views selection</title>
+	    <sect3><title>Description</title>
+		CLIENT requests opening system specification - SYSTEM opens spec file and shows system in detail view.
+		Type of detail view depends on type of system's root type. 
+	    </sect3>
+	    <sect3><title>Extension of</title>
+		<xref linkend="uc_003"/>
+	    </sect3>
+	    <sect3><title>Extended by</title>
+		<itemizedlist>
+		</itemizedlist>
+	    </sect3>
+	</sect2>
 
-    <sect2 id="uc_005"><title>UC_005 Creating new sysem</title>
-	<sect3><title>Description</title>
-	    CLIENT requests creating new system - SYSTEM offers the instruments (ref <xref linkend="uc_006"/>) of creating and editing system.
-	</sect3>
-	<sect3><title>Details</title>
-	    <simpara>DES environment provides root node by default. So created system will be created as components of root.
-	    </simpara>
-	</sect3>
-	<sect3><title>Extension of</title>
-	</sect3>
-	<sect3><title>Extended by</title>
-	    <itemizedlist>
-		<listitem><xref linkend="uc_006"/></listitem>
-	    </itemizedlist>
-	</sect3>
-    </sect2>
+	<sect2 id="uc_005"><title>UC_005 Creating new sysem</title>
+	    <sect3><title>Description</title>
+		CLIENT requests creating new system - SYSTEM offers the instruments (ref <xref linkend="uc_006"/>) of creating and editing system.
+	    </sect3>
+	    <sect3><title>Details</title>
+		<simpara>DES environment provides root node by default. So created system will be created as components of root.
+		</simpara>
+	    </sect3>
+	    <sect3><title>Extension of</title>
+	    </sect3>
+	    <sect3><title>Extended by</title>
+		<itemizedlist>
+		    <listitem><xref linkend="uc_006"/></listitem>
+		</itemizedlist>
+	    </sect3>
+	</sect2>
 
-    <sect2 id="uc_006"><title>UC_006 Instruments of creating new sysem</title>
-	<sect3><title>Description</title>
-	    CLIENT requests creating new system - SYSTEM offers the following instruments of creating and editing system:
-	    <itemizedlist>
-		<listitem>The list of nodes available for parent of new system or components of new system </listitem>
-	    </itemizedlist>
-	</sect3>
-	<sect3><title>Extension of</title>
-	    <itemizedlist>
-		<listitem><xref linkend="uc_006"/></listitem>
-	    </itemizedlist>
-	</sect3>
-	<sect3><title>Extended by</title>
-	    <itemizedlist>
-	    </itemizedlist>
-	</sect3>
-    </sect2>
+	<sect2 id="uc_006"><title>UC_006 Instruments of creating new sysem</title>
+	    <sect3><title>Description</title>
+		CLIENT requests creating new system - SYSTEM offers the following instruments of creating and editing system:
+		<itemizedlist>
+		    <listitem>The list of nodes available for parent of new system or components of new system </listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Extension of</title>
+		<itemizedlist>
+		    <listitem><xref linkend="uc_006"/></listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Extended by</title>
+		<itemizedlist>
+		</itemizedlist>
+	    </sect3>
+	</sect2>
 
-    <sect2 id="uc_007"><title>UC_007 Creating new sysem: list of nodes available for creating new system</title>
-	<sect3><title>Description</title>
-	    CLIENT is going to create new system - SYSTEM offers the instruments of creating  the system - CLIENT requests the list of nodes available as parent of new system, 
-	    the list is separated into the following groups:
-	    <itemizedlist>
-		<listitem>The list of native nodes - the nodes that are provided by factory/providers of native nodes</listitem>
-		<listitem>The list of modules</listitem>
-		<listitem>The list of nodes being containded in the current root.</listitem>
-	    </itemizedlist>
-	</sect3>
-	<sect3><title>Details</title>
-	    <simpara>Only the "alive" nodes can be used for inheriting, so the root node from required module needs to be included into the current system first. After that the 
-		nodes contained in the module will be available for creating and enhancing new system.
-	    </simpara>
-	</sect3>
-	<sect3><title>Extension of</title>
-	    <itemizedlist>
-		<listitem><xref linkend="uc_006"/></listitem>
-	    </itemizedlist>
-	</sect3>
-	<sect3><title>Extended by</title>
-	    <itemizedlist>
-	    </itemizedlist>
-	</sect3>
-    </sect2>
+	<sect2 id="uc_007"><title>UC_007 Creating new sysem: list of nodes available for creating new system</title>
+	    <sect3><title>Description</title>
+		CLIENT is going to create new system - SYSTEM offers the instruments of creating  the system - CLIENT requests the list of nodes available as parent of new system, 
+		the list is separated into the following groups:
+		<itemizedlist>
+		    <listitem>The list of native nodes - the nodes that are provided by factory/providers of native nodes</listitem>
+		    <listitem>The list of modules</listitem>
+		    <listitem>The list of nodes being containded in the current root.</listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Details</title>
+		<simpara>Only the "alive" nodes can be used for inheriting, so the root node from required module needs to be included into the current system first. After that the 
+		    nodes contained in the module will be available for creating and enhancing new system.
+		</simpara>
+	    </sect3>
+	    <sect3><title>Extension of</title>
+		<itemizedlist>
+		    <listitem><xref linkend="uc_006"/></listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Extended by</title>
+		<itemizedlist>
+		</itemizedlist>
+	    </sect3>
+	</sect2>
 
 	<sect2 id="uc_008"><title>UC_008 Option of phenotypic modification or mutating.</title>
 	    <sect3><title>Actors</title>
@@ -163,7 +163,10 @@
 		</itemizedlist>
 	    </sect3>
 	    <sect3><title>Preconditions</title> 
-		<simpara>There is some node [N_a]. Node [N_a] has some child ]N_a~1].  </simpara>
+		<itemizedlist>
+		    <listitem>There is some node [N_a]. Node [N_a] has some child ]N_a~1].  </listitem>
+		    <listitem>Option of phenotypic modification, ref <xref linkend="uc_009"/>, is enabled.</listitem>
+		</itemizedlist>
 	    </sect3>
 	    <sect3><title>Assumptions</title> </sect3>
 	    <sect3><title>Normal</title>
@@ -186,6 +189,79 @@
 	    <sect3><title>Extended by</title>
 		<itemizedlist>
 		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Discussion</title> 
+	    </sect3>
+	    <sect3><title>Clarification</title>
+	    </sect3>
+	</sect2>
+
+	<sect2 id="uc_009"><title>UC_009 Option of enabling of phenotypic modification</title>
+	    <sect3><title>Actors</title>
+		<itemizedlist>
+		    <listitem> USER: some user working with STUDIO</listitem>
+		    <listitem> SYSTEM: some system that has specification and can be created in STUDIO environment</listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Preconditions</title> 
+		<simpara>There is some node [N_a] in SYSTEM. There is dependent mutation [M_N_a] in SYSTEM</simpara>
+	    </sect3>
+	    <sect3><title>Assumptions</title> </sect3>
+	    <sect3><title>Normal</title>
+		<itemizedlist>
+		    <listitem>USER loads SYSTEM in STUDIO, STUDIO allows USER to set the option of enabling of 
+		    phenotypic modification, STUDIO by default disables this option</listitem>
+		    <listitem>USER selects the option of enabling phenotypic modifications </listitem>
+		    <listitem>USER request change of node [N_a], STUDIO specifies the change not as mutation but
+			as phenotypic modification in SYSTEM with the rank greater than [M_N_a].
+			</listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Alternative</title> <simpara>Alternative flows</simpara> </sect3>
+	    <sect3><title>Exceptions</title> </sect3>
+	    <sect3><title>Variations</title> </sect3>
+	    <sect3><title>Extends</title>
+	    </sect3>
+	    <sect3><title>Extended by</title>
+		<itemizedlist>
+		    <xref linkend="uc_008"/>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Discussion</title> 
+	    </sect3>
+	    <sect3><title>Clarification</title>
+	    </sect3>
+	</sect2>
+
+	<sect2 id="uc_010"><title>UC_010 Notification to user of system reloading required</title>
+	    <sect3><title>Actors</title>
+		<itemizedlist>
+		    <listitem> USER: some user working with STUDIO</listitem>
+		    <listitem> SYSTEM: some system that has specification and can be created in STUDIO environment</listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Preconditions</title> 
+		<simpara>There is some node [N_a] in SYSTEM. There is a child [N_a~1] of [N_a] in SYSTEM</simpara>
+	    </sect3>
+	    <sect3><title>Assumptions</title> </sect3>
+	    <sect3><title>Normal</title>
+		<itemizedlist>
+		    <listitem>USER loads SYSTEM in STUDIO </listitem>
+		    <listitem>USER request change of node [N_a], STUDIO detects that there is at least one child 
+			of [N_a], STUDIO notifies the user that the change will affect the childs and user should
+			reload the system after mutation to make the changes in child actual.
+			</listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Alternative</title> <simpara>Alternative flows</simpara> </sect3>
+	    <sect3><title>Exceptions</title> </sect3>
+	    <sect3><title>Variations</title> </sect3>
+	    <sect3><title>Extends</title>
+		<itemizedlist>
+		    <xref linkend="uc_009"/>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Extended by</title>
 	    </sect3>
 	    <sect3><title>Discussion</title> 
 	    </sect3>

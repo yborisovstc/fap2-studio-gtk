@@ -1,6 +1,34 @@
 #include "stenv.h"
 #include "provdef.h"
 
+// Setting
+
+template <typename T> const T& StSetting<T>::Get(const T& aSetting) const
+{
+    return mData;
+}
+
+template <typename T> void StSetting<T>::Set(const T& aSetting)
+{
+    if (aSetting != mData) {
+	mData = aSetting;
+	mSigChanged.emit();
+    }
+}
+
+StSettings::~StSettings()
+{
+}
+
+void* StSettings::DoGetSetting(TStSett aSettId)
+{
+    void* res = NULL;
+    switch (aSettId) {
+	case ESts_EnablePhenoModif: res =  &mEnablePhenoModif;
+    }
+    return res;
+}
+
 StEnv::StEnv(MMdlObserver* aMdlObs): iMdlObs(aMdlObs)
 {
     iCrpProv = new DefCrpProv(iMdlObs);

@@ -14,7 +14,7 @@ string IncapsDrp::EType()
     return ":Elem:Vert:Syst:Incaps";
 }
 
-IncapsDrp::IncapsDrp(Elem* aElem, const MCrpProvider& aCrpProv): SysDrp(aElem, aCrpProv)
+IncapsDrp::IncapsDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): SysDrp(aElem, aCrpProv, aStEnv)
 {
 }
 

@@ -31,7 +31,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
     public:
 	static string EType();
     public:
-	VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv);
+	VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~VertDrpw_v1();
     public:
 	// From MCrpMgr
@@ -76,7 +76,7 @@ class VertDrp: public MDrp
 	static const string& Type();
 	static string EType();
     public:
-	VertDrp(Elem* aElem, const MCrpProvider& aCrpProv);
+	VertDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~VertDrp();
 	// From MDrp
 	virtual void *DoGetObj(const string& aName);
