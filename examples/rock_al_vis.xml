@@ -137,7 +137,6 @@
         <cont node="(StateVar:)coords/(Edge:)97900293/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(StVarInp:)Inp_velocity/(StInpSocket:)Int/PinData"/>
         <cont node="(StateVar:)coords/(Edge:)97900293/(Prop:)P1" val=""/>
         <cont node="(StateVar:)coords/(Edge:)97900293/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock/(StateVar:)coords/(Elem:)Capsule/(StVarInp:)Inp_velocity/(StInpSocket:)Int/PinData"/>
-        <change node="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/rock" attr="id" val="rock_simple"/>
       </node>
       <node id="rock_vis" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des">
         <node id="Components" parent="Vert">
@@ -294,31 +293,22 @@
               <cont node="P1" ref="../../Drawing_Base/Child"/>
               <cont node="P2" ref="../../Capsule/Vis_Child/Int"/>
             </node>
-            <node id="X" parent="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock_vis/(Vert:)Components/(StateVarC:)Vect_to_X"/>
-            <node id="Y" parent="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock_vis/(Vert:)Components/(Vect_to_X:)Vect_to_Y"/>
-            <node id="W" parent="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock_vis/(Vert:)Components/(StateVarC:)Vect_to_X"/>
-            <node id="H" parent="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock_vis/(Vert:)Components/(Vect_to_X:)Vect_to_Y"/>
             <node id="519944587" parent="Edge">
-              <cont node="P1" ref="../../X/Capsule/Out"/>
               <cont node="P2" val=""/>
             </node>
             <node id="718270774" parent="Edge">
               <cont node="P1" ref="../../Capsule/Inp_Coords_XY/Int/PinData"/>
               <cont node="P1" ref="../../Capsule/Inp_Coords_XY/Int/PinData"/>
               <cont node="P1" ref="../../Capsule/Inp_Coords_XY/Int"/>
-              <cont node="P2" ref="../../X/Capsule/Inp_vec"/>
             </node>
             <node id="1978798189" parent="Edge">
               <cont node="P1" ref="../../Capsule/Inp_Coords_XY/Int"/>
-              <cont node="P2" ref="../../Y/Capsule/Inp_vec"/>
             </node>
             <node id="1504122545" parent="Edge">
               <cont node="P1" ref="../../Capsule/Inp_Size_WH/Int"/>
-              <cont node="P2" ref="../../W/Capsule/Inp_vec"/>
             </node>
             <node id="1578656183" parent="Edge">
               <cont node="P1" ref="../../Capsule/Inp_Size_WH/Int"/>
-              <cont node="P2" ref="../../H/Capsule/Inp_vec"/>
             </node>
           </node>
           <node id="Vect_to_X" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
@@ -350,6 +340,7 @@
           </node>
         </node>
       </node>
+      <change node="rock" attr="id" val="rock_simple"/>
     </node>
     <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
     <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>

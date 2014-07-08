@@ -265,6 +265,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	relayout_required = false;
 	Allocation& avz0_alc = iLaPars.begin()->first;
 	int edge_park_x = avz0_alc.get_x() + avz0_alc.get_width();
+	int edge_park_ex = edge_park_x + KEvtGap;
 	int edge_park_y = KViewCompGapHight/2;
 	for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	    MCrp* crp = it->second;
@@ -304,7 +305,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		    medgecrp->SetCp2Coord(p2coord);
 		}
 		else if (!crp->Dragging()) {
-		    p2coord.width = edge_park_x + KEdgeGridCell;
+		    p2coord.width = edge_park_ex;
 		    p2coord.height =  edge_park_y;
 		    medgecrp->SetCp2Coord(p2coord);
 		}
