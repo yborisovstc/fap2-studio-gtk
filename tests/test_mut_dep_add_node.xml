@@ -17,6 +17,7 @@ to -test- after dependent mutation. Try to save and reopen the mutated system -
 no error can occur.
 2. Try to add some node to elem2. Studio will detect that there are affecting dep (of type ENa_Parent,
 from child creatng mut). If pheno modif is disabled then Studio will notify the user that he will need to refresh the system.
+3. Try to add som node to elem1. Studio will not find any critical of affecting relations so will mutate w/o notification.
 -->
 
 <!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 

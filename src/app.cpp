@@ -192,6 +192,7 @@ void App::on_action_new()
     int result = dialog.run();
     if (result == Gtk::RESPONSE_OK) {
 	std::string filename = dialog.get_filename();
+	iSpecFileName.clear();
 	OpenFile(filename, true);
 	iSaved = EFalse;
     }
@@ -216,12 +217,12 @@ void App::on_action_open()
 
 void App::on_action_recreate()
 {
-    if (!iSaved || iDesObserver->IsModelChanged()) {
+    if (iDesObserver->IsModelChanged()) {
 	SaveTmp();
+	string cursor = iHDetView->GetCursor();
+	OpenFile(GetDefaultTmpFileName(), true);
+	iHDetView->SetCursor(cursor);
     }
-    string cursor = iHDetView->GetCursor();
-    OpenFile(GetDefaultTmpFileName(), false);
-    iHDetView->SetCursor(cursor);
 }
 
 void App::on_action_save()
@@ -321,7 +322,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
 	iMainWnd->set_title(FormTitle(aFileName));
     }
     else {
-	iMainWnd->set_title(FormTitle(KTitleUnsaved));
+	iMainWnd->set_title(FormTitle(iSpecFileName.empty() ? KTitleUnsaved : iSpecFileName));
     }
 }
 

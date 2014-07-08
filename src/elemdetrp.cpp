@@ -350,6 +350,7 @@ void ElemDetRp::on_node_dropped(const std::string& aUri)
 void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNewName)
 {
     // Get major dependency
+    /*
     Elem* dnode = iElem->GetNode(aNodeUri);
     Elem::TMDep mdep = dnode->GetMajorDep();
     Elem* mnode = mdep.first.first;
@@ -357,16 +358,22 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 	mnode = iElem;
     }
     Elem* mutelem = mnode->GetAttachingMgr();
-    GUri duri;
-    iElem->GetUri(duri, mutelem);
-    ChromoNode smutr = mutelem->Mutation().Root();
-    GUri nuri = duri + GUri(aNodeUri);
-    ChromoNode change = smutr.AddChild(ENt_Change);
-    change.SetAttr(ENa_MutNode, nuri.GetUri());
-    change.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
-    change.SetAttr(ENa_MutVal, aNewName);
-    mutelem->Mutate();
-    Refresh();
+    */
+
+    Elem* dnode = iElem->GetNode(aNodeUri);
+    Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Node);
+    if (mutelem != NULL) {
+	GUri duri;
+	iElem->GetRUri(duri, mutelem);
+	ChromoNode smutr = mutelem->Mutation().Root();
+	GUri nuri = duri + GUri(aNodeUri);
+	ChromoNode change = smutr.AddChild(ENt_Change);
+	change.SetAttr(ENa_MutNode, nuri.GetUri());
+	change.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
+	change.SetAttr(ENa_MutVal, aNewName);
+	mutelem->Mutate();
+	Refresh();
+    }
 }
 
 void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeighborUri)
@@ -397,7 +404,7 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
     }
 }
 
-Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeType aMutType) {
+Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType) {
     Elem* res = aNode;
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
@@ -416,18 +423,20 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeType aMutType) {
 	}
 	deptype = dep.second;
     }
-    if (res != aNode && !ena_pheno) {
+    if (res != aMnode && !aMnode->IsComp(res) && !ena_pheno) {
+	// Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
 	int dres = RESPONSE_OK;
 	MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
 		false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
 	dres = dlg->run();
 	delete dlg;
 	if (dres == RESPONSE_CANCEL) {
+	    // User reject pheno mutation proposed, just cancel operation
 	    res = NULL;
 	}
     }
     // Checking affecting deps
-    if (res != NULL && res == aNode) {
+    if (res != NULL) {
 	dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Affecting);
 	if (dep.first.first != NULL) {
 	    Rank rank;
@@ -440,8 +449,8 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeType aMutType) {
 		res = dep.first.first;
 	    }
 	}
-	if (res != aNode) {
-		// There is affecting dep
+	if (res != aMnode && !aMnode->IsComp(res)) {
+	    // There is affecting dep
 	    if (!ena_pheno) {
 		// Pheno modif are disabled, notify the user of nececcity of reload
 		res = aNode;
@@ -487,7 +496,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeType aMutType) {
 	    res = res->GetCommonOwner(aNode);
 	}
 	*/
-	res = res->GetCommonOwner(aNode);
+	res = res->GetCommonOwner(aMnode);
     }
     return res;
 }
@@ -495,7 +504,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aNode, TNodeType aMutType) {
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri)
 {
     // Mutate appending
-    Elem* mutelem = GetObjForSafeMut(iElem, ENt_Node);
+    Elem* mutelem = GetObjForSafeMut(iElem, iElem, ENt_Node);
     if (mutelem != NULL) {
 	ChromoNode mut = mutelem->Mutation().Root();
 	ChromoNode rmut = mut.AddChild(ENt_Node);
@@ -572,7 +581,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
 {
     Elem* node = iElem->GetNode(aNodeUri);
-    Elem* mutelem = GetObjForSafeMut(node, ENt_Cont);
+    Elem* mutelem = GetObjForSafeMut(iElem, node, ENt_Cont);
     __ASSERT(mutelem != NULL);
     if (aRef) {
 	Elem* rnode = node->GetNode(aNewContent);
