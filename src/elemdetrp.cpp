@@ -361,7 +361,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
     */
 
     Elem* dnode = iElem->GetNode(aNodeUri);
-    Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Node);
+    Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Change);
     if (mutelem != NULL) {
 	GUri duri;
 	iElem->GetRUri(duri, mutelem);
@@ -408,20 +408,18 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
     Elem* res = aNode;
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
-    TNodeAttr deptype = ENa_Unknown;
+    Rank noderank;
+    res->GetRank(noderank, res->Chromos().Root());
+    Rank rank = noderank;
     // Checking critical deps
     Elem::TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
     if (dep.first.first != NULL) {
-	Rank rank;
-	res->GetRank(rank, res->Chromos().Root());
 	Rank deprank;
-	ChromoNode depnode = aNode->Chromos().CreateNode(dep.first.second);
-	// Using combined calc of rank because of possibility that mut can be deattached
-	dep.first.first->GetRank(deprank, depnode);
+	Elem::GetDepRank(dep, deprank);
 	if (deprank > rank && !deprank.IsRankOf(rank)) {
 	    res = dep.first.first;
+	    rank = deprank;
 	}
-	deptype = dep.second;
     }
     if (res != aMnode && !aMnode->IsComp(res) && !ena_pheno) {
 	// Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
@@ -437,19 +435,21 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
     }
     // Checking affecting deps
     if (res != NULL) {
+	bool isaffdep = false;
 	dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Affecting);
 	if (dep.first.first != NULL) {
-	    Rank rank;
-	    res->GetRank(rank, res->Chromos().Root());
 	    Rank deprank;
-	    ChromoNode depnode = aNode->Chromos().CreateNode(dep.first.second);
-	    // Using combined calc of rank because of possibility that mut can be deattached
-	    dep.first.first->GetRank(deprank, depnode);
+	    Elem::GetDepRank(dep, deprank);
 	    if (deprank > rank && !deprank.IsRankOf(rank)) {
 		res = dep.first.first;
+		rank = deprank;
+		isaffdep = true;
+	    }
+	    else if (deprank > noderank && !deprank.IsRankOf(noderank)) {
+		isaffdep = true;
 	    }
 	}
-	if (res != aMnode && !aMnode->IsComp(res)) {
+	if (isaffdep && res != aMnode && !aMnode->IsComp(res)) {
 	    // There is affecting dep
 	    if (!ena_pheno) {
 		// Pheno modif are disabled, notify the user of nececcity of reload
