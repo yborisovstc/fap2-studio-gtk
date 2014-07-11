@@ -3,6 +3,8 @@
 #include "datacrp.h"
 #include "common.h"
 
+using namespace Gtk;
+
 //  Connection point representation
 ValueRp::ValueRp(Elem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs)
 {
@@ -77,10 +79,12 @@ void *DataCrp::DoGetObj(const string& aName)
 void DataCrp::on_size_allocate(Gtk::Allocation& aAllc)
 {
     IncapsCrp::on_size_allocate(aAllc);
-    Gtk::Requisition head_req = iHead->size_request();
+    Gtk::Requisition main_req;
+    IncapsCrp::on_size_request(&main_req);
+    Gtk::Requisition val_req = iValue->size_request();
     // Allocate value
-    Gtk::Allocation val_alc = Gtk::Allocation(iBodyAlc.get_x(), iBodyAlc.get_y() + head_req.height + KViewCompEmptyBodyHight/2,
-	    iBodyAlc.get_width(), aAllc.get_height() - head_req.height - KViewCompEmptyBodyHight);
+    int vx = (aAllc.get_width() - val_req.width)/2;
+    Allocation val_alc = Allocation(vx, iBodyAlc.get_y() + main_req.height, val_req.width, val_req.height);
     iValue->size_allocate(val_alc);
 }
 
@@ -89,7 +93,7 @@ void DataCrp::on_size_request(Gtk::Requisition* aReq)
     IncapsCrp::on_size_request(aReq);
     // Updating with size of value
     Gtk::Requisition value_req = iValue->size_request();
-    aReq->height = max(aReq->height, value_req.height);
+    aReq->height = aReq->height + value_req.height + KViewElemCrpInnerBorder;
     aReq->width = max(aReq->width, value_req.width + 2*KViewElemCrpInnerBorder); 
 }
 
