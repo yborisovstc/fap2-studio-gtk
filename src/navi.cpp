@@ -671,7 +671,7 @@ bool HierTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
 
 void HierTreeMdl::OnCompDeleting(Elem& aComp)
 {
-    std::cout << "HierTreeMdl::OnCompDeleting: [" << aComp.Name() << "]" << std::endl;
+    //std::cout << "HierTreeMdl::OnCompDeleting: [" << aComp.Name() << "]" << std::endl;
     //UpdateStamp();
     iterator iter;
     iter.set_stamp(iStamp);
@@ -682,7 +682,7 @@ void HierTreeMdl::OnCompDeleting(Elem& aComp)
 
 void HierTreeMdl::OnCompAdding(Elem& aComp)
 {
-    std::cout << "HierTreeMdl::OnCompAdding: [" << aComp.Name() << "]" << std::endl;
+    //std::cout << "HierTreeMdl::OnCompAdding: [" << aComp.Name() << "]" << std::endl;
     //UpdateStamp();
     // Nodify view of all the internal components. This is required because there is no
     // notif from internal comps - they are created before element gets inserted to the hier

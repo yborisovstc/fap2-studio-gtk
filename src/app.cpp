@@ -137,7 +137,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false)
     iLogFileName = GetDefaultLogFileName();
     // Settings defaults
     MStSetting<bool>& ena_pheno = iStEnv->Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno);
-    ena_pheno.Set(false);
+    ena_pheno.Set(true);
     // Create main window
     iMainWnd = new MainWnd();
     iMainWnd->maximize();

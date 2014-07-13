@@ -36,6 +36,25 @@
       <node id="718919" parent="Edge"/>
       <cont node="718919/P2" ref="../../Mtr_Arg_2/Capsule/out"/>
       <cont node="718919/P1" ref="../../Add_Mtr/Capsule/Inp"/>
+      <rm node="(DataTVar:)Given_vect"/>
+      <cont node="Result/Value" val="MF,R,2 1 0 0 1"/>
+      <node id="Mpl_Arg_1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <cont node="Mpl_Arg_1/Value" val="MF,R,2 1 0 0 1"/>
+      <node id="Mpl_Arg_2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <cont node="Mpl_Arg_2/Value" val="MF,R,2 1 0 0 1"/>
+      <node id="Mpln_mtrx" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FMplncVar"/>
+      <node id="94915089" parent="Edge"/>
+      <node id="935794736" parent="Edge"/>
+      <node id="979731740" parent="Edge"/>
+      <cont node="935794736/P1" ref="../../Result/Capsule/inp"/>
+      <cont node="94915089/P2" val=""/>
+      <cont node="935794736/P2" ref="../../Mpln_mtrx/Capsule/out"/>
+      <cont node="94915089/P1" ref="../../Mpln_mtrx/Capsule/Inp1"/>
+      <cont node="94915089/P2" ref="../../Mpl_Arg_1/Capsule/out"/>
+      <cont node="979731740/P2" ref="../../Mpln_mtrx/Capsule/Inp2"/>
+      <cont node="979731740/P1" ref="../../Mpl_Arg_2/Capsule/out"/>
+      <cont node="Mpl_Arg_1/Value" val="MF,R,2 1 2 3 4"/>
+      <cont node="Mpl_Arg_2/Value" val="MF,R,2 1 1 0 1"/>
     </node>
     <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
     <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>

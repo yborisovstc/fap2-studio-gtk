@@ -409,10 +409,13 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
     Rank noderank;
+    Rank mnoderank;
     res->GetRank(noderank, res->Chromos().Root());
+    aMnode->GetRank(mnoderank, aMnode->Chromos().Root());
     Rank rank = noderank;
     // Checking critical deps
-    Elem::TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
+    //Elem::TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
+    Elem::TMDep dep = aNode->GetMajorDep();
     if (dep.first.first != NULL) {
 	Rank deprank;
 	Elem::GetDepRank(dep, deprank);
@@ -421,7 +424,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 	    rank = deprank;
 	}
     }
-    if (res != aMnode && !aMnode->IsComp(res) && !ena_pheno) {
+    if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
 	// Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
 	int dres = RESPONSE_OK;
 	MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
