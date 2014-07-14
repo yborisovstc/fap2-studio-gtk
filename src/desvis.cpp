@@ -224,6 +224,18 @@ bool AVisWidget::GetDataInt(const string& aInpUri, int& aData)
 	    aData = mdata->Value();
 	    res = true;
 	}
+	else {
+	    // Trying variable data
+	    MDVarGet* mvget = (MDVarGet*) einp->GetSIfiC(MDVarGet::Type(), this);
+	    if (mvget != NULL) {
+		Elem* dgetbase = mvget->VarGetBase();
+		MDIntGet* mdata = (MDIntGet*) dgetbase->GetObj(mdata);
+		if (mdata != NULL) {
+		    aData = mdata->Value();
+		    res = true;
+		}
+	    }
+	}
     }
     else {
 	Logger()->Write(MLogRec::EErr, this, "Input [%s] not exists", aInpUri.c_str());
