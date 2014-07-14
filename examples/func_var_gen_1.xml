@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Modules" parent="Elem">
+    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
+    <move id="file:/usr/share/grayb/modules/data.xml#"/>
+    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+    <move id="file:/usr/share/grayb/modules/des.xml#"/>
+  </node>
+  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
+    <node id="Ticker_edge" parent="Edge"/>
+    <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
+      <node id="Gen_Data" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <cont node="Gen_Data/Value" val="SF 1.2"/>
+    </node>
+    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
+    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
+  </node>
+</node>
