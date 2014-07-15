@@ -13,6 +13,20 @@
     <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
       <node id="Gen_Data" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
       <cont node="Gen_Data/Value" val="SF 1.2"/>
+      <node id="Arg_1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <node id="Arg_2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FAddVar"/>
+      <cont node="Arg_1/Value" val="SF 3"/>
+      <cont node="Arg_2/Value" val="SF 4"/>
+      <node id="1144240682" parent="Edge"/>
+      <cont node="1144240682/P2" ref="../../Arg_1/Capsule/out"/>
+      <cont node="1144240682/P1" ref="../../Add/Capsule/Inp"/>
+      <node id="704183139" parent="Edge"/>
+      <cont node="704183139/P2" ref="../../Arg_2/Capsule/out"/>
+      <cont node="704183139/P1" ref="../../Add/Capsule/Inp"/>
+      <node id="449261987" parent="Edge"/>
+      <cont node="449261987/P2" ref="../../Add/Capsule/out"/>
+      <cont node="449261987/P1" ref="../../Gen_Data/Capsule/inp"/>
     </node>
     <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
     <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>

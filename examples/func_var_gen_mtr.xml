@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Modules" parent="Elem">
+    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
+    <move id="file:/usr/share/grayb/modules/data.xml#"/>
+    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+    <move id="file:/usr/share/grayb/modules/des.xml#"/>
+  </node>
+  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
+    <node id="Ticker_edge" parent="Edge"/>
+    <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
+      <node id="Arg1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <cont node="Arg1/Value" val="MF,D,2 1 1"/>
+      <node id="Arg2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <cont node="Arg2/Value" val="MF,D,2 3 4"/>
+      <node id="Res" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <cont node="Res/Value" val="MF,R,2,2 0 0 0 0 "/>
+      <node id="Mpl" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FMplncVar"/>
+      <node id="414367123" parent="Edge"/>
+      <cont node="414367123/P2" ref="../../Arg1/Capsule/out"/>
+      <cont node="414367123/P1" ref="../../Mpl/Capsule/Inp1"/>
+      <node id="275458525" parent="Edge"/>
+      <cont node="275458525/P2" ref="../../Arg2/Capsule/out"/>
+      <cont node="275458525/P1" ref="../../Mpl/Capsule/Inp2"/>
+      <node id="1204303732" parent="Edge"/>
+      <cont node="1204303732/P2" ref="../../Mpl/Capsule/out"/>
+      <cont node="1204303732/P1" ref="../../Res/Capsule/inp"/>
+    </node>
+    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
+    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
+  </node>
+</node>
