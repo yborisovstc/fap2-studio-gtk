@@ -27,6 +27,25 @@
       <node id="1204303732" parent="Edge"/>
       <cont node="1204303732/P2" ref="../../Mpl/Capsule/out"/>
       <cont node="1204303732/P1" ref="../../Res/Capsule/inp"/>
+      <cont node="Res/Value" val="MF,V,2 3 4"/>
+      <cont node="Arg2/Value" val="MF,V,2 3 4"/>
+      <cont node="Arg2/Value" val="MF,V,2 5 4"/>
+      <cont node="Res/Value" val="MF,R,2,2"/>
+      <cont node="Arg2/Value" val="MF,R,2,2 5 4 8 9 "/>
+      <cont node="Res/Value" val="MF,R,2,2 0 0 0 0"/>
+      <cont node="Arg2/Value" val="MF,R,2,2 5 4 8 6"/>
+      <cont node="Arg2/Value" val="MF,R,2,2 5 4 8 6 "/>
+      <cont node="Arg2/Value" val="MF,R,2,2 5 4 8 6"/>
+      <cont node="Arg1/Value" val="MF,D,2 1 2"/>
+      <node id="Res_inv" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <cont node="Res_inv/Value" val="MF,D,2 0 0"/>
+      <node id="Inv" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FMplinvVar"/>
+      <node id="319280966" parent="Edge"/>
+      <cont node="319280966/P2" ref="../../Arg1/Capsule/out"/>
+      <cont node="319280966/P1" ref="../../Inv/Capsule/Inp"/>
+      <node id="860286726" parent="Edge"/>
+      <cont node="860286726/P2" ref="../../Inv/Capsule/out"/>
+      <cont node="860286726/P1" ref="../../Res_inv/Capsule/inp"/>
     </node>
     <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
     <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
