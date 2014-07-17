@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Modules" parent="Elem">
+    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
+    <move id="file:/usr/share/grayb/modules/data.xml#"/>
+    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+    <move id="file:/usr/share/grayb/modules/des.xml#"/>
+  </node>
+  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
+    <node id="Ticker_edge" parent="Edge"/>
+    <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
+      <node id="Arg" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <cont node="Arg/Value" val="MF,V,2 3 4"/>
+      <node id="Res1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
+      <cont node="Res1/Value" val="SF 0"/>
+      <node id="AtI" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVarC:)FAtVarI">
+        <cont node="Index/Value" val="SI 0"/>
+      </node>
+      <node id="1578842908" parent="Edge"/>
+      <cont node="1578842908/P2" ref="../../Res1/Capsule/inp"/>
+      <cont node="1578842908/P1" ref="../../AtI/Capsule/Out"/>
+      <node id="1548203262" parent="Edge"/>
+      <cont node="1548203262/P2" ref="../../AtI/Capsule/Inp"/>
+      <cont node="1548203262/P1" ref="../../Arg/Capsule/out"/>
+    </node>
+    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
+    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
+  </node>
+</node>

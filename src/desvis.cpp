@@ -228,7 +228,7 @@ bool AVisWidget::GetDataInt(const string& aInpUri, int& aData)
 	    // Trying variable data
 	    MDVarGet* mvget = (MDVarGet*) einp->GetSIfiC(MDVarGet::Type(), this);
 	    if (mvget != NULL) {
-		MDIntGet* mdata = (MDIntGet*) mvget->VarGetBase()->GetObj(mdata);
+		MDIntGet* mdata = mvget->GetDObj(mdata);
 		if (mdata != NULL) {
 		    aData = mdata->Value();
 		    res = true;
