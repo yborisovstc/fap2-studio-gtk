@@ -53,19 +53,32 @@ class AWindow: public Elem, public MVisContainer
 	MSDesEnv* iSDesEnv;
 };
 
+
 // Base of Agent of widgets
 class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public MDesObserver
 {
     private:
-	class ParentSizeProv: public MDIntGet {
+	class ParentSize {
 	    public:
-		enum TData { ED_W, ED_H };
+	    enum TData { ED_W, ED_H };
+	    ParentSize() {};
 	    void SetData(TData aData, AVisWidget* aHost) { iData = aData; iHost = aHost;};
-	    // From MDIntGet
-	    virtual TInt Value();
-	    private:
+	    protected:
 	    TData iData;
 	    AVisWidget* iHost;
+	};
+	class ParentSizeProv: public ParentSize, public MDIntGet {
+	    public:
+	    // From MDIntGet
+	    virtual TInt Value();
+	};
+	class ParentSizeProvVar: public ParentSize, public MDVarGet, public MDtGet<Sdata<int> > {
+	    public:
+	    // From MDVarGet
+	    virtual string VarGetIfid() const;
+	    virtual void *DoGetDObj(const char *aName);
+	    // From MDtGet
+	    virtual void DtGet(Sdata<int>& aData);
 	};
     public:
 	static const char* Type() { return "AVisWidget";};
@@ -99,6 +112,8 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	Widget* iWidget;
 	ParentSizeProv iParProvW;
 	ParentSizeProv iParProvH;
+	ParentSizeProvVar iParProvVarW;
+	ParentSizeProvVar iParProvVarH;
 	int iY;
 	int iX;
 	int iW;

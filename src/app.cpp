@@ -217,12 +217,15 @@ void App::on_action_open()
 
 void App::on_action_recreate()
 {
+    string cursor = iHDetView->GetCursor();
     if (iDesObserver->IsModelChanged()) {
 	SaveTmp();
-	string cursor = iHDetView->GetCursor();
 	OpenFile(GetDefaultTmpFileName(), true);
-	iHDetView->SetCursor(cursor);
     }
+    else {
+	OpenFile(iSpecFileName, false);
+    }
+    iHDetView->SetCursor(cursor);
 }
 
 void App::on_action_save()

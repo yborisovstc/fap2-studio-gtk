@@ -56,6 +56,24 @@ TInt AVisWidget::ParentSizeProv::Value()
     return iHost->GetParData(iData);
 }
 
+string AVisWidget::ParentSizeProvVar::VarGetIfid() const 
+{ 
+    return MDtGet<Sdata<int> >::Type();
+}
+
+void AVisWidget::ParentSizeProvVar::DtGet(Sdata<int>& aData)
+{
+    aData.mValid = true;
+    aData.mData = iHost->GetParData(iData);
+}
+
+void *AVisWidget::ParentSizeProvVar::DoGetDObj(const char *aName)
+{
+    void* res = NULL;
+    if (strcmp(aName, MDtGet<Sdata<int> >::Type()) == 0) res = (MDtGet<Sdata<int> >*) this;
+    return res;
+}
+
 string AVisWidget::PEType()
 {
     return Elem::PEType() + GUri::KParentSep + Type();
@@ -68,6 +86,8 @@ AVisWidget::AVisWidget(const string& aName, Elem* aMan, MEnv* aEnv): Elem(aName,
     SetParent(Type());
     iParProvW.SetData(ParentSizeProv::ED_W, this);
     iParProvH.SetData(ParentSizeProv::ED_H, this);
+    iParProvVarW.SetData(ParentSizeProv::ED_W, this);
+    iParProvVarH.SetData(ParentSizeProv::ED_H, this);
 }
 
 AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
@@ -77,6 +97,8 @@ AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
     SetParent(Elem::PEType());
     iParProvW.SetData(ParentSizeProv::ED_W, this);
     iParProvH.SetData(ParentSizeProv::ED_H, this);
+    iParProvVarW.SetData(ParentSizeProv::ED_W, this);
+    iParProvVarH.SetData(ParentSizeProv::ED_H, this);
 }
 
 void *AVisWidget::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
@@ -117,6 +139,27 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	}
 	else if (aCtx->IsInContext(cph)) {
 	    res = (MDIntGet*) &iParProvH;
+	}
+    }
+    else if (strcmp(aName.c_str(), MDVarGet::Type()) == 0 || strcmp(aName.c_str(), MDtGet<Sdata<int> >::Type()) == 0) {
+	bool isdvar = strcmp(aName.c_str(), MDVarGet::Type()) == 0;
+	Elem* cpw = GetNode("../../Prov_PW");
+	Elem* cph = GetNode("../../Prov_PH");
+	if (aCtx->IsInContext(cpw)) {
+	    if (isdvar) {
+		res = (MDVarGet*) &iParProvVarW;
+	    }
+	    else {
+		res = (MDtGet<Sdata<int> >*) &iParProvVarW;
+	    }
+	}
+	else if (aCtx->IsInContext(cph)) {
+	    if (isdvar) {
+		res = (MDVarGet*) &iParProvVarW;
+	    }
+	    else {
+		res = (MDtGet<Sdata<int> >*) &iParProvVarH;
+	    }
 	}
     }
     else {
@@ -228,9 +271,13 @@ bool AVisWidget::GetDataInt(const string& aInpUri, int& aData)
 	    // Trying variable data
 	    MDVarGet* mvget = (MDVarGet*) einp->GetSIfiC(MDVarGet::Type(), this);
 	    if (mvget != NULL) {
-		MDIntGet* mdata = mvget->GetDObj(mdata);
+		MDtGet<Sdata<int> >* mdata = mvget->GetDObj(mdata);
 		if (mdata != NULL) {
-		    aData = mdata->Value();
+		    Sdata<int> sd;
+		    mdata->DtGet(sd);
+		    if (sd.mValid) {
+			aData = sd.mData;
+		    }
 		    res = true;
 		}
 	    }

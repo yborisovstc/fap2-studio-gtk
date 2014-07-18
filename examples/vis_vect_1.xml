@@ -20,6 +20,8 @@
       <node id="WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
         <cont node="Data/Confirmed/Value" val="MI,V,2 80 80"/>
         <cont node="Data/Prepared/Value" val="MI,V,2 80 80"/>
+        <cont node="Data/Confirmed/Value" val="MI,V,2 40 40"/>
+        <cont node="Data/Prepared/Value" val="MI,V,2 40 40"/>
       </node>
       <node id="469340352" parent="Edge"/>
       <cont node="469340352/P2" ref="../../XY/Capsule/Out"/>
@@ -35,6 +37,26 @@
       <node id="1312564857" parent="Edge"/>
       <cont node="1312564857/P2" ref="../../Drw/Capsule/Child"/>
       <cont node="1312564857/P1" ref="../../Fixed_layout/Parent"/>
+      <node node="(StateVarC:)XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" id="Delta"/>
+      <cont node="XY/Delta/Value" val="MI,V,2 20 20"/>
+      <node node="(StateVarC:)XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" id="Add"/>
+      <node node="(StateVarC:)XY" parent="Edge" id="1390761783"/>
+      <cont node="XY/1390761783/P2" ref="../../Delta/Capsule/Out"/>
+      <cont node="XY/1390761783/P1" ref="../../Add/Capsule/Inp"/>
+      <node node="(StateVarC:)XY" parent="Edge" id="514784026"/>
+      <cont node="XY/514784026/P2" ref="../../Add/Capsule/Out"/>
+      <cont node="XY/514784026/P1" ref="../../Data/Capsule/Inp"/>
+      <node node="(StateVarC:)XY" parent="Edge" id="405290551"/>
+      <cont node="XY/405290551/P2" ref="../../Add/Capsule/Inp"/>
+      <cont node="XY/405290551/P1" ref="../../Capsule/Inp/Int/PinData"/>
+      <node node="(StateVarC:)XY" parent="Edge" id="102233597"/>
+      <cont node="XY/102233597/P2" ref="../../Delta/Capsule/Inp"/>
+      <rm node="(StateVarC:)XY/(Edge:)102233597"/>
+      <node id="293360680" parent="Edge"/>
+      <cont node="293360680/P2" ref="../../XY/Capsule/Out"/>
+      <cont node="293360680/P1" ref="../../XY/Capsule/Inp"/>
+      <cont node="XY/Delta/Value" val="MI,V,2 20 10"/>
+      <cont node="XY/Delta/Value" val="MI,V,2 20 5"/>
     </node>
     <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
     <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
