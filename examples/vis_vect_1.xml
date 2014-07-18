@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Modules" parent="Elem">
+    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
+    <move id="file:/usr/share/grayb/modules/data.xml#"/>
+    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+    <move id="file:/usr/share/grayb/modules/des.xml#"/>
+    <move id="file:/usr/share/grayb/modules/vis.xml#"/>
+  </node>
+  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
+    <node id="Ticker_edge" parent="Edge"/>
+    <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
+      <node id="Drw" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Des:)DrawingVc"/>
+      <node id="XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
+        <cont node="Data/Confirmed/Value" val="MI,V,2 30 50"/>
+        <cont node="Data/Prepared/Value" val="MI,V,2 30 50"/>
+      </node>
+      <node id="WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
+        <cont node="Data/Confirmed/Value" val="MI,V,2 80 80"/>
+        <cont node="Data/Prepared/Value" val="MI,V,2 80 80"/>
+      </node>
+      <node id="469340352" parent="Edge"/>
+      <cont node="469340352/P2" ref="../../XY/Capsule/Out"/>
+      <cont node="469340352/P1" ref="../../Drw/Capsule/Inp_XY"/>
+      <node id="2137246159" parent="Edge"/>
+      <cont node="2137246159/P2" ref="../../WH/Capsule/Out"/>
+      <cont node="2137246159/P1" ref="../../Drw/Capsule/Inp_WH"/>
+      <node id="Top_window" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Window"/>
+      <node id="Fixed_layout" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Fixed"/>
+      <node id="1587655123" parent="Edge"/>
+      <cont node="1587655123/P2" ref="../../Fixed_layout/Child"/>
+      <cont node="1587655123/P1" ref="../../Top_window/Parent"/>
+      <node id="1312564857" parent="Edge"/>
+      <cont node="1312564857/P2" ref="../../Drw/Capsule/Child"/>
+      <cont node="1312564857/P1" ref="../../Fixed_layout/Parent"/>
+    </node>
+    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
+    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
+  </node>
+</node>
