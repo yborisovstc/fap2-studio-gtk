@@ -53,8 +53,14 @@ bool ElemCompHead::on_expose_event(GdkEventExpose* aEvent)
 
 ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(false), iLArea(MCrp::EUnknown)
 {
+    bool isatt = iElem->IsChromoAttached();
     // Set name
-    set_name("ElemCompRp");
+    if (isatt) {
+	set_name("ElemCompRp");
+    }
+    else {
+	set_name("ElemCompRp~da");
+    }
     // Add header
     iHead = new ElemCompHead(*iElem);
     add(*iHead);

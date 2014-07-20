@@ -155,7 +155,7 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	}
 	else if (aCtx->IsInContext(cph)) {
 	    if (isdvar) {
-		res = (MDVarGet*) &iParProvVarW;
+		res = (MDVarGet*) &iParProvVarH;
 	    }
 	    else {
 		res = (MDtGet<Sdata<int> >*) &iParProvVarH;
