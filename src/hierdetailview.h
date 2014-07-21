@@ -1,6 +1,7 @@
 #ifndef __FAP2STU_HIERDETAILVIEW_H
 #define __FAP2STU_HIERDETAILVIEW_H
 
+#include <vector>
 #include <elem.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/uimanager.h>
@@ -18,10 +19,12 @@
 class HierDetailView
 {
     public:
+	typedef std::vector<void*> TNavHist;
+    public:
 	HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr);
 	virtual ~HierDetailView();
 	void SetRoot(Elem* aRoot);
-	void SetCursor(Elem* aRoot);
+	void SetCursor(Elem* aRoot, bool FromHist = false);
 	void SetCursor(const string& aUri);
 	string GetCursor() const;
 	// Signal handlers:
@@ -31,8 +34,13 @@ class HierDetailView
 	void on_action_up();
 	void on_action_undo();
 	void on_action_redo();
+	void on_action_goback();
+	void on_action_goforward();
 	void on_cont_size_alocated(Allocation& alloc);
 	void on_drp_drag_motion(Gtk::Widget& widget, int x, int y);
+	bool on_parent_press_event(GdkEventKey* aEvent);
+    protected:
+	void UpdataHistNavUI();
     private:
 	// Environment
 	MSEnv& iStEnv;
@@ -48,6 +56,9 @@ class HierDetailView
 	TiLabel* iTbName;
 	TiLabel* iTbParentHd;
 	TiLabel* iTbParent;
+	// System navigation history
+	TNavHist iNavHist;
+	TNavHist::iterator iNavHistIter;
 };
 
 #endif
