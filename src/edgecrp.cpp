@@ -42,8 +42,10 @@ EdgeCrp::EdgeCrp(Elem* aElem): iElem(aElem), iDraggedPart(EDp_None), iDragging(f
 {
     // set no_window mode
     set_has_window(false);
+    bool isatt = iElem->IsChromoAttached();
     // Set name
-    set_name("Edge~" + iElem->Name());
+    set_name(isatt ? "Edge" : "Edge~da");
+    //set_name("Edge~" + iElem->Name());
     // Set events mask
     add_events(Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK);
 }

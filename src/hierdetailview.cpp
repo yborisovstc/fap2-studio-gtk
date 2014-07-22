@@ -16,6 +16,9 @@ Glib::ustring sUiHierDview =
 "    <separator/>"
 "    <placeholder name='NamePlaceholder'/>"
 "    <separator/>"
+"    <placeholder name='ParentPlaceholder' />"
+"    <toolitem action='GoToParent'/>"
+"    <separator/>"
 "  </toolbar>"
 "</ui>";
 
@@ -30,6 +33,8 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     irActionGroup->add(Gtk::Action::create("Redo", Gtk::Stock::REDO, "Redo"), sigc::mem_fun(*this, &HierDetailView::on_action_redo));
     irActionGroup->add(Gtk::Action::create("Back", Stock::GO_BACK, "Back"), sigc::mem_fun(*this, &HierDetailView::on_action_goback));
     irActionGroup->add(Gtk::Action::create("Forward", Stock::GO_FORWARD, "Forward"), sigc::mem_fun(*this, &HierDetailView::on_action_goforward));
+    irActionGroup->add(Gtk::Action::create("GoToParent", Stock::GO_FORWARD, "Parent", "Parent"), 
+	    sigc::mem_fun(*this, &HierDetailView::on_action_goparent));
     iUiMgr->insert_action_group(irActionGroup);
     iUiMgr->add_ui_from_string(sUiHierDview);
 
@@ -41,9 +46,9 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     iTbParentHd = new TiLabel("Parent: ");
     iTbParentHd->show();
     iTbParent= new TiLabel("");
+    iTbParent->show();
     iTbParentHd->set_can_focus(true);
     iTbParentHd->signal_key_press_event().connect(sigc::mem_fun(*this, &HierDetailView::on_parent_press_event));
-    iTbParent->show();
     Gtk::Toolbar* pToolBar = dynamic_cast<Gtk::Toolbar*>(iUiMgr->get_widget("/ToolBar"));
     int pos = pToolBar->get_item_index(*pc);
     pToolBar->insert(*iTbNameHd, pos++);
@@ -51,8 +56,16 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     Gtk::SeparatorToolItem* sep = new Gtk::SeparatorToolItem();
     sep->show();
     pToolBar->insert(*sep, pos++);
+    pc = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/ParentPlaceholder"));
+    pos = pToolBar->get_item_index(*pc);
     pToolBar->insert(*iTbParentHd, pos++);
     pToolBar->insert(*iTbParent, pos++);
+    pc = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/GoToParent"));
+    pos = pToolBar->get_item_index(*pc);
+    pos++;
+    sep = new Gtk::SeparatorToolItem();
+    sep->show();
+    pToolBar->insert(*sep, pos++);
     
     // Adding alignment
     // TODO [YB] To consider if we need the alignment here
@@ -64,6 +77,15 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     iNavHist.clear(); 
     iNavHist.reserve(1);
     iNavHistIter = iNavHist.end();
+}
+
+void HierDetailView::on_action_goparent()
+{
+    Elem* cursor = iDetRp->Model();
+    // TODO [YB] Refuse to open :Elem for now. To reconsider
+    if (cursor->GetParent() != NULL && cursor->GetParent()->GetParent() != NULL) {
+	SetCursor(cursor->GetParent());
+    }
 }
 
 bool HierDetailView::on_parent_press_event(GdkEventKey* aEvent)

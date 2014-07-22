@@ -34,7 +34,6 @@ MainWnd::MainWnd()
     irActionGroup->add(Gtk::Action::create("Open", Gtk::Stock::OPEN), sigc::mem_fun(*this, &MainWnd::on_action_open));
     irActionGroup->add(Gtk::Action::create("Save", Gtk::Stock::SAVE), sigc::mem_fun(*this, &MainWnd::on_action_save));
     irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS), sigc::mem_fun(*this, &MainWnd::on_action_saveas));
-    irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS), sigc::mem_fun(*this, &MainWnd::on_action_saveas));
     irActionGroup->add(Gtk::Action::create("Reload", Gtk::Stock::REFRESH), sigc::mem_fun(*this, &MainWnd::on_action_open));
     irActionGroup->add(Gtk::Action::create("Compact_as", "Compact&Save"), sigc::mem_fun(*this, &MainWnd::on_action_compactas));
     irUiMgr = Gtk::UIManager::create();

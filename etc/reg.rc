@@ -8,15 +8,11 @@ style "def_label_style"
 style "edge_style" 
 { 
     color["background"] = {0.9, 0.9, 0.9}
-    color["foreground"] = {0.0, 0.9, 0.0}
+    color["foreground"] = {0.0, 0.0, 0.0}
     color["red"] = {0.9, 0.0, 0.0}
     fg[NORMAL] = @foreground
     fg[PRELIGHT] = {0.9, 0.0, 0.0}
     fg[SELECTED] = {0.0, 0.0, 0.9}
-    bg[NORMAL] = @background
-    text[NORMAL] = @foreground
-    base[NORMAL] = @background
-    GtkLayout::draw-border = {5, 5, 5, 5}
 }
 
 style "elem_style" 
@@ -39,8 +35,17 @@ style "elem_style_da" = "elem_style"
     bg[NORMAL] = {0.95, 0.95, 0.95}
 }
 
+# Deattached edge
+style "edge_style_da" = "edge_style"
+{ 
+    fg[NORMAL] =  {0.7, 0.7, 0.7}
+    fg[PRELIGHT] = {0.9, 0.0, 0.0}
+    fg[SELECTED] = {0.0, 0.0, 0.9}
+}
+
 class "GtkLabel" style "def_label_style"
 
 widget "*.*.ElemCompRp" style "elem_style"
 widget "*.*.ElemCompRp~da" style "elem_style_da"
-widget "*.*.Edge~*" style "edge_style"
+widget "*.*.Edge" style "edge_style"
+widget "*.*.Edge~da" style "edge_style_da"

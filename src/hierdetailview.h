@@ -36,6 +36,7 @@ class HierDetailView
 	void on_action_redo();
 	void on_action_goback();
 	void on_action_goforward();
+	void on_action_goparent();
 	void on_cont_size_alocated(Allocation& alloc);
 	void on_drp_drag_motion(Gtk::Widget& widget, int x, int y);
 	bool on_parent_press_event(GdkEventKey* aEvent);
