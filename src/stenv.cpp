@@ -16,6 +16,11 @@ template <typename T> void StSetting<T>::Set(const T& aSetting)
     }
 }
 
+StSettings::StSettings() 
+{
+    mChromoLim.Set(0);
+}
+
 StSettings::~StSettings()
 {
 }
@@ -25,6 +30,7 @@ void* StSettings::DoGetSetting(TStSett aSettId)
     void* res = NULL;
     switch (aSettId) {
 	case ESts_EnablePhenoModif: res =  &mEnablePhenoModif;
+	case ESts_ChromoLim: res =  &mChromoLim;
     }
     return res;
 }

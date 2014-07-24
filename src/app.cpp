@@ -48,6 +48,14 @@ bool DesObserver::IsModelChanged() const
     return iChanged;
 }
 
+void DesObserver::SetModelChanged(bool aChanged)
+{
+    if (!iChanged && aChanged) {
+	iSigSystemChanged.emit();
+    }
+    iChanged = aChanged;
+}
+
 void *DesObserver::DoGetObj(const string& aName)
 {
     void* res = NULL;
@@ -98,28 +106,33 @@ MMdlObserver::tSigContentChanged DesObserver::SignalContentChanged()
     return iSigContentChanged;
 }
 
+MMdlObserver::tSigSystemChanged DesObserver::SignalSystemChanged()
+{
+    return iSigSystemChanged;
+}
+
 void DesObserver::OnCompDeleting(Elem& aComp)
 {
     iSigCompDeleted.emit(&aComp);
-    iChanged = true;
+    SetModelChanged();
 }
 
 void DesObserver::OnCompAdding(Elem& aComp)
 {
     iSigCompAdded.emit(&aComp);
-    iChanged = true;
+    SetModelChanged();
 }
 
 void DesObserver::OnCompChanged(Elem& aComp)
 {
     iSigCompChanged.emit(&aComp);
-    iChanged = true;
+    SetModelChanged();
 }
 
 TBool DesObserver::OnCompRenamed(Elem& aComp, const string& aOldName)
 {
     iSigCompRenamed.emit(&aComp, aOldName);
-    iChanged = true;
+    SetModelChanged();
 }
 
 void DesObserver::OnContentChanged(Elem& aComp)
@@ -127,7 +140,7 @@ void DesObserver::OnContentChanged(Elem& aComp)
     iSigContentChanged.emit(&aComp);
 }
 
-App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false)
+App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoLim(0)
 {
     // Create model observer
     iDesObserver = new DesObserver();
@@ -149,6 +162,8 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false)
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Reload")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
     iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Compact_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_compactas));
+    iMainWnd->UIManager()->get_action("ui/ToolBar/Undo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_undo));
+    iMainWnd->UIManager()->get_action("ui/ToolBar/Redo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_redo));
     // Create studio DES environment
     iStDesEnv = new StDesEnv(iMainWnd->UIManager(), iMainWnd->VisWindow());
     iStDesEnv->SigActionRecreate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
@@ -176,9 +191,40 @@ App::~App() {
     delete iDesObserver;
 }
 
+void App::on_system_changed()
+{
+    // Set max order from the model
+    iMaxOrder = iEnv->ChMgr()->GetMaxOrder();
+    UpdataUndoRedo();
+}
+
 void App::on_action(const Glib::RefPtr<Gtk::Action>& aAction)
 {
     std::cout << "Action" << std::endl;
+}
+
+void App::UpdataUndoRedo()
+{
+    Gtk::ToolItem* undo = dynamic_cast<Gtk::ToolItem*>(iMainWnd->UIManager()->get_widget("ui/ToolBar/Undo"));
+    Gtk::ToolItem* redo = dynamic_cast<Gtk::ToolItem*>(iMainWnd->UIManager()->get_widget("ui/ToolBar/Redo"));
+    undo->set_sensitive(iChromoLim < iMaxOrder);
+    redo->set_sensitive(iChromoLim > 0);
+}
+
+void App::on_action_undo()
+{
+    if (iChromoLim < iMaxOrder) {
+	iChromoLim++;
+	on_action_recreate();
+    }
+}
+
+void App::on_action_redo()
+{
+    if (iChromoLim > 0) { 
+	iChromoLim--;
+	on_action_recreate();
+    }
 }
 
 void App::on_action_new()
@@ -193,6 +239,7 @@ void App::on_action_new()
     if (result == Gtk::RESPONSE_OK) {
 	std::string filename = dialog.get_filename();
 	iSpecFileName.clear();
+	iChromoLim = 0;
 	OpenFile(filename, true);
 	iSaved = EFalse;
     }
@@ -210,6 +257,7 @@ void App::on_action_open()
     int result = dialog.run();
     if (result == Gtk::RESPONSE_OK) {
 	string filename = dialog.get_filename();
+	iChromoLim = 0;
 	OpenFile(filename, false);
 	iSaved = EFalse;
     }
@@ -316,6 +364,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     }
     iEnv = new Env("DesEnv", aFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
+    iEnv->ChMgr()->SetLim(iChromoLim);
     iEnv->ConstructSystem();
     iDesObserver->SetDes(iEnv);
     iHDetView->SetRoot(iEnv->Root());
@@ -327,6 +376,13 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     else {
 	iMainWnd->set_title(FormTitle(iSpecFileName.empty() ? KTitleUnsaved : iSpecFileName));
     }
+    // Mark model as unchanged
+    iDesObserver->SetModelChanged(false);
+    // Init max order from spec, to be able to do redo
+    iMaxOrder = iEnv->ChMgr()->GetSpecMaxOrder();
+    UpdataUndoRedo();
+    // Start tracking the model changes in order to update undo/redo
+    iDesObserver->SignalSystemChanged().connect(sigc::mem_fun(*this, &App::on_system_changed));
 }
 
 void App::SaveFile(const string& aFileName)

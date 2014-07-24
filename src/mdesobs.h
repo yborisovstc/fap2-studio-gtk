@@ -14,6 +14,7 @@ class MMdlObserver
     public:
 	static std::string Type() { return "MMdlObserver";};
     public:
+	typedef sigc::signal<void> tSigSystemChanged;
 	typedef sigc::signal<void> tSigDesEnvChanged;
 	typedef sigc::signal<void, Elem*> tSigCompDeleted;
 	typedef sigc::signal<void, Elem*> tSigCompAdded;
@@ -21,6 +22,7 @@ class MMdlObserver
 	typedef sigc::signal<void, Elem*> tSigContentChanged;
 	typedef sigc::signal<void, Elem*, const std::string&> tSigCompRenamed;
     public:
+	virtual tSigSystemChanged SignalSystemChanged () = 0;
 	virtual tSigDesEnvChanged SignalDesEnvChanged () = 0;
 	virtual tSigCompDeleted SignalCompDeleted() = 0;
 	virtual tSigCompAdded SignalCompAdded() = 0;

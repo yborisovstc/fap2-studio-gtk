@@ -9,8 +9,6 @@ Glib::ustring sUiHierDview =
 "<ui>"
 "  <toolbar  name='ToolBar'>"
 "    <toolitem action='GoUp'/>"
-"    <toolitem action='Undo'/>"
-"    <toolitem action='Redo'/>"
 "    <toolitem action='Back'/>"
 "    <toolitem action='Forward'/>"
 "    <separator/>"
@@ -29,8 +27,6 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     // Addig toolbar
     irActionGroup = Gtk::ActionGroup::create("ElemDrpActGroup");
     irActionGroup->add(Gtk::Action::create("GoUp", Gtk::Stock::GOTO_TOP, "Go Up"), sigc::mem_fun(*this, &HierDetailView::on_action_up));
-    irActionGroup->add(Gtk::Action::create("Undo", Gtk::Stock::UNDO, "Undo"), sigc::mem_fun(*this, &HierDetailView::on_action_undo));
-    irActionGroup->add(Gtk::Action::create("Redo", Gtk::Stock::REDO, "Redo"), sigc::mem_fun(*this, &HierDetailView::on_action_redo));
     irActionGroup->add(Gtk::Action::create("Back", Stock::GO_BACK, "Back"), sigc::mem_fun(*this, &HierDetailView::on_action_goback));
     irActionGroup->add(Gtk::Action::create("Forward", Stock::GO_FORWARD, "Forward"), sigc::mem_fun(*this, &HierDetailView::on_action_goforward));
     irActionGroup->add(Gtk::Action::create("GoToParent", Stock::GO_FORWARD, "Parent", "Parent"), 

@@ -20,6 +20,8 @@ Glib::ustring sUiInfo =
 "    <toolitem action='Save'/>"
 "    <toolitem action='Save_as'/>"
 "    <toolitem action='Reload'/>"
+"    <toolitem action='Undo'/>"
+"    <toolitem action='Redo'/>"
 "  </toolbar>"
 "</ui>";
 
@@ -36,6 +38,8 @@ MainWnd::MainWnd()
     irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS), sigc::mem_fun(*this, &MainWnd::on_action_saveas));
     irActionGroup->add(Gtk::Action::create("Reload", Gtk::Stock::REFRESH), sigc::mem_fun(*this, &MainWnd::on_action_open));
     irActionGroup->add(Gtk::Action::create("Compact_as", "Compact&Save"), sigc::mem_fun(*this, &MainWnd::on_action_compactas));
+    irActionGroup->add(Gtk::Action::create("Undo", Gtk::Stock::UNDO, "Undo"));
+    irActionGroup->add(Gtk::Action::create("Redo", Gtk::Stock::REDO, "Redo"));
     irUiMgr = Gtk::UIManager::create();
     irUiMgr->insert_action_group(irActionGroup);
     irUiMgr->add_ui_from_string(sUiInfo);

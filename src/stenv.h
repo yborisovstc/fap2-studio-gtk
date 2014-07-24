@@ -29,13 +29,14 @@ template <typename T> class StSetting: public MStSetting<T>
 class StSettings: public MStSettings
 {
     public:
-	StSettings() {};
+	StSettings();
 	virtual ~StSettings();
     public:
 	// From MStSettings
 	virtual void* DoGetSetting(TStSett aSettId);
     protected:
 	 StSetting<bool> mEnablePhenoModif;
+	 StSetting<int> mChromoLim;
 };
 
 class StEnv: public MSEnv

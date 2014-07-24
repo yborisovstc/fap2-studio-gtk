@@ -21,6 +21,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
 	DesObserver();
 	void SetDes(MEnv* aDesEnv);
 	bool IsModelChanged() const;
+	void SetModelChanged(bool aChanged = true);
 	virtual void *DoGetObj(const std::string& aName);
 	// From MMdlObserver
 	virtual tSigDesEnvChanged SignalDesEnvChanged();
@@ -29,6 +30,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
 	virtual tSigCompChanged SignalCompChanged();
 	virtual tSigCompRenamed SignalCompRenamed();
 	virtual tSigContentChanged SignalContentChanged();
+	virtual tSigSystemChanged SignalSystemChanged();
 	virtual MEnv* DesEnv();
 	// From MCompsObserver
 	virtual void OnCompDeleting(Elem& aComp);
@@ -44,6 +46,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
 	tSigCompChanged iSigCompChanged;
 	tSigCompRenamed iSigCompRenamed;
 	tSigContentChanged iSigContentChanged;
+	tSigSystemChanged iSigSystemChanged;
 	bool iChanged;
 };
 
@@ -66,10 +69,14 @@ class App
 	void on_action_saveas();
 	void on_action_compactas();
 	void on_action_recreate();
+	void on_action_undo();
+	void on_action_redo();
+	void on_system_changed();
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
 	void SaveFile(const string& aFileName);
 	void CompactAndSaveFile(const string& aFileName);
 	string FormTitle(const string& aFilePath);
+	void UpdataUndoRedo();
     private:
 	// DES environment
 	Env* iEnv;
@@ -87,6 +94,8 @@ class App
 	// Model observer
 	DesObserver* iDesObserver;
 	bool iSaved;
+	int iChromoLim;
+	int iMaxOrder;
 };
 
 

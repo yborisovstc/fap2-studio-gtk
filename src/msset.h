@@ -19,7 +19,8 @@ class MStSettings
 {
     public:
 	enum TStSett {
-	    ESts_EnablePhenoModif
+	    ESts_EnablePhenoModif,
+	    ESts_ChromoLim // Order of the final mut in chromo to be loaded
 	};
     public:
 	virtual void* DoGetSetting(TStSett aSettId) = 0;
