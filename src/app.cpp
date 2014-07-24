@@ -194,7 +194,7 @@ App::~App() {
 void App::on_system_changed()
 {
     // Set max order from the model
-    iMaxOrder = iEnv->ChMgr()->GetMaxOrder();
+    iMaxOrder = iEnv->ChMgr()->GetMaxOrder() + 1;
     UpdataUndoRedo();
 }
 
@@ -271,7 +271,7 @@ void App::on_action_recreate()
 	OpenFile(GetDefaultTmpFileName(), true);
     }
     else {
-	OpenFile(iSpecFileName, false);
+	OpenFile(iSaved ? iSpecFileName : GetDefaultTmpFileName(), true);
     }
     iHDetView->SetCursor(cursor);
 }
@@ -280,6 +280,7 @@ void App::on_action_save()
 {
     if (!iSpecFileName.empty()) {
 	SaveFile(iSpecFileName);
+	iSaved = ETrue;
     }
     else {
 	on_action_saveas();
@@ -304,6 +305,7 @@ void App::on_action_saveas()
     if (result == Gtk::RESPONSE_OK) {
 	std::string filename = dialog.get_filename();
 	SaveFile(filename);
+	iSaved = ETrue;
 	iSpecFileName = filename;
 	iMainWnd->set_title(FormTitle(filename));
     }
@@ -352,7 +354,6 @@ string App::FormTitle(const string& aFilePath)
 void App::SaveTmp()
 {
     SaveFile(GetDefaultTmpFileName());
-    iSaved = ETrue;
 }
 
 void App::OpenFile(const string& aFileName, bool aAsTmp)
