@@ -11,6 +11,8 @@ const char* KAppName = "fap2-studio";
 const char* KRcFileName = "/usr/share/fap2-studio-gtk/conf/reg.rc";
 
 const string KTitleUnsaved = "unsaved";
+const string KMsgUnsaved = "The model has been modified. Do you want to save it?";
+const string KBtnTxtDiscard = "Discard";
 
 /* Time slice of FAP environment, in milliseconds */
 const gint KFapeTimeSlice = 50;
@@ -140,7 +142,7 @@ void DesObserver::OnContentChanged(Elem& aComp)
     iSigContentChanged.emit(&aComp);
 }
 
-App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoLim(0)
+App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoLim(0), iChanged(false)
 {
     // Create model observer
     iDesObserver = new DesObserver();
@@ -229,37 +231,40 @@ void App::on_action_redo()
 
 void App::on_action_new()
 {
-    Gtk::FileChooserDialog dialog("Please choose a template for new system", Gtk::FILE_CHOOSER_ACTION_OPEN);
-    dialog.set_transient_for(*iMainWnd);
+    if (CheckCurrentModelSaving()) {
+	Gtk::FileChooserDialog dialog("Please choose a template for new system", Gtk::FILE_CHOOSER_ACTION_OPEN);
+	dialog.set_transient_for(*iMainWnd);
 
-    //Add response buttons the the dialog:
-    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
-    int result = dialog.run();
-    if (result == Gtk::RESPONSE_OK) {
-	std::string filename = dialog.get_filename();
-	iSpecFileName.clear();
-	iChromoLim = 0;
-	OpenFile(filename, true);
-	iSaved = EFalse;
+	//Add response buttons the the dialog:
+	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
+	int result = dialog.run();
+	if (result == Gtk::RESPONSE_OK) {
+	    std::string filename = dialog.get_filename();
+	    iSpecFileName.clear();
+	    iChromoLim = 0;
+	    OpenFile(filename, true);
+	    iSaved = EFalse;
+	}
     }
 }
 
 void App::on_action_open()
 {
-    std::cout << "Action Open" << std::endl;
-    Gtk::FileChooserDialog dialog("Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
-    dialog.set_transient_for(*iMainWnd);
+    if (CheckCurrentModelSaving()) {
+	Gtk::FileChooserDialog dialog("Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
+	dialog.set_transient_for(*iMainWnd);
 
-    //Add response buttons the the dialog:
-    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
-    int result = dialog.run();
-    if (result == Gtk::RESPONSE_OK) {
-	string filename = dialog.get_filename();
-	iChromoLim = 0;
-	OpenFile(filename, false);
-	iSaved = EFalse;
+	//Add response buttons the the dialog:
+	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
+	int result = dialog.run();
+	if (result == Gtk::RESPONSE_OK) {
+	    string filename = dialog.get_filename();
+	    iChromoLim = 0;
+	    OpenFile(filename, false);
+	    iSaved = EFalse;
+	}
     }
 }
 
@@ -271,7 +276,7 @@ void App::on_action_recreate()
 	OpenFile(GetDefaultTmpFileName(), true);
     }
     else {
-	OpenFile(iSaved ? iSpecFileName : GetDefaultTmpFileName(), true);
+	OpenFile(IsSystemChanged() ? GetDefaultTmpFileName() : iSpecFileName, true);
     }
     iHDetView->SetCursor(cursor);
 }
@@ -344,11 +349,34 @@ string App::GetDefaultTmpFileName() const
     return string(home) + "/" + KTmpFileName;
 }
 
+bool App::CheckCurrentModelSaving()
+{
+    bool res = true;
+    if (IsSystemChanged()) {
+	Gtk::MessageDialog dialog(KMsgUnsaved, false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+	dialog.add_button(KBtnTxtDiscard, Gtk::RESPONSE_REJECT);
+	int result = dialog.run();
+	if (result == Gtk::RESPONSE_OK) {
+	    on_action_save();
+	}
+	else if (result == Gtk::RESPONSE_CANCEL) {
+	    res = false;
+	}
+    }
+    return res;
+}
+
 string App::FormTitle(const string& aFilePath)
 {
     size_t pos = aFilePath.find_last_of("/");
     string filename = pos != string::npos ? aFilePath.substr(pos + 1) : aFilePath;
     return string(KAppName) + " [" + filename + "]";
+}
+
+bool App::IsSystemChanged() const
+{
+    // Taking into acoount short term and long term changes
+    return iDesObserver->IsModelChanged() || iChanged;
 }
 
 void App::SaveTmp()
@@ -377,7 +405,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     else {
 	iMainWnd->set_title(FormTitle(iSpecFileName.empty() ? KTitleUnsaved : iSpecFileName));
     }
-    // Mark model as unchanged
+    // Mark model as unchanged, initially
     iDesObserver->SetModelChanged(false);
     // Init max order from spec, to be able to do redo
     iMaxOrder = iEnv->ChMgr()->GetSpecMaxOrder();
@@ -388,6 +416,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
 
 void App::SaveFile(const string& aFileName)
 {
+    iChanged = iChanged || iDesObserver->IsModelChanged();
     iEnv->Root()->Chromos().Save(aFileName);
 }
 

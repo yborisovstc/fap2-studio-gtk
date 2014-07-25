@@ -77,6 +77,8 @@ class App
 	void CompactAndSaveFile(const string& aFileName);
 	string FormTitle(const string& aFilePath);
 	void UpdataUndoRedo();
+	bool IsSystemChanged() const;
+	bool CheckCurrentModelSaving();
     private:
 	// DES environment
 	Env* iEnv;
@@ -93,9 +95,14 @@ class App
 	MdlProv* iMdlProv;
 	// Model observer
 	DesObserver* iDesObserver;
+	// TODO [YB] Do we need it? It is actually not used in app logic
 	bool iSaved;
 	int iChromoLim;
 	int iMaxOrder;
+	// Sign of model was changed sinse opening from persistient spec (not tmp)
+	// DES observer IsModelChanged indicates the status only sinse model loading,
+	// but this can happen when loading from tmp spec
+	bool iChanged;
 };
 
 
