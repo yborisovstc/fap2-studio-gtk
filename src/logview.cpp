@@ -1,5 +1,6 @@
 
 #include "logview.h"
+#include <gtkmm/liststore.h>
 
 const int LogView::KLogViewBufLen = 4000;
 
@@ -68,4 +69,47 @@ void LogView::OnFileContentChanged()
     }
 }
 
+
+// Log view based on log records list
+LogViewL::LogViewL(MMdlObserver* aDesObs): iDesObs(aDesObs)
+{
+    set_headers_visible(true);
+    SetDesEnv(iDesObs->DesEnv());
+    iDesObs->SignalLogAdded().connect(sigc::mem_fun(*this, &LogViewL::on_log_added));
+}
+
+LogViewL::~LogViewL()
+{
+}
+
+void LogViewL::SetDesEnv(MEnv* aDesEnv)
+{
+    if (aDesEnv != iDesEnv) {
+	unset_model();
+	remove_all_columns();
+	Glib::RefPtr<TreeModel> curmdl = get_model();
+	curmdl.reset();
+	iDesEnv = aDesEnv;
+	if (iDesEnv != NULL) {
+	    Glib::RefPtr<ListStore> mdl = ListStore::create(iColRec);
+	    set_model(mdl);
+	    append_column( "type", iColRec.ctg);
+	    append_column( "node", iColRec.mnode);
+	    append_column( "content", iColRec.mnode);
+	}
+    }
+}
+
+void LogViewL::on_des_env_changed()
+{
+    SetDesEnv(iDesObs->DesEnv());
+}
+
+void LogViewL::on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent)
+{
+    Glib::RefPtr<TreeModel> mdl = get_model();
+    //ListStore* lmdl = (ListStore*) mdl.operator->();
+    Glib::RefPtr<ListStore> lsmdl = Glib::RefPtr<ListStore>::cast_dynamic<TreeModel>(mdl);
+    TreeIter it = lsmdl->append();
+}
 

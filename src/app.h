@@ -14,11 +14,12 @@
 #include "mdesobs.h"
 
 // Simple extender of DES root events
-class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
+class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, public MLogObserver
 {
     public:
 	static const string& Type();
 	DesObserver();
+	virtual ~DesObserver();
 	void SetDes(MEnv* aDesEnv);
 	bool IsModelChanged() const;
 	void SetModelChanged(bool aChanged = true);
@@ -31,6 +32,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
 	virtual tSigCompRenamed SignalCompRenamed();
 	virtual tSigContentChanged SignalContentChanged();
 	virtual tSigSystemChanged SignalSystemChanged();
+	virtual tSigLogAdded SignalLogAdded();
 	virtual MEnv* DesEnv();
 	// From MCompsObserver
 	virtual void OnCompDeleting(Elem& aComp);
@@ -38,6 +40,9 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
 	virtual void OnCompChanged(Elem& aComp);
 	virtual TBool OnCompRenamed(Elem& aComp, const string& aOldName);
 	virtual void OnContentChanged(Elem& aComp);
+	// From MLogObserver
+	virtual TBool OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent);
+	virtual void OnLogRecDeleting(MLogRec* aLogRec);
     protected:
 	MEnv* iDesEnv;
 	tSigDesEnvChanged iSigDesEnvChanged;
@@ -47,7 +52,9 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver
 	tSigCompRenamed iSigCompRenamed;
 	tSigContentChanged iSigContentChanged;
 	tSigSystemChanged iSigSystemChanged;
+	tSigLogAdded iSigLogAdded;
 	bool iChanged;
+	MLogRec* iLogRec;
 };
 
 class App
@@ -99,6 +106,8 @@ class App
 	bool iSaved;
 	int iChromoLim;
 	int iMaxOrder;
+	// Max orider of chromo right after system loading
+	int iInitMaxOrder;
 	// Sign of model was changed sinse opening from persistient spec (not tmp)
 	// DES observer IsModelChanged indicates the status only sinse model loading,
 	// but this can happen when loading from tmp spec

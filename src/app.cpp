@@ -25,8 +25,15 @@ const string& DesObserver::Type()
     return sType;
 }
 
-DesObserver::DesObserver(): iDesEnv(NULL), iChanged(false)
+DesObserver::DesObserver(): iDesEnv(NULL), iChanged(false), iLogRec(NULL)
 {
+}
+
+DesObserver::~DesObserver()
+{
+    if (iLogRec != NULL) {
+	iLogRec->RemoveLogObserver(this);
+    }
 }
 
 void DesObserver::SetDes(MEnv* aDesEnv)
@@ -113,6 +120,11 @@ MMdlObserver::tSigSystemChanged DesObserver::SignalSystemChanged()
     return iSigSystemChanged;
 }
 
+MMdlObserver::tSigLogAdded DesObserver::SignalLogAdded()
+{
+    return iSigLogAdded;
+}
+
 void DesObserver::OnCompDeleting(Elem& aComp)
 {
     iSigCompDeleted.emit(&aComp);
@@ -141,6 +153,21 @@ void DesObserver::OnContentChanged(Elem& aComp)
 {
     iSigContentChanged.emit(&aComp);
 }
+
+TBool DesObserver::OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent)
+{
+    iSigLogAdded.emit(aCtg, aNode, aContent);
+}
+
+void DesObserver::OnLogRecDeleting(MLogRec* aLogRec)
+{
+    __ASSERT(aLogRec == iLogRec);
+    aLogRec->RemoveLogObserver(this);
+    iLogRec = NULL;
+}
+
+
+
 
 App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoLim(0), iChanged(false)
 {
@@ -197,6 +224,7 @@ void App::on_system_changed()
 {
     // Set max order from the model
     iMaxOrder = iEnv->ChMgr()->GetMaxOrder() + 1;
+    iChromoLim = 0;
     UpdataUndoRedo();
 }
 
@@ -209,7 +237,7 @@ void App::UpdataUndoRedo()
 {
     Gtk::ToolItem* undo = dynamic_cast<Gtk::ToolItem*>(iMainWnd->UIManager()->get_widget("ui/ToolBar/Undo"));
     Gtk::ToolItem* redo = dynamic_cast<Gtk::ToolItem*>(iMainWnd->UIManager()->get_widget("ui/ToolBar/Redo"));
-    undo->set_sensitive(iChromoLim < iMaxOrder);
+    undo->set_sensitive(iChromoLim < (iMaxOrder - iInitMaxOrder));
     redo->set_sensitive(iChromoLim > 0);
 }
 
@@ -244,6 +272,7 @@ void App::on_action_new()
 	    iSpecFileName.clear();
 	    iChromoLim = 0;
 	    OpenFile(filename, true);
+	    iInitMaxOrder = iEnv->ChMgr()->GetSpecMaxOrder();
 	    iSaved = EFalse;
 	}
     }
@@ -263,6 +292,7 @@ void App::on_action_open()
 	    string filename = dialog.get_filename();
 	    iChromoLim = 0;
 	    OpenFile(filename, false);
+	    iInitMaxOrder = iEnv->ChMgr()->GetSpecMaxOrder();
 	    iSaved = EFalse;
 	}
     }
