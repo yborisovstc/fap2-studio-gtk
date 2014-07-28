@@ -40,16 +40,34 @@ void DesObserver::SetDes(MEnv* aDesEnv)
 {
     assert(aDesEnv != NULL && iDesEnv == NULL || aDesEnv == NULL);
     if (iDesEnv != NULL) {
+	iDesEnv->Logger()->RemoveLogObserver(this);
 	Elem* root = iDesEnv->Root();
 	root->SetObserver(NULL);
 	iDesEnv = NULL;
     }
     else {
 	iDesEnv = aDesEnv;
+	iDesEnv->Logger()->AddLogObserver(this);
 	Elem* root = iDesEnv->Root();
-	root->SetObserver(this);
+	if (root != NULL) {
+	    root->SetObserver(this);
+	}
     }
     iSigDesEnvChanged.emit();
+}
+
+// TODO [YB] This is required because on the first stage of des env creation, the root elem is not created yet, 
+// but the logger only. So we need to have also two stage observer setup: logger first and then root observer.
+// This is just workaround. To use more considered solution, e.g notif from env of root creation
+void DesObserver::UpdateDesRootObserver()
+{
+    if (iDesEnv != NULL) {
+	Elem* root = iDesEnv->Root();
+	if (root != NULL) {
+	    root->SetObserver(this);
+	    iSigSystemChanged.emit();
+	}
+    }
 }
 
 bool DesObserver::IsModelChanged() const
@@ -154,7 +172,7 @@ void DesObserver::OnContentChanged(Elem& aComp)
     iSigContentChanged.emit(&aComp);
 }
 
-TBool DesObserver::OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent)
+void DesObserver::OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent)
 {
     iSigLogAdded.emit(aCtg, aNode, aContent);
 }
@@ -173,8 +191,10 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
 {
     // Create model observer
     iDesObserver = new DesObserver();
+    // Set log view
+    iLogView = new LogViewL(iDesObserver);
     // Create studio environment
-    iStEnv = new StEnv(iDesObserver);
+    iStEnv = new StEnv(iDesObserver, iLogView->GetDesLog());
     // Default logfilename
     iLogFileName = GetDefaultLogFileName();
     // Settings defaults
@@ -183,7 +203,8 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     // Create main window
     iMainWnd = new MainWnd();
     iMainWnd->maximize();
-    iMainWnd->SetEnvLog(iLogFileName);
+    iMainWnd->SetLogView(*iLogView);
+    //iMainWnd->SetEnvLog(iLogFileName);
     //iMainWnd->UIManager()->signal_post_activate().connect(sigc::mem_fun(*this, &App::on_action));
     iMainWnd->UIManager()->get_action("ui/ToolBar/New")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_new));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Open")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_open));
@@ -424,8 +445,9 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv = new Env("DesEnv", aFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
     iEnv->ChMgr()->SetLim(iChromoLim);
-    iEnv->ConstructSystem();
     iDesObserver->SetDes(iEnv);
+    iEnv->ConstructSystem();
+    iDesObserver->UpdateDesRootObserver();
     iHDetView->SetRoot(iEnv->Root());
     iHDetView->SetCursor(iEnv->Root());
     if (!aAsTmp) {

@@ -35,7 +35,7 @@ void* StSettings::DoGetSetting(TStSett aSettId)
     return res;
 }
 
-StEnv::StEnv(MMdlObserver* aMdlObs): iMdlObs(aMdlObs)
+StEnv::StEnv(MMdlObserver* aMdlObs, MDesLog* aDesLog): iMdlObs(aMdlObs), mDesLog(aDesLog)
 {
     iCrpProv = new DefCrpProv(iMdlObs);
     iCrpProv->SetSenv(*this);

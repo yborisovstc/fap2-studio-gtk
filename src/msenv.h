@@ -8,6 +8,7 @@ class MCrpProvider;
 class MDrpProvider;
 class MErpProvider;
 class MStSettings;
+class MDesLog;
 
 
 class MSEnv
@@ -17,6 +18,7 @@ class MSEnv
 	virtual MDrpProvider& DrpProvider() = 0;
 	virtual MErpProvider& ErpProvider() = 0;
 	virtual MStSettings& Settings() = 0;
+	virtual MDesLog& DesLog() = 0;
 };
 
 #endif

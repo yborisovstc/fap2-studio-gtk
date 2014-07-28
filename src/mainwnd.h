@@ -24,6 +24,7 @@ class MainWnd : public Gtk::Window
 	Container& VisWindow();
 	Gtk::ScrolledWindow& ClientWnd();
 	void SetNaviPane(Gtk::Widget& aWidget);
+	void SetLogView(Gtk::Widget& aWidget);
 	void SetEnvLog(const string& aLogFileName);
     protected:
 	// Signal handlers:

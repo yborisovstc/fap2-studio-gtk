@@ -724,11 +724,12 @@ static GtkTargetEntry sNaviHierDnDTarg[] =
 
 
 // Current hier navigation widget
-NaviHier::NaviHier(MMdlObserver* aDesObs): iDesEnv(NULL), iDesObs(aDesObs)
+NaviHier::NaviHier(MMdlObserver* aDesObs): iDesEnv(NULL), iDesObs(aDesObs), iRootAdded(false)
 {
     set_headers_visible(false);
     SetDesEnv(iDesObs->DesEnv());
     iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &NaviHier::on_des_env_changed));
+    iDesObs->SignalSystemChanged().connect(sigc::mem_fun(*this, &NaviHier::on_des_root_added));
 }
 
 NaviHier::~NaviHier()
@@ -740,6 +741,25 @@ void NaviHier::on_des_env_changed()
     SetDesEnv(iDesObs->DesEnv());
 }
 
+void NaviHier::on_des_root_added()
+{
+    if (!iRootAdded && iDesEnv != NULL) {
+	iRootAdded = true;
+	Glib::RefPtr<HierTreeMdl> mdl = HierTreeMdl::create(iDesEnv);
+	HierTreeMdl* hmdl = mdl.operator ->();
+	GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
+	bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
+	set_model(mdl);
+	append_column( "one", mdl->ColRec().name);
+	enable_model_drag_source();
+	drag_source_set (Gtk::ArrayHandle_TargetEntry(sNaviHierDnDTarg, 1, Glib::OWNERSHIP_NONE), 
+		Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
+	iDesObs->SignalCompDeleted().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_deleting));
+	iDesObs->SignalCompAdded().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_adding));
+	iDesObs->SignalCompChanged().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_changed));
+    }
+}
+
 void NaviHier::SetDesEnv(MEnv* aDesEnv)
 {
     assert(aDesEnv == NULL || aDesEnv != NULL && iDesEnv == NULL);
@@ -747,12 +767,14 @@ void NaviHier::SetDesEnv(MEnv* aDesEnv)
 	unset_model();
 	remove_all_columns();
 	/* No need to delete model explicitly, it is deleted at unset_model
-	Glib::RefPtr<TreeModel> curmdl = get_model();
-	TreeModel* curmdlp = curmdl.operator ->();
-	curmdl.reset();
-	delete curmdlp;
-	*/
+	   Glib::RefPtr<TreeModel> curmdl = get_model();
+	   TreeModel* curmdlp = curmdl.operator ->();
+	   curmdl.reset();
+	   delete curmdlp;
+	   */
+	iRootAdded = false;
 	iDesEnv = aDesEnv;
+	/*
 	if (iDesEnv != NULL) {
 	    Glib::RefPtr<HierTreeMdl> mdl = HierTreeMdl::create(iDesEnv);
 	    HierTreeMdl* hmdl = mdl.operator ->();
@@ -761,11 +783,13 @@ void NaviHier::SetDesEnv(MEnv* aDesEnv)
 	    set_model(mdl);
 	    append_column( "one", mdl->ColRec().name);
 	    enable_model_drag_source();
-	    drag_source_set (Gtk::ArrayHandle_TargetEntry(sNaviHierDnDTarg, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
+	    drag_source_set (Gtk::ArrayHandle_TargetEntry(sNaviHierDnDTarg, 1, Glib::OWNERSHIP_NONE), 
+		    Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
 	    iDesObs->SignalCompDeleted().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_deleting));
 	    iDesObs->SignalCompAdded().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_adding));
 	    iDesObs->SignalCompChanged().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_changed));
 	}
+	*/
     }
 }
 

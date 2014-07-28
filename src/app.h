@@ -21,6 +21,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	DesObserver();
 	virtual ~DesObserver();
 	void SetDes(MEnv* aDesEnv);
+	void UpdateDesRootObserver();
 	bool IsModelChanged() const;
 	void SetModelChanged(bool aChanged = true);
 	virtual void *DoGetObj(const std::string& aName);
@@ -41,7 +42,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	virtual TBool OnCompRenamed(Elem& aComp, const string& aOldName);
 	virtual void OnContentChanged(Elem& aComp);
 	// From MLogObserver
-	virtual TBool OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent);
+	virtual void OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent);
 	virtual void OnLogRecDeleting(MLogRec* aLogRec);
     protected:
 	MEnv* iDesEnv;
@@ -112,6 +113,7 @@ class App
 	// DES observer IsModelChanged indicates the status only sinse model loading,
 	// but this can happen when loading from tmp spec
 	bool iChanged;
+	LogViewL* iLogView;
 };
 
 

@@ -58,8 +58,8 @@ MainWnd::MainWnd()
     irMainClientWnd = new Gtk::ScrolledWindow();
     // Log view
     iLogWnd = new Gtk::ScrolledWindow();
-    iLogView = new LogView();
-    iLogWnd->add(*iLogView);
+    //iLogView = new LogView();
+    //iLogWnd->add(*iLogView);
     iLogWnd->show();
     // Visualization
     iVis.show();
@@ -81,7 +81,7 @@ MainWnd::MainWnd()
     pMenuBar->show();
     pToolBar->show();
     irMainClientWnd->show();
-    iLogView->show();
+    //iLogView->show();
 }
 
 MainWnd::~MainWnd()
@@ -122,6 +122,12 @@ Gtk::ScrolledWindow& MainWnd::ClientWnd()
 void MainWnd::SetNaviPane(Gtk::Widget& aWidget)
 {
     iHPanG.pack1(aWidget, Gtk::SHRINK);
+}
+
+void MainWnd::SetLogView(Gtk::Widget& aWidget)
+{
+    iLogWnd->add(aWidget);
+    aWidget.show();
 }
 
 void MainWnd::SetEnvLog(const string& aLogFileName)

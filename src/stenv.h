@@ -42,13 +42,14 @@ class StSettings: public MStSettings
 class StEnv: public MSEnv
 {
     public:
-	StEnv(MMdlObserver* aMdlObs);
+	StEnv(MMdlObserver* aMdlObs, MDesLog* aDesLog);
 	virtual ~StEnv();
 	// From MSEnv
 	virtual MCrpProvider& CrpProvider();
 	virtual MDrpProvider& DrpProvider();
 	virtual MErpProvider& ErpProvider();
 	virtual MStSettings& Settings() { return mSettings;};
+	virtual MDesLog& DesLog() { return *mDesLog;};
     private:
 	MMdlObserver* iMdlObs;
 	// Compact representaions provider
@@ -57,6 +58,7 @@ class StEnv: public MSEnv
 	DefDrpProv* iDrpProv;
 	DefErpProv* iErpProv;
 	StSettings mSettings;
+	MDesLog* mDesLog;
 };
 
 // Studio DES Environment

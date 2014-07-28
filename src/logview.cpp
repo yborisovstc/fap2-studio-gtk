@@ -70,11 +70,27 @@ void LogView::OnFileContentChanged()
 }
 
 
+// Des log
+SDesLog::~SDesLog()
+{
+}
+
+const MDesLog::TLog& SDesLog::Errors() const
+{
+    return mErrors;
+}
+
+const MDesLog::TLog& SDesLog::Warnings() const
+{
+    return mWarnings;
+}
+
 // Log view based on log records list
 LogViewL::LogViewL(MMdlObserver* aDesObs): iDesObs(aDesObs)
 {
     set_headers_visible(true);
     SetDesEnv(iDesObs->DesEnv());
+    iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &LogViewL::on_des_env_changed));
     iDesObs->SignalLogAdded().connect(sigc::mem_fun(*this, &LogViewL::on_log_added));
 }
 
@@ -93,9 +109,9 @@ void LogViewL::SetDesEnv(MEnv* aDesEnv)
 	if (iDesEnv != NULL) {
 	    Glib::RefPtr<ListStore> mdl = ListStore::create(iColRec);
 	    set_model(mdl);
-	    append_column( "type", iColRec.ctg);
-	    append_column( "node", iColRec.mnode);
-	    append_column( "content", iColRec.mnode);
+	    append_column( "Type", iColRec.ctg);
+	    append_column( "Node", iColRec.mnode);
+	    append_column( "Content", iColRec.content);
 	}
     }
 }
@@ -105,11 +121,30 @@ void LogViewL::on_des_env_changed()
     SetDesEnv(iDesObs->DesEnv());
 }
 
+const string KCtgErr = "ERR";
+const string KCtgInfo = "INF";
+const string KCtgWrn = "WRN";
+const string KCtgDbg = "DBG";
+
+const string& LogViewL::CtgName(MLogRec::TLogRecCtg aCtg) 
+{
+    if (aCtg == MLogRec::EErr) return KCtgErr;
+    else if (aCtg == MLogRec::EInfo) return KCtgInfo;
+    else if (aCtg == MLogRec::EWarn) return KCtgWrn;
+    else if (aCtg == MLogRec::EDbg) return KCtgDbg;
+    else __ASSERT(false);
+}
+
 void LogViewL::on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent)
 {
     Glib::RefPtr<TreeModel> mdl = get_model();
     //ListStore* lmdl = (ListStore*) mdl.operator->();
     Glib::RefPtr<ListStore> lsmdl = Glib::RefPtr<ListStore>::cast_dynamic<TreeModel>(mdl);
     TreeIter it = lsmdl->append();
+    it->set_value(iColRec.ctg, Glib::ustring(CtgName(aCtg).c_str()));
+    GUri fullpath;
+    aNode->GetUri(fullpath);
+    it->set_value(iColRec.mnode, Glib::ustring(fullpath.GetUri(ETrue).c_str()));
+    it->set_value(iColRec.content, Glib::ustring(aContent.c_str()));
 }
 

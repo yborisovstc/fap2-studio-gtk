@@ -72,6 +72,8 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	TDnDTarg iDnDTarg;
 	MCrp* iDropBaseCandidate;
 	std::string iDndReceivedData;
+	MLogRec::TLogRecCtg iLogCtg;
+
 };
 
 class ElemDrp: public MDrp

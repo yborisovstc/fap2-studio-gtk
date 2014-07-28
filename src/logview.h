@@ -6,6 +6,7 @@
 #include <gtkmm/treeview.h>
 #include <giomm/file.h>
 #include "mdesobs.h"
+#include "mdeslog.h"
 
 using namespace Gtk;
 using namespace Gio;
@@ -48,6 +49,20 @@ class LogListClrec: public Gtk::TreeModel::ColumnRecord
 	LogListClrec() { add(ctg); add(mnode); add(content);};
 };
 
+// Des log
+class SDesLog: public MDesLog
+{
+    public:
+	SDesLog() {};
+	virtual ~SDesLog();
+	// From MDesLog
+	virtual const TLog& Errors() const;
+	virtual const TLog& Warnings() const;
+    protected:
+	TLog mErrors;
+	TLog mWarnings;
+};
+
 // Log view based on log records list
 class LogViewL: public TreeView
 {
@@ -55,9 +70,11 @@ class LogViewL: public TreeView
 	LogViewL(MMdlObserver* aDesObs);
 	virtual ~LogViewL();
 	void SetDesEnv(MEnv* aDesEnv);
+	MDesLog* GetDesLog() {return &mDesLog;};
     protected:
 	void on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent);
 	void on_des_env_changed();
+	static const string& CtgName(MLogRec::TLogRecCtg aCtg); 
     private:
 	// DES observer
 	MMdlObserver* iDesObs;
@@ -65,6 +82,8 @@ class LogViewL: public TreeView
 	MEnv* iDesEnv; 
 	// Column record, contains info of column types
 	LogListClrec iColRec;
+	// Des log
+	SDesLog mDesLog;
 };
 
 #endif

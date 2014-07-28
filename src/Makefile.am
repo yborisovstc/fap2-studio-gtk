@@ -38,6 +38,7 @@ fap2_studio_gtk_SOURCES = \
 		 logview.h \
 		 logview.cpp \
 		 mprov.h \
+		 mdeslog.h \
 		 provdef.h \
 		 provdef.cpp \
 		 stenv.h \

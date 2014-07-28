@@ -191,6 +191,7 @@ class NaviHier: public Gtk::TreeView
     protected:
 	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
 	void on_des_env_changed();
+	void on_des_root_added();
     private:
 	// DES observer
 	MMdlObserver* iDesObs;
@@ -198,6 +199,7 @@ class NaviHier: public Gtk::TreeView
 	MEnv* iDesEnv; 
 	int iPressX, iPressY;
 	tSigCompSelected iSigCompSelected;
+	bool iRootAdded;
 };
 
 
