@@ -16,12 +16,16 @@ class MDrp: public MBase
     public:
 	typedef sigc::signal<void, Elem*> tSigCompSelected;
 	typedef sigc::signal<void, Gtk::Widget&, int, int> tSigDragMotion;
+	typedef sigc::signal<void, const string&> tSigAttention;
     public:
 	virtual Gtk::Widget& Widget() = 0;
 	virtual Elem* Model() = 0;
 	virtual tSigCompSelected SignalCompSelected() = 0;
 	virtual tSigDragMotion SignalDragMotion() = 0;
+	virtual tSigAttention SignalAttention() {return mSigAttention;};
 	virtual void Udno() = 0;
+    protected:
+	tSigAttention mSigAttention;
 };
 
 #endif

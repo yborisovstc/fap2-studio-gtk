@@ -4,6 +4,7 @@
 #include "elemdetrp.h"
 #include "dlgbase.h"
 #include "msset.h"
+#include "mdeslog.h"
 #include <edge.h>
 #include <gtkmm.h>
 #include <gtkmm/messagedialog.h>
@@ -38,6 +39,9 @@ static const Glib::ustring KDlgMsg_Rld =
 
 static const Glib::ustring KDlgMsg_CritDep = 
 "There is critical dependency [%1] for this change in the system. So, only phenotypic modification can be done. OK to do the change ?";
+
+static const Glib::ustring KDlgMsg_CritDep_Att = 
+"There is critical dependency [%1] for this change in the system. So phenotypic modification has been done.";
 
 
 /*
@@ -77,6 +81,8 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): 
     menulist.push_back(iCompMenuElems.at(MCrp::EA_Remove));
     */
     iCrpContextMenu.accelerate(*this);
+    bool iserr =  mStEnv.DesLog().IsNodeLogged(iElem, MLogRec::EErr);
+    set_name(iserr ? "ElemDrp~err" : "ElemDrp");
 }
 
 ElemDetRp::~ElemDetRp()
@@ -93,6 +99,9 @@ void ElemDetRp::Construct()
 	if (!comp->IsRemoved()) {
 	    MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	    Gtk::Widget& rpw = rp->Widget();
+	    if (IsCrpLogged(rp, MLogRec::EErr)) {
+		rp->SetErroneous(true);
+	    }
 	    //rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
 	    // Using specific signal for button press instead of standard because some Crps can have complex layout
 	    rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
@@ -102,6 +111,11 @@ void ElemDetRp::Construct()
 	    rpw.show();
 	}
     }
+}
+
+bool ElemDetRp::IsCrpLogged(MCrp* aCrp, MLogRec::TLogRecCtg aCtg) const
+{
+    return  mStEnv.DesLog().IsNodeLogged(aCrp->Model(), aCtg);
 }
 
 Elem* ElemDetRp::GetElem()
@@ -406,6 +420,7 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
 
 Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType) {
     Elem* res = aNode;
+    string att;
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
     Rank noderank;
@@ -423,6 +438,9 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 	    res = dep.first.first;
 	    rank = deprank;
 	}
+    }
+    if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
+	att = Glib::ustring::compose(KDlgMsg_CritDep_Att, res->GetUri());
     }
     if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
 	// Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
@@ -501,6 +519,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 	*/
 	res = res->GetCommonOwner(aMnode);
     }
+	mSignalAttention.emit(att);
     return res;
 }
 

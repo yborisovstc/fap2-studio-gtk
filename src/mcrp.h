@@ -41,6 +41,7 @@ class MCrp: public MBase
 	virtual void GetContentUri(GUri& aUri) = 0;
 	virtual bool Dragging() = 0;
 	virtual void SetHighlighted(bool aSet) = 0;
+	virtual void SetErroneous(bool aSet) = 0;
 	virtual Elem* Model() = 0;
 	virtual void SetLArea(int aArea) = 0;
 	virtual int GetLArea() const = 0;

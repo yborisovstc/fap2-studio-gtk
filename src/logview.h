@@ -52,15 +52,15 @@ class LogListClrec: public Gtk::TreeModel::ColumnRecord
 // Des log
 class SDesLog: public MDesLog
 {
+    friend class LogViewL;
     public:
 	SDesLog() {};
 	virtual ~SDesLog();
 	// From MDesLog
-	virtual const TLog& Errors() const;
-	virtual const TLog& Warnings() const;
+	virtual const TLog& LogData() const;
+	virtual bool IsNodeLogged(Elem* aNode, MLogRec::TLogRecCtg aCtg) const;
     protected:
-	TLog mErrors;
-	TLog mWarnings;
+	TLog mLog;
 };
 
 // Log view based on log records list

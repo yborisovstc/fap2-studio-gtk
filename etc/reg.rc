@@ -5,6 +5,20 @@ style "def_label_style"
     fg[PRELIGHT] = {0.9, 0, 0.0}
 }
 
+# DRP style
+style "elem_drp_style"
+{ 
+    color["bckgrd"] = {0.9, 0.9, 0.9}
+    bg[NORMAL] = @bckgrd
+}
+
+# Erroneous DRP style
+style "elem_drp_att_style" = "elem_drp_style"
+{ 
+    fg[NORMAL] =  {0.5, 0.0, 0.0}
+    bg[NORMAL] = mix(0.9, @bckgrd, {0.9, 0.0, 0.0} )
+}
+
 style "edge_style" 
 { 
     color["background"] = {0.9, 0.9, 0.9}
@@ -28,6 +42,13 @@ style "elem_style"
     GtkLayout::draw-border = {5, 5, 5, 5}
 }
 
+# Elem required attention
+style "elem_style_att" = "elem_style"
+{ 
+    fg[NORMAL] =  {0.5, 0.0, 0.0}
+    bg[NORMAL] = {0.9, 0.7, 0.7}
+}
+
 # Deattached elem
 style "elem_style_da" = "elem_style"
 { 
@@ -45,7 +66,10 @@ style "edge_style_da" = "edge_style"
 
 class "GtkLabel" style "def_label_style"
 
+widget "*.*.ElemDrp" style "elem_drp_style"
+widget "*.*.ElemDrp~err" style "elem_drp_att_style"
 widget "*.*.ElemCompRp" style "elem_style"
+widget "*.*.ElemCompRp~err" style "elem_style_att"
 widget "*.*.ElemCompRp~da" style "elem_style_da"
 widget "*.*.Edge" style "edge_style"
 widget "*.*.Edge~da" style "edge_style_da"

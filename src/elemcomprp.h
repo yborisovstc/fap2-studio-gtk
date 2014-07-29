@@ -37,6 +37,7 @@ class ElemCompRp: public Gtk::Layout
 	virtual ~ElemCompRp();
     protected:
 	void DoSetHighlighted(bool aSet);
+	void DoSetErroneous(bool aSet);
     protected:
 	virtual void Construct();
 	virtual void on_realize();
@@ -56,6 +57,7 @@ class ElemCompRp: public Gtk::Layout
 	MCrp::tSigUpdated iSigUpdated;
 	Gtk::Menu iContextMenu; // Context menu
 	bool iHighlighted;
+	bool iErr;
 	Gtk::Label iContent;
 	int iLArea;
 };
@@ -78,6 +80,7 @@ class ElemCrp: public MCrp
 	virtual void GetContentUri(GUri& aUri);
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
+	virtual void SetErroneous(bool aSet);
 	virtual Elem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;

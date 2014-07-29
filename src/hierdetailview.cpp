@@ -16,6 +16,7 @@ Glib::ustring sUiHierDview =
 "    <separator/>"
 "    <placeholder name='ParentPlaceholder' />"
 "    <toolitem action='GoToParent'/>"
+"    <toolitem action='Attention'/>"
 "    <separator/>"
 "  </toolbar>"
 "</ui>";
@@ -31,9 +32,13 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     irActionGroup->add(Gtk::Action::create("Forward", Stock::GO_FORWARD, "Forward"), sigc::mem_fun(*this, &HierDetailView::on_action_goforward));
     irActionGroup->add(Gtk::Action::create("GoToParent", Stock::GO_FORWARD, "Parent", "Parent"), 
 	    sigc::mem_fun(*this, &HierDetailView::on_action_goparent));
+    irActionGroup->add(Gtk::Action::create("Attention", Stock::DIALOG_WARNING, "Attention"), 
+	    sigc::mem_fun(*this, &HierDetailView::on_action_attention));
     iUiMgr->insert_action_group(irActionGroup);
     iUiMgr->add_ui_from_string(sUiHierDview);
 
+    Gtk::ToolItem* att = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/Attention"));
+    att->set_sensitive(false);
     Gtk::ToolItem* pc = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/NamePlaceholder"));
     iTbNameHd = new TiLabel("Name: ");
     iTbNameHd->show();
@@ -176,6 +181,7 @@ void HierDetailView::SetCursor(Elem* aElem, bool FromHist)
     iDetRp = prov.CreateRp(*aElem);
     iDetRp->SignalCompSelected().connect(sigc::mem_fun(*this, &HierDetailView::on_comp_selected));
     iDetRp->SignalDragMotion().connect(sigc::mem_fun(*this, &HierDetailView::on_drp_drag_motion));
+    iDetRp->SignalAttention().connect(sigc::mem_fun(*this, &HierDetailView::on_drp_attention));
     iAlignent->add(iDetRp->Widget());
     //iContWnd.add(iDetRp->Widget());
     iDetRp->Widget().show();
@@ -189,6 +195,17 @@ void HierDetailView::SetCursor(Elem* aElem, bool FromHist)
     // Settng name and parent to the toolbar
     iTbName->Label().set_text(aElem->Name());
     iTbParent->Label().set_text(aElem->EType());
+}
+
+void HierDetailView::on_drp_attention(const string& aInfo)
+{
+    Gtk::ToolItem* att = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/Attention"));
+    att->set_sensitive(!aInfo.empty());
+    att->set_tooltip_text(aInfo);
+}
+
+void HierDetailView::on_action_attention()
+{
 }
 
 void HierDetailView::on_action_up()

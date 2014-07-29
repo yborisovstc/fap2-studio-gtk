@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<!-- Unit test for ceation of graph -->
+
+
+<!DOCTYPE node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
+
+<node id="test" parent="Elem">
+    <node id="elem1" parent="Elem">
+	<node id="elem2" parent="Elem"/>
+    </node>
+    <node id="elem3" parent="elem1">
+	<node id="elem3_1" parent="Elem"/>
+	<node id="elem4" parent="wrong_parent"/>
+	<node node="elem4" id="elem4_1" parent="Elem"/>
+    </node>
+    <node id="elem5" parent="elem1/elem2"/>
+    <node node="elem5" id="elem5_1" parent="Elem"/>
+    <node id="elem6" parent="elem3"/>
+    <node id="elem7" parent="elem3/elem3_1"/>
+
+</node>
+

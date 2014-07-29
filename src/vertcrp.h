@@ -44,6 +44,7 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual void GetContentUri(GUri& aUri);
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
+	virtual void SetErroneous(bool aSet);
 	virtual Elem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;

@@ -182,6 +182,11 @@ void VertCompRp::SetHighlighted(bool aSet)
     DoSetHighlighted(aSet);
 }
 
+void VertCompRp::SetErroneous(bool aSet)
+{
+    DoSetErroneous(aSet);
+}
+
 Elem* VertCompRp::Model()
 {
     return iElem;

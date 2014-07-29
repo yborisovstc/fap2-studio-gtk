@@ -48,6 +48,7 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	virtual void GetContentUri(GUri& aUri);
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
+	virtual void SetErroneous(bool aSet);
 	virtual Elem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;
@@ -78,6 +79,7 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	TDraggedPart iDraggedPart;
 	bool iDragging;
 	bool iHighlighted;
+	bool iErr;
 	Gdk::Region iRegion;
 	MCrp::tSigUpdated iSigUpdated;
 	MCrp::tSigButtonPress iSigButtonPress;

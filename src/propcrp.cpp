@@ -78,6 +78,11 @@ void PropCrp::SetHighlighted(bool aSet)
     DoSetHighlighted(aSet);
 }
 
+void PropCrp::SetErroneous(bool aSet)
+{
+    DoSetErroneous(aSet);
+}
+
 Elem* PropCrp::Model()
 {
     return iElem;

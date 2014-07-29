@@ -12,11 +12,13 @@ class MDesLog
 	    TLogData(const string& c): content(c) {}
 	    bool operator< (const TLogData& r) const { return content < r.content;} 
 	}; 
+	typedef pair<Elem*, MLogRec::TLogRecCtg> TLogKey;
+	typedef pair<TLogKey, TLogData> TLogVal;
     public:
-	typedef std::map<Elem*, TLogData> TLog;
+	typedef std::multimap<TLogKey, TLogData> TLog;
     public:
-	virtual const TLog& Errors() const = 0;
-	virtual const TLog& Warnings() const = 0;
+	virtual const TLog& LogData() const = 0;
+	virtual bool IsNodeLogged(Elem* aNode, MLogRec::TLogRecCtg aCtg) const = 0;
 };
 
 #endif

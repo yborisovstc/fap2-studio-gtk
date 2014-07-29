@@ -37,8 +37,10 @@ class HierDetailView
 	void on_action_goback();
 	void on_action_goforward();
 	void on_action_goparent();
+	void on_action_attention();
 	void on_cont_size_alocated(Allocation& alloc);
 	void on_drp_drag_motion(Gtk::Widget& widget, int x, int y);
+	void on_drp_attention(const string& aInfo);
 	bool on_parent_press_event(GdkEventKey* aEvent);
     protected:
 	void UpdataHistNavUI();

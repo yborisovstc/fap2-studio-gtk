@@ -111,6 +111,17 @@ void EdgeCrp::SetHighlighted(bool aSet)
     }
 }
 
+void EdgeCrp::SetErroneous(bool aSet)
+{
+    if (aSet != iErr) {
+	iErr = aSet;
+	if (iErr) {
+	}
+	else {
+	}
+    }
+}
+
 Elem* EdgeCrp::Model()
 {
     return iElem;

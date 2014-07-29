@@ -58,6 +58,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void on_comp_menu_remove();
 	void on_comp_menu_edit_content();
 	void on_comp_menu_save_chromo();
+	bool IsCrpLogged(MCrp* aCrp, MLogRec::TLogRecCtg aCtg) const;
     protected:
 	MSEnv& mStEnv;
 	// Compact representations  provider
@@ -72,7 +73,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	TDnDTarg iDnDTarg;
 	MCrp* iDropBaseCandidate;
 	std::string iDndReceivedData;
-	MLogRec::TLogRecCtg iLogCtg;
+	MDrp::tSigAttention mSignalAttention;
 
 };
 
@@ -90,6 +91,7 @@ class ElemDrp: public MDrp
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();
 	virtual tSigDragMotion SignalDragMotion();
+	virtual tSigAttention SignalAttention() {return iRp->mSignalAttention;};
 	virtual void Udno();
     private:
 	ElemDetRp* iRp;

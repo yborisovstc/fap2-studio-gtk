@@ -151,12 +151,24 @@ void ElemCompRp::DoSetHighlighted(bool aSet)
     if (aSet != iHighlighted) {
 	iHighlighted = aSet;
 	if (iHighlighted) {
-	    std::cout << "Elem [" << iElem->Name() << "]: higligted" << std::endl;
+	    //std::cout << "Elem [" << iElem->Name() << "]: higligted" << std::endl;
 	    set_state(Gtk::STATE_PRELIGHT);
 	    //set_state(Gtk::STATE_SELECTED);
 	}
 	else {
 	    set_state(Gtk::STATE_NORMAL);
+	}
+    }
+}
+
+void ElemCompRp::DoSetErroneous(bool aSet)
+{
+    if (aSet != iErr) {
+	iErr = aSet;
+	if (iErr) {
+	    set_name(string(get_name()) + "~err");
+	}
+	else {
 	}
     }
 }
@@ -241,6 +253,11 @@ bool ElemCrp::Dragging()
 void ElemCrp::SetHighlighted(bool aSet)
 {
     iRp->DoSetHighlighted(aSet);
+}
+
+void ElemCrp::SetErroneous(bool aSet)
+{
+    iRp->DoSetErroneous(aSet);
 }
 
 Elem* ElemCrp::Model()

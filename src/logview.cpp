@@ -75,14 +75,14 @@ SDesLog::~SDesLog()
 {
 }
 
-const MDesLog::TLog& SDesLog::Errors() const
+const MDesLog::TLog& SDesLog::LogData() const
 {
-    return mErrors;
+    return mLog;
 }
 
-const MDesLog::TLog& SDesLog::Warnings() const
+bool SDesLog::IsNodeLogged(Elem* aNode, MLogRec::TLogRecCtg aCtg) const
 {
-    return mWarnings;
+    return mLog.count(MDesLog::TLogKey(aNode, aCtg));
 }
 
 // Log view based on log records list
@@ -106,6 +106,7 @@ void LogViewL::SetDesEnv(MEnv* aDesEnv)
 	Glib::RefPtr<TreeModel> curmdl = get_model();
 	curmdl.reset();
 	iDesEnv = aDesEnv;
+	mDesLog.mLog.clear();
 	if (iDesEnv != NULL) {
 	    Glib::RefPtr<ListStore> mdl = ListStore::create(iColRec);
 	    set_model(mdl);
@@ -146,5 +147,6 @@ void LogViewL::on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::st
     aNode->GetUri(fullpath);
     it->set_value(iColRec.mnode, Glib::ustring(fullpath.GetUri(ETrue).c_str()));
     it->set_value(iColRec.content, Glib::ustring(aContent.c_str()));
+    mDesLog.mLog.insert(MDesLog::TLogVal(MDesLog::TLogKey(aNode, aCtg), MDesLog::TLogData(aContent)));
 }
 
