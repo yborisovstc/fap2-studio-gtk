@@ -65,7 +65,7 @@ void DesObserver::UpdateDesRootObserver()
 	Elem* root = iDesEnv->Root();
 	if (root != NULL) {
 	    root->SetObserver(this);
-	    iSigSystemChanged.emit();
+	    //iSigSystemChanged.emit();
 	}
     }
 }
@@ -293,7 +293,7 @@ void App::on_action_new()
 	    iSpecFileName.clear();
 	    iChromoLim = 0;
 	    OpenFile(filename, true);
-	    iInitMaxOrder = iEnv->ChMgr()->GetSpecMaxOrder();
+	    iInitMaxOrder = iEnv->ChMgr()->GetMaxOrder();
 	    iSaved = EFalse;
 	}
     }
@@ -313,7 +313,7 @@ void App::on_action_open()
 	    string filename = dialog.get_filename();
 	    iChromoLim = 0;
 	    OpenFile(filename, false);
-	    iInitMaxOrder = iEnv->ChMgr()->GetSpecMaxOrder();
+	    iInitMaxOrder = iEnv->ChMgr()->GetMaxOrder();
 	    iSaved = EFalse;
 	}
     }
