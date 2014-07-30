@@ -98,10 +98,10 @@ void ElemDetRp::Construct()
 	assert(comp != NULL);
 	if (!comp->IsRemoved()) {
 	    MCrp* rp = iCrpProv.CreateRp(*comp, this);
-	    Gtk::Widget& rpw = rp->Widget();
 	    if (IsCrpLogged(rp, MLogRec::EErr)) {
 		rp->SetErroneous(true);
 	    }
+	    Gtk::Widget& rpw = rp->Widget();
 	    //rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
 	    // Using specific signal for button press instead of standard because some Crps can have complex layout
 	    rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
