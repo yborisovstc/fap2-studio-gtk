@@ -200,6 +200,8 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     // Settings defaults
     MStSetting<bool>& ena_pheno = iStEnv->Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno);
     ena_pheno.Set(true);
+    MStSetting<Glib::ustring>& pinned_mut_node = iStEnv->Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node);
+    pinned_mut_node.Set("");
     // Create main window
     iMainWnd = new MainWnd();
     iMainWnd->maximize();

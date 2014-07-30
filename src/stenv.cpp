@@ -27,12 +27,12 @@ StSettings::~StSettings()
 
 void* StSettings::DoGetSetting(TStSett aSettId)
 {
-    void* res = NULL;
     switch (aSettId) {
-	case ESts_EnablePhenoModif: res =  &mEnablePhenoModif;
-	case ESts_ChromoLim: res =  &mChromoLim;
+	case ESts_EnablePhenoModif: return  &mEnablePhenoModif;
+	case ESts_PinnedMutNode: return  &mPinnedMutNode; 
+	case ESts_ChromoLim: return  &mChromoLim;
+	default: return NULL;
     }
-    return res;
 }
 
 StEnv::StEnv(MMdlObserver* aMdlObs, MDesLog* aDesLog): iMdlObs(aMdlObs), mDesLog(aDesLog)

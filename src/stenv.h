@@ -36,6 +36,7 @@ class StSettings: public MStSettings
 	virtual void* DoGetSetting(TStSett aSettId);
     protected:
 	 StSetting<bool> mEnablePhenoModif;
+	 StSetting<Glib::ustring> mPinnedMutNode;
 	 StSetting<int> mChromoLim;
 };
 

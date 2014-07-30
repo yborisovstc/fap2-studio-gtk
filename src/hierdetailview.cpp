@@ -4,6 +4,8 @@
 #include "gtkmm/toolbar.h"
 #include "gtkmm/separatortoolitem.h"
 #include <gtkmm/stock.h>
+#include <gtkmm/toggleaction.h>
+#include "msset.h"
 
 Glib::ustring sUiHierDview = 
 "<ui>"
@@ -16,6 +18,8 @@ Glib::ustring sUiHierDview =
 "    <separator/>"
 "    <placeholder name='ParentPlaceholder' />"
 "    <toolitem action='GoToParent'/>"
+"    <toolitem action='PinMutNode'/>"
+"    <toolitem action='SpecifyMutNode'/>"
 "    <toolitem action='Attention'/>"
 "    <separator/>"
 "  </toolbar>"
@@ -34,6 +38,16 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
 	    sigc::mem_fun(*this, &HierDetailView::on_action_goparent));
     irActionGroup->add(Gtk::Action::create("Attention", Stock::DIALOG_WARNING, "Attention"), 
 	    sigc::mem_fun(*this, &HierDetailView::on_action_attention));
+    // Use mut node
+    MStSetting<bool>& ena_pheno_s = iStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
+    bool ena_pheno = ena_pheno_s.Get(ena_pheno);
+    irActionGroup->add(Gtk::ToggleAction::create("SpecifyMutNode", Stock::INDEX, "SpecifyMutNode", "SpecifyMutNode", !ena_pheno), 
+	    sigc::mem_fun(*this, &HierDetailView::on_action_spec_mut_node));
+    // Pin mut node
+    MStSetting<Glib::ustring>& pinned_mn_s  = iStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mn_s);
+    const Glib::ustring& pinned_mn = pinned_mn_s.Get(pinned_mn);
+    irActionGroup->add(Gtk::ToggleAction::create("PinMutNode", Stock::YES, "PinMutNode", "PinMutNode", !pinned_mn.empty()), 
+	    sigc::mem_fun(*this, &HierDetailView::on_action_pin_mut_node));
     iUiMgr->insert_action_group(irActionGroup);
     iUiMgr->add_ui_from_string(sUiHierDview);
 
@@ -78,6 +92,24 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     iNavHist.clear(); 
     iNavHist.reserve(1);
     iNavHistIter = iNavHist.end();
+}
+
+void HierDetailView::on_action_pin_mut_node()
+{
+    MStSetting<Glib::ustring>& pinned_mn_s  = iStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mn_s);
+    const Glib::ustring& pinned_mn = pinned_mn_s.Get(pinned_mn);
+    Gtk::ToggleToolButton* button = dynamic_cast<Gtk::ToggleToolButton*>(iUiMgr->get_widget("/ToolBar/PinMutNode"));
+    if (iDetRp != NULL) {
+	Elem* cursor = iDetRp->Model();
+	pinned_mn_s.Set(button->get_active() ? cursor->GetUri(NULL): ""); 
+    }
+}
+
+void HierDetailView::on_action_spec_mut_node()
+{
+    MStSetting<bool>& ena_pheno_s = iStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
+    Gtk::ToggleToolButton* button = dynamic_cast<Gtk::ToggleToolButton*>(iUiMgr->get_widget("/ToolBar/SpecifyMutNode"));
+    ena_pheno_s.Set(!button->get_active()); 
 }
 
 void HierDetailView::on_action_goparent()
