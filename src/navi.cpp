@@ -869,6 +869,13 @@ Navi::Navi(MMdlObserver* aDesObs): iNatn(NULL), iDesObs(aDesObs)
     iNatHierSw.add(*iNatHier);
     iNatHierSw.show();
     append_page(iNatHierSw, "Model");
+    // Chromo
+    iChromoTree = new ChromoTree(iDesObs);
+    iChromoTree->show();
+    iChromoSw.add(*iChromoTree);
+    iChromoSw.show();
+    append_page(iChromoSw, "Chromo");
+
 }
 
 Navi::~Navi()

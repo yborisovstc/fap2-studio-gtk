@@ -1,7 +1,8 @@
 
+#include "common.h"
 #include "chromoview.h"
+#include <gtkmm/treerowreference.h>
 
-#if 0
 
 // Current hier tree model
 
@@ -47,7 +48,7 @@ GType ChromoTreeMdl::get_column_type_vfunc(int index) const
 
 int ChromoTreeMdl::iter_n_root_children_vfunc() const
 {
-    return iRoot->Comps().size();
+    return iRnode.Count();
 }
 
 bool ChromoTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
@@ -135,34 +136,40 @@ void ChromoTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column,
     }
 }
 
-Elem* ChromoTreeMdl::get_next_comp(Elem* aComp) 
+ChromoNode ChromoTreeMdl::get_next_comp(const ChromoNode& aComp)
 {
-    Elem* res = NULL;
-    Elem* mgr = aComp->GetMan();
-    if (mgr != NULL) {
+    ChromoNode::Iterator curr(aComp);
+    curr++;
+    ChromoNode res = *curr;
+    return res;
+}
+    /*
+    ChromoNode res = *iRnode.End();
+    ChromoNode mgr = *aComp.Parent();
+    if (mgr != *iRnode.End()) {
 	int ct = 0;
-	for (; ct < mgr->Comps().size(); ct++) {
-	    if (mgr->Comps().at(ct) == aComp) {
+	for (; ct < mgr.Count(); ct++) {
+	    if (mgr.At(ct) == aComp) {
 		break;
 	    }
 	}
-	if (ct < mgr->Comps().size() - 1) {
-	    res = mgr->Comps().at(++ct);
+	if (ct < mgr.Count() - 1) {
+	    res = mgr.At(++ct);
 	}	
     }
     return res;
-}
+    */
 
 bool ChromoTreeMdl::iter_next_vfunc(const iterator& iter, iterator& iter_next) const
 {
     bool res = false;
     iter_next = iterator();
     if (IsIterValid(iter)) {
-	Elem* node = (Elem*) iter.gobj()->user_data;
-	Elem* next = ((ChromoTreeMdl*) this)->get_next_comp(node);
-	if (next != NULL) {
+	ChromoNode node(iRnode.Mdl(), iter.gobj()->user_data);
+	ChromoNode next = ((ChromoTreeMdl*) this)->get_next_comp(node);
+	if (next != *iRnode.End()) {
 	    iter_next.set_stamp(iStamp);
-	    iter_next.gobj()->user_data = next;
+	    iter_next.gobj()->user_data = next.Handle();
 	    res = true;
 	}
     }
@@ -173,8 +180,8 @@ int ChromoTreeMdl::iter_n_children_vfunc(const iterator& iter) const
 {
     int res = 0;
     if (IsIterValid(iter)) {
-	Elem* node = (Elem*) iter.gobj()->user_data;
-	res = node->Comps().size();
+	ChromoNode node(iRnode.Mdl(), iter.gobj()->user_data);
+	res = node.Count();
     }
     return res;
 }
@@ -188,8 +195,8 @@ bool ChromoTreeMdl::iter_has_child_vfunc(const iterator& iter) const
 {
     bool res = false;
     if (IsIterValid(iter)) {
-	Elem* node = (Elem*) iter.gobj()->user_data;
-	res = (node->Comps().size() > 0);
+	ChromoNode node(iRnode.Mdl(), iter.gobj()->user_data);
+	res = (node.Count() > 0);
     }
     return res;
 }
@@ -198,10 +205,10 @@ bool ChromoTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterator
 {
     bool res = false;
     if (IsIterValid(parent)) {
-	Elem* node = (Elem*) parent.gobj()->user_data;
-	if (n < node->Comps().size()) {
+	ChromoNode node(iRnode.Mdl(), parent.gobj()->user_data);
+	if (n < node.Count()) {
 	    iter.set_stamp(iStamp);
-	    iter.gobj()->user_data = node->Comps().at(n);
+	    iter.gobj()->user_data = node.At(n).Handle();
 	    res = true;
 	}
     }
@@ -211,9 +218,9 @@ bool ChromoTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterator
 bool ChromoTreeMdl::iter_nth_root_child_vfunc(int n, iterator& iter) const
 {
     bool res = false;
-    if (n < iRoot->Comps().size()) {
+    if (n < iRnode.Count()) {
 	iter.set_stamp(iStamp);
-	iter.gobj()->user_data = iRoot->Comps().at(n);
+	iter.gobj()->user_data = iRnode.At(n).Handle();
 	res = true;
     }
     return res;
@@ -224,10 +231,11 @@ bool ChromoTreeMdl::iter_parent_vfunc(const iterator& child, iterator& iter) con
     bool res = false;
     bool valid = IsIterValid(child);
     if (valid) {
-	Elem* comp = (Elem*) child.gobj()->user_data;
-	if (comp->GetMan() != NULL) {
+	ChromoNode comp(iRnode.Mdl(), child.gobj()->user_data);
+	ChromoNode mgr = *comp.Parent();
+	if (mgr != *iRnode.End()) {
 	    iter.set_stamp(iStamp);
-	    iter.gobj()->user_data = comp->GetMan();
+	    iter.gobj()->user_data = mgr.Handle();
 	    res = true;
 	}
     }
@@ -245,18 +253,12 @@ bool ChromoTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::Select
     // Set selection. This will evolve DnD process 
     iterator iter((TreeModel*)this);
     bool ires = get_iter_vfunc(path, iter);
+    /*
     Elem* node = (Elem*) (*iter).get_value(ColRec().elem);
     GUri uri;
     node->GetUri(uri);
     //selection_data.set_text(uri.GetUri());
     selection_data.set(KDnDTarg_Comp, uri.GetUri());
-
-    //
-    /*
-    int row_index = path[0];
-    Elem* node = iRoot->Comps().at(row_index);
-    string data = node->Name();
-    selection_data.set_text(data);
     */
     res = true;
     return res;
@@ -270,12 +272,13 @@ bool ChromoTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
 void ChromoTreeMdl::OnCompDeleting(Elem& aComp)
 {
     //std::cout << "ChromoTreeMdl::OnCompDeleting: [" << aComp.Name() << "]" << std::endl;
-    //UpdateStamp();
+    /*
     iterator iter;
     iter.set_stamp(iStamp);
     iter.gobj()->user_data = &aComp;
     Path path = get_path_vfunc(iter);
     row_deleted(path);
+    */
 }
 
 void ChromoTreeMdl::OnCompAdding(Elem& aComp)
@@ -315,10 +318,113 @@ void ChromoTreeMdl::on_comp_changed(Elem* aComp)
     OnCompChanged(*aComp);
 }
 
-static GtkTargetEntry sNaviChromoDnDTarg[] =
+
+
+
+static GtkTargetEntry sChromoTreeDnDTarg[] =
 {
     { (gchar*) KDnDTarg_Comp, 0, 0 },
 };
 
-#endif
+// Current chromo navigation widget
+ChromoTree::ChromoTree(MMdlObserver* aDesObs): iDesEnv(NULL), iDesObs(aDesObs), iRootAdded(false)
+{
+    set_headers_visible(false);
+    SetDesEnv(iDesObs->DesEnv());
+    iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &ChromoTree::on_des_env_changed));
+    iDesObs->SignalSystemCreated().connect(sigc::mem_fun(*this, &ChromoTree::on_des_root_added));
+}
+
+ChromoTree::~ChromoTree()
+{
+}
+
+void ChromoTree::on_des_env_changed()
+{
+    SetDesEnv(iDesObs->DesEnv());
+}
+
+void ChromoTree::on_des_root_added()
+{
+    if (!iRootAdded && iDesEnv != NULL) {
+	iRootAdded = true;
+	Glib::RefPtr<ChromoTreeMdl> mdl = ChromoTreeMdl::create(iDesEnv->Root(), iDesEnv);
+	ChromoTreeMdl* hmdl = mdl.operator ->();
+	GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
+	bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
+	set_model(mdl);
+	append_column( "one", mdl->ColRec().name);
+	enable_model_drag_source();
+	drag_source_set (Gtk::ArrayHandle_TargetEntry(sChromoTreeDnDTarg, 1, Glib::OWNERSHIP_NONE), 
+		Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
+	iDesObs->SignalCompDeleted().connect(sigc::mem_fun(*hmdl, &ChromoTreeMdl::on_comp_deleting));
+	iDesObs->SignalCompAdded().connect(sigc::mem_fun(*hmdl, &ChromoTreeMdl::on_comp_adding));
+	iDesObs->SignalCompChanged().connect(sigc::mem_fun(*hmdl, &ChromoTreeMdl::on_comp_changed));
+    }
+}
+
+void ChromoTree::SetDesEnv(MEnv* aDesEnv)
+{
+    assert(aDesEnv == NULL || aDesEnv != NULL && iDesEnv == NULL);
+    if (aDesEnv != iDesEnv) {
+	unset_model();
+	remove_all_columns();
+	iRootAdded = false;
+	iDesEnv = aDesEnv;
+    }
+}
+
+bool ChromoTree::on_button_press_event(GdkEventButton* event)
+{
+    iPressX = event->x;
+    iPressY = event->y;
+    return TreeView::on_button_press_event(event);
+}
+
+void ChromoTree::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context)
+{
+    TreeView::on_drag_begin(context);
+
+    // Set source row. On the base GtkTreeView code it is done in gtk_tree_view_maybe_begin_dragging_row()
+    // But this is not working for some reason. So fix it by implementing of setting source row here. 
+    Gtk::TreeModel::Path path;
+    Gtk::TreeViewColumn* col = NULL;
+    GtkTreeView *tree_view = Gtk::TreeView::gobj();
+    int cell_x, cell_y;
+
+    bool row_exists = get_path_at_pos (iPressX, iPressY, path, col, cell_x, cell_y);
+    Glib::RefPtr<Gtk::TreeModel> model = get_model();
+    if (row_exists) {
+	set_source_row(context, model, path);
+    }
+}
+
+void ChromoTree::set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row)
+{
+    Gtk::TreeRowReference* rr = new Gtk::TreeRowReference(model, source_row);
+    context->set_data(Glib::Quark("gtk-tree-view-source-row"), rr->gobj());
+    GtkTreeRowReference *ref = (GtkTreeRowReference*) g_object_get_data (G_OBJECT (context->gobj()), "gtk-tree-view-source-row");
+    GtkTreePath* res = NULL;
+    if (ref) {
+	res =  gtk_tree_row_reference_get_path (ref);
+    }
+ 
+}
+
+void ChromoTree::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context, Gtk::SelectionData& selection_data, guint info, guint time)
+{
+    TreeView::on_drag_data_get(context, selection_data, info, time);
+}
+
+void ChromoTree::on_row_activated(const TreeModel::Path& path, TreeViewColumn* column)
+{
+    TreeModel::iterator iter = get_model()->get_iter(path);
+}
+
+ChromoTree::tSigCompSelected ChromoTree::SignalCompSelected()
+{
+    return iSigCompSelected;
+}
+
+
 

@@ -13,6 +13,7 @@
 #include <melem.h>
 #include <menv.h>
 #include "mdesobs.h"
+#include "chromoview.h"
 
 using namespace std;
 using namespace Gtk;
@@ -257,6 +258,9 @@ class Navi: public Gtk::Notebook
 	// Navigation tree of current hier
 	NaviHier* iNatHier;
 	ScrolledWindow iNatHierSw;
+	// Navigation tree of chromo
+	ChromoTree* iChromoTree;
+	ScrolledWindow iChromoSw;
 };
 
 

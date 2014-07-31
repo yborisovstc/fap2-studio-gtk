@@ -71,7 +71,7 @@ class ChromoTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tre
     private:
 	bool IsIterValid(const iterator& iter) const;
 	void UpdateStamp();
-	Elem* get_next_comp(Elem* aComp);
+	ChromoNode get_next_comp(const ChromoNode& aComp);
     private:
 	// Provider provider
 	MEnv* iDesEnv;
