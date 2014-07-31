@@ -729,7 +729,8 @@ NaviHier::NaviHier(MMdlObserver* aDesObs): iDesEnv(NULL), iDesObs(aDesObs), iRoo
     set_headers_visible(false);
     SetDesEnv(iDesObs->DesEnv());
     iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &NaviHier::on_des_env_changed));
-    iDesObs->SignalSystemChanged().connect(sigc::mem_fun(*this, &NaviHier::on_des_root_added));
+    //iDesObs->SignalSystemChanged().connect(sigc::mem_fun(*this, &NaviHier::on_des_root_added));
+    iDesObs->SignalSystemCreated().connect(sigc::mem_fun(*this, &NaviHier::on_des_root_added));
 }
 
 NaviHier::~NaviHier()

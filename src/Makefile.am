@@ -55,6 +55,8 @@ fap2_studio_gtk_SOURCES = \
 		 dessync.cpp \
 		 desvis.h \
 		 desvis.cpp \
+		 chromoview.h \
+		 chromoview.cpp \
 		 mdlprov.h \
 		 mdlprov.cpp \
 		 mainwnd.h \

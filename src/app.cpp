@@ -65,6 +65,7 @@ void DesObserver::UpdateDesRootObserver()
 	Elem* root = iDesEnv->Root();
 	if (root != NULL) {
 	    root->SetObserver(this);
+	    iSigSystemCreated.emit();
 	    //iSigSystemChanged.emit();
 	}
     }
@@ -138,6 +139,11 @@ MMdlObserver::tSigSystemChanged DesObserver::SignalSystemChanged()
     return iSigSystemChanged;
 }
 
+MMdlObserver::tSigSystemCreated DesObserver::SignalSystemCreated()
+{
+    return iSigSystemCreated;
+}
+
 MMdlObserver::tSigLogAdded DesObserver::SignalLogAdded()
 {
     return iSigLogAdded;
@@ -199,7 +205,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iLogFileName = GetDefaultLogFileName();
     // Settings defaults
     MStSetting<bool>& ena_pheno = iStEnv->Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno);
-    ena_pheno.Set(true);
+    ena_pheno.Set(false);
     MStSetting<Glib::ustring>& pinned_mut_node = iStEnv->Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node);
     pinned_mut_node.Set("");
     // Create main window
@@ -223,6 +229,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iMdlProv = new MdlProv("MdlProv", iStDesEnv, NULL);
     // Create model
     iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
+    iHDetView->SignalRecreateRequested().connect(sigc::mem_fun(*this, &App::on_action_recreate));
     //OpenFile(KSpecFileName);
     // Navigation pane
     iNaviPane = new Navi(iDesObserver);

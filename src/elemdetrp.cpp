@@ -34,14 +34,20 @@ static const Glib::ustring KDlgMsg_Mut_F2 =
 2. Make phenotypic modification, the change will be for this node only, not affecting other nodes\n\n\
 Make mutation ? Oherwise phonotype modification";
 
-static const Glib::ustring KDlgMsg_Rld = 
-"This change can affect other parts of the system, please reload system to see the result.";
+static const Glib::ustring K_Att_Rld = 
+"This change can affect other parts of the system, please reload system to apply the affecting changes.";
 
 static const Glib::ustring KDlgMsg_CritDep = 
 "There is critical dependency [%1] for this change in the system. So, only phenotypic modification can be done. OK to do the change ?";
 
-static const Glib::ustring KDlgMsg_CritDep_Att = 
-"There is critical dependency [%1] for this change in the system. So phenotypic modification has been done.";
+static const Glib::ustring K_Att_CritDep = 
+"There is critical dependency in node [%1] for this change in the system. Resolve dependency first, or select depending node for mutation.";
+
+static const Glib::ustring K_Att_WrongPinnedMnode = 
+"Node pinned for mutation is not the owner of the current node. Select the correct node for mutation";
+
+static const Glib::ustring K_Att_DeattachedNode = 
+"Current node is deattached so cannot be mutated itself. Select some of its owners for mutation";
 
 
 /*
@@ -54,7 +60,7 @@ static const Glib::ustring KDlgMsg_CritDep_Att =
    */
 
 ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv),
-    mStEnv(aStEnv), iDnDTarg(EDT_Unknown), iDropBaseCandidate(NULL)
+    mStEnv(aStEnv), iDnDTarg(EDT_Unknown), iDropBaseCandidate(NULL), iReloadRequired(false)
 {
     // Set dest with avoiding DestDefaults flags. These flags are only for some trivial DnD 
     // scenarious, but we need to implement requesting edges data during drop motion
@@ -419,107 +425,134 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
 }
 
 Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType) {
+    aMnode = iElem;
     Elem* res = aNode;
     string att;
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
-    Rank noderank;
-    Rank mnoderank;
-    res->GetRank(noderank, res->Chromos().Root());
-    aMnode->GetRank(mnoderank, aMnode->Chromos().Root());
-    Rank rank = noderank;
-    // Checking critical deps
-    //Elem::TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
-    Elem::TMDep dep = aNode->GetMajorDep();
-    if (dep.first.first != NULL) {
-	Rank deprank;
-	Elem::GetDepRank(dep, deprank);
-	if (deprank > rank && !deprank.IsRankOf(rank)) {
-	    res = dep.first.first;
-	    rank = deprank;
-	}
-    }
-    if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
-	att = Glib::ustring::compose(KDlgMsg_CritDep_Att, res->GetUri());
-    }
-    if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
-	// Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
-	int dres = RESPONSE_OK;
-	MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
-		false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
-	dres = dlg->run();
-	delete dlg;
-	if (dres == RESPONSE_CANCEL) {
-	    // User reject pheno mutation proposed, just cancel operation
+    MStSetting<Glib::ustring>& pinned_mut_node_s = mStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node_s);
+    const Glib::ustring& pinned_mut_node = pinned_mut_node_s.Get(pinned_mut_node);
+    if (!pinned_mut_node.empty()) {
+	Elem* pnode = iElem->GetNode(pinned_mut_node);
+	if (pnode == NULL || !pnode->IsComp(aMnode)) {
 	    res = NULL;
+	    att = K_Att_WrongPinnedMnode;
+	}
+	else {
+	    aMnode = pnode;
 	}
     }
-    // Checking affecting deps
+    if (res != NULL && !aMnode->IsChromoAttached()) {
+	res = NULL;
+	att = K_Att_DeattachedNode;
+    }
     if (res != NULL) {
-	bool isaffdep = false;
-	dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Affecting);
+	Rank noderank;
+	Rank mnoderank;
+	res->GetRank(noderank, res->Chromos().Root());
+	aMnode->GetRank(mnoderank, aMnode->Chromos().Root());
+	Rank rank = noderank;
+	// Checking critical deps
+	Elem::TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
+	//Elem::TMDep dep = aNode->GetMajorDep();
 	if (dep.first.first != NULL) {
 	    Rank deprank;
 	    Elem::GetDepRank(dep, deprank);
 	    if (deprank > rank && !deprank.IsRankOf(rank)) {
 		res = dep.first.first;
 		rank = deprank;
-		isaffdep = true;
-	    }
-	    else if (deprank > noderank && !deprank.IsRankOf(noderank)) {
-		isaffdep = true;
 	    }
 	}
-	if (isaffdep && res != aMnode && !aMnode->IsComp(res)) {
-	    // There is affecting dep
-	    if (!ena_pheno) {
-		// Pheno modif are disabled, notify the user of nececcity of reload
-		res = aNode;
-		MessageDialog* dlg = new MessageDialog(KDlgMsg_Rld, false, MESSAGE_INFO, BUTTONS_OK, true);
-		dlg->run();
-		delete dlg;
-	    }
-	    else {
-		// Pheno modif are disabled, asking the user for the choice: mut or modif
-		int dres = RESPONSE_YES;
-		MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
-			false, MESSAGE_INFO, BUTTONS_YES_NO, true);
-		dres = dlg->run();
-		delete dlg;
-		if (dres == RESPONSE_YES) {
-		    res = aNode;
-		}
-		else {
-		    res = res->GetCommonOwner(aNode);
-		}
-	    }
+	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
+	    att = Glib::ustring::compose(K_Att_CritDep, res->GetUri());
+	    res = NULL;
 	}
-    }
-    if (res != NULL) {
-	if (!res->IsChromoAttached()) {
-	    res = res->GetAttachingMgr(); 
-	}
-	/*
-	   if (!ena_pheno && res != aNode && deptype == ENa_Parent) {
-    // Taking into account options of change: geno or pheno, ref fap2 uc_038
-    MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
-    false, MESSAGE_INFO, BUTTONS_YES_NO, true);
-    int dres = dlg->run();
-    delete dlg;
-    if (dres == RESPONSE_YES) {
-		res = iElem;
+	/* [YB] ena_pheno is not used at the moment, so just disable the logic 
+	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
+	    // Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
+	    int dres = RESPONSE_OK;
+	    MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
+		    false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+	    dres = dlg->run();
+	    delete dlg;
+	    if (dres == RESPONSE_CANCEL) {
+		// User reject pheno mutation proposed, just cancel operation
+		res = NULL;
 	    }
-	    else {
-		res = res->GetCommonOwner(aNode);
-	    }
-	} 
-	else {
-	    res = res->GetCommonOwner(aNode);
 	}
 	*/
-	res = res->GetCommonOwner(aMnode);
+	// Checking affecting deps
+	if (res != NULL) {
+	    bool isaffdep = false;
+	    Elem* affdep = NULL;
+	    dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Affecting);
+	    if (dep.first.first != NULL) {
+		Rank deprank;
+		Elem::GetDepRank(dep, deprank);
+		if (deprank > rank && !deprank.IsRankOf(rank)) {
+		    affdep = dep.first.first;
+		    rank = deprank;
+		    isaffdep = true;
+		}
+		else if (deprank > noderank && !deprank.IsRankOf(noderank)) {
+		    isaffdep = true;
+		}
+	    }
+	    if (isaffdep && affdep != NULL && affdep != aMnode && !aMnode->IsComp(affdep)) {
+		// There is affecting dep
+		if (!ena_pheno) {
+		    att = K_Att_Rld;
+		    //iReloadRequired = true;
+		    /*
+		    // Pheno modif are disabled, notify the user of nececcity of reload
+		    res = aNode;
+		    MessageDialog* dlg = new MessageDialog(K_Att_Rld, false, MESSAGE_INFO, BUTTONS_OK, true);
+		    dlg->run();
+		    delete dlg;
+		    */
+		}
+		else {
+		    // Pheno modif are enabled, asking the user for the choice: mut or modif
+		    int dres = RESPONSE_YES;
+		    MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
+			    false, MESSAGE_INFO, BUTTONS_YES_NO, true);
+		    dres = dlg->run();
+		    delete dlg;
+		    if (dres == RESPONSE_YES) {
+			res = aNode;
+		    }
+		    else {
+			res = res->GetCommonOwner(aNode);
+		    }
+		}
+	    }
+	}
+	if (res != NULL) {
+	    if (!res->IsChromoAttached()) {
+		res = res->GetAttachingMgr(); 
+	    }
+	    /*
+	       if (!ena_pheno && res != aNode && deptype == ENa_Parent) {
+	// Taking into account options of change: geno or pheno, ref fap2 uc_038
+	MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
+	false, MESSAGE_INFO, BUTTONS_YES_NO, true);
+	int dres = dlg->run();
+	delete dlg;
+	if (dres == RESPONSE_YES) {
+	res = iElem;
+	}
+	else {
+	res = res->GetCommonOwner(aNode);
+	}
+	} 
+	else {
+	res = res->GetCommonOwner(aNode);
+	}
+	*/
+	    res = res->GetCommonOwner(aMnode);
+	}
     }
-	mSignalAttention.emit(att);
+    mSignalAttention.emit(att);
     return res;
 }
 
@@ -563,6 +596,12 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	}
 	*/
 	mutelem->Mutate();
+	/*
+	if (iReloadRequired) {
+	    iReloadRequired = false;
+	    mSigReloadRequired.emit();
+	};
+	*/
     }
 }
 

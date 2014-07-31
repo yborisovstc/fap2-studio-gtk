@@ -20,6 +20,7 @@ class HierDetailView
 {
     public:
 	typedef std::vector<void*> TNavHist;
+	typedef sigc::signal<void> tSigRecreateRequested;
     public:
 	HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr);
 	virtual ~HierDetailView();
@@ -27,6 +28,7 @@ class HierDetailView
 	void SetCursor(Elem* aRoot, bool FromHist = false);
 	void SetCursor(const string& aUri);
 	string GetCursor() const;
+	tSigRecreateRequested SignalRecreateRequested() {return mSigRecreateRequested;};
 	// Signal handlers:
 	void on_comp_selected(Elem* aComp);
     protected:
@@ -43,9 +45,11 @@ class HierDetailView
 	void on_cont_size_alocated(Allocation& alloc);
 	void on_drp_drag_motion(Gtk::Widget& widget, int x, int y);
 	void on_drp_attention(const string& aInfo);
+	void on_drp_reload_required();
 	bool on_parent_press_event(GdkEventKey* aEvent);
     protected:
 	void UpdataHistNavUI();
+	void UpdatePinMutNode();
     private:
 	// Environment
 	MSEnv& iStEnv;
@@ -64,6 +68,7 @@ class HierDetailView
 	// System navigation history
 	TNavHist iNavHist;
 	TNavHist::iterator iNavHistIter;
+	tSigRecreateRequested mSigRecreateRequested;
 };
 
 #endif

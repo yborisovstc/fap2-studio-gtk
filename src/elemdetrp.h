@@ -74,6 +74,8 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	MCrp* iDropBaseCandidate;
 	std::string iDndReceivedData;
 	MDrp::tSigAttention mSignalAttention;
+	bool iReloadRequired;
+	MDrp::tSigReloadRequired mSigReloadRequired;
 
 };
 
@@ -92,6 +94,7 @@ class ElemDrp: public MDrp
 	virtual tSigCompSelected SignalCompSelected();
 	virtual tSigDragMotion SignalDragMotion();
 	virtual tSigAttention SignalAttention() {return iRp->mSignalAttention;};
+	virtual tSigReloadRequired SignalReloadRequired() {return iRp->mSigReloadRequired;};
 	virtual void Udno();
     private:
 	ElemDetRp* iRp;

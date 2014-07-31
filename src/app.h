@@ -34,6 +34,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	virtual tSigContentChanged SignalContentChanged();
 	virtual tSigSystemChanged SignalSystemChanged();
 	virtual tSigLogAdded SignalLogAdded();
+	virtual tSigSystemCreated SignalSystemCreated();
 	virtual MEnv* DesEnv();
 	// From MCompsObserver
 	virtual void OnCompDeleting(Elem& aComp);
@@ -54,6 +55,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	tSigContentChanged iSigContentChanged;
 	tSigSystemChanged iSigSystemChanged;
 	tSigLogAdded iSigLogAdded;
+	tSigSystemCreated iSigSystemCreated;
 	bool iChanged;
 	MLogRec* iLogRec;
 };

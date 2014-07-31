@@ -16,6 +16,7 @@ class MMdlObserver
     public:
 	typedef sigc::signal<void> tSigSystemChanged;
 	typedef sigc::signal<void> tSigDesEnvChanged;
+	typedef sigc::signal<void> tSigSystemCreated;
 	typedef sigc::signal<void, Elem*> tSigCompDeleted;
 	typedef sigc::signal<void, Elem*> tSigCompAdded;
 	typedef sigc::signal<void, Elem*> tSigCompChanged;
@@ -31,6 +32,7 @@ class MMdlObserver
 	virtual tSigCompRenamed SignalCompRenamed() = 0;
 	virtual tSigContentChanged SignalContentChanged() = 0;
 	virtual tSigLogAdded SignalLogAdded() = 0;
+	virtual tSigSystemCreated SignalSystemCreated() = 0;
 	virtual MEnv* DesEnv() = 0;
 };
 
