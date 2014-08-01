@@ -22,13 +22,17 @@ class ChromoTreeClrec: public Gtk::TreeModelColumnRecord
     public:
 	enum ColumnIndex {
 	    KCol_Name = 0,
-	    KCol_Attr = 1,
+	    KCol_Arg0 = 1,
+	    KCol_Arg1 = 2,
+	    KCol_Arg2 = 3,
 	};
     public:
 	Gtk::TreeModelColumn<Glib::ustring> name;
-	Gtk::TreeModelColumn<Glib::ustring> attr;
+	Gtk::TreeModelColumn<Glib::ustring> arg0;
+	Gtk::TreeModelColumn<Glib::ustring> arg1;
+	Gtk::TreeModelColumn<Glib::ustring> arg2;
     public:
-	ChromoTreeClrec() { add(name); add(attr);};
+	ChromoTreeClrec() { add(name); add(arg0); add(arg1); add(arg2);};
 };
 
 // Chromo tree model
@@ -40,9 +44,7 @@ class ChromoTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tre
 	virtual ~ChromoTreeMdl();
 	static const ChromoTreeClrec& ColRec() {return iColRec;};
 	// Model events handlers
-	void on_comp_deleting(Elem* aComp);
-	void on_comp_adding(Elem* aComp);
-	void on_comp_changed(Elem* aComp);
+	void on_system_changed();
     protected:
 	// From Gtk::TreeModel
 	virtual Gtk::TreeModelFlags get_flags_vfunc() const;
@@ -64,14 +66,11 @@ class ChromoTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tre
 	virtual bool row_draggable_vfunc(const TreeModel::Path& path) const;
 	virtual bool drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const;
 	virtual bool drag_data_delete_vfunc(const TreeModel::Path& path);
-	// From MCompsObserver
-	virtual void OnCompDeleting(Elem& aComp);
-	virtual void OnCompAdding(Elem& aComp);
-	virtual void OnCompChanged(Elem& aComp);
     private:
 	bool IsIterValid(const iterator& iter) const;
 	void UpdateStamp();
 	ChromoNode get_next_comp(const ChromoNode& aComp);
+	void GetNodeArg(const ChromoNode& aNode, int aArgInd, string& aArg) const;
     private:
 	// Provider provider
 	MEnv* iDesEnv;
@@ -101,9 +100,13 @@ class ChromoTree: public Gtk::TreeView
 	virtual bool on_button_press_event(GdkEventButton* event);
 	virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);
     protected:
+	void RefreshModel();
 	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
 	void on_des_env_changed();
 	void on_des_root_added();
+	void on_comp_changed(Elem* aComp);
+	void on_comp_renamed(Elem*, const std::string&);
+	void on_refresh_model();
     private:
 	// DES observer
 	MMdlObserver* iDesObs;

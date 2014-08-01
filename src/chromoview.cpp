@@ -2,6 +2,7 @@
 #include "common.h"
 #include "chromoview.h"
 #include <gtkmm/treerowreference.h>
+#include <glibmm/main.h>
 
 
 // Current hier tree model
@@ -113,27 +114,60 @@ void ChromoTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column,
 {
     if (IsIterValid(iter)) {
 	if (column < iColRec.size()) {
+	    ChromoNode node(iRnode.Mdl(), iter.gobj()->user_data);
 	    GType coltype = get_column_type_vfunc(column);
 	    if (column == ChromoTreeClrec::KCol_Name) {
 		Glib::Value<Glib::ustring> sval;
 		sval.init(coltype);
-		ChromoNode node(iRnode.Mdl(), iter.gobj()->user_data);
-		//string data = node->EType() + ":" + node->Name();
-		string data = GUriBase::NodeTypeName(node.Type());
+		string data; 
+		if (node.Type() == ENt_Change) data = "rename";
+		else if (node.Type() == ENt_Move) data = "moveto";
+		else data = GUriBase::NodeTypeName(node.Type());
 		sval.set(data.c_str());
 		value.init(coltype);
 		value = sval;
 	    }
-	    else if (column == ChromoTreeClrec::KCol_Attr) {
-		Glib::Value<Elem*> sval;
+	    else {
+		Glib::Value<Glib::ustring> sval;
 		sval.init(coltype);
-		Elem* data = (Elem*) iter.gobj()->user_data;
-		sval.set(data);
+		string data;
+		GetNodeArg(node, column - ChromoTreeClrec::KCol_Arg0, data);
+		sval.set(data.c_str());
 		value.init(coltype);
 		value = sval;
 	    }
 	}
     }
+}
+
+void ChromoTreeMdl::GetNodeArg(const ChromoNode& aNode, int aArgInd, string& aArg) const
+{
+   TNodeType ntype = aNode.Type(); 
+   string obj = aNode.Attr(ENa_MutNode);
+   if (ntype == ENt_Node) {
+       //if (obj.empty()) aArgInd++; /* Making 0 arg floating */
+       if (aArgInd == 0) aArg = obj;
+       else if (aArgInd == 1) aArg = string("id: ") + aNode.Attr(ENa_Id);
+       else if (aArgInd == 2) aArg = string("parent: ") + aNode.Attr(ENa_Parent);
+   }
+   else if (ntype == ENt_Change) {
+       if (aArgInd == 0) aArg = obj;
+       else if (aArgInd == 1) aArg = string("val: ") + aNode.Attr(ENa_MutVal);
+   }
+   else if (ntype == ENt_Rm) {
+       if (aArgInd == 0) aArg = obj;
+   }
+   else if (ntype == ENt_Cont) {
+       if (aArgInd == 0) aArg = obj;
+       else if (aArgInd == 1) {
+	   if (!aNode.Attr(ENa_MutVal).empty()) aArg = string("val: ") + aNode.Attr(ENa_MutVal);
+	   else if (!aNode.Attr(ENa_Ref).empty()) aArg = string("ref: ") + aNode.Attr(ENa_Ref);
+       }
+   }
+   else if (ntype == ENt_Move) {
+       if (aArgInd == 0) aArg = obj;
+       else if (aArgInd == 1) aArg = string("node: ") + aNode.Attr(ENa_Id);
+   }
 }
 
 ChromoNode ChromoTreeMdl::get_next_comp(const ChromoNode& aComp)
@@ -143,22 +177,6 @@ ChromoNode ChromoTreeMdl::get_next_comp(const ChromoNode& aComp)
     ChromoNode res = *curr;
     return res;
 }
-    /*
-    ChromoNode res = *iRnode.End();
-    ChromoNode mgr = *aComp.Parent();
-    if (mgr != *iRnode.End()) {
-	int ct = 0;
-	for (; ct < mgr.Count(); ct++) {
-	    if (mgr.At(ct) == aComp) {
-		break;
-	    }
-	}
-	if (ct < mgr.Count() - 1) {
-	    res = mgr.At(++ct);
-	}	
-    }
-    return res;
-    */
 
 bool ChromoTreeMdl::iter_next_vfunc(const iterator& iter, iterator& iter_next) const
 {
@@ -269,53 +287,8 @@ bool ChromoTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
     return true;
 }
 
-void ChromoTreeMdl::OnCompDeleting(Elem& aComp)
+void ChromoTreeMdl::on_system_changed()
 {
-    //std::cout << "ChromoTreeMdl::OnCompDeleting: [" << aComp.Name() << "]" << std::endl;
-    /*
-    iterator iter;
-    iter.set_stamp(iStamp);
-    iter.gobj()->user_data = &aComp;
-    Path path = get_path_vfunc(iter);
-    row_deleted(path);
-    */
-}
-
-void ChromoTreeMdl::OnCompAdding(Elem& aComp)
-{
-    //std::cout << "ChromoTreeMdl::OnCompAdding: [" << aComp.Name() << "]" << std::endl;
-    //UpdateStamp();
-    // Nodify view of all the internal components. This is required because there is no
-    // notif from internal comps - they are created before element gets inserted to the hier
-    iterator iter;
-    iter.set_stamp(iStamp);
-    iter.gobj()->user_data = &aComp;
-    Path path = get_path_vfunc(iter);
-    row_inserted(path, iter);
-    for (vector<Elem*>::iterator it = aComp.Comps().begin(); it != aComp.Comps().end(); it++) {
-	OnCompAdding(*(*it));
-    }
-}
-
-void ChromoTreeMdl::OnCompChanged(Elem& aComp)
-{
-    //std::cout << "ChromoTreeMdl::OnCompChanged" << std::endl;
-    UpdateStamp();
-}
-
-void ChromoTreeMdl::on_comp_deleting(Elem* aComp)
-{
-    OnCompDeleting(*aComp);
-}
-
-void ChromoTreeMdl::on_comp_adding(Elem* aComp)
-{
-    OnCompAdding(*aComp);
-}
-
-void ChromoTreeMdl::on_comp_changed(Elem* aComp)
-{
-    OnCompChanged(*aComp);
 }
 
 
@@ -339,6 +312,37 @@ ChromoTree::~ChromoTree()
 {
 }
 
+// Generic handler of comp change notification
+void ChromoTree::on_comp_changed(Elem* aComp)
+{
+    Glib::signal_idle().connect_once(sigc::mem_fun(*this, &ChromoTree::on_refresh_model));
+}
+
+void ChromoTree::on_comp_renamed(Elem*, const std::string&)
+{
+    // Use idle one shot because of the mut caused the change is not in chromo yet and
+    // will be added shortly
+    Glib::signal_idle().connect_once(sigc::mem_fun(*this, &ChromoTree::on_refresh_model));
+}
+
+void ChromoTree::RefreshModel()
+{
+    // Simply reload model
+    unset_model();
+    remove_all_columns();
+    Glib::RefPtr<ChromoTreeMdl> mdl = ChromoTreeMdl::create(iDesEnv->Root(), iDesEnv);
+    set_model(mdl);
+    append_column( "name", mdl->ColRec().name);
+    append_column( "arg0", mdl->ColRec().arg0);
+    append_column( "arg1", mdl->ColRec().arg1);
+    append_column( "arg2", mdl->ColRec().arg2);
+}
+
+void ChromoTree::on_refresh_model()
+{
+    RefreshModel();
+}
+
 void ChromoTree::on_des_env_changed()
 {
     SetDesEnv(iDesObs->DesEnv());
@@ -351,15 +355,19 @@ void ChromoTree::on_des_root_added()
 	Glib::RefPtr<ChromoTreeMdl> mdl = ChromoTreeMdl::create(iDesEnv->Root(), iDesEnv);
 	ChromoTreeMdl* hmdl = mdl.operator ->();
 	GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
-	bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
 	set_model(mdl);
-	append_column( "one", mdl->ColRec().name);
+	append_column( "name", mdl->ColRec().name);
+	append_column( "arg0", mdl->ColRec().arg0);
+	append_column( "arg1", mdl->ColRec().arg1);
+	append_column( "arg2", mdl->ColRec().arg2);
 	enable_model_drag_source();
 	drag_source_set (Gtk::ArrayHandle_TargetEntry(sChromoTreeDnDTarg, 1, Glib::OWNERSHIP_NONE), 
 		Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
-	iDesObs->SignalCompDeleted().connect(sigc::mem_fun(*hmdl, &ChromoTreeMdl::on_comp_deleting));
-	iDesObs->SignalCompAdded().connect(sigc::mem_fun(*hmdl, &ChromoTreeMdl::on_comp_adding));
-	iDesObs->SignalCompChanged().connect(sigc::mem_fun(*hmdl, &ChromoTreeMdl::on_comp_changed));
+	//iDesObs->SignalSystemChanged().connect(sigc::mem_fun(*hmdl, &ChromoTreeMdl::on_system_changed));
+	iDesObs->SignalCompAdded().connect(sigc::mem_fun(*this, &ChromoTree::on_comp_changed));
+	iDesObs->SignalCompDeleted().connect(sigc::mem_fun(*this, &ChromoTree::on_comp_changed));
+	iDesObs->SignalCompChanged().connect(sigc::mem_fun(*this, &ChromoTree::on_comp_changed));
+	iDesObs->SignalCompRenamed().connect(sigc::mem_fun(*this, &ChromoTree::on_comp_renamed));
     }
 }
 
