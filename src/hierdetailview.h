@@ -69,6 +69,7 @@ class HierDetailView
 	TNavHist iNavHist;
 	TNavHist::iterator iNavHistIter;
 	tSigRecreateRequested mSigRecreateRequested;
+	Glib::ustring mAttention;
 };
 
 #endif

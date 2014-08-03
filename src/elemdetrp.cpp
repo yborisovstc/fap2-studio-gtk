@@ -430,19 +430,22 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
     string att;
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
-    MStSetting<Glib::ustring>& pinned_mut_node_s = mStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node_s);
-    const Glib::ustring& pinned_mut_node = pinned_mut_node_s.Get(pinned_mut_node);
-    if (!pinned_mut_node.empty()) {
-	Elem* pnode = iElem->GetNode(pinned_mut_node);
-	if (pnode == NULL || !pnode->IsComp(aMnode)) {
-	    res = NULL;
-	    att = K_Att_WrongPinnedMnode;
-	}
-	else {
-	    aMnode = pnode;
+    if (ena_pheno) {
+	MStSetting<Glib::ustring>& pinned_mut_node_s = mStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node_s);
+	const Glib::ustring& pinned_mut_node = pinned_mut_node_s.Get(pinned_mut_node);
+	if (!pinned_mut_node.empty()) {
+	    Elem* pnode = iElem->GetNode(pinned_mut_node);
+	    if (pnode == NULL || !pnode->IsComp(aMnode)) {
+		res = NULL;
+		att = K_Att_WrongPinnedMnode;
+	    }
+	    else {
+		aMnode = pnode;
+	    }
 	}
     }
-    if (res != NULL && !aMnode->IsChromoAttached()) {
+    if (res != NULL && ena_pheno && !aMnode->IsChromoAttached()) {
+	// Request that when pheno is enabled that mutated node to be specified explicitly
 	res = NULL;
 	att = K_Att_DeattachedNode;
     }
@@ -467,7 +470,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 	    att = Glib::ustring::compose(K_Att_CritDep, res->GetUri());
 	    res = NULL;
 	}
-	/* [YB] ena_pheno is not used at the moment, so just disable the logic 
+	/* [YB] Verbose handling of error is disabled at the moment, commented out
 	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
 	    // Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
 	    int dres = RESPONSE_OK;
@@ -531,24 +534,24 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 	    if (!res->IsChromoAttached()) {
 		res = res->GetAttachingMgr(); 
 	    }
-	    /*
-	       if (!ena_pheno && res != aNode && deptype == ENa_Parent) {
-	// Taking into account options of change: geno or pheno, ref fap2 uc_038
-	MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
-	false, MESSAGE_INFO, BUTTONS_YES_NO, true);
-	int dres = dlg->run();
-	delete dlg;
-	if (dres == RESPONSE_YES) {
-	res = iElem;
-	}
-	else {
-	res = res->GetCommonOwner(aNode);
-	}
-	} 
-	else {
-	res = res->GetCommonOwner(aNode);
-	}
-	*/
+#if 0
+	    if (!ena_pheno && res != aNode && deptype == ENa_Parent) {
+		// Taking into account options of change: geno or pheno, ref fap2 uc_038
+		MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
+			false, MESSAGE_INFO, BUTTONS_YES_NO, true);
+		int dres = dlg->run();
+		delete dlg;
+		if (dres == RESPONSE_YES) {
+		    res = iElem;
+		}
+		else {
+		    res = res->GetCommonOwner(aNode);
+		}
+	    } 
+	    else {
+		res = res->GetCommonOwner(aNode);
+	    }
+#endif
 	    res = res->GetCommonOwner(aMnode);
 	}
     }

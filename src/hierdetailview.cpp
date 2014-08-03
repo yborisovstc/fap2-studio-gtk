@@ -18,11 +18,21 @@ Glib::ustring sUiHierDview =
 "    <separator/>"
 "    <placeholder name='ParentPlaceholder' />"
 "    <toolitem action='GoToParent'/>"
-"    <toolitem action='PinMutNode'/>"
+"    <placeholder name='MutModePlaceholder' />"
 "    <toolitem action='Attention'/>"
 "    <separator/>"
 "  </toolbar>"
 "</ui>";
+
+Glib::ustring sUiPinMutBtn = 
+"<ui>"
+"  <toolbar  name='ToolBar'>"
+"    <placeholder name='MutModePlaceholder'>"
+"    <toolitem action='PinMutNode'/>"
+"    </placeholder>"
+"  </toolbar>"
+"</ui>";
+
 
 const string KToolTip_PinMutNode = "Pin node for mutation";
 const string KToolTip_PinMutNodeA = "Pinned node for mutation: ";
@@ -41,23 +51,29 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     irActionGroup->add(Gtk::Action::create("Attention", Stock::DIALOG_WARNING, "Attention"), 
 	    sigc::mem_fun(*this, &HierDetailView::on_action_attention));
     // Use mut node
-    /*
-"    <toolitem action='SpecifyMutNode'/>"
     MStSetting<bool>& ena_pheno_s = iStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
+    /*
+"    <toolitem action='SpecifyMutNode'/>"
     irActionGroup->add(Gtk::ToggleAction::create("SpecifyMutNode", Stock::INDEX, "SpecifyMutNode", "SpecifyMutNode", !ena_pheno), 
 	    sigc::mem_fun(*this, &HierDetailView::on_action_spec_mut_node));
 	    */
-    // Pin mut node
-    MStSetting<Glib::ustring>& pinned_mn_s  = iStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mn_s);
-    const Glib::ustring& pinned_mn = pinned_mn_s.Get(pinned_mn);
-    irActionGroup->add(Gtk::ToggleAction::create("PinMutNode", Stock::INDEX, "PinMutNode", KToolTip_PinMutNode, !pinned_mn.empty()), 
-	    sigc::mem_fun(*this, &HierDetailView::on_action_pin_mut_node));
-    iUiMgr->insert_action_group(irActionGroup);
     iUiMgr->add_ui_from_string(sUiHierDview);
+
+    if (ena_pheno) {
+	// Pin mut node
+	iUiMgr->add_ui_from_string(sUiPinMutBtn);
+	MStSetting<Glib::ustring>& pinned_mn_s  = iStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mn_s);
+	const Glib::ustring& pinned_mn = pinned_mn_s.Get(pinned_mn);
+	irActionGroup->add(Gtk::ToggleAction::create("PinMutNode", Stock::INDEX, "PinMutNode", KToolTip_PinMutNode, !pinned_mn.empty()), 
+		sigc::mem_fun(*this, &HierDetailView::on_action_pin_mut_node));
+    }
+
+    iUiMgr->insert_action_group(irActionGroup);
 
     Gtk::ToolItem* att = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/Attention"));
     att->set_sensitive(false);
+
     Gtk::ToolItem* pc = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/NamePlaceholder"));
     iTbNameHd = new TiLabel("Name: ");
     iTbNameHd->show();
@@ -132,16 +148,18 @@ void HierDetailView::on_action_goparent()
 void HierDetailView::UpdatePinMutNode()
 {
     Gtk::ToolItem* item = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/PinMutNode"));
-    Gtk::ToggleToolButton* button = dynamic_cast<Gtk::ToggleToolButton*>(item);
-    if (!button->get_active() && iDetRp != NULL) {
-	Elem* cursor = iDetRp->Model();
-	if (cursor->IsChromoAttached()) {
-	    item->set_sensitive(true);
-	    item->set_tooltip_text(KToolTip_PinMutNode);
-	}
-	else {
-	    item->set_sensitive(false);
-	    item->set_tooltip_text(KToolTip_PinMutNode_Deatt);
+    if (item != NULL) {
+	Gtk::ToggleToolButton* button = dynamic_cast<Gtk::ToggleToolButton*>(item);
+	if (!button->get_active() && iDetRp != NULL) {
+	    Elem* cursor = iDetRp->Model();
+	    if (cursor->IsChromoAttached()) {
+		item->set_sensitive(true);
+		item->set_tooltip_text(KToolTip_PinMutNode);
+	    }
+	    else {
+		item->set_sensitive(false);
+		item->set_tooltip_text(KToolTip_PinMutNode_Deatt);
+	    }
 	}
     }
 }
@@ -263,6 +281,7 @@ void HierDetailView::on_drp_reload_required()
 
 void HierDetailView::on_drp_attention(const string& aInfo)
 {
+    mAttention = aInfo;
     Gtk::ToolItem* att = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/Attention"));
     att->set_sensitive(!aInfo.empty());
     att->set_tooltip_text(aInfo);
@@ -270,6 +289,9 @@ void HierDetailView::on_drp_attention(const string& aInfo)
 
 void HierDetailView::on_action_attention()
 {
+    MessageDialog* dlg = new MessageDialog(mAttention, false, MESSAGE_INFO, BUTTONS_OK, true);
+    dlg->run();
+    delete dlg;
 }
 
 void HierDetailView::on_action_up()
