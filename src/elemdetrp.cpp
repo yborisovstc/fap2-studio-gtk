@@ -43,11 +43,18 @@ static const Glib::ustring KDlgMsg_CritDep =
 static const Glib::ustring K_Att_CritDep = 
 "There is critical dependency in node [%1] for this change in the system. Resolve dependency first, or select depending node for mutation.";
 
+static const Glib::ustring K_Att_CritDep_1 = 
+"There is critical dependency in node [%1] for this change in the system.\n\
+Please reload system, and resolve the problems if any. Otherwise undo the mutation";
+
 static const Glib::ustring K_Att_WrongPinnedMnode = 
 "Node pinned for mutation is not the owner of the current node. Select the correct node for mutation";
 
 static const Glib::ustring K_Att_DeattachedNode = 
 "Current node is deattached so cannot be mutated itself. Select some of its owners for mutation";
+
+static const Glib::ustring K_Att_DeattachedParent = 
+"Parent node is deattached so doesn't have chromosome and cannot be inherited.";
 
 
 /*
@@ -466,9 +473,15 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 		rank = deprank;
 	    }
 	}
+	/* Don't block mut even crit dep. 
 	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
 	    att = Glib::ustring::compose(K_Att_CritDep, res->GetUri());
 	    res = NULL;
+	}
+	*/
+	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
+	    att = Glib::ustring::compose(K_Att_CritDep_1, res->GetUri());
+	    res = aMnode;
 	}
 	/* [YB] Verbose handling of error is disabled at the moment, commented out
 	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
@@ -561,6 +574,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri)
 {
+    bool err = false;
     // Mutate appending
     Elem* mutelem = GetObjForSafeMut(iElem, iElem, ENt_Node);
     if (mutelem != NULL) {
@@ -572,39 +586,47 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	    string snodeuri = nodeuri.GetUri();
 	    rmut.SetAttr(ENa_MutNode, snodeuri);
 	}
+	__ASSERT(!aParentUri.empty());
 	if (!aParentUri.empty()) {
 	    rmut.SetAttr(ENa_Parent, aParentUri);
+	    Elem* parent = iElem->GetNode(aParentUri);
+	    if (!parent->IsChromoAttached()) {
+		err = true;
+		mSignalAttention.emit(K_Att_DeattachedParent);
+	    }
 	}
-	string sname(aName);
-	if (sname.empty()) {
-	    stringstream ss;
-	    ss << rand();
-	    sname = ss.str();
+	if (!err) {
+	    string sname(aName);
+	    if (sname.empty()) {
+		stringstream ss;
+		ss << rand();
+		sname = ss.str();
+	    }
+	    rmut.SetAttr(ENa_Id, sname);
+	    // TODO [YB] To replace comps order with another mechanism
+	    /*
+	       if (!aNeighborUri.empty() && !aName.empty()) {
+	    // Mutate moving
+	    GUri duri;
+	    iElem->GetUri(duri, mutelem);
+	    GUri puri(aParentUri);
+	    GUri suri = duri;
+	    suri.AppendElem(puri.GetName(), GUri::KParentSep, aName);
+	    GUri nuri = duri + GUri(aNeighborUri);
+	    ChromoNode rmut = mutelem->Mutation().Root();
+	    ChromoNode change = rmut.AddChild(ENt_Move);
+	    change.SetAttr(ENa_Id, suri.GetUri());
+	    change.SetAttr(ENa_MutNode, nuri.GetUri());
+	    }
+	    */
+	    mutelem->Mutate();
+	    /*
+	       if (iReloadRequired) {
+	       iReloadRequired = false;
+	       mSigReloadRequired.emit();
+	       };
+	       */
 	}
-	rmut.SetAttr(ENa_Id, sname);
-	// TODO [YB] To replace comps order with another mechanism
-	/*
-	   if (!aNeighborUri.empty() && !aName.empty()) {
-	// Mutate moving
-	GUri duri;
-	iElem->GetUri(duri, mutelem);
-	GUri puri(aParentUri);
-	GUri suri = duri;
-	suri.AppendElem(puri.GetName(), GUri::KParentSep, aName);
-	GUri nuri = duri + GUri(aNeighborUri);
-	ChromoNode rmut = mutelem->Mutation().Root();
-	ChromoNode change = rmut.AddChild(ENt_Move);
-	change.SetAttr(ENa_Id, suri.GetUri());
-	change.SetAttr(ENa_MutNode, nuri.GetUri());
-	}
-	*/
-	mutelem->Mutate();
-	/*
-	if (iReloadRequired) {
-	    iReloadRequired = false;
-	    mSigReloadRequired.emit();
-	};
-	*/
     }
 }
 

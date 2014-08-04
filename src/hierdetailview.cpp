@@ -37,6 +37,7 @@ Glib::ustring sUiPinMutBtn =
 const string KToolTip_PinMutNode = "Pin node for mutation";
 const string KToolTip_PinMutNodeA = "Pinned node for mutation: ";
 const string KToolTip_PinMutNode_Deatt = "Pin node for mutation - Disabled because the current node is deattached";
+const string KToolTip_Att = "Attention indicator";
 
 HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr): 
     iStEnv(aStEnv), iContWnd(aCont), iUiMgr(aUiMgr), iDetRp(NULL), iAlignent(NULL)
@@ -211,6 +212,7 @@ void HierDetailView::SetRoot(Elem* aRoot)
     iNavHist.clear(); 
     iNavHist.reserve(1);
     iNavHistIter = iNavHist.end();
+    ResetAttention();
 }
 
 string HierDetailView::GetCursor() const
@@ -287,11 +289,19 @@ void HierDetailView::on_drp_attention(const string& aInfo)
     att->set_tooltip_text(aInfo);
 }
 
+void HierDetailView::ResetAttention()
+{
+    Gtk::ToolItem* att = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/Attention"));
+    att->set_sensitive(false);
+    att->set_tooltip_text(KToolTip_Att);
+}
+
 void HierDetailView::on_action_attention()
 {
     MessageDialog* dlg = new MessageDialog(mAttention, false, MESSAGE_INFO, BUTTONS_OK, true);
     dlg->run();
     delete dlg;
+    ResetAttention();
 }
 
 void HierDetailView::on_action_up()

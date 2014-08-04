@@ -50,6 +50,7 @@ class HierDetailView
     protected:
 	void UpdataHistNavUI();
 	void UpdatePinMutNode();
+	void ResetAttention();
     private:
 	// Environment
 	MSEnv& iStEnv;

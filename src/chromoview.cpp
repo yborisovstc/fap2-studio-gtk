@@ -303,6 +303,7 @@ static GtkTargetEntry sChromoTreeDnDTarg[] =
 ChromoTree::ChromoTree(MMdlObserver* aDesObs): iDesEnv(NULL), iDesObs(aDesObs), iRootAdded(false)
 {
     set_headers_visible(false);
+    set_enable_search(true);
     SetDesEnv(iDesObs->DesEnv());
     iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &ChromoTree::on_des_env_changed));
     iDesObs->SignalSystemCreated().connect(sigc::mem_fun(*this, &ChromoTree::on_des_root_added));
