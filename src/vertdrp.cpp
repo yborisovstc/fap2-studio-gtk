@@ -77,6 +77,11 @@ MDrp::tSigCompSelected VertDrpw_v1::SignalCompSelected()
     return iSigCompSelected;
 }
 
+MDrp::tSigCompActivated VertDrpw_v1::SignalCompActivated()
+{
+    return iSigCompActivated;
+}
+
 bool VertDrpw_v1::IsTypeAllowed(const std::string& aType) const
 {
     bool res = false;

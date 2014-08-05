@@ -230,6 +230,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     // Create model
     iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
     iHDetView->SignalRecreateRequested().connect(sigc::mem_fun(*this, &App::on_action_recreate));
+    iHDetView->SignalCompSelected().connect(sigc::mem_fun(*this, &App::on_comp_selected));
     //OpenFile(KSpecFileName);
     // Navigation pane
     iNaviPane = new Navi(iDesObserver);
@@ -248,6 +249,11 @@ App::~App() {
     delete iStDesEnv;
     delete iMdlProv;
     delete iDesObserver;
+}
+
+void App::on_comp_selected(Elem* aComp)
+{
+    iLogView->Select(aComp, MLogRec::EErr);
 }
 
 void App::on_system_changed()

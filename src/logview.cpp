@@ -1,6 +1,7 @@
 
 #include "logview.h"
 #include <gtkmm/liststore.h>
+#include <gtkmm/treepath.h>
 
 const int LogView::KLogViewBufLen = 4000;
 
@@ -89,6 +90,8 @@ bool SDesLog::IsNodeLogged(Elem* aNode, MLogRec::TLogRecCtg aCtg) const
 LogViewL::LogViewL(MMdlObserver* aDesObs): iDesObs(aDesObs)
 {
     set_headers_visible(true);
+    Glib::RefPtr<TreeSelection> sel = get_selection();
+    sel->set_mode(SELECTION_MULTIPLE);
     SetDesEnv(iDesObs->DesEnv());
     iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &LogViewL::on_des_env_changed));
     iDesObs->SignalLogAdded().connect(sigc::mem_fun(*this, &LogViewL::on_log_added));
@@ -148,5 +151,21 @@ void LogViewL::on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::st
     it->set_value(iColRec.mnode, Glib::ustring(fullpath.GetUri(ETrue).c_str()));
     it->set_value(iColRec.content, Glib::ustring(aContent.c_str()));
     mDesLog.mLog.insert(MDesLog::TLogVal(MDesLog::TLogKey(aNode, aCtg), MDesLog::TLogData(aContent)));
+}
+
+void LogViewL::Select(Elem* aNode, MLogRec::TLogRecCtg aCtg)
+{
+    get_selection()->unselect_all();
+    GUri upath;
+    aNode->GetUri(upath);
+    Glib::ustring path = upath.GetUri(true);
+    TreeIter it = get_model()->get_iter(TreePath("0"));
+    for (; it.operator bool(); it++) {
+	Glib::ustring ctg = it->get_value(iColRec.ctg);
+	Glib::ustring cpath = it->get_value(iColRec.mnode);
+	if (ctg == Glib::ustring(CtgName(aCtg)) && path == cpath) {
+	    get_selection()->select(it);
+	}
+    }
 }
 

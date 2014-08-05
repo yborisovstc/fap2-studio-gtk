@@ -82,6 +82,7 @@ class App
 	void on_action_undo();
 	void on_action_redo();
 	void on_system_changed();
+	void on_comp_selected(Elem* aComp);
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
 	void SaveFile(const string& aFileName);
 	void CompactAndSaveFile(const string& aFileName);

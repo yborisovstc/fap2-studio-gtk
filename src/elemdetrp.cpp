@@ -223,10 +223,13 @@ bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 	if (event->button == 3) {
 	    ShowCrpCtxDlg(event, aComp);
 	}
+	if (event->button == 1) {
+	    iSigCompSelected.emit(aComp);
+	}
     }
     else if (event->type == GDK_2BUTTON_PRESS) {
 	if (event->button != 3) {
-	    iSigCompSelected.emit(aComp);
+	    iSigCompActivated.emit(aComp);
 	}
     }
     return false;
@@ -589,11 +592,6 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	__ASSERT(!aParentUri.empty());
 	if (!aParentUri.empty()) {
 	    rmut.SetAttr(ENa_Parent, aParentUri);
-	    Elem* parent = iElem->GetNode(aParentUri);
-	    if (!parent->IsChromoAttached()) {
-		err = true;
-		mSignalAttention.emit(K_Att_DeattachedParent);
-	    }
 	}
 	if (!err) {
 	    string sname(aName);
@@ -859,6 +857,11 @@ Gtk::Widget& ElemDrp::Widget()
 ElemDrp::tSigCompSelected ElemDrp::SignalCompSelected()
 {
     return iRp->iSigCompSelected;
+}
+
+ElemDrp::tSigCompActivated ElemDrp::SignalCompActivated()
+{
+    return iRp->iSigCompActivated;
 }
 
 Elem* ElemDrp::Model()

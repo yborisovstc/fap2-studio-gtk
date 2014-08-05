@@ -257,6 +257,7 @@ void HierDetailView::SetCursor(Elem* aElem, bool FromHist)
     iCursor = aElem->GetUri();
     iDetRp = prov.CreateRp(*aElem);
     iDetRp->SignalCompSelected().connect(sigc::mem_fun(*this, &HierDetailView::on_comp_selected));
+    iDetRp->SignalCompActivated().connect(sigc::mem_fun(*this, &HierDetailView::on_comp_activated));
     iDetRp->SignalDragMotion().connect(sigc::mem_fun(*this, &HierDetailView::on_drp_drag_motion));
     iDetRp->SignalAttention().connect(sigc::mem_fun(*this, &HierDetailView::on_drp_attention));
     iDetRp->SignalReloadRequired().connect(sigc::mem_fun(*this, &HierDetailView::on_drp_reload_required));
@@ -326,6 +327,12 @@ void HierDetailView::on_action_redo()
 void HierDetailView::on_comp_selected(Elem* aComp)
 {
     std::cout << "on_comp_selected, comp [" << aComp->Name() << "]" << std::endl;
+    mSigCompSelected.emit(aComp);
+}
+
+void HierDetailView::on_comp_activated(Elem* aComp)
+{
+    std::cout << "on_comp_activated, comp [" << aComp->Name() << "]" << std::endl;
     SetCursor(aComp);
 }
 

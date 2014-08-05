@@ -66,6 +66,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	Elem* iElem;
 	tCrps iCompRps; // Components representations
 	MDrp::tSigCompSelected iSigCompSelected;
+	MDrp::tSigCompActivated iSigCompActivated;
 	MDrp::tSigDragMotion iSigDragMotion;
 	Gtk::Menu iCrpContextMenu;
 	Elem* iCompSelected;
@@ -92,6 +93,7 @@ class ElemDrp: public MDrp
 	virtual Gtk::Widget& Widget();
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();
+	virtual tSigCompSelected SignalCompActivated();
 	virtual tSigDragMotion SignalDragMotion();
 	virtual tSigAttention SignalAttention() {return iRp->mSignalAttention;};
 	virtual tSigReloadRequired SignalReloadRequired() {return iRp->mSigReloadRequired;};

@@ -42,6 +42,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual Gtk::Widget& Widget();
 	virtual Elem* Model();
 	virtual tSigCompSelected SignalCompSelected();
+	virtual tSigCompActivated SignalCompActivated();
 	virtual tSigDragMotion SignalDragMotion();
 	virtual void Udno();
     protected:

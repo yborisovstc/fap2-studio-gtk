@@ -71,6 +71,7 @@ class LogViewL: public TreeView
 	virtual ~LogViewL();
 	void SetDesEnv(MEnv* aDesEnv);
 	MDesLog* GetDesLog() {return &mDesLog;};
+	void Select(Elem* aNode, MLogRec::TLogRecCtg aCtg);
     protected:
 	void on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent);
 	void on_des_env_changed();

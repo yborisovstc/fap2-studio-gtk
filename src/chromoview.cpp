@@ -304,6 +304,9 @@ ChromoTree::ChromoTree(MMdlObserver* aDesObs): iDesEnv(NULL), iDesObs(aDesObs), 
 {
     set_headers_visible(false);
     set_enable_search(true);
+    Glib::RefPtr<TreeSelection> sel = get_selection();
+    sel->set_mode(SELECTION_MULTIPLE);
+    //set_hover_selection(true);
     SetDesEnv(iDesObs->DesEnv());
     iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &ChromoTree::on_des_env_changed));
     iDesObs->SignalSystemCreated().connect(sigc::mem_fun(*this, &ChromoTree::on_des_root_added));
@@ -385,6 +388,9 @@ void ChromoTree::SetDesEnv(MEnv* aDesEnv)
 
 bool ChromoTree::on_button_press_event(GdkEventButton* event)
 {
+    Glib::RefPtr<TreeSelection> sel = get_selection();
+    //sel->select_all();
+
     iPressX = event->x;
     iPressY = event->y;
     return TreeView::on_button_press_event(event);
