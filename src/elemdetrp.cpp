@@ -827,14 +827,26 @@ void ElemDetRp::on_comp_menu_save_chromo()
 
 void ElemDetRp::on_comp_menu_trans_to_mut()
 {
-    // Get original mutation
-    /*
-    TMDep dep;
+    // Remove node originated by pheno modif
+    Elem::TMDep dep;
     iCompSelected->GetDep(dep, ENa_Id, ETrue);
     Elem* depnode = dep.first.first;
-    ChromoNode mut = depnode->Chromos()->CreateNode(aDep.first.second);
-    */
-
+    ChromoNode mutr = depnode->Mutation().Root();
+    ChromoNode rmutr = mutr.AddChild(ENt_Rm);
+    GUri nuri;
+    iCompSelected->GetUri(nuri, depnode);
+    rmutr.SetAttr(ENa_MutNode, nuri.GetUri(true));
+    depnode->Mutate();
+    //ChromoNode mut = depnode->Chromos().CreateNode(dep.first.second);
+    // Add true mutation to model
+    ChromoNode mut = iElem->Mutation().Root();
+    ChromoNode rmut = mut.AddChild(ENt_Node);
+    Elem* parent = iCompSelected->GetParent();
+    GUri puri;
+    parent->GetUri(puri, iElem);
+    rmut.SetAttr(ENa_Parent, puri.GetUri(true));
+    rmut.SetAttr(ENa_Id, iCompSelected->Name());
+    iElem->Mutate();
 }
 
 void ElemDetRp::DoUdno()
