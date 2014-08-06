@@ -23,6 +23,8 @@
 		<revremark>Added <xref linkend="uc_005"/></revremark> </revision>
 	    <revision> <revnumber>0.03</revnumber> <date>16-Jun-2014</date> <authorinitials>Yuri Borisov</authorinitials>
 		<revremark>Added <xref linkend="uc_008"/></revremark> </revision>
+	    <revision> <revnumber>0.04</revnumber> <date>06-Aug-2014</date> <authorinitials>Yuri Borisov</authorinitials>
+		<revremark>Added <xref linkend="uc_011"/></revremark> </revision>
 	</revhistory>
 
     </articleinfo>
@@ -126,6 +128,7 @@
 	    </sect3>
 	    <sect3><title>Extended by</title>
 		<itemizedlist>
+		    <listitem><xref linkend="uc_011"/></listitem>
 		</itemizedlist>
 	    </sect3>
 	</sect2>
@@ -264,6 +267,46 @@
 	    <sect3><title>Extended by</title>
 	    </sect3>
 	    <sect3><title>Discussion</title> 
+	    </sect3>
+	    <sect3><title>Clarification</title>
+	    </sect3>
+	</sect2>
+
+	<sect2 id="uc_011"><title>UC_011 Correncting of broken chromosome</title>
+	    <sect3><title>Actors</title>
+		<itemizedlist>
+		    <listitem> USER: some user working with STUDIO</listitem>
+		    <listitem> SYSTEM: some system that has specification and can be created in STUDIO environment</listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Preconditions</title> 
+		<simpara>There is some given system spec (chromosome) that is broken. The damages in chrmosome are so serious that
+		the broken mutation even cannot be reflected in run-time model.</simpara>
+	    </sect3>
+	    <sect3><title>Assumptions</title> </sect3>
+	    <sect3><title>Normal</title>
+		<itemizedlist>
+		    <listitem>USER loads SYSTEM in STUDIO </listitem>
+		    <listitem>STUDIO indicates errors on loading SYSTEM even run-time model doesn't reflect completely the errors in chromo.</listitem>
+		    <listitem>STUDIO provides USER with means of correcting the chromosome: means to find broken mutations, to fix it etc.</listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Alternative</title> <simpara>Alternative flows</simpara> </sect3>
+	    <sect3><title>Exceptions</title> </sect3>
+	    <sect3><title>Variations</title> </sect3>
+	    <sect3><title>Extends</title>
+		<itemizedlist>
+		    <xref linkend="uc_006"/>
+		</itemizedlist>
+	    </sect3>
+	    <sect3><title>Extended by</title>
+	    </sect3>
+	    <sect3><title>Discussion</title> 
+		<simplelist>An examle of broken chromo is the following. The system chromo includes the mutation where parent is wrong. 
+		    This will produce the error when system loading but not reflect in run-time model. So user doesn't have normal 
+		    optoins to corrent the error by additive mutation. Potentially he can create another node with the correct parent
+		    specified but what if the existing broken mut includes a big hier of nodes. In this case creating of new node will
+		required siginificant rework.</simplelist>
 	    </sect3>
 	    <sect3><title>Clarification</title>
 	    </sect3>

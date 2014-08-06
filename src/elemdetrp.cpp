@@ -79,10 +79,12 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): 
     Gtk::Menu_Helpers::MenuElem e_editcont("_Edit content", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_edit_content));
     // TODO [YB] Consider saving from app - saving current app context instead of using context menu
     Gtk::Menu_Helpers::MenuElem e_save_chromo("_Save chromo", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_save_chromo));
+    Gtk::Menu_Helpers::MenuElem e_transtomut("_Transform to mut", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_trans_to_mut));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Rename, e_rename));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Remove, e_remove));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Edit_Content, e_editcont));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Save_Chromo, e_save_chromo));
+    iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_TransToMut, e_transtomut));
     // Setup components context menu
     Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
     /*
@@ -111,6 +113,9 @@ void ElemDetRp::Construct()
 	assert(comp != NULL);
 	if (!comp->IsRemoved()) {
 	    MCrp* rp = iCrpProv.CreateRp(*comp, this);
+	    if (rp == NULL) {
+		rp = iCrpProv.CreateRp(*comp, this);
+	    }
 	    if (IsCrpLogged(rp, MLogRec::EErr)) {
 		rp->SetErroneous(true);
 	    }
@@ -718,6 +723,15 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
     }
 }
 
+TBool ElemDetRp::DoIsActionSupported(Elem* aComp, const MCrp::Action& aAction)
+{
+    TBool res = ETrue;
+    if (aAction == MCrp::EA_TransToMut) {
+	res = aComp->IsPhenoModif();
+    }
+    return res;
+}
+
 void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp)
 {
     iCompSelected = aComp;
@@ -735,6 +749,9 @@ void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp)
     }
     if (crp->IsActionSupported(MCrp::EA_Save_Chromo)) {
 	menulist.push_back(iCompMenuElems.at(MCrp::EA_Save_Chromo));
+    }
+    if (DoIsActionSupported(aComp, MCrp::EA_TransToMut)) {
+	menulist.push_back(iCompMenuElems.at(MCrp::EA_TransToMut));
     }
     iCrpContextMenu.popup(event->button, event->time);
 }
@@ -808,6 +825,17 @@ void ElemDetRp::on_comp_menu_save_chromo()
     iCompSelected = NULL;
 }
 
+void ElemDetRp::on_comp_menu_trans_to_mut()
+{
+    // Get original mutation
+    /*
+    TMDep dep;
+    iCompSelected->GetDep(dep, ENa_Id, ETrue);
+    Elem* depnode = dep.first.first;
+    ChromoNode mut = depnode->Chromos()->CreateNode(aDep.first.second);
+    */
+
+}
 
 void ElemDetRp::DoUdno()
 {

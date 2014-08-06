@@ -53,6 +53,7 @@ class HierDetailView
     protected:
 	void UpdataHistNavUI();
 	void UpdatePinMutNode();
+	void UpdateBtnUp();
 	void ResetAttention();
     private:
 	// Environment

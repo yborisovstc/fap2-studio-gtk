@@ -6,6 +6,7 @@
 #include "gtkmm/widget.h"
 
 class Elem;
+class MCrp;
 
 // Detail representation interface
 
@@ -28,6 +29,7 @@ class MDrp: public MBase
 	virtual tSigAttention SignalAttention() {return mSigAttention;};
 	virtual tSigReloadRequired SignalReloadRequired() {return mSigReloadRequired;};
 	virtual void Udno() = 0;
+	virtual bool IsActionSupported(Elem* aComp, const MCrp::Action& aAction) {return false;};
     protected:
 	tSigAttention mSigAttention;
 	tSigReloadRequired mSigReloadRequired;

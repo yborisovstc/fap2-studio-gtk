@@ -116,6 +116,13 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     iNavHistIter = iNavHist.end();
 }
 
+void HierDetailView::UpdateBtnUp()
+{
+    Gtk::ToolItem* item = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/GoUp"));
+    Elem* cursor = iRoot->GetNode(iCursor);
+    item->set_sensitive(cursor != NULL && cursor->GetMan() != NULL);
+}
+
 void HierDetailView::on_action_pin_mut_node()
 {
     MStSetting<Glib::ustring>& pinned_mn_s  = iStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mn_s);
@@ -275,6 +282,7 @@ void HierDetailView::SetCursor(Elem* aElem, bool FromHist)
     iTbName->Label().set_text(aElem->Name());
     iTbParent->Label().set_text(aElem->EType());
     UpdatePinMutNode();
+    UpdateBtnUp();
 }
 
 void HierDetailView::on_drp_reload_required()

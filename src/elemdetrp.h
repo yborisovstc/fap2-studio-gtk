@@ -58,7 +58,9 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void on_comp_menu_remove();
 	void on_comp_menu_edit_content();
 	void on_comp_menu_save_chromo();
+	void on_comp_menu_trans_to_mut();
 	bool IsCrpLogged(MCrp* aCrp, MLogRec::TLogRecCtg aCtg) const;
+	bool DoIsActionSupported(Elem* aComp, const MCrp::Action& aAction);
     protected:
 	MSEnv& mStEnv;
 	// Compact representations  provider
@@ -97,6 +99,7 @@ class ElemDrp: public MDrp
 	virtual tSigDragMotion SignalDragMotion();
 	virtual tSigAttention SignalAttention() {return iRp->mSignalAttention;};
 	virtual tSigReloadRequired SignalReloadRequired() {return iRp->mSigReloadRequired;};
+	virtual bool IsActionSupported(Elem* aComp, const MCrp::Action& aAction) {return iRp->DoIsActionSupported(aComp, aAction);};
 	virtual void Udno();
     private:
 	ElemDetRp* iRp;
