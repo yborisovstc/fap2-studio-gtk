@@ -827,6 +827,16 @@ void ElemDetRp::on_comp_menu_save_chromo()
 
 void ElemDetRp::on_comp_menu_trans_to_mut()
 {
+    // Add true mutation to model, using temp name
+    // Temp name is required to avoid conflict with the current pheno modif
+    ChromoNode mut = iElem->Mutation().Root();
+    ChromoNode rmut = mut.AddChild(ENt_Node);
+    Elem* parent = iCompSelected->GetParent();
+    GUri puri;
+    parent->GetUri(puri, iElem);
+    rmut.SetAttr(ENa_Parent, puri.GetUri(true));
+    rmut.SetAttr(ENa_Id, iCompSelected->Name() + "~tmp");
+    iElem->Mutate();
     // Remove node originated by pheno modif
     Elem::TMDep dep;
     iCompSelected->GetDep(dep, ENa_Id, ETrue);
@@ -837,16 +847,20 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     iCompSelected->GetUri(nuri, depnode);
     rmutr.SetAttr(ENa_MutNode, nuri.GetUri(true));
     depnode->Mutate();
-    //ChromoNode mut = depnode->Chromos().CreateNode(dep.first.second);
-    // Add true mutation to model
-    ChromoNode mut = iElem->Mutation().Root();
-    ChromoNode rmut = mut.AddChild(ENt_Node);
-    Elem* parent = iCompSelected->GetParent();
-    GUri puri;
-    parent->GetUri(puri, iElem);
-    rmut.SetAttr(ENa_Parent, puri.GetUri(true));
-    rmut.SetAttr(ENa_Id, iCompSelected->Name());
-    iElem->Mutate();
+    // Squeeze chromo for mutations made to depnode: rm and rename
+    ChromoNode lastmut = *(depnode->Chromos().Root().Rbegin());
+    Elem* root = iElem->GetRoot();
+    root->CompactChromo(lastmut);
+    // Rename tmp name to correct
+    ChromoNode rmutrn = mutr.AddChild(ENt_Change);
+    rmutrn.SetAttr(ENa_MutNode, nuri.GetUri(true) + "~tmp");
+    rmutrn.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
+    rmutrn.SetAttr(ENa_MutVal, iCompSelected->Name());
+    depnode->Mutate();
+    // Squeeze chromo for mutations made to depnode: rm and rename
+    lastmut = *(depnode->Chromos().Root().Rbegin());
+    root->CompactChromo(lastmut);
+
 }
 
 void ElemDetRp::DoUdno()
