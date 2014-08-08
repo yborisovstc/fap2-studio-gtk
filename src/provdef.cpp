@@ -50,7 +50,7 @@ MDrp* DefDrpProv::CreateRp(Elem& aElem) const
     else if (aElem.IsHeirOf(VertDrpw_v1::EType())) {
 	res = new VertDrpw_v1(&aElem, iSenv->CrpProvider(), *iSenv);
     }
-    else if (aElem.IsHeirOf(ElemDrp::EType())) {
+    else if (aElem.IsHeirOf(ElemDrp::EType()) || aElem.EType().empty() && aElem.Name() == Elem::Type()) {
 	res = new ElemDrp(&aElem, iSenv->CrpProvider(), *iSenv);
     }
     return res;

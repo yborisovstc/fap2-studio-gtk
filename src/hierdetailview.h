@@ -54,6 +54,7 @@ class HierDetailView
 	void UpdataHistNavUI();
 	void UpdatePinMutNode();
 	void UpdateBtnUp();
+	void UpdateBtnGoParent();
 	void ResetAttention();
     private:
 	// Environment

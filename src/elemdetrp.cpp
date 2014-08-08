@@ -825,6 +825,9 @@ void ElemDetRp::on_comp_menu_save_chromo()
     iCompSelected = NULL;
 }
 
+// [YB] This is example of how to do "transformations" in chromo
+// The approach is to avoid of editing chromo directly but instead to use
+// combinatin of mutations and chromo squeezing
 void ElemDetRp::on_comp_menu_trans_to_mut()
 {
     // Add true mutation to model, using temp name
@@ -860,7 +863,6 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     // Squeeze chromo for mutations made to depnode: rm and rename
     lastmut = *(depnode->Chromos().Root().Rbegin());
     root->CompactChromo(lastmut);
-
 }
 
 void ElemDetRp::DoUdno()

@@ -123,6 +123,14 @@ void HierDetailView::UpdateBtnUp()
     item->set_sensitive(cursor != NULL && cursor->GetMan() != NULL);
 }
 
+void HierDetailView::UpdateBtnGoParent()
+{
+    Gtk::ToolItem* item = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/GoToParent"));
+    Elem* cursor = iDetRp == NULL ? NULL : iDetRp->Model();
+    //Elem* cursor = iRoot->GetNode(iCursor);
+    item->set_sensitive(cursor != NULL && cursor->GetParent() != NULL);
+}
+
 void HierDetailView::on_action_pin_mut_node()
 {
     MStSetting<Glib::ustring>& pinned_mn_s  = iStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mn_s);
@@ -147,8 +155,7 @@ void HierDetailView::on_action_spec_mut_node()
 void HierDetailView::on_action_goparent()
 {
     Elem* cursor = iDetRp->Model();
-    // TODO [YB] Refuse to open :Elem for now. To reconsider
-    if (cursor->GetParent() != NULL && cursor->GetParent()->GetParent() != NULL) {
+    if (cursor->GetParent() != NULL) {
 	SetCursor(cursor->GetParent());
     }
 }
@@ -283,6 +290,7 @@ void HierDetailView::SetCursor(Elem* aElem, bool FromHist)
     iTbParent->Label().set_text(aElem->EType());
     UpdatePinMutNode();
     UpdateBtnUp();
+    UpdateBtnGoParent();
 }
 
 void HierDetailView::on_drp_reload_required()
