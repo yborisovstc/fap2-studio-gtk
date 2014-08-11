@@ -132,8 +132,8 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	res = this;
     }
     else if (strcmp(aName.c_str(), MDIntGet::Type()) == 0) {
-	Elem* cpw = GetNode("../../Prov_PW");
-	Elem* cph = GetNode("../../Prov_PH");
+	Elem* cpw = GetNode("./../../Prov_PW");
+	Elem* cph = GetNode("./../../Prov_PH");
 	if (aCtx->IsInContext(cpw)) {
 	    res = (MDIntGet*) &iParProvW;
 	}
@@ -143,8 +143,8 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
     }
     else if (strcmp(aName.c_str(), MDVarGet::Type()) == 0 || strcmp(aName.c_str(), MDtGet<Sdata<int> >::Type()) == 0) {
 	bool isdvar = strcmp(aName.c_str(), MDVarGet::Type()) == 0;
-	Elem* cpw = GetNode("../../Prov_PW");
-	Elem* cph = GetNode("../../Prov_PH");
+	Elem* cpw = GetNode("./../../Prov_PW");
+	Elem* cph = GetNode("./../../Prov_PH");
 	if (aCtx->IsInContext(cpw)) {
 	    if (isdvar) {
 		res = (MDVarGet*) &iParProvVarW;
@@ -183,7 +183,7 @@ TInt AVisWidget::GetParData(ParentSizeProv::TData aData)
     // info of local connection change, but not the whole connection chain change. Ref grayb uc_010
     Container* parent = iWidget->get_parent();
     if (parent == NULL) {
-	Elem* eprntcp = GetNode("../../Child");
+	Elem* eprntcp = GetNode("./../../Child");
 	if (eprntcp != NULL) {
 	    MVisContainer* mcont = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
 	    if (mcont != NULL) {
@@ -214,7 +214,7 @@ int AVisWidget::GetParInt(TPar aPar)
 MVisContainer* AVisWidget::GetVisContainer()
 {
     MVisContainer* res = NULL;
-    Elem* eprntcp = Host()->GetNode("Child");
+    Elem* eprntcp = Host()->GetNode("./Child");
     if (eprntcp != NULL) {
 	res = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
     }
@@ -227,7 +227,7 @@ MVisContainer* AVisWidget::GetVisContainer()
 TBool AVisWidget::HandleCompChanged(Elem& aContext, Elem& aComp)
 {
     TBool res = EFalse;
-    Elem* eprntcp = aContext.GetNode("Child");
+    Elem* eprntcp = aContext.GetNode("./Child");
     if (eprntcp != NULL) {
 	if (eprntcp == &aComp || eprntcp->IsComp(&aComp)) {
 	    MVisContainer* mcont = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);

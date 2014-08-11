@@ -9,13 +9,13 @@
     <node id="elem1" parent="Elem">
 	<node id="elem2" parent="Elem"/>
     </node>
-    <node id="elem3" parent="elem1">
-	<node id="elem4" parent="../elem1/elem2"/>
-	<node node="elem4" id="elem4_1" parent="Elem"/>
+    <node id="elem3" parent="./elem1">
+	<node id="elem4" parent="./../elem1/elem2"/>
+	<node node="./elem4" id="elem4_1" parent="Elem"/>
     </node>
-    <node id="elem5" parent="elem1/elem2"/>
-    <node node="elem5" id="elem5_1" parent="Elem"/>
-    <node id="elem6" parent="elem3"/>
+    <node id="elem5" parent="./elem1/elem2"/>
+    <node node="./elem5" id="elem5_1" parent="Elem"/>
+    <node id="elem6" parent="./elem3"/>
 
 </node>
 

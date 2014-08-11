@@ -2,27 +2,27 @@
 <node id="testroot" parent="Elem">
   <move id="file:/usr/share/grayb/modules/syst.xml#SysComps"/>
   <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
-  <node id="test" parent="IncapsComps/Incaps">
-    <node id="Ics1" parent="../IncapsComps/Incaps">
+  <node id="test" parent="./IncapsComps/Incaps">
+    <node id="Ics1" parent="./../IncapsComps/Incaps">
       <node id="D_1" parent="Description"/>
-      <node id="cp_int" parent="../../SysComps/ConnPoint">
-        <cont node="Provided" val="Role3"/>
-        <cont node="Required" val="Role4"/>
+      <node id="cp_int" parent="./../../SysComps/ConnPoint">
+        <cont node="./Provided" val="Role3"/>
+        <cont node="./Required" val="Role4"/>
       </node>
-      <node node="Capsule" id="ep" parent="../../SysComps/Extender"> 
-	  <cont node="Int/Provided" val="Role4"/> <cont node="Int/Required" val="Role3"/>
+      <node node="./Capsule" id="ep" parent="./../../SysComps/Extender"> 
+	  <cont node="./Int/Provided" val="Role4"/> <cont node="./Int/Required" val="Role3"/>
       </node>
-      <cont node="D_1" val="This is test incapsulated sysytem"/>
+      <cont node="./D_1" val="This is test incapsulated sysytem"/>
     </node>
-    <node id="Ics2" parent="../IncapsComps/Incaps">
-	<node node="Capsule" id="ep" parent="../../SysComps/Extender"> 
-	    <cont node="Int/Provided" val="Role3"/> <cont node="Int/Required" val="Role4"/>
+    <node id="Ics2" parent="./../IncapsComps/Incaps">
+	<node node="./Capsule" id="ep" parent="./../../SysComps/Extender"> 
+	    <cont node="./Int/Provided" val="Role3"/> <cont node="./Int/Required" val="Role4"/>
 	</node>
     </node>
-    <node node="Capsule" id="ep" parent="../SysComps/Extender"> 
-	<cont node="Int/Provided" val="Role3"/> <cont node="Int/Required" val="Role4"/>
+    <node node="./Capsule" id="ep" parent="./../SysComps/Extender"> 
+	<cont node="./Int/Provided" val="Role3"/> <cont node="./Int/Required" val="Role4"/>
     </node>
-    <node id="1231400494" parent="Edge"> <cont node="P1" ref="../../Ics1/Capsule/ep"/> <cont node="P2" ref="../../Ics2/Capsule/ep"/> </node>
-    <node id="518673730" parent="Edge"> <cont node="P1" ref="../../Ics2/Capsule/ep"/> <cont node="P2" ref="../../Capsule/ep/Int"/> </node>
+    <node id="1231400494" parent="Edge"> <cont node="./P1" ref="./../../Ics1/Capsule/ep"/> <cont node="./P2" ref="./../../Ics2/Capsule/ep"/> </node>
+    <node id="518673730" parent="Edge"> <cont node="./P1" ref="./../../Ics2/Capsule/ep"/> <cont node="./P2" ref="./../../Capsule/ep/Int"/> </node>
   </node>
 </node>

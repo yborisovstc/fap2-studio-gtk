@@ -5,7 +5,7 @@
 #include "incapsdrp.h"
 
 
-const string IncapsDrp::KCapsUri = "Capsule";
+const string IncapsDrp::KCapsUri = "./Capsule";
 const string IncapsDrp::KIncapsType = Syst::PEType() + ":Incaps";
 const string IncapsDrp::KExtdType = "Elem:Vert:Extender";
 
@@ -98,7 +98,7 @@ void IncapsDrp::on_size_request(Gtk::Requisition* aRequisition)
 Elem* IncapsDrp::GetCompOwning(Elem* aElem)
 {
     Elem* res = NULL;
-    Elem* caps = iElem->GetNode("Capsule");
+    Elem* caps = iElem->GetNode(KCapsUri);
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
 	Elem* comp = *it;
 	if (aElem == comp || comp != caps && comp->IsComp(aElem)) {

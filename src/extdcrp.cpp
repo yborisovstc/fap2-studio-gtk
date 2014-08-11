@@ -6,6 +6,7 @@
 #include <complex>
 
 
+const string KIntUri = "./Int";
 const string sType = "ExtdCrp";
 
 const string& ExtdCrp::Type()
@@ -22,7 +23,7 @@ ExtdCrp::ExtdCrp(Elem* aElem, MErpProvider& aErpProv): VertCompRp(aElem), iErpPr
     iExtPos(MErp::EPos_Left)
 {
     // Prepare data of "Internal"
-    Elem* intr = iElem->GetNode("Int");
+    Elem* intr = iElem->GetNode(KIntUri);
     assert(intr != NULL);
     string pval = intr->Name();
     iInt = iErpProv.CreateRp(*intr, this);
@@ -137,7 +138,7 @@ Gtk::Requisition ExtdCrp::GetCpCoord(Elem* aCp)
 {
     Gtk::Allocation alc = get_allocation();
     Gtk::Requisition res;
-    Elem* intcp = iElem->GetNode("Int");
+    Elem* intcp = iElem->GetNode(KIntUri);
     assert(intcp != NULL);
     assert(aCp == iElem || aCp == intcp || intcp->IsComp(aCp));
     if (aCp == iElem) {
@@ -167,12 +168,6 @@ int ExtdCrp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
 	res = dist;
 	ncp = iElem;
     }
-    /*
-    Elem* intcp = iElem->GetNode("Int");
-    cpcoord = GetCpCoord(intcp);
-    sub = std::complex<int>(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
-    dist = std::abs(sub);
-    */
     Elem* cpcand = NULL;
     MErpConnectable* erpc = iInt->GetObj(erpc);
     if (erpc != NULL) {
@@ -196,7 +191,7 @@ int ExtdCrp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
 
 void ExtdCrp::HighlightCp(Elem* aCp, bool aSet)
 {
-    Elem* intcp = iElem->GetNode("Int");
+    Elem* intcp = iElem->GetNode(KIntUri);
     if (aCp == iElem) {
 	iLabExt->set_state(aSet ? STATE_PRELIGHT: STATE_NORMAL);
     }

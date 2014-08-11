@@ -4,6 +4,8 @@
 #include <mprop.h>
 
 
+const string KProvUri = "./Provided";
+const string KReqUri = "./Required";
 const string sType = "CpCrp";
 
 const string& CpCrp::Type()
@@ -19,7 +21,7 @@ string CpCrp::EType()
 CpCrp::CpCrp(Elem* aElem): VertCompRp(aElem)
 {
     // Prepare data of "provided"
-    Elem* prov = iElem->GetNode("Provided");
+    Elem* prov = iElem->GetNode(KProvUri);
     assert(prov != NULL);
     MProp* mprop = prov->GetObj(mprop);
     assert(mprop != NULL);
@@ -29,7 +31,7 @@ CpCrp::CpCrp(Elem* aElem): VertCompRp(aElem)
     add(*iLabProv);
     iLabProv->show();
     // Prepare data of "required"
-    Elem* req = iElem->GetNode("Required");
+    Elem* req = iElem->GetNode(KReqUri);
     assert(req != NULL);
     mprop = req->GetObj(mprop);
     assert(mprop != NULL);

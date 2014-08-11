@@ -121,7 +121,7 @@ void ADesSync::on_action_next()
 }
 
 void ADesSync::DoStep() {
-    Elem* eout = GetNode("../../Capsule/Out");
+    Elem* eout = GetNode("./../../Capsule/Out");
     MDesSyncable* out = eout->GetObj(out);
     if (eout != NULL) {
 	Logger()->Write(MLogRec::EDbg, this, "Step %d", iCount++);

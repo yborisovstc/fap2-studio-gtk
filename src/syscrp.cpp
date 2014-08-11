@@ -123,7 +123,7 @@ void SysCrp::AddDataRp()
 	    iDataRps[data] = rp;
 	}    
     }
-    Elem* vdata = iElem->GetNode("ViewData");
+    Elem* vdata = iElem->GetNode("./ViewData");
     if (vdata != NULL) {
 	for (vector<Elem*>::iterator it = vdata->Comps().begin(); it != vdata->Comps().end(); it++) {
 	    Elem* comp = *it;
