@@ -9,12 +9,12 @@
     <node id="v1" parent="Vert"/>
     <node id="v3_long_long_name" parent="Vert"/>
     <node id="v2" parent="Vert"/>
-    <node id="v4" parent="v2"/>
-    <node id="v5" parent="v2"/>
-    <node id="E1" parent="Edge"> <cont node="P1" ref="../../v2"/> <cont node="P2" ref="../../v1"/> </node>
-    <node id="E2" parent="Edge"> <cont node="P1" ref="../../v1"/> <cont node="P2" ref="../../v3_long_long_name"/> </node>
-    <node id="E3" parent="Edge"> <cont node="P1" ref="../../v1"/> <cont node="P2" ref="../../v4"/> </node>
-    <node id="E4" parent="Edge"> <cont node="P1" ref="../../v1"/> <cont node="P2" ref="../../v5"/> </node>
-    <node id="E5" parent="Edge"> <cont node="P1" ref="../../v4"/> <cont node="P2" ref="../../v5"/> </node>
+    <node id="v4" parent="./v2"/>
+    <node id="v5" parent="./v2"/>
+    <node id="E1" parent="Edge"> <cont node="./P1" ref="./../../v2"/> <cont node="./P2" ref="./../../v1"/> </node>
+    <node id="E2" parent="Edge"> <cont node="./P1" ref="./../../v1"/> <cont node="./P2" ref="./../../v3_long_long_name"/> </node>
+    <node id="E3" parent="Edge"> <cont node="./P1" ref="./../../v1"/> <cont node="./P2" ref="./../../v4"/> </node>
+    <node id="E4" parent="Edge"> <cont node="./P1" ref="./../../v1"/> <cont node="./P2" ref="./../../v5"/> </node>
+    <node id="E5" parent="Edge"> <cont node="./P1" ref="./../../v4"/> <cont node="./P2" ref="./../../v5"/> </node>
 </node>
 

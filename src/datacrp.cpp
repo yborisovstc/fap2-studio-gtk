@@ -29,7 +29,7 @@ void ValueRp::on_comp_changed(Elem* aComp)
 
 
 const string DataCrp::KModelName = "DataS";
-const string DataCrp::KValueUri = "Value";
+const string DataCrp::KValueUri = "./Value";
 
 const string sCrpType = "DataCrp";
 

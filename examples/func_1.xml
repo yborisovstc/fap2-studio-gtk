@@ -15,44 +15,44 @@
     <!-- Module containing components of func -->
     <move id="file:/usr/share/grayb/modules/func.xml#FuncComps" />
 
-    <node id="test" parent="IncapsComps/Incaps">
+    <node id="test" parent="./IncapsComps/Incaps">
 
-	<node node="Capsule" id="Inp" parent="../SysComps/ConnPointInp">
+	<node node="./Capsule" id="Inp" parent="./../SysComps/ConnPointInp">
 	</node>
 
-	<node node="Capsule" id="Out" parent="../SysComps/ConnPointOut">
+	<node node="./Capsule" id="Out" parent="./../SysComps/ConnPointOut">
 	</node>
 
-	<node id="DataS_Int_1" parent="../DataComps/DataSInt">
-	    <cont node="Value" val="34"/> 
+	<node id="DataS_Int_1" parent="./../DataComps/DataSInt">
+	    <cont node="./Value" val="34"/> 
 	</node>
 
-	<node id="Incr" parent="../FuncComps/FuncIncInt"/>
+	<node id="Incr" parent="./../FuncComps/FuncIncInt"/>
 
-	<node id="Incr2" parent="../FuncComps/FuncIncInt"/>
+	<node id="Incr2" parent="./../FuncComps/FuncIncInt"/>
 
-	<node id="Result" parent="../FuncComps/FuncIntRes"/>
+	<node id="Result" parent="./../FuncComps/FuncIntRes"/>
 
-	<node id="ResData" parent="../DataComps/DataSInt"/>
+	<node id="ResData" parent="./../DataComps/DataSInt"/>
 
 	<node id="E1" parent="Edge"> 
-	    <cont node="P1" ref="../../DataS_Int_1/Capsule/out"/> 
-	    <cont node="P2" ref="../../Incr/Capsule/inp"/> 
+	    <cont node="./P1" ref="./../../DataS_Int_1/Capsule/out"/> 
+	    <cont node="./P2" ref="./../../Incr/Capsule/inp"/> 
 	</node>
 
 	<node id="E2" parent="Edge"> 
-	    <cont node="P1" ref="../../Incr/Capsule/out"/> 
-	    <cont node="P2" ref="../../Incr2/Capsule/inp"/> 
+	    <cont node="./P1" ref="./../../Incr/Capsule/out"/> 
+	    <cont node="./P2" ref="./../../Incr2/Capsule/inp"/> 
 	</node>
 
 	<node id="E3" parent="Edge"> 
-	    <cont node="P1" ref="../../Incr2/Capsule/out"/> 
-	    <cont node="P2" ref="../../Result/Capsule/inp"/> 
+	    <cont node="./P1" ref="./../../Incr2/Capsule/out"/> 
+	    <cont node="./P2" ref="./../../Result/Capsule/inp"/> 
 	</node>
 
 	<node id="E4" parent="Edge"> 
-	    <cont node="P1" ref="../../Result/Capsule/out"/> 
-	    <cont node="P2" ref="../../ResData/Capsule/inp"/> 
+	    <cont node="./P1" ref="./../../Result/Capsule/out"/> 
+	    <cont node="./P2" ref="./../../ResData/Capsule/inp"/> 
 	</node>
 
     </node>

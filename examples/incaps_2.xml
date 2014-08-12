@@ -4,7 +4,9 @@
   <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps"/>
   <node id="test" parent="./IncapsComps/Incaps">
     <node id="Ics1" parent="./../IncapsComps/Incaps">
-      <node id="D_1" parent="Description"/>
+      <node id="D_1" parent="Description">
+	  <cont val="This is test of incapsulated system"/>
+      </node>
       <node id="cp_int" parent="./../../SysComps/ConnPoint">
         <cont node="./Provided" val="Role3"/>
         <cont node="./Required" val="Role4"/>
@@ -12,7 +14,6 @@
       <node node="./Capsule" id="ep" parent="./../../SysComps/Extender"> 
 	  <cont node="./Int/Provided" val="Role4"/> <cont node="./Int/Required" val="Role3"/>
       </node>
-      <cont node="./D_1" val="This is test incapsulated sysytem"/>
     </node>
     <node id="Ics2" parent="./../IncapsComps/Incaps">
 	<node node="./Capsule" id="ep" parent="./../../SysComps/Extender"> 
