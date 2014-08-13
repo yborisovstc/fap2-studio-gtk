@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem">
   <node id="Note" parent="Description">
-    <cont val="This is exampe of using variable type functions and data"/>
+    <cont val="This is exampe of using variable type functions and data. Pheno modif is enabled and used."/>
   </node>
   <node id="Modules" parent="Elem">
     <move id="file:/usr/share/grayb/modules/syst.xml#"/>

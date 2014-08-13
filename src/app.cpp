@@ -193,7 +193,8 @@ void DesObserver::OnLogRecDeleting(MLogRec* aLogRec)
 
 
 
-App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoLim(0), iChanged(false)
+App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoLim(0), iChanged(false), 
+    iRepair(false)
 {
     // Create model observer
     iDesObserver = new DesObserver();
@@ -222,6 +223,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Compact_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_compactas));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Undo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_undo));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Redo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_redo));
+    iMainWnd->UIManager()->get_action("ui/ToolBar/Repair")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_repair));
     // Create studio DES environment
     iStDesEnv = new StDesEnv(iMainWnd->UIManager(), iMainWnd->VisWindow());
     iStDesEnv->SigActionRecreate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
@@ -291,6 +293,12 @@ void App::on_action_redo()
 	iChromoLim--;
 	on_action_recreate();
     }
+}
+
+void App::on_action_repair()
+{
+    iRepair = true;
+    on_action_recreate();
 }
 
 void App::on_action_new()
@@ -460,6 +468,8 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv = new Env("DesEnv", aFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
     iEnv->ChMgr()->SetLim(iChromoLim);
+    iEnv->ChMgr()->SetEnableFixErrors(iRepair);
+    iRepair = false;
     iDesObserver->SetDes(iEnv);
     iEnv->ConstructSystem();
     iDesObserver->UpdateDesRootObserver();

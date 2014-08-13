@@ -81,6 +81,7 @@ class App
 	void on_action_recreate();
 	void on_action_undo();
 	void on_action_redo();
+	void on_action_repair();
 	void on_system_changed();
 	void on_comp_selected(Elem* aComp);
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
@@ -116,6 +117,7 @@ class App
 	// DES observer IsModelChanged indicates the status only sinse model loading,
 	// but this can happen when loading from tmp spec
 	bool iChanged;
+	bool iRepair;
 	LogViewL* iLogView;
 };
 
