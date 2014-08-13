@@ -60,8 +60,6 @@
     <node id="E2" parent="Edge"> <cont node="./P1" val="./../../Syst1/cp"/> <cont node="./P2" val="./../../Syst2/cp"/> </node>
     <node id="E3" parent="Edge"> <cont node="./P1" val="./../../Syst1/cp"/> <cont node="./P2" val="./../../cp2"/> </node>
     <node id="E4" parent="Edge"> <cont node="./P1" val="./../../Syst1/ep"/> <cont node="./P2" val="./../../cp3"/> </node>
-    <!--
-    -->
 
 </node>
 

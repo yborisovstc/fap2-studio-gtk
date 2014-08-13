@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem">
   <node id="Note" parent="Description">
-    <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [IRoot]"/>
+    <cont val="This is exampe of using variable type functions and data"/>
   </node>
   <node id="Modules" parent="Elem">
     <move id="file:/usr/share/grayb/modules/syst.xml#"/>
@@ -14,18 +14,17 @@
     <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FAddVar"/>
     <node id="Arg_1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar"/>
     <node id="Arg_2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar"/>
-    <cont node="(DataTVar:)Result/(Prop)Value" val="F 0.0"/>
-    <cont node="(DataSVar:)Arg_1/(Prop)Value" val="I 4"/>
-    <cont node="(DataSVar:)Arg_2/(Prop)Value" val="F 7.5"/>
+    <cont node="./(DataTVar:)Result/(Prop)Value" val="F 0.0"/>
+    <cont node="./(DataSVar:)Arg_1/(Prop)Value" val="I 4"/>
+    <cont node="./(DataSVar:)Arg_2/(Prop)Value" val="F 7.5"/>
     <node id="934924337" parent="Edge"/>
     <node id="34541368" parent="Edge"/>
     <node id="1575836229" parent="Edge"/>
-    <cont node="(Edge:)934924337/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Out_FVar:)out"/>
-    <cont node="(Edge:)934924337/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/inp"/>
-    <cont node="(Edge:)34541368/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
-    <cont node="(Edge:)34541368/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_1/(Elem:)Capsule/out"/>
-    <cont node="(Edge:)1575836229/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
-    <cont node="(Edge:)1575836229/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_2/(Elem:)Capsule/out"/>
+    <cont node="./(Edge:)934924337/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Out_FVar:)out"/>
+    <cont node="./(Edge:)934924337/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/inp"/>
+    <cont node="./(Edge:)34541368/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
+    <cont node="./(Edge:)34541368/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_1/(Elem:)Capsule/out"/>
+    <cont node="./(Edge:)1575836229/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
+    <cont node="./(Edge:)1575836229/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_2/(Elem:)Capsule/out"/>
   </node>
-  <cont node="(Description:)Note" val="This is exampe of using variable type functions and data"/>
 </node>
