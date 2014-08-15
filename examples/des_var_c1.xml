@@ -12,29 +12,29 @@
     <node id="Ticker_edge" parent="Edge"/>
     <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
       <node id="ss" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-        <node id="add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(TrVar:)TrAddVar"/>
+        <node id="add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/TFAddVar"/>
         <node id="237990136" parent="Edge">
-          <cont node="P1" ref="../../add/Out"/>
-          <cont node="P2" ref="../../Data/Capsule/Inp"/>
+	    <cont node="./P1" ref="./../../add/Capsule/Out"/>
+          <cont node="./P2" ref="./../../Data/Capsule/Inp"/>
         </node>
         <node id="2009532263" parent="Edge">
-          <cont node="P1" ref="../../add/Inp"/>
-          <cont node="P2" ref="../../Capsule/Inp/Int/PinData"/>
+	    <cont node="./P1" ref="./../../add/Capsule/Inp"/>
+          <cont node="./P2" ref="./../../Capsule/Inp/Int/PinData"/>
         </node>
-        <cont node="Data/Prepared/Value" val="F 0.0"/>
-        <cont node="Data/Confirmed/Value" val="F 1.0"/>
+        <cont node="./Data/Prepared/Value" val="F 0.0"/>
+        <cont node="./Data/Confirmed/Value" val="F 1.0"/>
       </node>
       <node id="182652761" parent="Edge">
-        <cont node="P1" ref="../../ss/Capsule/Out"/>
-        <cont node="P2" ref="../../ss/Capsule/Inp"/>
+        <cont node="./P1" ref="./../../ss/Capsule/Out"/>
+        <cont node="./P2" ref="./../../ss/Capsule/Inp"/>
       </node>
-      <node node="(StateVarC:)ss" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" id="cc"/>
-      <cont node="ss/cc/Value" val="F 0.3"/>
-      <node node="(StateVarC:)ss" parent="Edge" id="1912363833"/>
-      <cont node="ss/1912363833/P1" ref="../../cc/Capsule/Out"/>
-      <cont node="ss/1912363833/P2" ref="../../add/Inp"/>
+      <node node="./(StateVarC:)ss" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" id="cc"/>
+      <cont node="./ss/cc/Value" val="F 0.3"/>
+      <node node="./(StateVarC:)ss" parent="Edge" id="1912363833"/>
+      <cont node="./ss/1912363833/P1" ref="./../../cc/Capsule/Out"/>
+      <cont node="./ss/1912363833/P2" ref="./../../add/Capsule/Inp"/>
     </node>
-    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
-    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
+    <cont node="./Ticker_edge/P2" val="./../../DesRoot/Capsule/Sync"/>
+    <cont node="./Ticker_edge/P1" val="./../../Ticker/Capsule/Out"/>
   </node>
 </node>

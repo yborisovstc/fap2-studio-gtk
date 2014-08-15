@@ -36,7 +36,7 @@
       <cont node="./(Edge:)1197245649/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/Out"/>
       <cont node="./(Edge:)1197245649/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/Inp"/>
     </node>
-    <cont node="./Ticker_edge/P2" val="./../../DesRoot/Capsule/Sync"/>
-    <cont node="./Ticker_edge/P1" val="./../../Ticker/Capsule/Out"/>
+    <cont node="./Ticker_edge/P2" ref="./../../DesRoot/Capsule/Sync"/>
+    <cont node="./Ticker_edge/P1" ref="./../../Ticker/Capsule/Out"/>
   </node>
 </node>
