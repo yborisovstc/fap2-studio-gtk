@@ -188,6 +188,13 @@ void ElemCompRp::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Se
     data.set(KDnDTarg_Comp, suri);
 }
 
+bool ElemCompRp::DoIsActionSupported(MCrp::Action aAction)
+{
+    return (aAction == MCrp::EA_Remove || aAction == MCrp::EA_Rename 
+	    || aAction == MCrp::EA_Save_Chromo && iElem->IsChromoAttached()
+	    || aAction == MCrp::EA_Edit_Content);
+}
+
 
 const string sType = "ElemCrp";
 
@@ -242,8 +249,7 @@ MCrp::tSigUpdated ElemCrp::SignalUpdated()
 
 bool ElemCrp::IsActionSupported(Action aAction)
 {
-    return (aAction == EA_Remove || aAction == EA_Rename || aAction == EA_Save_Chromo
-	    || aAction == EA_Edit_Content);
+    return iRp->DoIsActionSupported(aAction);
 }
 
 bool ElemCrp::Dragging()

@@ -36,6 +36,7 @@ class HierDetailView
 	void on_comp_activated(Elem* aComp);
     protected:
 	// Signal handlers:
+	void on_action_insert();
 	void on_action_up();
 	void on_action_undo();
 	void on_action_redo();

@@ -461,6 +461,10 @@ MDrp::tSigDragMotion VertDrpw_v1::SignalDragMotion()
     return iSigDragMotion;
 }
 
+void VertDrpw_v1::OnActionInsert()
+{
+    ElemDetRp::DoOnActionInsert();
+}
 
 
 const string& VertDrp::Type()

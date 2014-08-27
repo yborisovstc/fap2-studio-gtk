@@ -9,9 +9,10 @@
   </node>
   <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
     <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
-    <node id="Ticker_edge" parent="Edge"/>
     <node id="DesRoot" parent="/Root/Modules/DesComps/Des"/>
-    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
-    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
+    <node id="Ticker_edge" parent="Edge">
+	<cont node="./P2" val="./../../DesRoot/Capsule/Sync"/>
+	<cont node="./P1" val="./../../Ticker/Capsule/Out"/>
+    </node>
   </node>
 </node>

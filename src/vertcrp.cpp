@@ -169,7 +169,8 @@ MCrp::tSigUpdated VertCompRp::SignalUpdated()
 
 bool VertCompRp::IsActionSupported(Action aAction)
 {
-    return (aAction == EA_Remove || aAction == EA_Rename);
+    return ElemCompRp::DoIsActionSupported(aAction);
+    //return (aAction == EA_Remove || aAction == EA_Rename);
 }
 
 bool VertCompRp::Dragging()

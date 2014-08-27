@@ -869,6 +869,27 @@ void ElemDetRp::DoUdno()
 {
 }
 
+void ElemDetRp::DoOnActionInsert()
+{
+    Gtk::FileChooserDialog dialog("Adding node - Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
+    //Add response buttons the the dialog:
+    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog.add_button(Gtk::Stock::SAVE_AS, Gtk::RESPONSE_OK);
+    // Set filter
+    Gtk::FileFilter filter;
+    filter.set_name("DES model files");
+    filter.add_mime_type("application/xml");
+    dialog.add_filter(filter);
+
+    int result = dialog.run();
+    if (result == Gtk::RESPONSE_OK) {
+	std::string filename = dialog.get_filename();
+	GUri uri;
+	iElem->GetUri(uri, iElem);
+	string suri = "file:" + filename + "#";
+	move_node(suri, uri.GetUri());
+    }
+}
 
 
 const string sElemDrpType = "ElemDrp";

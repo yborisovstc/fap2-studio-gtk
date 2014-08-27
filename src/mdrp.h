@@ -13,6 +13,10 @@ class MCrp;
 class MDrp: public MBase
 {
     public:
+	enum Action {
+	    EDA_Insert
+	};
+    public:
 	static std::string Type() { return "MDrp";};
     public:
 	typedef sigc::signal<void, Elem*> tSigCompSelected;
@@ -30,6 +34,8 @@ class MDrp: public MBase
 	virtual tSigReloadRequired SignalReloadRequired() {return mSigReloadRequired;};
 	virtual void Udno() = 0;
 	virtual bool IsActionSupported(Elem* aComp, const MCrp::Action& aAction) {return false;};
+	virtual bool IsActionSupported(const Action& aAction) {return false;};
+	virtual void OnActionInsert() {};
     protected:
 	tSigAttention mSigAttention;
 	tSigReloadRequired mSigReloadRequired;

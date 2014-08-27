@@ -312,28 +312,28 @@ void AVisWidget::OnUpdated()
     // X coord
     bool res;
     int sX;
-    res = GetDataInt("Inp_X/Int/PinData", sX);
+    res = GetDataInt("./Inp_X/Int/PinData", sX);
     if (res && sX != iX) {
 	iX = sX;
 	OnUpdated_X(iX);
     }
     // Y coord
     int sY;
-    res = GetDataInt("Inp_Y/Int/PinData", sY);
+    res = GetDataInt("./Inp_Y/Int/PinData", sY);
     if (res && sY != iY) {
 	iY = sY;
 	OnUpdated_Y(iY);
     }
     // Width
     int sW;
-    res = GetDataInt("Inp_W/Int/PinData", sW);
+    res = GetDataInt("./Inp_W/Int/PinData", sW);
     if (res && sW != iW) {
 	iW = sW;
 	OnUpdated_W(iW);
     }
     // Heigth
     int sH;
-    res = GetDataInt("Inp_H/Int/PinData", sH);
+    res = GetDataInt("./Inp_H/Int/PinData", sH);
     if (res && sH != iH) {
 	iH = sH;
 	OnUpdated_H(iH);

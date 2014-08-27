@@ -206,6 +206,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iLogFileName = GetDefaultLogFileName();
     // Settings defaults
     MStSetting<bool>& ena_pheno = iStEnv->Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno);
+    ena_pheno.SigChanged().connect(sigc::mem_fun(*this, &App::on_setting_changed_pheno_enable));
     ena_pheno.Set(false);
     MStSetting<Glib::ustring>& pinned_mut_node = iStEnv->Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node);
     pinned_mut_node.Set("");
@@ -251,6 +252,10 @@ App::~App() {
     delete iStDesEnv;
     delete iMdlProv;
     delete iDesObserver;
+}
+
+void App::on_setting_changed_pheno_enable()
+{
 }
 
 void App::on_comp_selected(Elem* aComp)
@@ -469,6 +474,9 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv->AddProvider(iMdlProv);
     iEnv->ChMgr()->SetLim(iChromoLim);
     iEnv->ChMgr()->SetEnableFixErrors(iRepair);
+    MStSetting<bool>& ena_pheno = iStEnv->Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno);
+    bool ena_pheno_val = ena_pheno.Get(ena_pheno_val);
+    iEnv->ChMgr()->SetEnablePhenoModif(ena_pheno_val);
     iRepair = false;
     iDesObserver->SetDes(iEnv);
     iEnv->ConstructSystem();
@@ -483,7 +491,9 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
 	iMainWnd->set_title(FormTitle(iSpecFileName.empty() ? KTitleUnsaved : iSpecFileName));
     }
     // Mark model as unchanged, initially
-    iDesObserver->SetModelChanged(false);
+    iDesObserver->SetModelChanged(iEnv->ChMgr()->EnableFixErrors());
+    iChanged = false;
+    iEnv->ChMgr()->SetEnableFixErrors(false);
     // Init max order from spec, to be able to do redo
     iMaxOrder = iEnv->ChMgr()->GetSpecMaxOrder();
     UpdataUndoRedo();

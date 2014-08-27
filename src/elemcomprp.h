@@ -40,6 +40,7 @@ class ElemCompRp: public Gtk::Layout
 	void DoSetErroneous(bool aSet);
     protected:
 	virtual void Construct();
+	virtual bool DoIsActionSupported(MCrp::Action aAction);
 	virtual void on_realize();
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_allocate(Gtk::Allocation& 	aAlloc);

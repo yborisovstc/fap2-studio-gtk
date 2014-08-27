@@ -45,6 +45,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual tSigCompActivated SignalCompActivated();
 	virtual tSigDragMotion SignalDragMotion();
 	virtual void Udno();
+	virtual void OnActionInsert();
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual bool on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);

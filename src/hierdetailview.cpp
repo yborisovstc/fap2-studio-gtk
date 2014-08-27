@@ -10,6 +10,7 @@
 Glib::ustring sUiHierDview = 
 "<ui>"
 "  <toolbar  name='ToolBar'>"
+"    <toolitem action='Insert'/>"
 "    <toolitem action='GoUp'/>"
 "    <toolitem action='Back'/>"
 "    <toolitem action='Forward'/>"
@@ -19,6 +20,7 @@ Glib::ustring sUiHierDview =
 "    <placeholder name='ParentPlaceholder' />"
 "    <toolitem action='GoToParent'/>"
 "    <placeholder name='MutModePlaceholder' />"
+"    <toolitem action='SpecifyMutNode'/>"
 "    <toolitem action='Attention'/>"
 "    <separator/>"
 "  </toolbar>"
@@ -44,6 +46,7 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
 {
     // Addig toolbar
     irActionGroup = Gtk::ActionGroup::create("ElemDrpActGroup");
+    irActionGroup->add(Gtk::Action::create("Insert", Gtk::Stock::ADD, "Insert"), sigc::mem_fun(*this, &HierDetailView::on_action_insert));
     irActionGroup->add(Gtk::Action::create("GoUp", Gtk::Stock::GOTO_TOP, "Go Up"), sigc::mem_fun(*this, &HierDetailView::on_action_up));
     irActionGroup->add(Gtk::Action::create("Back", Stock::GO_BACK, "Back"), sigc::mem_fun(*this, &HierDetailView::on_action_goback));
     irActionGroup->add(Gtk::Action::create("Forward", Stock::GO_FORWARD, "Forward"), sigc::mem_fun(*this, &HierDetailView::on_action_goforward));
@@ -54,11 +57,8 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
     // Use mut node
     MStSetting<bool>& ena_pheno_s = iStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
-    /*
-"    <toolitem action='SpecifyMutNode'/>"
-    irActionGroup->add(Gtk::ToggleAction::create("SpecifyMutNode", Stock::INDEX, "SpecifyMutNode", "SpecifyMutNode", !ena_pheno), 
+    irActionGroup->add(Gtk::ToggleAction::create("SpecifyMutNode", Stock::JUMP_TO, "SpecifyMutNode", "SpecifyMutNode", ena_pheno), 
 	    sigc::mem_fun(*this, &HierDetailView::on_action_spec_mut_node));
-	    */
     iUiMgr->add_ui_from_string(sUiHierDview);
 
     if (ena_pheno) {
@@ -131,6 +131,11 @@ void HierDetailView::UpdateBtnGoParent()
     item->set_sensitive(cursor != NULL && cursor->GetParent() != NULL);
 }
 
+void HierDetailView::on_action_insert()
+{
+    iDetRp->OnActionInsert();
+}
+
 void HierDetailView::on_action_pin_mut_node()
 {
     MStSetting<Glib::ustring>& pinned_mn_s  = iStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mn_s);
@@ -149,7 +154,7 @@ void HierDetailView::on_action_spec_mut_node()
 {
     MStSetting<bool>& ena_pheno_s = iStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     Gtk::ToggleToolButton* button = dynamic_cast<Gtk::ToggleToolButton*>(iUiMgr->get_widget("/ToolBar/SpecifyMutNode"));
-    ena_pheno_s.Set(!button->get_active()); 
+    ena_pheno_s.Set(button->get_active()); 
 }
 
 void HierDetailView::on_action_goparent()

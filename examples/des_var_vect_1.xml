@@ -12,71 +12,71 @@
     <node id="Ticker_edge" parent="Edge"/>
     <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
       <node id="State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-        <cont node="Data/Prepared/Value" val="VF 0 0"/>
-        <cont node="Data/Confirmed/Value" val="VF 0 0"/>
+        <cont node="./Data/Prepared/Value" val="VF 0 0"/>
+        <cont node="./Data/Confirmed/Value" val="VF 0 0"/>
         <node id="Mpl_martix_on_vect" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
         <node id="Matrix_1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-          <cont node="Value" val="MDF 1.1 1.1"/>
-          <cont node="Value" val="VF 1.1 1.1"/>
+          <cont node="./Value" val="MDF 1.1 1.1"/>
+          <cont node="./Value" val="VF 1.1 1.1"/>
         </node>
         <node id="761926173" parent="Edge">
-          <cont node="P1" ref="../../Matrix_1/Capsule/Out"/>
-          <cont node="P2" val=""/>
-          <cont node="P2" val=""/>
-          <cont node="P2" ref="../../Mpl_martix_on_vect/Capsule/Inp1"/>
+          <cont node="./P1" ref="./../../Matrix_1/Capsule/Out"/>
+          <cont node="./P2" val=""/>
+          <cont node="./P2" val=""/>
+          <cont node="./P2" ref="./../../Mpl_martix_on_vect/Capsule/Inp1"/>
         </node>
         <node id="633304236" parent="Edge">
-          <cont node="P1" ref="../../Mpl_martix_on_vect/Capsule/Out"/>
-          <cont node="P2" ref="../../Data/Capsule/Inp"/>
+          <cont node="./P1" ref="./../../Mpl_martix_on_vect/Capsule/Out"/>
+          <cont node="./P2" ref="./../../Data/Capsule/Inp"/>
         </node>
         <node id="689769601" parent="Edge">
-          <cont node="P1" ref="../../Mpl_martix_on_vect/Capsule/Inp2"/>
-          <cont node="P2" ref="../../Capsule/Inp/Int/PinData"/>
+          <cont node="./P1" ref="./../../Mpl_martix_on_vect/Capsule/Inp2"/>
+          <cont node="./P2" ref="./../../Capsule/Inp/Int/PinData"/>
         </node>
-        <cont node="Data/Confirmed/Value" val="MF,V,2 1 1"/>
-        <cont node="Data/Prepared/Value" val="MF,V,2 1 1"/>
+        <cont node="./Data/Confirmed/Value" val="MF,V,2 1 1"/>
+        <cont node="./Data/Prepared/Value" val="MF,V,2 1 1"/>
         <node id="Mtr_const_2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar"/>
-        <cont node="Mtr_const_2/Value" val="MF,D,2 1 1"/>
-        <cont node="Mtr_const_2/Value" val="MF,R,2,2 1 0 0 1"/>
-        <cont node="Mtr_const_2/Value" val="MF,D,2 1 1"/>
+        <cont node="./Mtr_const_2/Value" val="MF,D,2 1 1"/>
+        <cont node="./Mtr_const_2/Value" val="MF,R,2,2 1 0 0 1"/>
+        <cont node="./Mtr_const_2/Value" val="MF,D,2 1 1"/>
         <node id="1314838053" parent="Edge"/>
       </node>
       <node id="1570591930" parent="Edge">
-        <cont node="P1" ref="../../State1/Capsule/Out"/>
-        <cont node="P2" ref="../../State1/Capsule/Inp"/>
+        <cont node="./P1" ref="./../../State1/Capsule/Out"/>
+        <cont node="./P2" ref="./../../State1/Capsule/Inp"/>
       </node>
-      <node node="(StateVarC:)State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" id="Add_vect"/>
-      <cont node="State1/633304236/P2" ref="../../Add_vect/Capsule/Inp"/>
-      <node node="(StateVarC:)State1" parent="Edge" id="1569122258"/>
-      <cont node="State1/1569122258/P1" ref="../../Add_vect/Capsule/Out"/>
-      <cont node="State1/1569122258/P2" ref="../../Data/Capsule/Inp"/>
-      <node node="(StateVarC:)State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" id="Vect_arg_1"/>
-      <node node="(StateVarC:)State1" parent="Edge" id="998253375"/>
-      <cont node="State1/998253375/P1" ref="../../Vect_arg_1/Capsule/Out"/>
-      <cont node="State1/998253375/P2" ref="../../Add_vect/Capsule/Inp"/>
-      <cont node="State1/Vect_arg_1/Value" val="MF,V,2 1 2"/>
-      <node node="(StateVarC:)State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCpsMtrdVar" id="Mtr_constructor"/>
-      <node node="(StateVarC:)State1" parent="Edge" id="1021770752"/>
-      <cont node="State1/1021770752/P1" ref="../../Mtr_constructor/Capsule/Out"/>
-      <cont node="State1/1021770752/P2" ref="../../Matrix_1/Capsule/Inp"/>
-      <change node="(StateVarC:)State1/Matrix_1" attr="id" val="Vect_1"/>
-      <cont node="State1/761926173/P2" ref="../../Mtr_constructor/Capsule/Inp"/>
-      <cont node="State1/1021770752/P2" ref="../../Mpl_martix_on_vect/Capsule/Inp1"/>
-      <node node="(StateVarC:)State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplinvVar" id="Invertor"/>
-      <cont node="State1/1021770752/P2" ref="../../Invertor/Capsule/Inp"/>
-      <node node="(StateVarC:)State1" parent="Edge" id="1769694510"/>
-      <cont node="State1/1769694510/P1" ref="../../Mpl_martix_on_vect/Capsule/Inp1"/>
-      <cont node="State1/1769694510/P2" ref="../../Invertor/Capsule/Out"/>
-      <cont node="State1/1769694510/P2" ref="../../Mtr_const_2/Capsule/Out"/>
-      <cont node="State1/1021770752/P1" ref="../../Vect_1/Capsule/Out"/>
-      <cont node="State1/1021770752/P1" ref="../../Mtr_const_2/Capsule/Out"/>
-      <cont node="State1/1769694510/P2" ref="../../Invertor/Capsule/Out"/>
-      <cont node="State1/1021770752/P2" val=""/>
-      <cont node="State1/1314838053/P1" ref="../../Mtr_constructor/Capsule/Out"/>
-      <cont node="State1/1314838053/P2" ref="../../Invertor/Capsule/Inp"/>
-      <cont node="State1/Vect_1/Value" val="MF,V,2 2 2"/>
+      <node node="./(StateVarC:)State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" id="Add_vect"/>
+      <cont node="./State1/633304236/P2" ref="./../../Add_vect/Capsule/Inp"/>
+      <node node="./(StateVarC:)State1" parent="Edge" id="1569122258"/>
+      <cont node="./State1/1569122258/P1" ref="./../../Add_vect/Capsule/Out"/>
+      <cont node="./State1/1569122258/P2" ref="./../../Data/Capsule/Inp"/>
+      <node node="./(StateVarC:)State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" id="Vect_arg_1"/>
+      <node node="./(StateVarC:)State1" parent="Edge" id="998253375"/>
+      <cont node="./State1/998253375/P1" ref="./../../Vect_arg_1/Capsule/Out"/>
+      <cont node="./State1/998253375/P2" ref="./../../Add_vect/Capsule/Inp"/>
+      <cont node="./State1/Vect_arg_1/Value" val="MF,V,2 1 2"/>
+      <node node="./(StateVarC:)State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCpsMtrdVar" id="Mtr_constructor"/>
+      <node node="./(StateVarC:)State1" parent="Edge" id="1021770752"/>
+      <cont node="./State1/1021770752/P1" ref="./../../Mtr_constructor/Capsule/Out"/>
+      <cont node="./State1/1021770752/P2" ref="./../../Matrix_1/Capsule/Inp"/>
+      <change node="./(StateVarC:)State1/Matrix_1" attr="id" val="Vect_1"/>
+      <cont node="./State1/761926173/P2" ref="./../../Mtr_constructor/Capsule/Inp"/>
+      <cont node="./State1/1021770752/P2" ref="./../../Mpl_martix_on_vect/Capsule/Inp1"/>
+      <node node="./(StateVarC:)State1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplinvVar" id="Invertor"/>
+      <cont node="./State1/1021770752/P2" ref="./../../Invertor/Capsule/Inp"/>
+      <node node="./(StateVarC:)State1" parent="Edge" id="1769694510"/>
+      <cont node="./State1/1769694510/P1" ref="./../../Mpl_martix_on_vect/Capsule/Inp1"/>
+      <cont node="./State1/1769694510/P2" ref="./../../Invertor/Capsule/Out"/>
+      <cont node="./State1/1769694510/P2" ref="./../../Mtr_const_2/Capsule/Out"/>
+      <cont node="./State1/1021770752/P1" ref="./../../Vect_1/Capsule/Out"/>
+      <cont node="./State1/1021770752/P1" ref="./../../Mtr_const_2/Capsule/Out"/>
+      <cont node="./State1/1769694510/P2" ref="./../../Invertor/Capsule/Out"/>
+      <cont node="./State1/1021770752/P2" val=""/>
+      <cont node="./State1/1314838053/P1" ref="./../../Mtr_constructor/Capsule/Out"/>
+      <cont node="./State1/1314838053/P2" ref="./../../Invertor/Capsule/Inp"/>
+      <cont node="./State1/Vect_1/Value" val="MF,V,2 2 2"/>
     </node>
-    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
-    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
+    <cont node="./Ticker_edge/P2" ref="./../../DesRoot/Capsule/Sync"/>
+    <cont node="./Ticker_edge/P1" ref="./../../Ticker/Capsule/Out"/>
   </node>
 </node>
