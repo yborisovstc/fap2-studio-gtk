@@ -19,7 +19,7 @@ static GtkTargetEntry targetentries[] =
     { (gchar*) "STRING",        0, 0 },
     { (gchar*) "text/plain",    0, 1 },
     { (gchar*) "text/uri-list", 0, 2 },
-//    { (gchar*) "GTK_TREE_MODEL_ROW", 0, 3 },
+    //    { (gchar*) "GTK_TREE_MODEL_ROW", 0, 3 },
 };
 
 static const Glib::ustring KDlgMsg_Rm_F1 = 
@@ -30,9 +30,9 @@ static const Glib::ustring KDlgMsg_Rm_F2 =
 
 static const Glib::ustring KDlgMsg_Mut_F2 = 
 "Changed node can affect other nodes. There are two options of applying the change:\n\
-1. Make mutation, please note that you'll need then to refresh the the model to actualize the changes in childs\n\
-2. Make phenotypic modification, the change will be for this node only, not affecting other nodes\n\n\
-Make mutation ? Oherwise phonotype modification";
+	1. Make mutation, please note that you'll need then to refresh the the model to actualize the changes in childs\n\
+	2. Make phenotypic modification, the change will be for this node only, not affecting other nodes\n\n\
+	Make mutation ? Oherwise phonotype modification";
 
 static const Glib::ustring K_Att_Rld = 
 "This change can affect other parts of the system, please reload system to apply the affecting changes.";
@@ -45,7 +45,7 @@ static const Glib::ustring K_Att_CritDep =
 
 static const Glib::ustring K_Att_CritDep_1 = 
 "There is critical dependency in node [%1] for this change in the system.\n\
-Please reload system, and resolve the problems if any. Otherwise undo the mutation";
+	Please reload system, and resolve the problems if any. Otherwise undo the mutation";
 
 static const Glib::ustring K_Att_WrongPinnedMnode = 
 "Node pinned for mutation is not the owner of the current node. Select the correct node for mutation";
@@ -88,13 +88,13 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): 
     // Setup components context menu
     Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
     /*
-    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Rename", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_rename) ) );
-    menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Remove", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_remove) ) );
-    */
+       menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Rename", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_rename) ) );
+       menulist.push_back(Gtk::Menu_Helpers::MenuElem("_Remove", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_remove) ) );
+       */
     /*
-    menulist.push_back(iCompMenuElems.at(MCrp::EA_Rename));
-    menulist.push_back(iCompMenuElems.at(MCrp::EA_Remove));
-    */
+       menulist.push_back(iCompMenuElems.at(MCrp::EA_Rename));
+       menulist.push_back(iCompMenuElems.at(MCrp::EA_Remove));
+       */
     iCrpContextMenu.accelerate(*this);
     bool iserr =  mStEnv.DesLog().IsNodeLogged(iElem, MLogRec::EErr);
     set_name(iserr ? "ElemDrp~err" : "ElemDrp");
@@ -177,12 +177,12 @@ void ElemDetRp::on_realize()
 
 void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
 {
-//    Gtk::Layout::on_size_allocate(aAllc);
-//    Set allocation to itself and resize the windows. Refer gtk_layout_size_allocate 
-//    Gtk::Layout::on_size_allocate can be invoked instead but it does childs size allocation internally
-//    so it causes ovwrhead because we allocate child sizes here. 
-//    Probably better would be to set layout children requisition first and then run Gtk::Layout::on_size_allocate
-//    which does childs size allocation then. But this approach doesn't work for me - it causes continous resize
+    //    Gtk::Layout::on_size_allocate(aAllc);
+    //    Set allocation to itself and resize the windows. Refer gtk_layout_size_allocate 
+    //    Gtk::Layout::on_size_allocate can be invoked instead but it does childs size allocation internally
+    //    so it causes ovwrhead because we allocate child sizes here. 
+    //    Probably better would be to set layout children requisition first and then run Gtk::Layout::on_size_allocate
+    //    which does childs size allocation then. But this approach doesn't work for me - it causes continous resize
 
     set_allocation(aAllc);
     if (get_realized()) {
@@ -386,14 +386,14 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 {
     // Get major dependency
     /*
-    Elem* dnode = iElem->GetNode(aNodeUri);
-    Elem::TMDep mdep = dnode->GetMajorDep();
-    Elem* mnode = mdep.first.first;
-    if (mnode == NULL) {
-	mnode = iElem;
-    }
-    Elem* mutelem = mnode->GetAttachingMgr();
-    */
+       Elem* dnode = iElem->GetNode(aNodeUri);
+       Elem::TMDep mdep = dnode->GetMajorDep();
+       Elem* mnode = mdep.first.first;
+       if (mnode == NULL) {
+       mnode = iElem;
+       }
+       Elem* mutelem = mnode->GetAttachingMgr();
+       */
 
     Elem* dnode = iElem->GetNode(aNodeUri);
     Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Change);
@@ -482,27 +482,27 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 	    }
 	}
 	/* Don't block mut even crit dep. 
-	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
-	    att = Glib::ustring::compose(K_Att_CritDep, res->GetUri());
-	    res = NULL;
-	}
-	*/
+	   if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
+	   att = Glib::ustring::compose(K_Att_CritDep, res->GetUri());
+	   res = NULL;
+	   }
+	   */
 	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
 	    att = Glib::ustring::compose(K_Att_CritDep_1, res->GetUri());
 	    res = aMnode;
 	}
 	/* [YB] Verbose handling of error is disabled at the moment, commented out
-	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
-	    // Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
-	    int dres = RESPONSE_OK;
-	    MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
-		    false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
-	    dres = dlg->run();
-	    delete dlg;
-	    if (dres == RESPONSE_CANCEL) {
-		// User reject pheno mutation proposed, just cancel operation
-		res = NULL;
-	    }
+	   if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
+	// Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
+	int dres = RESPONSE_OK;
+	MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
+	false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+	dres = dlg->run();
+	delete dlg;
+	if (dres == RESPONSE_CANCEL) {
+	// User reject pheno mutation proposed, just cancel operation
+	res = NULL;
+	}
 	}
 	*/
 	// Checking affecting deps
@@ -705,7 +705,7 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 		ChromoNode rmut = cowner->Mutation().Root();
 		ChromoNode change = rmut.AddChild(ENt_Move);
 		change.SetAttr(ENa_Id, snode->GetUri(cowner));
-	//	change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
+		//	change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
 		change.SetAttr(ENa_MutNode, dnode->GetUri(cowner));
 		cowner->Mutate();
 		Refresh();
@@ -874,7 +874,7 @@ void ElemDetRp::DoOnActionInsert()
     Gtk::FileChooserDialog dialog("Adding node - Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
     //Add response buttons the the dialog:
     dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog.add_button(Gtk::Stock::SAVE_AS, Gtk::RESPONSE_OK);
+    dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
     // Set filter
     Gtk::FileFilter filter;
     filter.set_name("DES model files");
@@ -884,10 +884,11 @@ void ElemDetRp::DoOnActionInsert()
     int result = dialog.run();
     if (result == Gtk::RESPONSE_OK) {
 	std::string filename = dialog.get_filename();
-	GUri uri;
-	iElem->GetUri(uri, iElem);
-	string suri = "file:" + filename + "#";
-	move_node(suri, uri.GetUri());
+	TBool res = iElem->AppendMutation(filename);
+	if (res) {
+	    iElem->Mutate();
+	    Refresh();
+	}
     }
 }
 
