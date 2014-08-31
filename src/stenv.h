@@ -38,6 +38,7 @@ class StSettings: public MStSettings
 	 StSetting<bool> mEnablePhenoModif;
 	 StSetting<Glib::ustring> mPinnedMutNode;
 	 StSetting<int> mChromoLim;
+	 StSetting<Glib::ustring> mStModulesPath;
 };
 
 class StEnv: public MSEnv

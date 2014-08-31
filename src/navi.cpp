@@ -6,6 +6,7 @@
 #include <grayb/mprov.h>
 #include <dirent.h>
 #include <elem.h>
+#include "msset.h"
 
 static GtkTargetEntry targetentries[] =
 {
@@ -295,7 +296,7 @@ void NaviNatN::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context, G
 const ModulesTreeClrec NaviModules::iColRec;
 
 // Modules navigation widget
-NaviModules::NaviModules(MMdlObserver* aDesObs): iDesObs(aDesObs)
+NaviModules::NaviModules(MSEnv& aStEnv, MMdlObserver* aDesObs): iStEnv(aStEnv), iDesObs(aDesObs)
 {
     set_headers_visible(false);
     SetDesEnv(iDesObs->DesEnv());
@@ -322,15 +323,25 @@ void NaviModules::SetDesEnv(MEnv* aDesEnv)
 	    enable_model_drag_source();
 	    drag_source_set (Gtk::ArrayHandle_TargetEntry(KModListTargets, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
 	    // Fill out the model
-	    // List modules directory
+	    // Fill out the model: Engine modules directory
 	    struct dirent **entlist;
-	    string modpath = iDesEnv->Provider()->ModulesPath();
+	    Glib::ustring modpath = iDesEnv->Provider()->ModulesPath();
 	    int n = scandir (modpath.c_str(), &entlist, FilterModulesDirEntries, alphasort);
-	    // Fill out the model
 	    for (int cnt = 0; cnt < n; ++cnt) {
 		Gtk::TreeIter it = mdl->append();
 		Glib::ustring data = entlist[cnt]->d_name;
 		(*it).set_value(iColRec.name, data);
+		(*it).set_value(iColRec.path, modpath);
+	    }
+	    // Fill out the model: Studio modules directory
+	    MStSetting<Glib::ustring>& st_modules_path = iStEnv.Settings().GetSetting(MStSettings::ESts_ModulesPath, st_modules_path);
+	    const Glib::ustring& st_modules_path_s = st_modules_path.Get(st_modules_path_s);
+	    n = scandir (st_modules_path_s.c_str(), &entlist, FilterModulesDirEntries, alphasort);
+	    for (int cnt = 0; cnt < n; ++cnt) {
+		Gtk::TreeIter it = mdl->append();
+		Glib::ustring data = entlist[cnt]->d_name;
+		(*it).set_value(iColRec.name, data);
+		(*it).set_value(iColRec.path, st_modules_path_s);
 	    }
 	}
     }
@@ -391,7 +402,8 @@ void NaviModules::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context
     Glib::RefPtr<Gtk::TreeModel> mdl = get_model();
     Gtk::TreeIter it = mdl->get_iter(path);
     string modname = (*it).get_value(iColRec.name);
-    string modpath = iDesEnv->Provider()->ModulesPath();
+    string modpath = (*it).get_value(iColRec.path);
+    //string modpath = iDesEnv->Provider()->ModulesPath();
     string data = "file:" + modpath + modname + "#";
     selection_data.set_text(data);
 }
@@ -851,7 +863,7 @@ NaviHier::tSigCompSelected NaviHier::SignalCompSelected()
 
 
 // Navigation widget
-Navi::Navi(MMdlObserver* aDesObs): iNatn(NULL), iDesObs(aDesObs)
+Navi::Navi(MSEnv& aStEnv, MMdlObserver* aDesObs): iStEnv(aStEnv), iNatn(NULL), iDesObs(aDesObs)
 {
     // Native nodes
     iNatn = new NaviNatN(iDesObs);
@@ -860,7 +872,7 @@ Navi::Navi(MMdlObserver* aDesObs): iNatn(NULL), iDesObs(aDesObs)
     iNatnSw.show();
     append_page(iNatnSw, "Native");
     // Modules
-    iNatMod = new NaviModules(iDesObs);
+    iNatMod = new NaviModules(iStEnv, iDesObs);
     iNatMod->show();
     append_page(*iNatMod, "Modules");
     // Current hier

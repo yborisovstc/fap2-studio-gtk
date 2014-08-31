@@ -637,6 +637,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 {
     // Node to be deleted
     Elem* dnode = iElem->GetNode(aNodeUri);
+    __ASSERT(dnode != NULL);
     // Checking mutation safety
     bool ismutsafe = iElem->IsMutSafe(dnode);
     Elem::TMDep mdep = dnode->GetMajorDep();
@@ -773,7 +774,9 @@ void ElemDetRp::on_comp_menu_rename()
 void ElemDetRp::on_comp_menu_remove()
 {
     assert(iCompSelected != NULL);
-    remove_node(iCompSelected->Name());
+    GUri nuri;
+    iCompSelected->GetUri(nuri, iElem);
+    remove_node(nuri.GetUri());
     iCompSelected = NULL;
 }
 
@@ -869,6 +872,7 @@ void ElemDetRp::DoUdno()
 {
 }
 
+// Inserting remote chromo into the current one, i.e. mutating current node by remote chromo.
 void ElemDetRp::DoOnActionInsert()
 {
     Gtk::FileChooserDialog dialog("Adding node - Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
@@ -891,7 +895,6 @@ void ElemDetRp::DoOnActionInsert()
 	}
     }
 }
-
 
 const string sElemDrpType = "ElemDrp";
 
@@ -957,3 +960,7 @@ MDrp::tSigDragMotion ElemDrp::SignalDragMotion()
     return iRp->iSigDragMotion;
 }
 
+void ElemDrp::OnActionInsert()
+{
+    iRp->DoOnActionInsert();
+}

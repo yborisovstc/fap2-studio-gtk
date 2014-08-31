@@ -102,6 +102,7 @@ class ElemDrp: public MDrp
 	virtual tSigReloadRequired SignalReloadRequired() {return iRp->mSigReloadRequired;};
 	virtual bool IsActionSupported(Elem* aComp, const MCrp::Action& aAction) {return iRp->DoIsActionSupported(aComp, aAction);};
 	virtual void Udno();
+	virtual void OnActionInsert();
     private:
 	ElemDetRp* iRp;
 };

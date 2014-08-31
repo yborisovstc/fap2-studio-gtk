@@ -30,6 +30,7 @@ void* StSettings::DoGetSetting(TStSett aSettId)
     switch (aSettId) {
 	case ESts_EnablePhenoModif: return  &mEnablePhenoModif;
 	case ESts_PinnedMutNode: return  &mPinnedMutNode; 
+	case ESts_ModulesPath: return  &mStModulesPath; 
 	case ESts_ChromoLim: return  &mChromoLim;
 	default: return NULL;
     }

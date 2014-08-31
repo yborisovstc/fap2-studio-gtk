@@ -12,6 +12,7 @@
 
 #include <melem.h>
 #include <menv.h>
+#include "msenv.h"
 #include "mdesobs.h"
 #include "chromoview.h"
 
@@ -210,15 +211,16 @@ class ModulesTreeClrec: public Gtk::TreeModelColumnRecord
 {
     public:
 	Gtk::TreeModelColumn<Glib::ustring> name;
+	Gtk::TreeModelColumn<Glib::ustring> path;
     public:
-	ModulesTreeClrec() { add(name);};
+	ModulesTreeClrec() { add(name);add(path);};
 };
 
 // Modules navigation widget
 class NaviModules: public Gtk::TreeView
 {
     public:
-	NaviModules(MMdlObserver* aDesObs);
+	NaviModules(MSEnv& aStEnv, MMdlObserver* aDesObs);
 	virtual ~NaviModules();
 	void SetDesEnv(MEnv* aDesEnv);
     protected:
@@ -230,6 +232,8 @@ class NaviModules: public Gtk::TreeView
 	static int FilterModulesDirEntries(const struct dirent *aEntry);
 	void on_des_env_changed();
     private:
+	// Environment
+	MSEnv& iStEnv;
 	// DES observer
 	MMdlObserver* iDesObs;
 	// DES environment
@@ -243,11 +247,13 @@ class NaviModules: public Gtk::TreeView
 class Navi: public Gtk::Notebook
 {
     public:
-	Navi(MMdlObserver* aDesObs);
+	Navi(MSEnv& aStEnv, MMdlObserver* aDesObs);
 	virtual ~Navi();
 	void SetDesEnv(MEnv* aDesEnv);
 	NaviHier& NatHier();
     private:
+	// Environment
+	MSEnv& iStEnv;
 	// DES observer
 	MMdlObserver* iDesObs;
 	// Navigation tree of native nodes

@@ -210,6 +210,8 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     ena_pheno.Set(false);
     MStSetting<Glib::ustring>& pinned_mut_node = iStEnv->Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node);
     pinned_mut_node.Set("");
+    MStSetting<Glib::ustring>& st_modules_path = iStEnv->Settings().GetSetting(MStSettings::ESts_ModulesPath, st_modules_path);
+    st_modules_path.Set("/usr/share/fap2-studio-gtk/modules/");
     // Create main window
     iMainWnd = new MainWnd();
     iMainWnd->maximize();
@@ -236,7 +238,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iHDetView->SignalCompSelected().connect(sigc::mem_fun(*this, &App::on_comp_selected));
     //OpenFile(KSpecFileName);
     // Navigation pane
-    iNaviPane = new Navi(iDesObserver);
+    iNaviPane = new Navi(*iStEnv, iDesObserver);
     //iNaviPane->SetDesEnv(iEnv);
     iNaviPane->show();
     iMainWnd->SetNaviPane(*iNaviPane);
@@ -310,6 +312,7 @@ void App::on_action_new()
 {
     if (CheckCurrentModelSaving()) {
 	Gtk::FileChooserDialog dialog("Please choose a template for new system", Gtk::FILE_CHOOSER_ACTION_OPEN);
+	dialog.set_current_folder(KTemplDirName);
 	dialog.set_transient_for(*iMainWnd);
 
 	//Add response buttons the the dialog:
