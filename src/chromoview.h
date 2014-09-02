@@ -28,11 +28,8 @@ class ChromoTreeClrec: public Gtk::TreeModelColumnRecord
 	};
     public:
 	Gtk::TreeModelColumn<Glib::ustring> name;
-	Gtk::TreeModelColumn<Glib::ustring> arg0;
-	Gtk::TreeModelColumn<Glib::ustring> arg1;
-	Gtk::TreeModelColumn<Glib::ustring> arg2;
     public:
-	ChromoTreeClrec() { add(name); add(arg0); add(arg1); add(arg2);};
+	ChromoTreeClrec() { add(name);};
 };
 
 // Chromo tree model

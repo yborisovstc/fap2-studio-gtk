@@ -43,7 +43,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	virtual TBool OnCompRenamed(Elem& aComp, const string& aOldName);
 	virtual void OnContentChanged(Elem& aComp);
 	// From MLogObserver
-	virtual void OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent);
+	virtual void OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent, int aMutId = 0);
 	virtual void OnLogRecDeleting(MLogRec* aLogRec);
     protected:
 	MEnv* iDesEnv;

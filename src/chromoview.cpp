@@ -120,9 +120,37 @@ void ChromoTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column,
 		Glib::Value<Glib::ustring> sval;
 		sval.init(coltype);
 		string data; 
-		if (node.Type() == ENt_Change) data = "rename";
-		else if (node.Type() == ENt_Move) data = "moveto";
-		else data = GUriBase::NodeTypeName(node.Type());
+		if (node.Type() == ENt_Node) {
+		    data = "node";
+		    data += " id:" + node.Attr(ENa_Id);
+		    data += " parent:" + node.Attr(ENa_Parent);
+		}
+		else if (node.Type() == ENt_Change) {
+		    data = "rename";
+		    data += " node:" + node.Attr(ENa_MutNode);
+		    data += " val:" + node.Attr(ENa_MutVal);
+		}
+		else if (node.Type() == ENt_Move) { 
+		    data = "move";
+		    data += " node:" + node.Attr(ENa_Id);
+		    if (node.AttrExists(ENa_MutNode)) {
+			data += " to:" + node.Attr(ENa_MutNode);
+		    }
+		}
+		else if (node.Type() == ENt_Cont) { 
+		    data = "cont";
+		    data += " node:" + node.Attr(ENa_MutNode);
+		    if (node.AttrExists(ENa_MutVal)) {
+			data += " val:" + node.Attr(ENa_MutVal);
+		    }
+		    else if (node.AttrExists(ENa_Ref)) {
+			data += " ref:" + node.Attr(ENa_Ref);
+		    }
+		}
+		else if (node.Type() == ENt_Rm) {
+		    data = "remove";
+		    data += " node:" + node.Attr(ENa_MutNode);
+		}
 		sval.set(data.c_str());
 		value.init(coltype);
 		value = sval;
@@ -337,9 +365,6 @@ void ChromoTree::RefreshModel()
     Glib::RefPtr<ChromoTreeMdl> mdl = ChromoTreeMdl::create(iDesEnv->Root(), iDesEnv);
     set_model(mdl);
     append_column( "name", mdl->ColRec().name);
-    append_column( "arg0", mdl->ColRec().arg0);
-    append_column( "arg1", mdl->ColRec().arg1);
-    append_column( "arg2", mdl->ColRec().arg2);
 }
 
 void ChromoTree::on_refresh_model()
@@ -361,9 +386,6 @@ void ChromoTree::on_des_root_added()
 	GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
 	set_model(mdl);
 	append_column( "name", mdl->ColRec().name);
-	append_column( "arg0", mdl->ColRec().arg0);
-	append_column( "arg1", mdl->ColRec().arg1);
-	append_column( "arg2", mdl->ColRec().arg2);
 	enable_model_drag_source();
 	drag_source_set (Gtk::ArrayHandle_TargetEntry(sChromoTreeDnDTarg, 1, Glib::OWNERSHIP_NONE), 
 		Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);

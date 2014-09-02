@@ -178,7 +178,7 @@ void DesObserver::OnContentChanged(Elem& aComp)
     iSigContentChanged.emit(&aComp);
 }
 
-void DesObserver::OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent)
+void DesObserver::OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent, int aMutId)
 {
     iSigLogAdded.emit(aCtg, aNode, aContent);
 }
