@@ -708,10 +708,11 @@ void HierTreeMdl::OnCompAdding(Elem& aComp)
     }
 }
 
-void HierTreeMdl::OnCompChanged(Elem& aComp)
+TBool HierTreeMdl::OnCompChanged(Elem& aComp)
 {
     //std::cout << "HierTreeMdl::OnCompChanged" << std::endl;
     UpdateStamp();
+    return true;
 }
 
 void HierTreeMdl::on_comp_deleting(Elem* aComp)

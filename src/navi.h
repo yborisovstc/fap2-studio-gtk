@@ -158,7 +158,7 @@ class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeD
 	// From MCompsObserver
 	virtual void OnCompDeleting(Elem& aComp);
 	virtual void OnCompAdding(Elem& aComp);
-	virtual void OnCompChanged(Elem& aComp);
+	virtual TBool OnCompChanged(Elem& aComp);
     private:
 	bool IsIterValid(const iterator& iter) const;
 	void UpdateStamp();
@@ -251,6 +251,7 @@ class Navi: public Gtk::Notebook
 	virtual ~Navi();
 	void SetDesEnv(MEnv* aDesEnv);
 	NaviHier& NatHier();
+	ChromoTree& ChromoTreeView() {return *iChromoTree;};
     private:
 	// Environment
 	MSEnv& iStEnv;

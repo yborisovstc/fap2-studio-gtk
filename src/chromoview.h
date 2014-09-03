@@ -22,14 +22,13 @@ class ChromoTreeClrec: public Gtk::TreeModelColumnRecord
     public:
 	enum ColumnIndex {
 	    KCol_Name = 0,
-	    KCol_Arg0 = 1,
-	    KCol_Arg1 = 2,
-	    KCol_Arg2 = 3,
+	    KCol_Mutid = 1,
 	};
     public:
 	Gtk::TreeModelColumn<Glib::ustring> name;
+	Gtk::TreeModelColumn<int> mutid;
     public:
-	ChromoTreeClrec() { add(name);};
+	ChromoTreeClrec() { add(name); add(mutid);};
 };
 
 // Chromo tree model
@@ -91,6 +90,7 @@ class ChromoTree: public Gtk::TreeView
 	void SetDesEnv(MEnv* aDesEnv);
 	// TODO [YB] To move out to iface like MHierNavigator, and implement, the same for MDrp
 	virtual tSigCompSelected SignalCompSelected();
+	void on_logrec_activated(const string& aNodeUri, int aMutId);
     protected:
 	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context);
 	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext >& context, Gtk::SelectionData& selection_data, guint info, guint time);
@@ -98,12 +98,14 @@ class ChromoTree: public Gtk::TreeView
 	virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);
     protected:
 	void RefreshModel();
+	void Select(int aMutId);
 	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
 	void on_des_env_changed();
 	void on_des_root_added();
 	void on_comp_changed(Elem* aComp);
 	void on_comp_renamed(Elem*, const std::string&);
 	void on_refresh_model();
+	bool on_check_mutid(const TreeModel::iterator& it);
     private:
 	// DES observer
 	MMdlObserver* iDesObs;
@@ -112,6 +114,8 @@ class ChromoTree: public Gtk::TreeView
 	int iPressX, iPressY;
 	tSigCompSelected iSigCompSelected;
 	bool iRootAdded;
+	int mSearchedMutId;
+	TreeIter mFoundMutIdIter;
 };
 
 #endif

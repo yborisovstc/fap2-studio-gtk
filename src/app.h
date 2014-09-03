@@ -39,9 +39,9 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	// From MCompsObserver
 	virtual void OnCompDeleting(Elem& aComp);
 	virtual void OnCompAdding(Elem& aComp);
-	virtual void OnCompChanged(Elem& aComp);
+	virtual TBool OnCompChanged(Elem& aComp);
 	virtual TBool OnCompRenamed(Elem& aComp, const string& aOldName);
-	virtual void OnContentChanged(Elem& aComp);
+	virtual TBool OnContentChanged(Elem& aComp);
 	// From MLogObserver
 	virtual void OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent, int aMutId = 0);
 	virtual void OnLogRecDeleting(MLogRec* aLogRec);

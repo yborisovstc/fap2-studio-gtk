@@ -161,10 +161,11 @@ void DesObserver::OnCompAdding(Elem& aComp)
     SetModelChanged();
 }
 
-void DesObserver::OnCompChanged(Elem& aComp)
+TBool DesObserver::OnCompChanged(Elem& aComp)
 {
     iSigCompChanged.emit(&aComp);
     SetModelChanged();
+    return true;
 }
 
 TBool DesObserver::OnCompRenamed(Elem& aComp, const string& aOldName)
@@ -173,14 +174,15 @@ TBool DesObserver::OnCompRenamed(Elem& aComp, const string& aOldName)
     SetModelChanged();
 }
 
-void DesObserver::OnContentChanged(Elem& aComp)
+TBool DesObserver::OnContentChanged(Elem& aComp)
 {
     iSigContentChanged.emit(&aComp);
+    return true;
 }
 
 void DesObserver::OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent, int aMutId)
 {
-    iSigLogAdded.emit(aCtg, aNode, aContent);
+    iSigLogAdded.emit(aCtg, aNode, aMutId,  aContent);
 }
 
 void DesObserver::OnLogRecDeleting(MLogRec* aLogRec)
@@ -236,6 +238,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iHDetView = new HierDetailView(*iStEnv, iMainWnd->ClientWnd(), iMainWnd->UIManager());
     iHDetView->SignalRecreateRequested().connect(sigc::mem_fun(*this, &App::on_action_recreate));
     iHDetView->SignalCompSelected().connect(sigc::mem_fun(*this, &App::on_comp_selected));
+    iLogView->SignalLogRecActivated().connect(sigc::mem_fun(iHDetView, &HierDetailView::on_logrec_activated));
     //OpenFile(KSpecFileName);
     // Navigation pane
     iNaviPane = new Navi(*iStEnv, iDesObserver);
@@ -243,6 +246,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iNaviPane->show();
     iMainWnd->SetNaviPane(*iNaviPane);
     iNaviPane->NatHier().SignalCompSelected().connect(sigc::mem_fun(*iHDetView, &HierDetailView::on_comp_selected));
+    iLogView->SignalLogRecActivated().connect(sigc::mem_fun(iNaviPane->ChromoTreeView(), &ChromoTree::on_logrec_activated));
     // Parse resource file
     gtk_rc_parse(KRcFileName);
 }

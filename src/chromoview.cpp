@@ -155,12 +155,10 @@ void ChromoTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column,
 		value.init(coltype);
 		value = sval;
 	    }
-	    else {
-		Glib::Value<Glib::ustring> sval;
+	    else if (column == ChromoTreeClrec::KCol_Mutid) {
+		Glib::Value<int> sval;
 		sval.init(coltype);
-		string data;
-		GetNodeArg(node, column - ChromoTreeClrec::KCol_Arg0, data);
-		sval.set(data.c_str());
+		sval.set(node.LineId());
 		value.init(coltype);
 		value = sval;
 	    }
@@ -463,5 +461,37 @@ ChromoTree::tSigCompSelected ChromoTree::SignalCompSelected()
     return iSigCompSelected;
 }
 
+void ChromoTree::on_logrec_activated(const string& aNodeUri, int aMutId)
+{
+    Select(aMutId);
+}
+
+void ChromoTree::Select(int aMutId)
+{
+    get_selection()->unselect_all();
+    TreeIter it = get_model()->get_iter(TreePath("0"));
+    mSearchedMutId = aMutId;
+    mFoundMutIdIter = get_model()->children().end();
+    // We need to go thru the whole chromo hier, so use foreach
+    get_model()->foreach_iter(sigc::mem_fun(*this, &ChromoTree::on_check_mutid));
+    if (mFoundMutIdIter.operator bool()) {
+	int mutid;
+	mFoundMutIdIter->get_value(ChromoTreeClrec::KCol_Mutid, mutid);
+	expand_to_path(TreePath(mFoundMutIdIter));
+	get_selection()->select(mFoundMutIdIter);
+    }
+}
+
+bool ChromoTree::on_check_mutid(const TreeModel::iterator& it) 
+{
+    bool res = false;
+    int mutid;
+    it->get_value(ChromoTreeClrec::KCol_Mutid, mutid);
+    if (mutid == mSearchedMutId) {
+	res = true;
+	mFoundMutIdIter = it;
+    }
+    return res;
+}
 
 

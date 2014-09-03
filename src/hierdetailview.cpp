@@ -375,3 +375,8 @@ void HierDetailView::on_action_goforward()
     }
 
 }
+
+void HierDetailView::on_logrec_activated(const string& aNodeUri, int aMutId)
+{
+    SetCursor(aNodeUri);
+}

@@ -42,11 +42,19 @@ class LogView: public TextView
 class LogListClrec: public Gtk::TreeModel::ColumnRecord
 {
     public:
+	enum ColumnIndex {
+	    ECol_Ctg = 0,
+	    ECol_Mnode = 1,
+	    ECol_Mutid = 2,
+	    ECol_Content = 3,
+	};
+    public:
 	Gtk::TreeModelColumn<Glib::ustring> ctg;
 	Gtk::TreeModelColumn<Glib::ustring> mnode;
+	Gtk::TreeModelColumn<int> mutid;
 	Gtk::TreeModelColumn<Glib::ustring> content;
     public:
-	LogListClrec() { add(ctg); add(mnode); add(content);};
+	LogListClrec() { add(ctg); add(mnode); add(mutid); add(content);};
 };
 
 // Des log
@@ -67,15 +75,19 @@ class SDesLog: public MDesLog
 class LogViewL: public TreeView
 {
     public:
+	typedef sigc::signal<void, const string&, int> tSigLogRecActivated;
+    public:
 	LogViewL(MMdlObserver* aDesObs);
 	virtual ~LogViewL();
 	void SetDesEnv(MEnv* aDesEnv);
 	MDesLog* GetDesLog() {return &mDesLog;};
 	void Select(Elem* aNode, MLogRec::TLogRecCtg aCtg);
+	tSigLogRecActivated SignalLogRecActivated() {return mSigLogRecActivated;};
     protected:
-	void on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent);
+	void on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, int aMutId, const std::string& aContent);
 	void on_des_env_changed();
 	static const string& CtgName(MLogRec::TLogRecCtg aCtg); 
+	virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);
     private:
 	// DES observer
 	MMdlObserver* iDesObs;
@@ -85,6 +97,7 @@ class LogViewL: public TreeView
 	LogListClrec iColRec;
 	// Des log
 	SDesLog mDesLog;
+	tSigLogRecActivated mSigLogRecActivated;
 };
 
 #endif

@@ -34,6 +34,7 @@ class HierDetailView
 	// Signal handlers:
 	void on_comp_selected(Elem* aComp);
 	void on_comp_activated(Elem* aComp);
+	void on_logrec_activated(const string& aNodeUri, int aMutId);
     protected:
 	// Signal handlers:
 	void on_action_insert();

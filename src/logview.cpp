@@ -139,7 +139,7 @@ const string& LogViewL::CtgName(MLogRec::TLogRecCtg aCtg)
     else __ASSERT(false);
 }
 
-void LogViewL::on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent)
+void LogViewL::on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, int aMutId, const std::string& aContent)
 {
     Glib::RefPtr<TreeModel> mdl = get_model();
     //ListStore* lmdl = (ListStore*) mdl.operator->();
@@ -149,6 +149,7 @@ void LogViewL::on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::st
     GUri fullpath;
     aNode->GetUri(fullpath);
     it->set_value(iColRec.mnode, Glib::ustring(fullpath.GetUri(ETrue).c_str()));
+    it->set_value(iColRec.mutid, aMutId);
     it->set_value(iColRec.content, Glib::ustring(aContent.c_str()));
     mDesLog.mLog.insert(MDesLog::TLogVal(MDesLog::TLogKey(aNode, aCtg), MDesLog::TLogData(aContent)));
 }
@@ -167,5 +168,14 @@ void LogViewL::Select(Elem* aNode, MLogRec::TLogRecCtg aCtg)
 	    get_selection()->select(it);
 	}
     }
+}
+
+void LogViewL::on_row_activated(const TreeModel::Path& path, TreeViewColumn* column)
+{
+    TreeIter it = get_model()->get_iter(path);
+    TreeModel::Row row = *it;
+    int mutid = row.get_value(iColRec.mutid);
+    Glib::ustring cpath = it->get_value(iColRec.mnode);
+    mSigLogRecActivated.emit(cpath, mutid);
 }
 
