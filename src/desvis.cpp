@@ -226,7 +226,7 @@ MVisContainer* AVisWidget::GetVisContainer()
 
 TBool AVisWidget::HandleCompChanged(Elem& aContext, Elem& aComp)
 {
-    TBool res = EFalse;
+    TBool res = ETrue;
     Elem* eprntcp = aContext.GetNode("./Child");
     if (eprntcp != NULL) {
 	if (eprntcp == &aComp || eprntcp->IsComp(&aComp)) {
@@ -238,6 +238,7 @@ TBool AVisWidget::HandleCompChanged(Elem& aContext, Elem& aComp)
 		}
 		else {
 		    Logger()->Write(MLogRec::EErr, this, "Attempt to attach already attached child");
+		    res = EFalse;
 		}
 	    }
 	    else if (iWidget->get_parent() != NULL) {
@@ -247,6 +248,7 @@ TBool AVisWidget::HandleCompChanged(Elem& aContext, Elem& aComp)
     }
     else {
 	Logger()->Write(MLogRec::EErr, this, "Input [Child] not exists");
+	res = EFalse;
     }
     return res;
 }

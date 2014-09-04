@@ -478,6 +478,7 @@ void ChromoTree::Select(int aMutId)
 	int mutid;
 	mFoundMutIdIter->get_value(ChromoTreeClrec::KCol_Mutid, mutid);
 	expand_to_path(TreePath(mFoundMutIdIter));
+	scroll_to_row(TreePath(mFoundMutIdIter));
 	get_selection()->select(mFoundMutIdIter);
     }
 }

@@ -1,92 +1,41 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
+<node id="testroot" parent="Elem" tord="16">
+  <move id="file:/usr/share/grayb/modules/syst.xml#SysComps" ord="1"/>
+  <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" ord="2"/>
+  <node id="test" parent="./IncapsComps/Incaps" ord="3">
+    <node id="Ics1" parent="./../IncapsComps/Incaps" ord="4">
+      <node id="cp_int" parent="./../../SysComps/ConnPoint" ord="5">
+        <cont node="./Provided" val="Role3" ord="6"/>
+        <cont node="./Required" val="Role4" ord="7"/>
+      </node>
+      <node node="./Capsule" id="ep" parent="./../../SysComps/Extender" ord="8">
+ 
+		
+        <cont node="./Int/Provided" val="Role4"/>
+ 
+        <cont node="./Int/Required" val="Role3"/>
 
-<!-- Specification of FAP environment for unit test for embedded module "Vector" -->
-<!--
-     -->
+	    
+      </node>
+    </node>
+    <node id="Ics2" parent="./../IncapsComps/Incaps" ord="9">
+      <node node="./Capsule" id="ep" parent="./../../SysComps/Extender" ord="10">
+ 
+		
+        <cont node="./Int/Provided" val="Role3"/>
+ 
+        <cont node="./Int/Required" val="Role4"/>
 
-<!DOCTYPE  iobject SYSTEM "/usr/share/fapws/conf/objspec.dtd"> 
-
-<iobject type="none" id="main_test">
-
-    <out id="rock">
-	<src id="coord"/> <src id="mass"/> 
-    </out>
-
-    <inp id="viswin"/>
-
-    <logspec event="tran"> <logdata id="trex"/></logspec> 
-
-    <iobject type="file:/usr/share/fapws/modules/vector.xml#vector" id="my_vector" quiet="yes"/> 
-
-    <iobject type="file:/usr/share/fapws/modules/fap-vm-gtk.xml#main" id="vis_module" quiet="yes"/> 
-
-
-    <iobject type="none" id="Rock" quiet="yes"> 
-
-	<inp id="window"/>
-	<out id="coord"/>
-	<out id="mass"/>
-	<out id="outp"> <src id="coord"/> <src id="mass"/> </out>
-
-	<logspec  event="cre"> <logdata id="new"/> </logspec>
-
-	<trans>
-	    let KAccDef :: Vector := 0.0 -8.9
-	</trans>
-
-	<state type="Float" id="mass" init="2.0"> 
-	    <logspec event="upd"> <logdata id="new"/> </logspec> 
-	</state>
-
-	<state type="Vector" id="coord" init="0.0 1.0"> 
-	    <logspec event="upd"> <logdata id="cur"/> <logdata id="new"/> </logspec> 
-	    <logspec event="tran"> <logdata id="trex"/></logspec> 
-	    <inp id="self"/> <inp id="velocity"/> 
-	    <trans> 
-		let curcoord :: Vector := inp self
-		let coord :: Vector := add curcoord inp velocity
-		let bang :: TBool := le VectY coord 0.0
-		if bang curcoord coord
-	    </trans>
-	</state>
-
-	<state type="Vector" id="velocity" init="80.0 80.0"> 
-	    <logspec event="upd"> <logdata id="cur"/> <logdata id="new"/> </logspec> 
-	    <logspec event="tran"> <logdata id="trex"/></logspec> 
-	    <inp id="self"/><inp id="coord"/> 
-	    <trans> 
-		let bang :: TBool := le VectY inp coord 0.0
-		let vel :: Vector := add inp self KAccDef
-		if bang KVect0 vel
-	    </trans>
-	</state>
-
-	<iobject type="Drawing_Area" id="Test_DrawArea">
-	    <chg node="state:area_size" attr="init" val="{2000, 500}"/> 
-	    <chg node="state:size" attr="init" val="{40, 40}"/> 
-	</iobject>
-
-	<conn id="state:coord/inp:self" pair="state:coord/out:output"/> 
-	<conn id="state:coord/inp:velocity" pair="state:velocity/out:output"/> 
-	<conn id="state:velocity/inp:coord" pair="state:coord/out:output"/> 
-	<conn id="state:velocity/inp:self" pair="state:velocity/out:output"/> 
-
-	<ext id="out:coord" pair="state:coord/out:output"/>
-	<ext id="out:mass" pair="state:mass/out:output"/>
-
-	<ext id="inp:window" pair="Test_DrawArea/inp:parent"/>
-	<conn id="Test_DrawArea/inp:coord_pf" pair="state:coord/out:output"/>
-
-    </iobject> <!-- Rock -->
-
-    <iobject type="Fixed" id="Test_Fixed"> </iobject>
-
-    <iobject type="Rock" id="rock_1" > <chg node="state:mass" attr="init" val="7"/> </iobject>
-
-    <extc id="out:rock"> <srcext id="coord" pair="rock_1/out:coord"/> <srcext id="mass" pair="rock_1/out:mass"/> </extc>
-
-    <ext id="inp:viswin" pair="Test_Fixed/inp:parent"/>
-    <conn id="rock_1/inp:window" pair="Test_Fixed/out:widget"/>
-
-</iobject> <!-- test -->
-
+	    
+      </node>
+    </node>
+    <node id="E1" parent="Edge" ord="11">
+      <cont node="./P1" ref="./../../Ics1/Capsule/ep" ord="12"/>
+      <cont node="./P2" ref="./../../Ics2/Capsule/ep" ord="13"/>
+    </node>
+    <node id="E2" parent="Edge" ord="14">
+      <cont node="./P1" ref="./../../Ics1/cp_int" ord="15"/>
+      <cont node="./P2" ref="./../../Ics2/Capsule/ep" ord="16"/>
+    </node>
+  </node>
+</node>
