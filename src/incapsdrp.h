@@ -4,6 +4,42 @@
 
 #include "sysdrp.h"
 
+using namespace Gtk;
+
+// CRP for Capsule
+// TODO [YB] Not used at the moment, to consider remove
+class CapsCrp: public Widget, public MCrp
+{
+    public:
+	static const string& Type();
+	static string EType();
+    public:
+	CapsCrp(Elem* aElem);
+	virtual ~CapsCrp();
+	// From MCrp
+	virtual Gtk::Widget& Widget();
+	virtual void *DoGetObj(const string& aName);
+	virtual tSigButtonPressName SignalButtonPressName();
+	virtual tSigButtonPress SignalButtonPress();
+	virtual tSigUpdated SignalUpdated();
+	virtual bool IsActionSupported(Action aAction);
+	virtual void GetContentUri(GUri& aUri);
+	virtual bool Dragging();
+	virtual void SetHighlighted(bool aSet);
+	virtual void SetErroneous(bool aSet);
+	virtual Elem* Model();
+	virtual void SetLArea(int aArea);
+	virtual int GetLArea() const;
+    protected:
+	virtual bool on_expose_event(GdkEventExpose* event);
+	virtual void on_size_request(Gtk::Requisition* aRequisition);
+    private:
+	Elem* iElem;
+	MCrp::tSigUpdated iSigUpdated;
+	MCrp::tSigButtonPress iSigButtonPress;
+	MCrp::tSigButtonPressName iSigButtonPressName;
+};
+
 class IncapsDrp: public SysDrp
 {
     public:
@@ -28,6 +64,7 @@ class IncapsDrp: public SysDrp
 	static const string KCapsUri;
 	static const string KIncapsType;
 	static const string KExtdType;
+	CapsCrp* mCapsLCrp;
 };
 
 #endif

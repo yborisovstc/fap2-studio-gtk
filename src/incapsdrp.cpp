@@ -5,6 +5,115 @@
 #include "incapsdrp.h"
 
 
+// CRP for Capsule
+
+const string sCapsCrpType = "CapsCrp";
+
+const string& CapsCrp::Type()
+{
+    return sCapsCrpType;
+}
+
+string CapsCrp::EType()
+{
+    return Elem::PEType();
+}
+
+CapsCrp::CapsCrp(Elem* aElem): iElem(aElem)
+{
+    // set no_window mode
+    set_has_window(false);
+    // Set name
+    set_name("Capsule");
+    // Set events mask
+    add_events(Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK);
+}
+
+CapsCrp::~CapsCrp()
+{
+}
+
+Gtk::Widget& CapsCrp::Widget()
+{
+    return *this;
+}
+
+void *CapsCrp::DoGetObj(const string& aName)
+{
+    void* res = NULL;
+    return res;
+}
+
+MCrp::tSigButtonPressName CapsCrp::SignalButtonPressName()
+{
+    return iSigButtonPressName;
+}
+
+MCrp::tSigButtonPress CapsCrp::SignalButtonPress()
+{
+    return iSigButtonPress;
+}
+
+MCrp::tSigUpdated CapsCrp::SignalUpdated()
+{
+    return iSigUpdated;
+}
+
+bool CapsCrp::IsActionSupported(Action aAction)
+{
+    return false;
+}
+
+void CapsCrp::GetContentUri(GUri& aUri)
+{
+}
+
+bool CapsCrp::Dragging()
+{
+    return false;
+}
+
+void CapsCrp::SetHighlighted(bool aSet)
+{
+}
+
+void CapsCrp::SetErroneous(bool aSet)
+{
+}
+
+Elem* CapsCrp::Model()
+{
+    return iElem;
+}
+
+void CapsCrp::SetLArea(int aArea)
+{
+}
+
+int CapsCrp::GetLArea() const
+{
+    return MCrp::EOverlay;
+}
+
+void CapsCrp::on_size_request(Gtk::Requisition* aReq)
+{
+    aReq->width = 2*KBoundCompGapWidth; 
+    aReq->height = KViewCompGapHight;
+}
+
+bool CapsCrp::on_expose_event(GdkEventExpose* aEvent)
+{
+    Glib::RefPtr<Gdk::Window> drw = get_window();
+    Glib::RefPtr<Gtk::Style> style = get_style(); 	
+    Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
+    Gtk::Allocation alc = get_allocation();
+
+    drw->draw_rectangle(gc, false, alc.get_x(), alc.get_y(), alc.get_width() - 1, alc.get_height() - 1);
+}
+
+
+
+
 const string IncapsDrp::KCapsUri = "./Capsule";
 const string IncapsDrp::KIncapsType = Syst::PEType() + ":Incaps";
 const string IncapsDrp::KExtdType = "Elem:Vert:Extender";
@@ -24,8 +133,14 @@ IncapsDrp::~IncapsDrp()
 
 void IncapsDrp::Construct()
 {
-    // Add CRPs from body
     Elem* caps = Model()->GetNode(KCapsUri);
+    // Add Caps CRP
+    mCapsLCrp = new CapsCrp(caps);
+    Gtk::Widget& capscrpw = mCapsLCrp->Widget();
+    add(capscrpw);
+    //iCompRps[caps] = capscrp;
+    capscrpw.show();
+    // Add CRPs from body
     assert(caps != NULL);
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
@@ -88,6 +203,14 @@ bool IncapsDrp::IsTypeAllowed(const std::string& aType) const
 void IncapsDrp::on_size_allocate(Gtk::Allocation& aAllc)
 {
     SysDrp::on_size_allocate(aAllc);
+    // Allocate Capsule RPs
+    TLAreaPar& area = iLaPars.at(0);
+    Allocation& allc = area.first;
+    allc.set_x(allc.get_x() - 2);
+    allc.set_y(allc.get_y() - 2);
+    allc.set_width(allc.get_width() + 4);
+    allc.set_height(allc.get_height() + 4);
+    mCapsLCrp->Widget().size_allocate(allc);
 }
 
 void IncapsDrp::on_size_request(Gtk::Requisition* aRequisition)

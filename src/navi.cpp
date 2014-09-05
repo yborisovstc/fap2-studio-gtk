@@ -853,12 +853,17 @@ void NaviHier::on_row_activated(const TreeModel::Path& path, TreeViewColumn* col
 {
     TreeModel::iterator iter = get_model()->get_iter(path);
     Elem* node = (Elem*) (*iter).get_value(HierTreeMdl::ColRec().elem);
-    iSigCompSelected.emit(node);
+    iSigCompActivated.emit(node);
 }
 
 NaviHier::tSigCompSelected NaviHier::SignalCompSelected()
 {
     return iSigCompSelected;
+}
+
+NaviHier::tSigCompActivated NaviHier::SignalCompActivated()
+{
+    return iSigCompActivated;
 }
 
 

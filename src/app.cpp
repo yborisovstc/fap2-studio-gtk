@@ -246,6 +246,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iNaviPane->show();
     iMainWnd->SetNaviPane(*iNaviPane);
     iNaviPane->NatHier().SignalCompSelected().connect(sigc::mem_fun(*iHDetView, &HierDetailView::on_comp_selected));
+    iNaviPane->NatHier().SignalCompActivated().connect(sigc::mem_fun(*iHDetView, &HierDetailView::on_comp_activated));
     iLogView->SignalLogRecActivated().connect(sigc::mem_fun(iNaviPane->ChromoTreeView(), &ChromoTree::on_logrec_activated));
     // Parse resource file
     gtk_rc_parse(KRcFileName);

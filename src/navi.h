@@ -179,12 +179,14 @@ class NaviHier: public Gtk::TreeView
 {
     public:
 	typedef sigc::signal<void, Elem*> tSigCompSelected;
+	typedef sigc::signal<void, Elem*> tSigCompActivated;
     public:
 	NaviHier(MMdlObserver* aDesObs);
 	virtual ~NaviHier();
 	void SetDesEnv(MEnv* aDesEnv);
 	// TODO [YB] To move out to iface like MHierNavigator, and implement, the same for MDrp
 	virtual tSigCompSelected SignalCompSelected();
+	virtual tSigCompActivated SignalCompActivated();
     protected:
 	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context);
 	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext >& context, Gtk::SelectionData& selection_data, guint info, guint time);
@@ -201,6 +203,7 @@ class NaviHier: public Gtk::TreeView
 	MEnv* iDesEnv; 
 	int iPressX, iPressY;
 	tSigCompSelected iSigCompSelected;
+	tSigCompActivated iSigCompActivated;
 	bool iRootAdded;
 };
 

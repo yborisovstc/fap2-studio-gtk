@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem" tord="15">
+  <node id="Modules" parent="Elem" ord="1">
+    <move id="file:/usr/share/grayb/modules/syst.xml#" ord="2"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#" ord="3"/>
+    <move id="file:/usr/share/grayb/modules/data.xml#" ord="4"/>
+    <move id="file:/usr/share/grayb/modules/func.xml#" ord="5"/>
+    <move id="file:/usr/share/grayb/modules/des.xml#" ord="6"/>
+    <move id="file:/usr/share/grayb/modules/vis.xml#" ord="13"/>
+    <move id="file:/usr/share/fap2-studio-gtk/modules/simple_vis.xml#" ord="14"/>
+  </node>
+  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps" ord="7">
+    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker" ord="8"/>
+    <node id="DesRoot" parent="/Root/Modules/DesComps/Des" ord="9">
+      <node id="Solid_vis" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des" ord="15"/>
+    </node>
+    <node id="Ticker_edge" parent="Edge" ord="10">
+      <cont node="./P2" val="./../../DesRoot/Capsule/Sync" ord="11"/>
+      <cont node="./P1" val="./../../Ticker/Capsule/Out" ord="12"/>
+    </node>
+  </node>
+</node>
