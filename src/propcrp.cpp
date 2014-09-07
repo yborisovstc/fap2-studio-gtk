@@ -106,3 +106,14 @@ int PropCrp::GetLArea() const
 {
     return iLArea;
 }
+
+void PropCrp::SetDnDTargSupported(int aTarg)
+{
+    DoSetDnDTargSupported(aTarg);
+}
+
+bool PropCrp::IsDnDTargSupported(TDnDTarg aTarg) const
+{
+    return DoIsDnDTargSupported(aTarg);
+}
+

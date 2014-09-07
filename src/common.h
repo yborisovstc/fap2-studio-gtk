@@ -20,8 +20,6 @@ const gint KConnVertGap = 10;
 const gint KConnHorizSpreadMin = 20;
 const gint KViewElemCrpInnerBorder = 8;
 const gint KViewElemContLinesVGap = 4;
-// Width of gap betweed boundary comp and view border
-const gint KBoundCompGapWidth = 4;
 // Edge's points width and height
 // TODO not used, consider to removec
 const gint KEdgePointWidth = 9;
@@ -33,8 +31,16 @@ const gint KEdgeGridCell = 10;
 const gint KCrpBodyMinWidth = 10;
 // DRP Internal padding
 const gint KDrpPadding = 8;
+// CRP Internal padding
+const gint KCrpPadding = 4;
 // Gap between vertical layout area and vertical edges tunnel
 const gint KEvtGap = 2*KEdgeGridCell;
+// Width of gap betweed boundary comp and view border
+const gint KBoundCompGapWidth = KDrpPadding;
+// Miminal width of location area
+const gint KLAreaMinWidth = 40;
+// Miminal height of location area
+const gint KLAreaMinHeight = 40;
 
 // Targets entries infos for drag-drop
 const gint KTei_EdgeCp = 4;
@@ -44,10 +50,11 @@ const gint KDistThresholdEdge = 90;
 
 // DnD targets type
 enum TDnDTarg {
+    EDT_None = 0,
     EDT_Unknown = 0,
     EDT_Node = 1,
     EDT_EdgeCp = 2,
-    EDT_Comp = 3, // Local component
+    EDT_Comp = 4, // Local component
 };
 
 // TODO [YB] To rename to FAP_NODE_URI

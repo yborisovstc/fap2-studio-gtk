@@ -28,6 +28,8 @@ class PropCrp: public ElemCompRp, public MCrp
 	virtual Elem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;
+	virtual void SetDnDTargSupported(int aTarg);
+	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const;
     protected:
 	//Gtk::TextView iContent;
 //	Gtk::Label iContent;

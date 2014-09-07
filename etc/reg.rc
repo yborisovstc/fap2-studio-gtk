@@ -64,6 +64,15 @@ style "edge_style_da" = "edge_style"
     fg[SELECTED] = {0.0, 0.0, 0.9}
 }
 
+# Capsule CRP
+style "capscrp_style" = "elem_style"
+{ 
+    fg[NORMAL] =  {0.7, 0.7, 0.7}
+    bg[NORMAL] = {0.8, 0.8, 0.8}
+    fg[PRELIGHT] =  {0.1, 0.1, 0.1}
+    bg[PRELIGHT] = {0.95, 0.95, 0.95}
+}
+
 class "GtkLabel" style "def_label_style"
 
 widget "*.*.ElemDrp" style "elem_drp_style"
@@ -73,3 +82,4 @@ widget "*.*.ElemCompRp~err" style "elem_style_att"
 widget "*.*.ElemCompRp~da" style "elem_style_da"
 widget "*.*.Edge" style "edge_style"
 widget "*.*.Edge~da" style "edge_style_da"
+widget "*.*.CapsCrp" style "capscrp_style"

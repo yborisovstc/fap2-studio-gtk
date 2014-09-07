@@ -7,6 +7,7 @@
 #include <mvert.h>
 #include <gtkmm/widget.h>
 #include "mbase.h"
+#include "common.h"
 
 
 // Compact representation interface
@@ -46,6 +47,8 @@ class MCrp: public MBase
 	virtual Elem* Model() = 0;
 	virtual void SetLArea(int aArea) = 0;
 	virtual int GetLArea() const = 0;
+	virtual void SetDnDTargSupported(int aTarg) = 0;
+	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const = 0;
 };
 
 class MCrpConnectable

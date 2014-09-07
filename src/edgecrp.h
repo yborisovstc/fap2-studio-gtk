@@ -52,6 +52,8 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	virtual Elem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;
+	virtual void SetDnDTargSupported(int aTarg);
+	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const;
 	// From MEdgeCrp
 	virtual void SetCp1Coord(const Gtk::Requisition& aReq);
 	virtual void SetCp2Coord(const Gtk::Requisition& aReq);
@@ -84,6 +86,7 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	MCrp::tSigUpdated iSigUpdated;
 	MCrp::tSigButtonPress iSigButtonPress;
 	MCrp::tSigButtonPressName iSigButtonPressName;
+	int iDnDSupp;
 };
 
 #endif

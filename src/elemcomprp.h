@@ -40,6 +40,8 @@ class ElemCompRp: public Gtk::Layout
 	void DoSetErroneous(bool aSet);
     protected:
 	virtual void Construct();
+	void DoSetDnDTargSupported(int aTarg);
+	bool DoIsDnDTargSupported(TDnDTarg aTarg) const;
 	virtual bool DoIsActionSupported(MCrp::Action aAction);
 	virtual void on_realize();
 	virtual bool on_expose_event(GdkEventExpose* event);
@@ -61,6 +63,7 @@ class ElemCompRp: public Gtk::Layout
 	bool iErr;
 	Gtk::Label iContent;
 	int iLArea;
+	int iDnDSupp;
 };
 
 class ElemCrp: public MCrp
@@ -85,6 +88,8 @@ class ElemCrp: public MCrp
 	virtual Elem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;
+	virtual void SetDnDTargSupported(int aTarg);
+	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const;
     private:
 	ElemCompRp* iRp;
 };

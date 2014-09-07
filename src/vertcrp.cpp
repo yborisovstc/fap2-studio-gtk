@@ -259,3 +259,14 @@ int VertCompRp::GetLArea() const
 {
     return iLArea;
 }
+
+void VertCompRp::SetDnDTargSupported(int aTarg)
+{
+    DoSetDnDTargSupported(aTarg);
+}
+
+bool VertCompRp::IsDnDTargSupported(TDnDTarg aTarg) const
+{
+    return DoIsDnDTargSupported(aTarg);
+}
+

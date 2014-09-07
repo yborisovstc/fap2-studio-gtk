@@ -30,6 +30,10 @@ class CapsCrp: public Widget, public MCrp
 	virtual Elem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;
+	virtual void SetDnDTargSupported(int aTarg);
+	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const;
+	// From Widget
+	virtual bool on_button_press_event(GdkEventButton* aEvent);
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
@@ -38,6 +42,7 @@ class CapsCrp: public Widget, public MCrp
 	MCrp::tSigUpdated iSigUpdated;
 	MCrp::tSigButtonPress iSigButtonPress;
 	MCrp::tSigButtonPressName iSigButtonPressName;
+	int iDnDSupp;
 };
 
 class IncapsDrp: public SysDrp
@@ -51,6 +56,7 @@ class IncapsDrp: public SysDrp
 	virtual ~IncapsDrp();
     protected:
 	virtual void Construct();
+	void PreLayoutRps();
 	TBool IsTypeOf(const string& aType, const string& aParent) const;
 	virtual Elem* GetCompOwning(Elem* aElem);
 	// From MCrpMgr

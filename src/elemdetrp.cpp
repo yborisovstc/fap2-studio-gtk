@@ -273,22 +273,12 @@ bool ElemDetRp::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, i
 	if (iDnDTarg == EDT_Node) {
 	    // Find the nearest node and highligh it
 	    MCrp* cand = NULL;
-	    for (vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && cand == NULL; it++) {
-		Elem* comp = *it;
-		__ASSERT(comp != NULL);
-		if (!comp->IsRemoved()) {
-		    if (iCompRps.count(comp) != 0) {
-			MCrp* crp = iCompRps.at(comp);
-			Widget& crpw = crp->Widget();
-			Allocation alc = crpw.get_allocation();
-			if (y < alc.get_y()) {
-			    cand = crp;
-			}
-		    }
-		    else {
-			// This actually is not error, some DRPs avoid creating CRPs for unused comps
-			//std::cout << "ElemDetRp [" << iElem->GetUri() << "] : ERROR: rps for comp == 0, comp: " << comp->GetUri() << std::endl;
-		    }
+	    for (tCrps::const_iterator it = iCompRps.begin(); it != iCompRps.end() && cand == NULL; it++) {
+		MCrp* crp = it->second;
+		Widget& crpw = crp->Widget();
+		Allocation alc = crpw.get_allocation();
+		if (crp->IsDnDTargSupported(iDnDTarg) && x >= alc.get_x() && x < alc.get_x() + alc.get_width() && y >= alc.get_y() && y < alc.get_y() + alc.get_height()) {
+		    cand = crp;
 		}
 	    }
 	    if (cand != NULL && (cand != iDropBaseCandidate)) {
@@ -411,7 +401,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
     }
 }
 
-void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeighborUri)
+void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aTargetUri)
 {
     // TODO [YB] Full type (PEType) needs to be used here. This relates to more serious problem
     // that grayb default provider gives us the types of native but not full type, ref ModulesPath()
@@ -434,7 +424,7 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aNeig
 	delete dlg;
     }
     if (name_ok) {
-	do_add_node(name, aParentUri, aNeighborUri);
+	do_add_node(name, aParentUri, aTargetUri);
 	Refresh();
     }
 }
@@ -491,20 +481,21 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 	    att = Glib::ustring::compose(K_Att_CritDep_1, res->GetUri());
 	    res = aMnode;
 	}
-	/* [YB] Verbose handling of error is disabled at the moment, commented out
-	   if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
-	// Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
-	int dres = RESPONSE_OK;
-	MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
-	false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
-	dres = dlg->run();
-	delete dlg;
-	if (dres == RESPONSE_CANCEL) {
-	// User reject pheno mutation proposed, just cancel operation
-	res = NULL;
+#if 0
+	// [YB] Verbose handling of error is disabled at the moment, commented out
+	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
+	    // Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
+	    int dres = RESPONSE_OK;
+	    MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
+		    false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+	    dres = dlg->run();
+	    delete dlg;
+	    if (dres == RESPONSE_CANCEL) {
+		// User reject pheno mutation proposed, just cancel operation
+		res = NULL;
+	    }
 	}
-	}
-	*/
+#endif
 	// Checking affecting deps
 	if (res != NULL) {
 	    bool isaffdep = false;
@@ -580,18 +571,19 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
     return res;
 }
 
-void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri)
+void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aTargetUri)
 {
     bool err = false;
     // Mutate appending
-    Elem* mutelem = GetObjForSafeMut(iElem, iElem, ENt_Node);
+    Elem* targ = iElem->GetNode(aTargetUri);
+    Elem* mutelem = GetObjForSafeMut(iElem, targ, ENt_Node);
     if (mutelem != NULL) {
 	ChromoNode mut = mutelem->Mutation().Root();
 	ChromoNode rmut = mut.AddChild(ENt_Node);
-	if (mutelem != iElem) {
+	if (mutelem != targ) {
 	    GUri nodeuri;
-	    iElem->GetUri(nodeuri, mutelem);
-	    string snodeuri = nodeuri.GetUri();
+	    targ->GetUri(nodeuri, mutelem);
+	    string snodeuri = nodeuri.GetUri(true);
 	    rmut.SetAttr(ENa_MutNode, snodeuri);
 	}
 	__ASSERT(!aParentUri.empty());

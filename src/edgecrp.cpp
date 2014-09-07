@@ -38,7 +38,8 @@ string EdgeCrp::EType()
     return Edge::PEType();
 }
 
-EdgeCrp::EdgeCrp(Elem* aElem): iElem(aElem), iDraggedPart(EDp_None), iDragging(false), iHighlighted(false)
+EdgeCrp::EdgeCrp(Elem* aElem): iElem(aElem), iDraggedPart(EDp_None), iDragging(false), iHighlighted(false), 
+    iDnDSupp(EDT_None)
 {
     // set no_window mode
     set_has_window(false);
@@ -362,6 +363,16 @@ void EdgeCrp::on_drag_end(const Glib::RefPtr<Gdk::DragContext>& context)
     //std::cout << "EdgeCompRp_v3: on_drag_end "  << std::endl;
     iDraggedPart = EDp_None;
     iDragging = false;
+}
+
+void EdgeCrp::SetDnDTargSupported(int aTarg)
+{
+    iDnDSupp = aTarg;
+}
+
+bool EdgeCrp::IsDnDTargSupported(TDnDTarg aTarg) const
+{
+    return aTarg & iDnDSupp;
 }
 
 

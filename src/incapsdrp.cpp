@@ -24,7 +24,7 @@ CapsCrp::CapsCrp(Elem* aElem): iElem(aElem)
     // set no_window mode
     set_has_window(false);
     // Set name
-    set_name("Capsule");
+    set_name("CapsCrp");
     // Set events mask
     add_events(Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK);
 }
@@ -75,6 +75,12 @@ bool CapsCrp::Dragging()
 
 void CapsCrp::SetHighlighted(bool aSet)
 {
+    if (aSet) {
+	set_state(Gtk::STATE_PRELIGHT);
+    }
+    else {
+	set_state(Gtk::STATE_NORMAL);
+    }
 }
 
 void CapsCrp::SetErroneous(bool aSet)
@@ -97,7 +103,7 @@ int CapsCrp::GetLArea() const
 
 void CapsCrp::on_size_request(Gtk::Requisition* aReq)
 {
-    aReq->width = 2*KBoundCompGapWidth; 
+    aReq->width = KLAreaMinWidth + 2*KBoundCompGapWidth; 
     aReq->height = KViewCompGapHight;
 }
 
@@ -105,12 +111,28 @@ bool CapsCrp::on_expose_event(GdkEventExpose* aEvent)
 {
     Glib::RefPtr<Gdk::Window> drw = get_window();
     Glib::RefPtr<Gtk::Style> style = get_style(); 	
+    Glib::RefPtr<Gdk::GC> bgc = style->get_bg_gc(get_state());
     Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
     Gtk::Allocation alc = get_allocation();
 
+    drw->draw_rectangle(bgc, true, alc.get_x(), alc.get_y(), alc.get_width() - 1, alc.get_height() - 1);
     drw->draw_rectangle(gc, false, alc.get_x(), alc.get_y(), alc.get_width() - 1, alc.get_height() - 1);
 }
 
+void CapsCrp::SetDnDTargSupported(int aTarg)
+{
+    iDnDSupp = aTarg;
+}
+
+bool CapsCrp::IsDnDTargSupported(TDnDTarg aTarg) const
+{
+    return aTarg & iDnDSupp;
+}
+
+bool CapsCrp::on_button_press_event(GdkEventButton* aEvent)
+{
+    iSigButtonPress.emit(aEvent);
+}
 
 
 
@@ -136,9 +158,12 @@ void IncapsDrp::Construct()
     Elem* caps = Model()->GetNode(KCapsUri);
     // Add Caps CRP
     mCapsLCrp = new CapsCrp(caps);
+    mCapsLCrp->SetLArea(MCrp::EOverlay);
+    mCapsLCrp->SetDnDTargSupported(EDT_Node);
+    mCapsLCrp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), mCapsLCrp->Model()));
     Gtk::Widget& capscrpw = mCapsLCrp->Widget();
     add(capscrpw);
-    //iCompRps[caps] = capscrp;
+    iCompRps[caps] = mCapsLCrp;
     capscrpw.show();
     // Add CRPs from body
     assert(caps != NULL);
@@ -170,6 +195,45 @@ void IncapsDrp::Construct()
     }
     UpdateRpsRelatios();
     PreLayoutRps();
+}
+
+void IncapsDrp::PreLayoutRps()
+{
+    // Pre-layout the components
+    // There are two phase of pre-layouting: allocating to areas, ordering in areas
+    // Scheme of areas is selected by the user, the default one is 3-areas scheme: inp, body, out
+    iLaPars.resize(iLaNum);
+    for (TLAreasPars::iterator zit = iLaPars.begin(); zit != iLaPars.end(); zit++) {
+	zit->first = Allocation();
+	zit->second.clear(); 
+    }
+    // Phase 1: allocating RPs to areas
+    // Inputs and outputs - only from Capsule
+    Elem* caps = iElem->GetNode("./Capsule");
+    for (vector<Elem*>::const_iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
+	Elem* comp = *it;
+	MCrp* crp = iCompRps.at(comp);
+	MEdgeCrp* ecrp = crp->GetObj(ecrp);
+	if (ecrp == NULL) {
+	    Elem* mdl = crp->Model();
+	    MCrp::TLArea larea = MCrp::EMain;
+	    MCompatChecker* cc = mdl->GetObj(cc);
+	    if (cc != NULL) {
+		MCompatChecker::TDir dir =  cc->GetDir();
+		larea = dir == MCompatChecker::EInp ? MCrp::ELeft : MCrp::ERight;
+	    }
+	    int narea = larea == MCrp::ELeft ? 0 : iLaNum - 1;
+	    TLAreaPar& area = iLaPars.at(narea);
+	    crp->SetLArea(larea);
+	    area.second.push_back(crp);
+	}
+    }
+    // Sorting inp/out area
+    Cmp cmp(*this);
+    TVectCrps& crps_out = iLaPars.at(iLaNum - 1).second;;
+    crps_out.sort(cmp);
+    // Body
+    BodyPreLayoutAut();
 }
 
 void *IncapsDrp::DoGetObj(const string& aName)
@@ -206,10 +270,10 @@ void IncapsDrp::on_size_allocate(Gtk::Allocation& aAllc)
     // Allocate Capsule RPs
     TLAreaPar& area = iLaPars.at(0);
     Allocation& allc = area.first;
-    allc.set_x(allc.get_x() - 2);
-    allc.set_y(allc.get_y() - 2);
-    allc.set_width(allc.get_width() + 4);
-    allc.set_height(allc.get_height() + 4);
+    allc.set_x(allc.get_x() - KCrpPadding);
+    allc.set_y(allc.get_y() - KCrpPadding);
+    allc.set_width(allc.get_width() + 2*KCrpPadding);
+    allc.set_height(allc.get_height() + 2*KCrpPadding);
     mCapsLCrp->Widget().size_allocate(allc);
 }
 

@@ -79,30 +79,8 @@ void SysDrp::PreLayoutRps()
     Cmp cmp(*this);
     TVectCrps& crps_out = iLaPars.at(iLaNum - 1).second;;
     crps_out.sort(cmp);
-
     // Body
     BodyPreLayoutAut();
-    /*
-    CmpMain cmp_main(*this);
-    for (int ia = iLaNum - 2; ia > 0; ia--) {
-	TLAreaPar& area = iLaPars.at(ia);
-	for (tCrps::const_iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
-	    MCrp* crp = it->second;
-	    MEdgeCrp* ecrp = crp->GetObj(ecrp);
-	    if (ecrp == NULL && crp->GetLArea() == MCrp::EUnknown) {
-		MCompatChecker* cc = crp->Model()->GetObj(cc);
-		if (cc == NULL) {
-		    if (ia == 1 || HasRelToArea(crp, ia + 1)) {
-			crp->SetLArea(MCrp::EMain);
-			area.second.push_back(crp);
-		    }
-		}
-	    }
-	}
-	TVectCrps& crps = area.second;;
-	crps.sort(cmp_main);
-    }
-    */
 }
 
 void SysDrp::BodyPreLayoutAut() 
@@ -600,7 +578,9 @@ void SysDrp::on_size_request(Gtk::Requisition* aRequisition)
 	    area_w = max(area_w, req.width);
 	    area_h += req.height + KViewCompGapHight;
 	}
+	area_w = max(area_w, KLAreaMinWidth);
 	alc.set_width(area_w);
+	area_h = max(area_h, KLAreaMinHeight);
 	alc.set_height(area_h);
 
 	// Calculate the potential height of edges if they are layouting into the horiz tunnels

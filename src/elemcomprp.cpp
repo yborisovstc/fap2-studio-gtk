@@ -52,7 +52,7 @@ bool ElemCompHead::on_expose_event(GdkEventExpose* aEvent)
 
 
 ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(false), iLArea(MCrp::EUnknown), 
-    iErr(false)
+    iErr(false), iDnDSupp(EDT_None)
 {
     bool isatt = iElem->IsChromoAttached();
     // Set name
@@ -195,6 +195,15 @@ bool ElemCompRp::DoIsActionSupported(MCrp::Action aAction)
 	    || aAction == MCrp::EA_Edit_Content);
 }
 
+void ElemCompRp::DoSetDnDTargSupported(int aTarg)
+{
+    iDnDSupp = aTarg;
+}
+
+bool ElemCompRp::DoIsDnDTargSupported(TDnDTarg aTarg) const
+{
+    return aTarg & iDnDSupp;
+}
 
 const string sType = "ElemCrp";
 
@@ -285,3 +294,14 @@ int ElemCrp::GetLArea() const
 {
     return iRp->iLArea;
 }
+
+void ElemCrp::SetDnDTargSupported(int aTarg)
+{
+    iRp->DoSetDnDTargSupported(aTarg);
+}
+
+bool ElemCrp::IsDnDTargSupported(TDnDTarg aTarg) const
+{
+    return iRp->DoIsDnDTargSupported(aTarg);
+}
+
