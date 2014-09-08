@@ -223,7 +223,7 @@ void ElemDetRp::on_size_request(Gtk::Requisition* aReq)
 
 bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 {
-    std::cout << "on_comp_button_press_ext, comp [" << aComp->Name() << "]" << std::endl;
+    std::cout << "ElemDetRp::on_comp_button_press_ext, comp [" << aComp->Name() << "]" << std::endl;
     if (event->type == GDK_BUTTON_PRESS) {
 	if (event->button == 3) {
 	    ShowCrpCtxDlg(event, aComp);
@@ -242,7 +242,7 @@ bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
 
 void ElemDetRp::on_comp_button_press(GdkEventButton* event, Elem* aComp)
 {
-    std::cout << "on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
+    std::cout << "ElemDetRp::on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
     on_comp_button_press_ext(event, aComp);
 }
 
@@ -277,7 +277,13 @@ bool ElemDetRp::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, i
 		MCrp* crp = it->second;
 		Widget& crpw = crp->Widget();
 		Allocation alc = crpw.get_allocation();
-		if (crp->IsDnDTargSupported(iDnDTarg) && x >= alc.get_x() && x < alc.get_x() + alc.get_width() && y >= alc.get_y() && y < alc.get_y() + alc.get_height()) {
+		/*
+		if (crp->IsDnDTargSupported(iDnDTarg) && 
+			x >= alc.get_x() && x < alc.get_x() + alc.get_width() && y >= alc.get_y() && y < alc.get_y() + alc.get_height()) {
+		    cand = crp;
+		}
+		*/
+		if (crp->IsDnDTargSupported(iDnDTarg) && crp->IsIntersected(x, y)) {
 		    cand = crp;
 		}
 	    }

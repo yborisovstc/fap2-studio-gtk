@@ -183,10 +183,11 @@ MEdgeCrp::TVectEn& EdgeCrp::VectEn()
     return iNodes;
 }
 
-bool EdgeCrp::IsPointIn(int aX, int aY)
+bool EdgeCrp::IsPointIn(int aX, int aY) const
 {
     // Get region of drawable part of edge
-    return iRegion.point_in(aX, aY);
+    Gdk::Region* r = (Gdk::Region*) &iRegion;
+    return r->point_in(aX, aY);
 }
 
 bool EdgeCrp::on_expose_event(GdkEventExpose* aEvent)
@@ -375,4 +376,8 @@ bool EdgeCrp::IsDnDTargSupported(TDnDTarg aTarg) const
     return aTarg & iDnDSupp;
 }
 
+bool EdgeCrp::IsIntersected(int aX, int aY) const
+{
+    return IsPointIn(aX, aY);
+}
 

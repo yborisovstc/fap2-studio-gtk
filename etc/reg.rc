@@ -67,9 +67,9 @@ style "edge_style_da" = "edge_style"
 # Capsule CRP
 style "capscrp_style" = "elem_style"
 { 
-    fg[NORMAL] =  {0.7, 0.7, 0.7}
+    fg[NORMAL] =  {0.8, 0.8, 0.8}
     bg[NORMAL] = {0.8, 0.8, 0.8}
-    fg[PRELIGHT] =  {0.1, 0.1, 0.1}
+    fg[PRELIGHT] =  {0.95, 0.95, 0.95}
     bg[PRELIGHT] = {0.95, 0.95, 0.95}
 }
 

@@ -30,6 +30,7 @@ class PropCrp: public ElemCompRp, public MCrp
 	virtual int GetLArea() const;
 	virtual void SetDnDTargSupported(int aTarg);
 	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const;
+	virtual bool IsIntersected(int aX, int aY) const;
     protected:
 	//Gtk::TextView iContent;
 //	Gtk::Label iContent;

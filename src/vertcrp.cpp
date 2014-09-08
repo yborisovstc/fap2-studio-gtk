@@ -270,3 +270,8 @@ bool VertCompRp::IsDnDTargSupported(TDnDTarg aTarg) const
     return DoIsDnDTargSupported(aTarg);
 }
 
+bool VertCompRp::IsIntersected(int aX, int aY) const
+{
+    return DoIsIntersected(aX, aY);
+}
+

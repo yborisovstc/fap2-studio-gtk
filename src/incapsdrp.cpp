@@ -1,11 +1,19 @@
 
 #include <incaps.h>
+#include <iostream>
 
 #include "common.h"
 #include "incapsdrp.h"
 
 
 // CRP for Capsule
+
+const string sMCapsCrp_Type = "MCapsCrp";
+
+const string& MCapsCrp::Type()
+{
+    return sMCapsCrp_Type;
+} 
 
 const string sCapsCrpType = "CapsCrp";
 
@@ -41,7 +49,15 @@ Gtk::Widget& CapsCrp::Widget()
 void *CapsCrp::DoGetObj(const string& aName)
 {
     void* res = NULL;
+    if (aName ==  MCapsCrp::Type()) {
+	res = (MCapsCrp*) this;
+    }
     return res;
+}
+
+Allocation& CapsCrp::SectAlloc(TSectId aSetId)
+{
+    return aSetId == ESI_Left ? iLeftSectAlc : iRightSectAlc;
 }
 
 MCrp::tSigButtonPressName CapsCrp::SignalButtonPressName()
@@ -113,8 +129,14 @@ bool CapsCrp::on_expose_event(GdkEventExpose* aEvent)
     Glib::RefPtr<Gtk::Style> style = get_style(); 	
     Glib::RefPtr<Gdk::GC> bgc = style->get_bg_gc(get_state());
     Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
-    Gtk::Allocation alc = get_allocation();
 
+    //Gtk::Allocation alc = get_allocation();
+    //drw->draw_rectangle(bgc, true, alc.get_x(), alc.get_y(), alc.get_width() - 1, alc.get_height() - 1);
+    //drw->draw_rectangle(gc, false, alc.get_x(), alc.get_y(), alc.get_width() - 1, alc.get_height() - 1);
+    Gtk::Allocation alc = SectAlloc(ESI_Left);
+    drw->draw_rectangle(bgc, true, alc.get_x(), alc.get_y(), alc.get_width() - 1, alc.get_height() - 1);
+    drw->draw_rectangle(gc, false, alc.get_x(), alc.get_y(), alc.get_width() - 1, alc.get_height() - 1);
+    alc = SectAlloc(ESI_Right);
     drw->draw_rectangle(bgc, true, alc.get_x(), alc.get_y(), alc.get_width() - 1, alc.get_height() - 1);
     drw->draw_rectangle(gc, false, alc.get_x(), alc.get_y(), alc.get_width() - 1, alc.get_height() - 1);
 }
@@ -131,9 +153,49 @@ bool CapsCrp::IsDnDTargSupported(TDnDTarg aTarg) const
 
 bool CapsCrp::on_button_press_event(GdkEventButton* aEvent)
 {
-    iSigButtonPress.emit(aEvent);
+    bool res = false;
+    //std::cout << "EdgeCrp on_button_press_event [" << get_name() << "]"  << std::endl;
+    Gtk::Allocation alc = get_allocation();
+    int ex = aEvent->x;
+    int ey = aEvent->y;
+    bool isin = IsPointIn(aEvent->x, aEvent->y);
+    std::cout << "CapsCrp::on_button_press_event, isin: " << isin << std::endl;
+    if (isin) {
+	//std::cout << "EdgeCrp iSigButtonPress emit "  << std::endl;
+	iSigButtonPress.emit(aEvent);
+	res = true;
+    }
+    return res;
 }
 
+void CapsCrp::GetAlloc(Allocation& aAllc) const
+{
+    int x = iLeftSectAlc.get_x();
+    int y = iLeftSectAlc.get_y();
+    int w = iRightSectAlc.has_zero_area() ? iLeftSectAlc.get_width() : iRightSectAlc.get_x() + iRightSectAlc.get_width() - x;
+    int h = max(iLeftSectAlc.get_height(), iRightSectAlc.get_height());
+    aAllc.set_x(x);
+    aAllc.set_y(y);
+    aAllc.set_width(w);
+    aAllc.set_height(h);
+}
+
+bool CapsCrp::IsIntersected(int aX, int aY) const
+{
+    return IsPointIn(aX, aY);
+}
+
+bool CapsCrp::IsPointIn(int aX, int aY) const
+{
+    // Get region of drawable part of edge
+    return IsInRect(aX, aY, iLeftSectAlc) || IsInRect(aX, aY, iRightSectAlc);
+}
+
+bool CapsCrp::IsInRect(int aX, int aY, const Allocation& aAllc) 
+{
+    int x = aAllc.get_x(); int y = aAllc.get_y(); 
+    return (aX >= x && aX < x + aAllc.get_width() && aY >= y && aY < y + aAllc.get_height());
+}
 
 
 const string IncapsDrp::KCapsUri = "./Capsule";
@@ -268,13 +330,27 @@ void IncapsDrp::on_size_allocate(Gtk::Allocation& aAllc)
 {
     SysDrp::on_size_allocate(aAllc);
     // Allocate Capsule RPs
+    // Left part
     TLAreaPar& area = iLaPars.at(0);
     Allocation& allc = area.first;
-    allc.set_x(allc.get_x() - KCrpPadding);
-    allc.set_y(allc.get_y() - KCrpPadding);
-    allc.set_width(allc.get_width() + 2*KCrpPadding);
-    allc.set_height(allc.get_height() + 2*KCrpPadding);
-    mCapsLCrp->Widget().size_allocate(allc);
+    MCapsCrp* mccrp = mCapsLCrp->GetObj(mccrp);
+    Allocation& lallc = mccrp->SectAlloc(MCapsCrp::ESI_Left);
+    lallc.set_x(aAllc.get_x());
+    lallc.set_y(aAllc.get_y());
+    lallc.set_width(allc.get_x() + allc.get_width() + KCrpPadding);
+    lallc.set_height(aAllc.get_height());
+    // Right part
+    area = iLaPars.at(iLaPars.size() - 1);
+    allc = area.first;
+    Allocation& rallc = mccrp->SectAlloc(MCapsCrp::ESI_Right);
+    rallc.set_x(allc.get_x() - KCrpPadding);
+    rallc.set_y(aAllc.get_y());
+    rallc.set_width(allc.get_width() + KCrpPadding);
+    rallc.set_height(aAllc.get_height());
+
+    Allocation finalc;
+    mccrp->GetAlloc(finalc);
+    mCapsLCrp->Widget().size_allocate(finalc);
 }
 
 void IncapsDrp::on_size_request(Gtk::Requisition* aRequisition)

@@ -117,3 +117,7 @@ bool PropCrp::IsDnDTargSupported(TDnDTarg aTarg) const
     return DoIsDnDTargSupported(aTarg);
 }
 
+bool PropCrp::IsIntersected(int aX, int aY) const
+{
+    return DoIsIntersected(aX, aY);
+}

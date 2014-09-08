@@ -49,6 +49,7 @@ class MCrp: public MBase
 	virtual int GetLArea() const = 0;
 	virtual void SetDnDTargSupported(int aTarg) = 0;
 	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const = 0;
+	virtual bool IsIntersected(int aX, int aY) const = 0;
 };
 
 class MCrpConnectable

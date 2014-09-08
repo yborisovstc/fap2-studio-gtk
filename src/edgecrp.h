@@ -54,6 +54,7 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	virtual int GetLArea() const;
 	virtual void SetDnDTargSupported(int aTarg);
 	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const;
+	virtual bool IsIntersected(int aX, int aY) const;
 	// From MEdgeCrp
 	virtual void SetCp1Coord(const Gtk::Requisition& aReq);
 	virtual void SetCp2Coord(const Gtk::Requisition& aReq);
@@ -63,7 +64,7 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	virtual Elem* Point2();
 	virtual TVectEn& VectEn();
     protected:
-	bool IsPointIn(int aX, int aY);
+	bool IsPointIn(int aX, int aY) const;
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);

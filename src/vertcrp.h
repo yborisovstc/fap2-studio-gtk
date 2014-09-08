@@ -50,6 +50,7 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual int GetLArea() const;
 	virtual void SetDnDTargSupported(int aTarg);
 	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const;
+	virtual bool IsIntersected(int aX, int aY) const;
 	// From MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
 	virtual MCompatChecker::TDir GetCpDir() const;

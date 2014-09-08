@@ -42,6 +42,7 @@ class ElemCompRp: public Gtk::Layout
 	virtual void Construct();
 	void DoSetDnDTargSupported(int aTarg);
 	bool DoIsDnDTargSupported(TDnDTarg aTarg) const;
+	bool DoIsIntersected(int aX, int aY) const;
 	virtual bool DoIsActionSupported(MCrp::Action aAction);
 	virtual void on_realize();
 	virtual bool on_expose_event(GdkEventExpose* event);
@@ -90,6 +91,7 @@ class ElemCrp: public MCrp
 	virtual int GetLArea() const;
 	virtual void SetDnDTargSupported(int aTarg);
 	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const;
+	virtual bool IsIntersected(int aX, int aY) const;
     private:
 	ElemCompRp* iRp;
 };

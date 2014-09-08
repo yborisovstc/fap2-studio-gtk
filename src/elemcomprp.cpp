@@ -176,7 +176,9 @@ void ElemCompRp::DoSetErroneous(bool aSet)
 
 bool ElemCompRp::on_button_press_event(GdkEventButton* aEvent)
 {
+    std::cout << "ElemCompRp::on_button_press_event, " << std::endl;
     iSigButtonPress.emit(aEvent);
+    return true;
 }
 
 void ElemCompRp::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time)
@@ -204,6 +206,14 @@ bool ElemCompRp::DoIsDnDTargSupported(TDnDTarg aTarg) const
 {
     return aTarg & iDnDSupp;
 }
+
+bool ElemCompRp::DoIsIntersected(int x, int y) const
+{
+    Gtk::Allocation alc = get_allocation();
+    return  x >= alc.get_x() && x < alc.get_x() + alc.get_width() && y >= alc.get_y() && y < alc.get_y() + alc.get_height();
+}
+
+
 
 const string sType = "ElemCrp";
 
@@ -303,5 +313,10 @@ void ElemCrp::SetDnDTargSupported(int aTarg)
 bool ElemCrp::IsDnDTargSupported(TDnDTarg aTarg) const
 {
     return iRp->DoIsDnDTargSupported(aTarg);
+}
+
+bool ElemCrp::IsIntersected(int aX, int aY) const
+{
+    return iRp->DoIsIntersected(aX, aY);
 }
 

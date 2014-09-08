@@ -6,9 +6,20 @@
 
 using namespace Gtk;
 
+class MCapsCrp
+{
+    public:
+	enum TSectId { ESI_Left = 0, ESI_Right = 1 };
+    public:
+	static const string& Type();
+    public:
+	virtual Allocation& SectAlloc(TSectId aSetId) = 0;
+	virtual void GetAlloc(Allocation& aAllc) const = 0;
+};
+
 // CRP for Capsule
 // TODO [YB] Not used at the moment, to consider remove
-class CapsCrp: public Widget, public MCrp
+class CapsCrp: public Widget, public MCrp, public MCapsCrp
 {
     public:
 	static const string& Type();
@@ -32,16 +43,24 @@ class CapsCrp: public Widget, public MCrp
 	virtual int GetLArea() const;
 	virtual void SetDnDTargSupported(int aTarg);
 	virtual bool IsDnDTargSupported(TDnDTarg aTarg) const;
+	virtual bool IsIntersected(int aX, int aY) const;
 	// From Widget
 	virtual bool on_button_press_event(GdkEventButton* aEvent);
+	// From MCapsCrp
+	virtual Allocation& SectAlloc(TSectId aSetId);
+	virtual void GetAlloc(Allocation& aAllc) const;
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
+	bool IsPointIn(int aX, int aY) const;
+	static bool IsInRect(int aX, int aY, const Allocation& aAllc);
     private:
 	Elem* iElem;
 	MCrp::tSigUpdated iSigUpdated;
 	MCrp::tSigButtonPress iSigButtonPress;
 	MCrp::tSigButtonPressName iSigButtonPressName;
+	Allocation iLeftSectAlc;
+	Allocation iRightSectAlc;
 	int iDnDSupp;
 };
 

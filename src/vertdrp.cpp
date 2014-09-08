@@ -393,18 +393,29 @@ bool VertDrpw_v1::on_button_press_event(GdkEventButton* aEvent)
 	}
     }
     if (!res) {
-	for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end() && !res; it++) {
+	for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	    MCrp* crp = it->second;
-	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
-	    if (medgecrp != NULL) {
-		Gtk::Widget& wd = crp->Widget();
-		if (wd.get_state() != Gtk::STATE_SELECTED) {
-		    Gtk::Allocation talc = wd.get_allocation();
+	    Gtk::Widget& wd = crp->Widget();
+	    if (!wd.get_has_window()) {
+		Gtk::Allocation talc = wd.get_allocation();
+		MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+		if (medgecrp != NULL) {
+		    if (wd.get_state() != Gtk::STATE_SELECTED) {
+			aEvent->x = ex + ox - talc.get_x();
+			aEvent->y = ey + oy - talc.get_y();
+			res = wd.event((GdkEvent*) aEvent);
+		    }
+		}
+		// Also hangling other not-windowed widgets
+		else {
 		    aEvent->x = ex + ox - talc.get_x();
 		    aEvent->y = ey + oy - talc.get_y();
 		    res = wd.event((GdkEvent*) aEvent);
 		}
 	    }
+	    // We need to immediatelly leave this method because it is possible that this widget
+	    // gets deleted in case of redirected event is handled and resulted in context changing
+	    if (res) break;
 	}
     }
     return true;
