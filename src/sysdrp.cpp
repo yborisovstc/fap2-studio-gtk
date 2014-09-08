@@ -263,6 +263,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		Gtk::Requisition p1coord = medgecrp->Cp1Coord();
 		Gtk::Requisition p2coord = medgecrp->Cp2Coord();
 		if (p1 != NULL) {
+		    __ASSERT(iCompRps.count(op1) > 0);
 		    MCrp* pcrp = iCompRps.at(op1);
 		    MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
 		    assert(pcrpcbl != NULL);
@@ -276,6 +277,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		}
 
 		if (p2 != NULL) {
+		    __ASSERT(iCompRps.count(op2) > 0);
 		    MCrp* pcrp = iCompRps.at(op2);
 		    MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
 		    assert(pcrpcbl != NULL);
@@ -418,14 +420,14 @@ SysDrp::TEvtInfo SysDrp::GetEvtInfo(Requisition aCoord)
 
 int SysDrp::GetEvtX(int aTnlCnt) const
 {
-    __ASSERT(aTnlCnt <= iLaPars.size());
+    __ASSERT(aTnlCnt > 0 && aTnlCnt < iLaPars.size());
     const Allocation& zal = iLaPars.at(aTnlCnt - 1).first;
     return  zal.get_x() + zal.get_width() + KEvtGap;
 }
 
 int SysDrp::GetEvtEnd(int aTnlCnt) const
 {
-    __ASSERT(aTnlCnt <= iLaPars.size());
+    __ASSERT(aTnlCnt >= 0 && aTnlCnt < iLaPars.size());
     const Allocation& zal = iLaPars.at(aTnlCnt).first;
     return  zal.get_x() - KEvtGap;
 }

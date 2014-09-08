@@ -258,7 +258,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		MCrp* crp = it->second;
 		MCrpConnectable* conn = crp->GetObj(conn);
 		if (conn != NULL) {
-		    Elem* curcp;
+		    Elem* curcp = NULL;
 		    int dd = conn->GetNearestCp(coord, curcp);
 		    if (dd < dist) {
 			dist = dd;
@@ -267,7 +267,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		    }
 		}
 	    }
-	    if (cand != NULL && (cand != iEdgeDropCandidate || candcp != iEdgeDropCpCandidate)) {
+	    if (cand != NULL && candcp != NULL && (cand != iEdgeDropCandidate || candcp != iEdgeDropCpCandidate)) {
 		MCrpConnectable* conn = NULL;
 		if (iEdgeDropCandidate != NULL) {
 		    conn = iEdgeDropCandidate->GetObj(conn);
@@ -307,14 +307,14 @@ void VertDrpw_v1::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& co
     /*
     iDndReceivedData = sel_data.get_text();
     */
-    std::cout << "VertDrpw_v1 on_drag_data_received, target: " << target << ", info: " << info << " , text: " << iDndReceivedData << std::endl;
+    //std::cout << "VertDrpw_v1 on_drag_data_received, target: " << target << ", info: " << info << " , text: " << iDndReceivedData << std::endl;
     ElemDetRp::on_drag_data_received(context, x, y, sel_data, info, time);
     if (iDnDTarg == EDT_Unknown) {
 	// Classify DnD target
 	if (target == KDnDTarg_EdgeCp) {
 	    iDnDTarg = EDT_EdgeCp;
 	}
-	std::cout << "VertDrpw_v1 on_drag_data_received, detecting target: " << iDnDTarg << std::endl;
+	//std::cout << "VertDrpw_v1 on_drag_data_received, detecting target: " << iDnDTarg << std::endl;
     }
     /*
     else {
@@ -327,7 +327,7 @@ void VertDrpw_v1::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& co
 bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
 {
     bool res = false;
-    std::cout << "VertDrpw_v1 on_drag_drop, detected target: " << iDnDTarg << std::endl;
+    //std::cout << "VertDrpw_v1 on_drag_drop, detected target: " << iDnDTarg << std::endl;
     res = ElemDetRp::on_drag_drop(context, x, y, time);
     if (!res) {
     if (iDnDTarg == EDT_Node) {
@@ -347,7 +347,7 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    targ->GetRUri(uri, node);
 	    res = true;
 	    context->drag_finish(res, false, time);
-	    std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
+	    //std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
 	    change_content(iDndReceivedData, uri.GetUri(true), true);
 	}
 	else {
@@ -356,7 +356,7 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    context->drag_finish(res, false, time);
 	    Elem* cp = iElem->GetNode(iDndReceivedData);
 	    MProp* prop = cp->GetObj(prop);
-	    std::cout << "VertDrpw_v1 on_drag_motion, disconnecting CP:" << prop->Value() << std::endl;
+	    //std::cout << "VertDrpw_v1 on_drag_motion, disconnecting CP:" << prop->Value() << std::endl;
 	    change_content(iDndReceivedData, std::string());
 	    // Redraw
 	    //queue_resize();
