@@ -674,12 +674,24 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
     Elem* node = iElem->GetNode(aNodeUri);
     Elem* mutelem = GetObjForSafeMut(iElem, node, ENt_Cont);
     __ASSERT(mutelem != NULL);
+    MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
+    bool ena_pheno = ena_pheno_s.Get(ena_pheno);
     if (aRef) {
 	Elem* rnode = node->GetNode(aNewContent);
 	if (aRef && !mutelem->IsRefSafe(rnode)) {
 	    Elem::TMDep rdep;
 	    rnode->GetDep(rdep, ENa_Id);
-	    mutelem = rdep.first.first;
+	    Elem* depnode = rdep.first.first;
+	    if (ena_pheno) {
+		// Pheno enabled, select safe mutelem
+		mutelem = depnode;
+	    }
+	    else {
+		// Pheno disabled, try to shift comp to resolve dep
+		if (iElem->IsComp(depnode)) {
+		    ShiftCompToEnd(iElem, mutelem != iElem ? mutelem: node);
+		}
+	    }
 	}
     }
     GUri nuri;
@@ -867,6 +879,16 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     // Squeeze chromo for mutations made to depnode: rm and rename
     lastmut = *(depnode->Chromos().Root().Rbegin());
     root->CompactChromo(lastmut);
+}
+
+// Shifting of component to the latest rank
+// Just moving mutation, it doesn't affect model at all, but required model refresh
+void ElemDetRp::ShiftCompToEnd(Elem* aOwner, Elem* aComp) 
+{
+    ChromoNode oroot = aOwner->Chromos().Root();
+    ChromoNode croot = aComp->Chromos().Root();
+    __ASSERT((*croot.Parent()).Handle() == oroot.Handle());
+    croot.MoveToEnd();
 }
 
 void ElemDetRp::DoUdno()

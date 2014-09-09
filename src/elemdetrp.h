@@ -62,6 +62,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	bool IsCrpLogged(MCrp* aCrp, MLogRec::TLogRecCtg aCtg) const;
 	bool DoIsActionSupported(Elem* aComp, const MCrp::Action& aAction);
 	void DoOnActionInsert();
+	void ShiftCompToEnd(Elem* aOwner, Elem* aComp);
     protected:
 	MSEnv& mStEnv;
 	// Compact representations  provider

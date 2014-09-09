@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem" tord="15">
+<node id="Root" parent="Elem" tord="61">
   <node id="Modules" parent="Elem" ord="1">
     <move id="file:/usr/share/grayb/modules/syst.xml#" ord="2"/>
     <move id="file:/usr/share/grayb/modules/capsula.xml#" ord="3"/>
@@ -9,12 +9,61 @@
     <move id="file:/usr/share/grayb/modules/vis.xml#" ord="13"/>
     <move id="file:/usr/share/fap2-studio-gtk/modules/simple_vis.xml#" ord="14"/>
   </node>
-  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps" ord="7">
-    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker" ord="8"/>
-    <node id="DesRoot" parent="/Root/Modules/DesComps/Des" ord="9">
-      <node id="Solid_vis" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des" ord="15"/>
+  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps" ord="15">
+    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker" ord="16"/>
+    <node id="DesRoot" parent="/Root/Modules/DesComps/Des" ord="17">
+      <node id="Solid_vis" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des" ord="18">
+        <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Extender:)Child" id="Child" ord="20"/>
+        <node id="Picture" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)Simple_vis/(Vert:)Components/(Des:)Pic" ord="21"/>
+        <node id="1347304952" parent="Edge" ord="22">
+          <cont node="./P2" ref="./../../Capsule/Child/Int" ord="31"/>
+          <cont node="./P1" ref="./../../Picture/Capsule/Vis_Child" ord="32"/>
+        </node>
+        <node id="Coords" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC" ord="38">
+          <cont node="./Data/Prepared/Value" val="MF,V,2 30 30" ord="39"/>
+          <cont node="./Data/Confirmed/Value" val="MF,V,2 30 30" ord="40"/>
+        </node>
+        <node id="1464334493" parent="Edge" ord="41">
+          <cont node="./P2" ref="./../../Coords/Capsule/Out" ord="42"/>
+          <cont node="./P1" ref="./../../Picture/Capsule/Inp_coords_XY" ord="43"/>
+        </node>
+        <node id="Size" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC" ord="44">
+          <cont node="./Data/Prepared/Value" val="MF,V,2 50 50" ord="45"/>
+          <cont node="./Data/Confirmed/Value" val="MF,V,2 50 50" ord="46"/>
+        </node>
+        <node id="640970826" parent="Edge" ord="47">
+          <cont node="./P2" ref="./../../Size/Capsule/Out" ord="48"/>
+          <cont node="./P1" ref="./../../Picture/Capsule/Inp_Size_WH" ord="49"/>
+        </node>
+        <node id="Scale" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC" ord="50">
+          <cont node="./Data/Prepared/Value" val="MF,V,2 1 1" ord="51"/>
+          <cont node="./Data/Confirmed/Value" val="MF,V,2 1 1" ord="52"/>
+        </node>
+        <node id="403207991" parent="Edge" ord="53">
+          <cont node="./P2" ref="./../../Scale/Capsule/Out" ord="54"/>
+          <cont node="./P1" ref="./../../Picture/Capsule/Inp_Scale_WH" ord="55"/>
+        </node>
+        <node id="Parent_size" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC" ord="56">
+          <cont node="./Data/Prepared/Value" val="MF,V,2 800 600" ord="57"/>
+          <cont node="./Data/Confirmed/Value" val="MF,V,2 800 600" ord="58"/>
+        </node>
+        <node id="560765644" parent="Edge" ord="59">
+          <cont node="./P2" ref="./../../Parent_size/Capsule/Out" ord="60"/>
+          <cont node="./P1" ref="./../../Picture/Capsule/Inp_Par_Size_WH" ord="61"/>
+        </node>
+      </node>
+      <node id="Wdw" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Window" ord="33"/>
+      <node id="Fixed" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Fixed" ord="34"/>
+      <node id="1107234204" parent="Edge" ord="35">
+        <cont node="./P2" ref="./../../Wdw/Parent" ord="24"/>
+        <cont node="./P1" ref="./../../Fixed/Child" ord="25"/>
+      </node>
+      <node id="1315267126" parent="Edge" ord="36">
+        <cont node="./P2" ref="./../../Fixed/Parent" ord="27"/>
+        <cont node="./P1" ref="./../../Solid_vis/Capsule/Child" ord="28"/>
+      </node>
     </node>
-    <node id="Ticker_edge" parent="Edge" ord="10">
+    <node id="Ticker_edge" parent="Edge" ord="37">
       <cont node="./P2" val="./../../DesRoot/Capsule/Sync" ord="11"/>
       <cont node="./P1" val="./../../Ticker/Capsule/Out" ord="12"/>
     </node>
