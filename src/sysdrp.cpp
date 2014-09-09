@@ -400,7 +400,8 @@ SysDrp::TEvtInfo SysDrp::GetEvtInfo(Requisition aCoord)
 {
     TEvtInfo res(iLaPars.size() - 1, true);
     int x = aCoord.width;
-    for (int cnt = 0; cnt < iLaPars.size(); cnt++) {
+    // Avoiding zone 0, starting from 1. This is because 0 tunnel is disabled
+    for (int cnt = 1; cnt < iLaPars.size(); cnt++) {
 	Allocation& zal = iLaPars.at(cnt).first;
 	int zw = zal.get_width();
 	int cx = zal.get_x();

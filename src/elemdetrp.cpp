@@ -570,7 +570,10 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 		res = res->GetCommonOwner(aNode);
 	    }
 #endif
-	    res = res->GetCommonOwner(aMnode);
+	    // Taking into account preferrend mutated node if pheno is enabled
+	    if (ena_pheno) {
+		res = res->GetCommonOwner(aMnode);
+	    }
 	}
     }
     mSignalAttention.emit(att);
