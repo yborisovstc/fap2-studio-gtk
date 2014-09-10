@@ -85,6 +85,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	static string PEType();
 	AVisWidget(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL);
 	AVisWidget(Elem* aMan = NULL, MEnv* aEnv = NULL);
+	void Construct();
 	// From MVisChild
 	virtual Widget& GetChild();
 	virtual int GetParInt(TPar);
@@ -99,6 +100,8 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
 	// Ifaces cache
 	virtual void UpdateIfi(const string& aName, const RqContext* aCtx = NULL);
+	// Widget events handling
+	bool OnButtonPress(GdkEventButton* aEvent);
     protected:
 	virtual void OnUpdated_X(int aData);
 	virtual void OnUpdated_Y(int aData);

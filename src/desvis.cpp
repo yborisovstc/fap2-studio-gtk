@@ -101,6 +101,12 @@ AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
     iParProvVarH.SetData(ParentSizeProv::ED_H, this);
 }
 
+void AVisWidget::Construct()
+{
+    iWidget->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK);
+    iWidget->signal_button_press_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
+}
+
 void *AVisWidget::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
 {
     void* res = NULL;
@@ -346,6 +352,9 @@ void AVisWidget::OnActivated()
 {
 }
 
+bool AVisWidget::OnButtonPress(GdkEventButton* aEvent)
+{
+}
 
 
 // Agent of container with fixed layout
@@ -444,6 +453,7 @@ AVisDrawing::AVisDrawing(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidge
     iWidget = new VisDrwArea(); 
     iWidget->set_size_request(iW, iH);
     iWidget->show();
+    Construct();
 }
 
 AVisDrawing::AVisDrawing(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)

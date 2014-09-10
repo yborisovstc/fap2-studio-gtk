@@ -392,17 +392,17 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
        */
 
     Elem* dnode = iElem->GetNode(aNodeUri);
-    Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Change);
+    bool unsafe = false;
+    Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Change, unsafe);
     if (mutelem != NULL) {
-	GUri duri;
-	iElem->GetRUri(duri, mutelem);
 	ChromoNode smutr = mutelem->Mutation().Root();
-	GUri nuri = duri + GUri(aNodeUri);
+	GUri nuri;
+	dnode->GetRUri(nuri, mutelem);
 	ChromoNode change = smutr.AddChild(ENt_Change);
 	change.SetAttr(ENa_MutNode, nuri.GetUri());
 	change.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
 	change.SetAttr(ENa_MutVal, aNewName);
-	mutelem->Mutate();
+	mutelem->Mutate(false, !unsafe);
 	Refresh();
     }
 }
@@ -435,10 +435,12 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aTarg
     }
 }
 
-Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType) {
+Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType, bool& aUnsafe) 
+{
     aMnode = iElem;
     Elem* res = aNode;
     string att;
+    aUnsafe = false;
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
     if (ena_pheno) {
@@ -486,6 +488,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType)
 	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
 	    att = Glib::ustring::compose(K_Att_CritDep_1, res->GetUri());
 	    res = aMnode;
+	    aUnsafe = true;
 	}
 #if 0
 	// [YB] Verbose handling of error is disabled at the moment, commented out
@@ -585,7 +588,8 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
     bool err = false;
     // Mutate appending
     Elem* targ = iElem->GetNode(aTargetUri);
-    Elem* mutelem = GetObjForSafeMut(iElem, targ, ENt_Node);
+    bool unsafe = false;
+    Elem* mutelem = GetObjForSafeMut(iElem, targ, ENt_Node, unsafe);
     if (mutelem != NULL) {
 	ChromoNode mut = mutelem->Mutation().Root();
 	ChromoNode rmut = mut.AddChild(ENt_Node);
@@ -672,7 +676,8 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
 {
     Elem* node = iElem->GetNode(aNodeUri);
-    Elem* mutelem = GetObjForSafeMut(iElem, node, ENt_Cont);
+    bool unsafe = false;
+    Elem* mutelem = GetObjForSafeMut(iElem, node, ENt_Cont, unsafe);
     __ASSERT(mutelem != NULL);
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
@@ -778,7 +783,9 @@ void ElemDetRp::on_comp_menu_rename()
     if (res == Gtk::RESPONSE_OK) {
 	std::string newname;
 	dlg->GetData(newname);
-	rename_node(iCompSelected->Name(), newname);
+	GUri duri;
+	iCompSelected->GetRUri(duri, iElem);
+	rename_node(duri.GetUri(true), newname);
     }
     delete dlg;
     iCompSelected = NULL;
