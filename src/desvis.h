@@ -121,6 +121,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	int iX;
 	int iW;
 	int iH;
+	int iBtnPressEvent;
 };
 
 // Agent of container with fixed layout

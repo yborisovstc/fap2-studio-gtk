@@ -354,6 +354,18 @@ void AVisWidget::OnActivated()
 
 bool AVisWidget::OnButtonPress(GdkEventButton* aEvent)
 {
+    // Cache event value
+    iBtnPressEvent = aEvent->type;
+    // Activate dependencies
+    Elem* eobs = GetNode("./../BtnPressEvent/Int/PinObs");
+    RqContext ctx(this);
+    TIfRange range = eobs->GetIfi(MDesObserver::Type());
+    for (IfIter it = range.first; it != range.second; it++) {
+	MDesObserver* mobs = (MDesObserver*) (*it);
+	if (mobs != NULL) {
+	    mobs->OnUpdated();
+	}
+    }
 }
 
 
