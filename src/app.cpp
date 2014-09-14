@@ -468,7 +468,7 @@ bool App::IsSystemChanged() const
 
 void App::SaveTmp()
 {
-    SaveFile(GetDefaultTmpFileName());
+    SaveFile(GetDefaultTmpFileName(), false);
 }
 
 void App::OpenFile(const string& aFileName, bool aAsTmp)
@@ -509,10 +509,14 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iDesObserver->SignalSystemChanged().connect(sigc::mem_fun(*this, &App::on_system_changed));
 }
 
-void App::SaveFile(const string& aFileName)
+void App::SaveFile(const string& aFileName, bool aUnorder)
 {
     iChanged = iChanged || iDesObserver->IsModelChanged();
-    iEnv->Root()->Chromos().Save(aFileName);
+    MChromo& chromo = iEnv->Root()->Chromos();
+    if (aUnorder) {
+	chromo.Root().DeOrder();
+    }
+    chromo.Save(aFileName);
 }
 
 void App::CompactAndSaveFile(const string& aFileName)

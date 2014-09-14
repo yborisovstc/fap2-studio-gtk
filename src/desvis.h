@@ -58,6 +58,13 @@ class AWindow: public Elem, public MVisContainer
 class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public MDesObserver
 {
     private:
+	// Data provider base
+	class DataProv {
+	    public:
+		void SetHost(AVisWidget* aHost)  {iHost = aHost;};
+	    protected:
+		AVisWidget* iHost;
+	};
 	class ParentSize {
 	    public:
 	    enum TData { ED_W, ED_H };
@@ -80,6 +87,15 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	    // From MDtGet
 	    virtual void DtGet(Sdata<int>& aData);
 	};
+	// Data provider for GdkEventButton
+	class EventButtonProv: public DataProv, public MDVarGet, public MDtGet<NTuple> {
+	    public:
+	    // From MDVarGet
+	    virtual string VarGetIfid() const;
+	    virtual void *DoGetDObj(const char *aName);
+	    // From MDtGet
+	    virtual void DtGet(NTuple& aData);
+	};
     public:
 	static const char* Type() { return "AVisWidget";};
 	static string PEType();
@@ -96,6 +112,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	virtual void OnActivated();
     protected:
 	TInt GetParData(ParentSizeProv::TData aData);
+	void GetBtnPressEvent(NTuple& aData) { aData = mBtnPressEvt;};
 	// From Base
 	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
 	// Ifaces cache
@@ -117,11 +134,13 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	ParentSizeProv iParProvH;
 	ParentSizeProvVar iParProvVarW;
 	ParentSizeProvVar iParProvVarH;
+	EventButtonProv mBtnPressEvtProv;
 	int iY;
 	int iX;
 	int iW;
 	int iH;
 	int iBtnPressEvent;
+	NTuple mBtnPressEvt;
 };
 
 // Agent of container with fixed layout

@@ -86,7 +86,7 @@ class App
 	void on_setting_changed_pheno_enable();
 	void on_comp_selected(Elem* aComp);
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
-	void SaveFile(const string& aFileName);
+	void SaveFile(const string& aFileName, bool aUnorder = true);
 	void CompactAndSaveFile(const string& aFileName);
 	string FormTitle(const string& aFilePath);
 	void UpdataUndoRedo();

@@ -2,6 +2,7 @@
 #include <mdata.h>
 #include "desvis.h"
 
+const string KBtnPressEvent_Srep = "TPL,SI:Type,SI:State,SI:Button 0 0 0";
 
 // Agent of top level window
 
@@ -74,6 +75,26 @@ void *AVisWidget::ParentSizeProvVar::DoGetDObj(const char *aName)
     return res;
 }
 
+// Data provider for GdkEventButton
+string AVisWidget::EventButtonProv::VarGetIfid() const 
+{ 
+    return MDtGet<NTuple>::Type();
+}
+
+void *AVisWidget::EventButtonProv::DoGetDObj(const char *aName)
+{
+    void* res = NULL;
+    if (strcmp(aName, MDtGet<NTuple>::Type()) == 0) res = (MDtGet<NTuple>*) this;
+    return res;
+}
+
+void AVisWidget::EventButtonProv::DtGet(NTuple& aData)
+{
+    iHost->GetBtnPressEvent(aData);
+    aData.mValid = true;
+}
+
+
 string AVisWidget::PEType()
 {
     return Elem::PEType() + GUri::KParentSep + Type();
@@ -88,6 +109,8 @@ AVisWidget::AVisWidget(const string& aName, Elem* aMan, MEnv* aEnv): Elem(aName,
     iParProvH.SetData(ParentSizeProv::ED_H, this);
     iParProvVarW.SetData(ParentSizeProv::ED_W, this);
     iParProvVarH.SetData(ParentSizeProv::ED_H, this);
+    mBtnPressEvtProv.SetHost(this);
+    mBtnPressEvt.FromString(KBtnPressEvent_Srep);
 }
 
 AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
@@ -99,6 +122,8 @@ AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
     iParProvH.SetData(ParentSizeProv::ED_H, this);
     iParProvVarW.SetData(ParentSizeProv::ED_W, this);
     iParProvVarH.SetData(ParentSizeProv::ED_H, this);
+    mBtnPressEvtProv.SetHost(this);
+    mBtnPressEvt.FromString(KBtnPressEvent_Srep);
 }
 
 void AVisWidget::Construct()
@@ -356,6 +381,13 @@ bool AVisWidget::OnButtonPress(GdkEventButton* aEvent)
 {
     // Cache event value
     iBtnPressEvent = aEvent->type;
+    // Set event data
+    Sdata<int>* etype = dynamic_cast<Sdata<int>*> (mBtnPressEvt.GetElem("Type"));
+    __ASSERT(etype != NULL);
+    etype->Set(aEvent->type);
+    Sdata<int>* estate = dynamic_cast<Sdata<int>*> (mBtnPressEvt.GetElem("State"));
+    __ASSERT(estate != NULL);
+    estate->Set(aEvent->state);
     // Activate dependencies
     Elem* eobs = GetNode("./../BtnPressEvent/Int/PinObs");
     RqContext ctx(this);
