@@ -640,9 +640,14 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 
 void ElemDetRp::remove_node(const std::string& aNodeUri)
 {
+    MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
+    bool ena_pheno = ena_pheno_s.Get(ena_pheno);
     // Node to be deleted
     Elem* dnode = iElem->GetNode(aNodeUri);
     __ASSERT(dnode != NULL);
+    bool unsafe = false;
+    Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Rm, unsafe);
+#if 0
     // Checking mutation safety
     bool ismutsafe = iElem->IsMutSafe(dnode);
     Elem::TMDep mdep = dnode->GetMajorDep();
@@ -651,24 +656,25 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 	mnode = iElem;
     }
     Elem* mutelem = mnode->GetAttachingMgr();
-    /*
-       GUri duri;
-       iElem->GetUri(duri, mutelem);
-       GUri nuri = duri + GUri(aNodeUri);
-       */
-    GUri nuri;
-    dnode->GetUri(nuri, mutelem);
     int dres = RESPONSE_OK;
     if (!ismutsafe) {
-	MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_Rm_F1, mnode->GetUri()), 
-		false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
-	dres = dlg->run();
-	delete dlg;
+	if (ena_pheno) {
+	    MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_Rm_F1, mnode->GetUri()), 
+		    false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+	    dres = dlg->run();
+	    delete dlg;
+	}
+	    mSignalAttention.emit(K_Att_Rld);
+	}
     }
-    if (dres == RESPONSE_OK) {
+#endif
+    //if (dres == RESPONSE_OK) {
+    if (true) {
+	GUri nuri;
+	dnode->GetUri(nuri, mutelem);
 	ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
 	mutn.SetAttr(ENa_MutNode, nuri.GetUri());
-	mutelem->Mutate();
+	mutelem->Mutate(false, !unsafe);
 	Refresh();
     }
 }
