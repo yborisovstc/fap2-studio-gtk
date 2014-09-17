@@ -1,213 +1,213 @@
 <?xml version="1.0"?>
 <node id="Simple_vis" parent="Elem" tord="316">
-    <node id="Components" parent="Vert" ord="1">
-	<node id="Scaled_coord_2d" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC" ord="289">
-	    <cont node="./Data/Confirmed/Value" val="MI,V,2 0 0" ord="15"/>
-	    <cont node="./Data/Prepared/Value" val="MI,V,2 0 0" ord="16"/>
-	    <node id="Cast_I_to_F" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCastVar" ord="290"/>
-	    <node node="./(Elem:)Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Par_NU" ord="18"/>
-	    <node node="./(Elem:)Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Par_LU" ord="19"/>
-	    <node node="./(Elem:)Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Scale" ord="20"/>
-	    <node id="198851363" parent="Edge" ord="291">
-		<cont node="./(Prop:)P2" ref="./../../(Elem:)Capsule/(StVarInp:)Inp_Par_NU/(StInpSocket:)Int/PinData" ord="27"/>
-		<cont node="./(Prop:)P1" ref="./../../Cast_I_to_F/Capsule/Inp" ord="36"/>
+  <node id="Components" parent="Vert">
+    <node id="Scaled_coord_2d" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
+	    <cont node="./Data/Confirmed/Value" val="MI,V,2 0 0"/>
+	    <cont node="./Data/Prepared/Value" val="MI,V,2 0 0"/>
+	    <node id="Cast_I_to_F" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCastVar"/>
+	    <node node="./(Elem:)Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Par_NU"/>
+	    <node node="./(Elem:)Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Par_LU"/>
+	    <node node="./(Elem:)Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Scale"/>
+	    <node id="198851363" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../(Elem:)Capsule/(StVarInp:)Inp_Par_NU/(StInpSocket:)Int/PinData"/>
+		<cont node="./(Prop:)P1" ref="./../../Cast_I_to_F/Capsule/Inp"/>
 	    </node>
-	    <node id="MD_constr_NU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCpsMtrdVar" ord="292"/>
-	    <node id="Mpl_NU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar" ord="293"/>
-	    <node id="1524879411" parent="Edge" ord="294">
-		<cont node="./(Prop:)P1" ref="./../../MD_constr_NU/Capsule/Out" ord="37"/>
-		<cont node="./(Prop:)P2" ref="./../../Mpl_NU/Capsule/Inp1" ord="38"/>
+	    <node id="MD_constr_NU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCpsMtrdVar"/>
+	    <node id="Mpl_NU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
+	    <node id="1524879411" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../MD_constr_NU/Capsule/Out"/>
+		<cont node="./(Prop:)P2" ref="./../../Mpl_NU/Capsule/Inp1"/>
 	    </node>
-	    <node id="Mpl_Sc" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar" ord="295"/>
-	    <node id="567261452" parent="Edge" ord="296">
-		<cont node="./(Prop:)P1" ref="./../../Mpl_NU/Capsule/Inp2" ord="39"/>
-		<cont node="./(Prop:)P2" ref="./../../Capsule/Inp/Int/PinData" ord="40"/>
-		<cont node="./(Prop:)P1" ref="./../../Mpl_NU/Capsule/Inp2" ord="58"/>
-		<cont node="./(Prop:)P2" ref="./../../Mpl_Sc/Capsule/Out" ord="59"/>
+	    <node id="Mpl_Sc" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
+	    <node id="567261452" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Mpl_NU/Capsule/Inp2"/>
+		<cont node="./(Prop:)P2" ref="./../../Capsule/Inp/Int/PinData"/>
+		<cont node="./(Prop:)P1" ref="./../../Mpl_NU/Capsule/Inp2"/>
+		<cont node="./(Prop:)P2" ref="./../../Mpl_Sc/Capsule/Out"/>
 	    </node>
-	    <node id="2107330758" parent="Edge" ord="297">
-		<cont node="./(Prop:)P2" ref="./../../(Elem:)Capsule/(StVarInp:)Inp_Scale/(StInpSocket:)Int/PinData" ord="32"/>
-		<cont node="./(Prop:)P1" ref="./../../Mpl_Sc/Capsule/Inp1" ord="44"/>
+	    <node id="2107330758" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../(Elem:)Capsule/(StVarInp:)Inp_Scale/(StInpSocket:)Int/PinData"/>
+		<cont node="./(Prop:)P1" ref="./../../Mpl_Sc/Capsule/Inp1"/>
 	    </node>
-	    <node id="771202220" parent="Edge" ord="298">
-		<cont node="./(Prop:)P1" ref="./../../Mpl_NU/Capsule/Out" ord="42"/>
-		<cont node="./(Prop:)P2" ref="./../../Mpl_Sc/Capsule/Inp2" ord="43"/>
-		<cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData" ord="57"/>
+	    <node id="771202220" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Mpl_NU/Capsule/Out"/>
+		<cont node="./(Prop:)P2" ref="./../../Mpl_Sc/Capsule/Inp2"/>
+		<cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
 	    </node>
-	    <node id="MD_constr_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCpsMtrdVar" ord="299"/>
-	    <node id="626912110" parent="Edge" ord="300">
-		<cont node="./(Prop:)P2" ref="./../../(Elem:)Capsule/(StVarInp:)Inp_Par_LU/(StInpSocket:)Int/PinData" ord="31"/>
-		<cont node="./(Prop:)P1" ref="./../../MD_constr_LU/Capsule/Inp" ord="48"/>
+	    <node id="MD_constr_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCpsMtrdVar"/>
+	    <node id="626912110" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../(Elem:)Capsule/(StVarInp:)Inp_Par_LU/(StInpSocket:)Int/PinData"/>
+		<cont node="./(Prop:)P1" ref="./../../MD_constr_LU/Capsule/Inp"/>
 	    </node>
-	    <node id="Invert_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplinvVar" ord="301"/>
-	    <node id="1151406191" parent="Edge" ord="302">
-		<cont node="./(Prop:)P1" ref="./../../MD_constr_LU/Capsule/Out" ord="49"/>
-		<cont node="./(Prop:)P2" ref="./../../Invert_LU/Capsule/Inp" ord="50"/>
+	    <node id="Invert_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplinvVar"/>
+	    <node id="1151406191" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../MD_constr_LU/Capsule/Out"/>
+		<cont node="./(Prop:)P2" ref="./../../Invert_LU/Capsule/Inp"/>
 	    </node>
-	    <node id="Mpl_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar" ord="303"/>
-	    <node id="1141000844" parent="Edge" ord="304">
-		<cont node="./(Prop:)P1" ref="./../../Mpl_LU/Capsule/Inp2" ord="53"/>
-		<cont node="./(Prop:)P2" ref="./../../Mpl_Sc/Capsule/Out" ord="54"/>
-		<cont node="./(Prop:)P2" ref="./../../Mpl_NU/Capsule/Out" ord="60"/>
+	    <node id="Mpl_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
+	    <node id="1141000844" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Mpl_LU/Capsule/Inp2"/>
+		<cont node="./(Prop:)P2" ref="./../../Mpl_Sc/Capsule/Out"/>
+		<cont node="./(Prop:)P2" ref="./../../Mpl_NU/Capsule/Out"/>
 	    </node>
-	    <node id="2103969622" parent="Edge" ord="305">
-		<cont node="./(Prop:)P1" ref="./../../Invert_LU/Capsule/Out" ord="51"/>
-		<cont node="./(Prop:)P2" ref="./../../Mpl_LU/Capsule/Inp1" ord="52"/>
+	    <node id="2103969622" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Invert_LU/Capsule/Out"/>
+		<cont node="./(Prop:)P2" ref="./../../Mpl_LU/Capsule/Inp1"/>
 	    </node>
-	    <node id="Cast_F_To_I" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCastVar" ord="306">
-		<cont node="./InpType" val="MDtGet_MF" ord="62"/>
+	    <node id="Cast_F_To_I" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCastVar">
+		<cont node="./InpType" val="MDtGet_MF"/>
 	    </node>
-	    <node id="143004299" parent="Edge" ord="307">
-		<cont node="./(Prop:)P1" ref="./../../Mpl_LU/Capsule/Out" ord="55"/>
-		<cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp" ord="56"/>
-		<cont node="./(Prop:)P2" ref="./../../Cast_F_To_I/Capsule/Inp" ord="66"/>
+	    <node id="143004299" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Mpl_LU/Capsule/Out"/>
+		<cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
+		<cont node="./(Prop:)P2" ref="./../../Cast_F_To_I/Capsule/Inp"/>
 	    </node>
-	    <node id="1258189486" parent="Edge" ord="308">
-		<cont node="./(Prop:)P1" ref="./../../Cast_F_To_I/Capsule/Out" ord="64"/>
-		<cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp" ord="65"/>
+	    <node id="1258189486" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Cast_F_To_I/Capsule/Out"/>
+		<cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
 	    </node>
-	    <node id="1243979483" parent="Edge" ord="309">
-		<cont node="./(Prop:)P2" ref="./../../Cast_I_to_F/Capsule/Out" ord="68"/>
-		<cont node="./(Prop:)P1" ref="./../../MD_constr_NU/Capsule/Inp" ord="69"/>
-	    </node>
-	</node>
-	<node id="Vect_to_Y_Vect" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC" ord="310">
-	    <node id="Const_Matrix" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" ord="311">
-		<cont node="./(Prop:)Value" val="MI,R,2,2 0 1 0 1" ord="179"/>
-	    </node>
-	    <node id="Mpl" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar" ord="312"/>
-	    <node id="950720624" parent="Edge" ord="313">
-		<cont node="./(Prop:)P1" ref="./../../Mpl/Capsule/Inp1" ord="183"/>
-		<cont node="./(Prop:)P2" ref="./../../Const_Matrix/Capsule/Out" ord="185"/>
-	    </node>
-	    <node id="2041850272" parent="Edge" ord="314">
-		<cont node="./(Prop:)P1" ref="./../../Mpl/Capsule/Inp2" ord="184"/>
-		<cont node="./(Prop:)P2" ref="./../../Capsule/Inp/Int/PinData" ord="186"/>
-	    </node>
-	    <node id="1908863628" parent="Edge" ord="315">
-		<cont node="./(Prop:)P1" ref="./../../Mpl/Capsule/Out" ord="188"/>
-		<cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp" ord="189"/>
+	    <node id="1243979483" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../Cast_I_to_F/Capsule/Out"/>
+		<cont node="./(Prop:)P1" ref="./../../MD_constr_NU/Capsule/Inp"/>
 	    </node>
 	</node>
-	<node id="Pic" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des" ord="316">
-	    <node id="Scaled_coord_XY" parent=":Elem:Vert:Syst:Incaps:State:StateVarC:Scaled_coord_2d" ord="317">
-		<node id="Descrip_scaled_XY" parent="Description" ord="318">
-		    <cont node="" val="Scaled_coord_XY (XY_NU) is Rock coords  in Native Utits (integer Vector)&#10;     Inp_Par_NU is parent size WH width-hieght in Native Units (integer Vector).&#10;&#10;XY_NU = (Inp_Par_NU) * (Inp_Scale) * (1/Inp_Par_LU)&#10;     As in Native units system of coords Y goes down, and in logic system of coors Y goes up: &#10;0____x         y&#10;  |                      |    LU&#10;y|   NU        0 |___x&#10;&#10;XY_NU: Xres = X, Yres = H - Y&#10;" ord="73">
+    <node id="Vect_to_Y_Vect" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
+	    <node id="Const_Matrix" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+		<cont node="./(Prop:)Value" val="MI,R,2,2 0 1 0 1"/>
+	    </node>
+	    <node id="Mpl" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
+	    <node id="950720624" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Mpl/Capsule/Inp1"/>
+		<cont node="./(Prop:)P2" ref="./../../Const_Matrix/Capsule/Out"/>
+	    </node>
+	    <node id="2041850272" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Mpl/Capsule/Inp2"/>
+		<cont node="./(Prop:)P2" ref="./../../Capsule/Inp/Int/PinData"/>
+	    </node>
+	    <node id="1908863628" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Mpl/Capsule/Out"/>
+		<cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
+	    </node>
+	</node>
+    <node id="Pic" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des">
+	    <node id="Scaled_coord_XY" parent=":Elem:Vert:Syst:Incaps:State:StateVarC:Scaled_coord_2d">
+		<node id="Descrip_scaled_XY" parent="Description">
+		    <cont node="" val="Scaled_coord_XY (XY_NU) is Rock coords  in Native Utits (integer Vector)&#10;     Inp_Par_NU is parent size WH width-hieght in Native Units (integer Vector).&#10;&#10;XY_NU = (Inp_Par_NU) * (Inp_Scale) * (1/Inp_Par_LU)&#10;     As in Native units system of coords Y goes down, and in logic system of coors Y goes up: &#10;0____x         y&#10;  |                      |    LU&#10;y|   NU        0 |___x&#10;&#10;XY_NU: Xres = X, Yres = H - Y&#10;">
 		    </cont>
 		</node>
-		<node id="Const_MD_01" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" ord="319">
-		    <cont node="./(Prop:)Value" val="MI,D,2 0 1" ord="75"/>
+		<node id="Const_MD_01" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+		    <cont node="./(Prop:)Value" val="MI,D,2 0 1"/>
 		</node>
-		<node id="Mpl_NU_to_0H" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar" ord="320"/>
-		<node id="1799596607" parent="Edge" ord="321">
-		    <cont node="./(Prop:)P2" ref="./../../Const_MD_01/Capsule/Out" ord="78"/>
-		    <cont node="./(Prop:)P1" ref="./../../Mpl_NU_to_0H/Capsule/Inp1" ord="79"/>
+		<node id="Mpl_NU_to_0H" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
+		<node id="1799596607" parent="Edge">
+		    <cont node="./(Prop:)P2" ref="./../../Const_MD_01/Capsule/Out"/>
+		    <cont node="./(Prop:)P1" ref="./../../Mpl_NU_to_0H/Capsule/Inp1"/>
 		</node>
-		<node id="142871116" parent="Edge" ord="322">
-		    <cont node="./(Prop:)P2" ref="./../../Mpl_NU_to_0H/Capsule/Inp2" ord="81"/>
-		    <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_Par_NU/Int/PinData" ord="82"/>
+		<node id="142871116" parent="Edge">
+		    <cont node="./(Prop:)P2" ref="./../../Mpl_NU_to_0H/Capsule/Inp2"/>
+		    <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_Par_NU/Int/PinData"/>
 		</node>
-		<node id="Const_MD_1_m1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" ord="323">
-		    <cont node="./(Prop:)Value" val="MI,D,2 1 -1" ord="84"/>
+		<node id="Const_MD_1_m1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+		    <cont node="./(Prop:)Value" val="MI,D,2 1 -1"/>
 		</node>
-		<node id="Mpl_L_X_mY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar" ord="324"/>
-		<node id="1035904628" parent="Edge" ord="325">
-		    <cont node="./(Prop:)P2" ref="./../../Mpl_L_X_mY/Capsule/Inp1" ord="87"/>
-		    <cont node="./(Prop:)P1" ref="./../../Const_MD_1_m1/Capsule/Out" ord="88"/>
+		<node id="Mpl_L_X_mY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
+		<node id="1035904628" parent="Edge">
+		    <cont node="./(Prop:)P2" ref="./../../Mpl_L_X_mY/Capsule/Inp1"/>
+		    <cont node="./(Prop:)P1" ref="./../../Const_MD_1_m1/Capsule/Out"/>
 		</node>
-		<cont node="./1258189486/P2" ref="./../../Mpl_L_X_mY/Capsule/Inp2" ord="89"/>
-		<node id="Add_vect" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" ord="326"/>
-		<node id="495595319" parent="Edge" ord="327">
-		    <cont node="./(Prop:)P2" ref="./../../Add_vect/Capsule/Inp" ord="92"/>
-		    <cont node="./(Prop:)P1" ref="./../../Mpl_L_X_mY/Capsule/Out" ord="93"/>
+		<cont node="./1258189486/P2" ref="./../../Mpl_L_X_mY/Capsule/Inp2"/>
+		<node id="Add_vect" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar"/>
+		<node id="495595319" parent="Edge">
+		    <cont node="./(Prop:)P2" ref="./../../Add_vect/Capsule/Inp"/>
+		    <cont node="./(Prop:)P1" ref="./../../Mpl_L_X_mY/Capsule/Out"/>
 		</node>
-		<node id="461460394" parent="Edge" ord="328">
-		    <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp" ord="95"/>
-		    <cont node="./(Prop:)P1" ref="./../../Add_vect/Capsule/Out" ord="96"/>
+		<node id="461460394" parent="Edge">
+		    <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
+		    <cont node="./(Prop:)P1" ref="./../../Add_vect/Capsule/Out"/>
 		</node>
-		<node id="976342431" parent="Edge" ord="329">
-		    <cont node="./(Prop:)P1" ref="./../../Mpl_NU_to_0H/Capsule/Out" ord="98"/>
-		    <cont node="./(Prop:)P2" ref="./../../Add_vect/Capsule/Inp" ord="99"/>
-		</node>
-	    </node>
-	    <node id="Scaled_size_WH" parent=":Elem:Vert:Syst:Incaps:State:StateVarC:Scaled_coord_2d" ord="330">
-		<node id="Const_Mtx" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" ord="331">
-		    <cont node="./(Prop:)Value" val="MF,R,2,2 0 1 0 1" ord="102"/>
-		</node>
-		<node id="Mpl_HH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar" ord="332"/>
-		<node id="835909112" parent="Edge" ord="333">
-		    <cont node="./(Prop:)P1" ref="./../../MD_constr_NU/Capsule/Inp" ord="105"/>
-		    <cont node="./(Prop:)P2" ref="./../../Mpl_HH/Capsule/Out" ord="106"/>
-		</node>
-		<node id="127267067" parent="Edge" ord="334">
-		    <cont node="./(Prop:)P1" ref="./../../Mpl_HH/Capsule/Inp1" ord="108"/>
-		    <cont node="./(Prop:)P2" ref="./../../Const_Mtx/Capsule/Out" ord="109"/>
-		</node>
-		<cont node="./1243979483/P1" ref="./../../Mpl_HH/Capsule/Inp2" ord="110"/>
-		<node id="Descrip_Native_size_WH" parent="Description" ord="335">
-		    <cont node="" val="Scaled_size_WH (WH_NU) is Rock size WH in Native Utits (integer Vector)&#10;     Inp_Par_NU is parent size WH width-hieght in Native Units (integer Vector). Width of parent does not influence Rock size.&#10;&#10;WH_NU = ([Const_Mtx] * [Inp_Par_NU]) * (Inp_Scale) * (1/Inp_Par_LU)" ord="112"/>
+		<node id="976342431" parent="Edge">
+		    <cont node="./(Prop:)P1" ref="./../../Mpl_NU_to_0H/Capsule/Out"/>
+		    <cont node="./(Prop:)P2" ref="./../../Add_vect/Capsule/Inp"/>
 		</node>
 	    </node>
-	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_coords_XY" ord="114"/>
-	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Par_Size_WH" ord="115"/>
-	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Size_WH" ord="116"/>
-	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Scale_WH" ord="117"/>
-	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Extender:)Child" id="Vis_Child" ord="118"/>
-	    <node id="271557264" parent="Edge" ord="336">
-		<cont node="./(Prop:)P2" ref="./../../(Elem:)Capsule/(StVarInp:)Inp_Scale_WH/(StInpSocket:)Int" ord="123"/>
-		<cont node="./(Prop:)P1" ref="./../../(Scaled_coord_2d:)Scaled_size_WH/(Elem:)Capsule/(StVarInp:)Inp_Scale" ord="124"/>
+	    <node id="Scaled_size_WH" parent=":Elem:Vert:Syst:Incaps:State:StateVarC:Scaled_coord_2d">
+		<node id="Const_Mtx" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+		    <cont node="./(Prop:)Value" val="MF,R,2,2 0 1 0 1"/>
+		</node>
+		<node id="Mpl_HH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
+		<node id="835909112" parent="Edge">
+		    <cont node="./(Prop:)P1" ref="./../../MD_constr_NU/Capsule/Inp"/>
+		    <cont node="./(Prop:)P2" ref="./../../Mpl_HH/Capsule/Out"/>
+		</node>
+		<node id="127267067" parent="Edge">
+		    <cont node="./(Prop:)P1" ref="./../../Mpl_HH/Capsule/Inp1"/>
+		    <cont node="./(Prop:)P2" ref="./../../Const_Mtx/Capsule/Out"/>
+		</node>
+		<cont node="./1243979483/P1" ref="./../../Mpl_HH/Capsule/Inp2"/>
+		<node id="Descrip_Native_size_WH" parent="Description">
+		    <cont node="" val="Scaled_size_WH (WH_NU) is Rock size WH in Native Utits (integer Vector)&#10;     Inp_Par_NU is parent size WH width-hieght in Native Units (integer Vector). Width of parent does not influence Rock size.&#10;&#10;WH_NU = ([Const_Mtx] * [Inp_Par_NU]) * (Inp_Scale) * (1/Inp_Par_LU)"/>
+		</node>
 	    </node>
-	    <node id="Scale_XY_Const" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC" ord="337">
-		<cont node="./Data/Confirmed/Value" val="MDF 1.0 1.0" ord="132"/>
-		<cont node="./Data/Prepared/Value" val="MF,D,2 1.0 1.0" ord="133"/>
-		<cont node="./Data/Confirmed/Value" val="MF,D,2 1.0 1.0" ord="135"/>
+	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_coords_XY"/>
+	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Par_Size_WH"/>
+	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Size_WH"/>
+	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" id="Inp_Scale_WH"/>
+	    <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Extender:)Child" id="Vis_Child"/>
+	    <node id="271557264" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../(Elem:)Capsule/(StVarInp:)Inp_Scale_WH/(StInpSocket:)Int"/>
+		<cont node="./(Prop:)P1" ref="./../../(Scaled_coord_2d:)Scaled_size_WH/(Elem:)Capsule/(StVarInp:)Inp_Scale"/>
 	    </node>
-	    <node id="1370956867" parent="Edge" ord="338">
-		<cont node="./P1" ref="./../../Scaled_coord_XY/Capsule/Inp_Scale" ord="130"/>
-		<cont node="./(Prop:)P2" ref="./../../Scale_XY_Const/Capsule/Out" ord="136"/>
+	    <node id="Scale_XY_Const" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
+		<cont node="./Data/Confirmed/Value" val="MDF 1.0 1.0"/>
+		<cont node="./Data/Prepared/Value" val="MF,D,2 1.0 1.0"/>
+		<cont node="./Data/Confirmed/Value" val="MF,D,2 1.0 1.0"/>
 	    </node>
-	    <node id="772999819" parent="Edge" ord="339">
-		<cont node="./P1" ref="./../../Capsule/Inp_Size_WH/Int" ord="139"/>
-		<cont node="./P2" ref="./../../Scaled_size_WH/Capsule/Inp" ord="140"/>
+	    <node id="1370956867" parent="Edge">
+		<cont node="./P1" ref="./../../Scaled_coord_XY/Capsule/Inp_Scale"/>
+		<cont node="./(Prop:)P2" ref="./../../Scale_XY_Const/Capsule/Out"/>
 	    </node>
-	    <node id="237970249" parent="Edge" ord="340">
-		<cont node="./P1" ref="./../../Capsule/Inp_Par_Size_WH/Int" ord="142"/>
-		<cont node="./P2" ref="./../../Scaled_coord_XY/Capsule/Inp_Par_LU" ord="143"/>
+	    <node id="772999819" parent="Edge">
+		<cont node="./P1" ref="./../../Capsule/Inp_Size_WH/Int"/>
+		<cont node="./P2" ref="./../../Scaled_size_WH/Capsule/Inp"/>
 	    </node>
-	    <node id="1775164595" parent="Edge" ord="341">
-		<cont node="./P1" ref="./../../Capsule/Inp_coords_XY/Int" ord="145"/>
-		<cont node="./P2" ref="./../../Scaled_coord_XY/Capsule/Inp" ord="146"/>
+	    <node id="237970249" parent="Edge">
+		<cont node="./P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
+		<cont node="./P2" ref="./../../Scaled_coord_XY/Capsule/Inp_Par_LU"/>
 	    </node>
-	    <node id="Drw" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Des:)DrawingVc" ord="342"/>
-	    <node id="443585534" parent="Edge" ord="343">
-		<cont node="./(Prop:)P1" ref="./../../Drw/Capsule/Child" ord="163"/>
-		<cont node="./(Prop:)P2" ref="./../../Capsule/Vis_Child/Int" ord="164"/>
+	    <node id="1775164595" parent="Edge">
+		<cont node="./P1" ref="./../../Capsule/Inp_coords_XY/Int"/>
+		<cont node="./P2" ref="./../../Scaled_coord_XY/Capsule/Inp"/>
 	    </node>
-	    <node id="126865284" parent="Edge" ord="344">
-		<cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Inp_XY" ord="166"/>
-		<cont node="./(Prop:)P1" ref="./../../Scaled_coord_XY/Capsule/Out" ord="167"/>
+	    <node id="Drw" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Des:)DrawingVc"/>
+	    <node id="443585534" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Drw/Capsule/Child"/>
+		<cont node="./(Prop:)P2" ref="./../../Capsule/Vis_Child/Int"/>
 	    </node>
-	    <node id="710752306" parent="Edge" ord="345">
-		<cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Inp_WH" ord="169"/>
-		<cont node="./(Prop:)P1" ref="./../../Scaled_size_WH/Capsule/Out" ord="170"/>
+	    <node id="126865284" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Inp_XY"/>
+		<cont node="./(Prop:)P1" ref="./../../Scaled_coord_XY/Capsule/Out"/>
 	    </node>
-	    <node id="1867224546" parent="Edge" ord="346">
-		<cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Prov_PWH" ord="172"/>
-		<cont node="./(Prop:)P1" ref="./../../Scaled_coord_XY/Capsule/Inp_Par_NU" ord="173"/>
+	    <node id="710752306" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Inp_WH"/>
+		<cont node="./(Prop:)P1" ref="./../../Scaled_size_WH/Capsule/Out"/>
 	    </node>
-	    <node id="1043037733" parent="Edge" ord="347">
-		<cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Prov_PWH" ord="175"/>
-		<cont node="./(Prop:)P1" ref="./../../Scaled_size_WH/Capsule/Inp_Par_NU" ord="176"/>
+	    <node id="1867224546" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Prov_PWH"/>
+		<cont node="./(Prop:)P1" ref="./../../Scaled_coord_XY/Capsule/Inp_Par_NU"/>
 	    </node>
-	    <node id="Inp_Par_Size_HH" parent=":Elem:Vert:Syst:Incaps:State:StateVarC:Vect_to_Y_Vect" ord="348"/>
-	    <node id="631507917" parent="Edge" ord="349">
-		<cont node="./(Prop:)P2" ref="./../../Scaled_size_WH/Capsule/Inp_Par_LU" ord="158"/>
-		<cont node="./(Prop:)P1" ref="./../../Inp_Par_Size_HH/Capsule/Out" ord="194"/>
+	    <node id="1043037733" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Prov_PWH"/>
+		<cont node="./(Prop:)P1" ref="./../../Scaled_size_WH/Capsule/Inp_Par_NU"/>
 	    </node>
-	    <node id="592434651" parent="Edge" ord="350">
-		<cont node="./(Prop:)P1" ref="./../../Capsule/Inp_Par_Size_WH/Int" ord="192"/>
-		<cont node="./(Prop:)P2" ref="./../../Inp_Par_Size_HH/Capsule/Inp" ord="193"/>
+	    <node id="Inp_Par_Size_HH" parent=":Elem:Vert:Syst:Incaps:State:StateVarC:Vect_to_Y_Vect"/>
+	    <node id="631507917" parent="Edge">
+		<cont node="./(Prop:)P2" ref="./../../Scaled_size_WH/Capsule/Inp_Par_LU"/>
+		<cont node="./(Prop:)P1" ref="./../../Inp_Par_Size_HH/Capsule/Out"/>
+	    </node>
+	    <node id="592434651" parent="Edge">
+		<cont node="./(Prop:)P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
+		<cont node="./(Prop:)P2" ref="./../../Inp_Par_Size_HH/Capsule/Inp"/>
 	    </node>
 	</node>
-    </node>
+  </node>
 </node>
