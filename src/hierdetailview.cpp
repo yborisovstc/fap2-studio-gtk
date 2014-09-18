@@ -127,8 +127,9 @@ void HierDetailView::UpdateBtnGoParent()
 {
     Gtk::ToolItem* item = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/GoToParent"));
     Elem* cursor = iDetRp == NULL ? NULL : iDetRp->Model();
+    Elem* parent = cursor->GetParent();
     //Elem* cursor = iRoot->GetNode(iCursor);
-    item->set_sensitive(cursor != NULL && cursor->GetParent() != NULL);
+    item->set_sensitive(cursor != NULL && parent != NULL && !parent->IsRemoved());
 }
 
 void HierDetailView::on_action_insert()
@@ -160,7 +161,8 @@ void HierDetailView::on_action_spec_mut_node()
 void HierDetailView::on_action_goparent()
 {
     Elem* cursor = iDetRp->Model();
-    if (cursor->GetParent() != NULL) {
+    Elem* parent = cursor->GetParent();
+    if (parent != NULL && !parent->IsRemoved()) {
 	SetCursor(cursor->GetParent());
     }
 }
