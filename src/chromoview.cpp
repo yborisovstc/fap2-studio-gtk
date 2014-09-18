@@ -124,6 +124,9 @@ void ChromoTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column,
 		    data = "node";
 		    data += " id:" + node.Attr(ENa_Id);
 		    data += " parent:" + node.Attr(ENa_Parent);
+		    if (node.AttrExists(ENa_MutNode)) {
+			data += " to:" + node.Attr(ENa_MutNode);
+		    }
 		}
 		else if (node.Type() == ENt_Change) {
 		    data = "rename";
