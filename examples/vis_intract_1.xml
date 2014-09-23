@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem" tord="374">
+<node id="Root" parent="Elem" tord="384">
   <node id="Modules" parent="Elem">
     <move id="file:/usr/share/grayb/modules/syst.xml#"/>
     <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
@@ -57,6 +57,9 @@
         <node id="Prov_PW" parent=":Elem:DesComps/StVarOut"/>
         <node id="Prov_PH" parent=":Elem:DesComps/StVarOut"/>
         <node id="BtnPressEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(ExtenderOut:)StVarOut"/>
+        <node id="Note_1" parent="Description">
+          <cont node="" val="BtnPressEvent: tuple, TPL,SI:Type,SI:State,SI:Button"/>
+        </node>
       </node>
       <node id="Fixed" parent="Syst">
         <node node="./Agents" id="WinAgent" parent="AVisFixed"/>
@@ -278,7 +281,9 @@
 
 
 
+
 		    
+              
               
               
               
@@ -410,6 +415,17 @@
             <node id="Held" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
               <cont node="./Data/Prepared/Value" val="SB false"/>
               <cont node="./Data/Confirmed/Value" val="SB false"/>
+              <node id="Get_Event" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
+                <cont node="./Index/Value" val="SS Type"/>
+              </node>
+              <node id="1549184728" parent="Edge">
+                <cont node="./P2" ref="./../../Get_Event/Capsule/Out"/>
+                <cont node="./P1" ref="./../../Data/Capsule/Inp"/>
+              </node>
+              <node id="1945112389" parent="Edge">
+                <cont node="./P2" ref="./../../Get_Event/Capsule/Inp"/>
+                <cont node="./P1" ref="./../../Capsule/Inp/Int/PinData"/>
+              </node>
             </node>
             <node id="415184991" parent="Edge">
               <cont node="./P2" ref="./../../Held/Capsule/Inp"/>

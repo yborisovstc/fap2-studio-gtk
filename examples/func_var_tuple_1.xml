@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem" tord="24">
+<node id="Root" parent="Elem" tord="28">
   <node id="Note" parent="Description">
     <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [IRoot]"/>
   </node>
@@ -11,7 +11,7 @@
   </node>
   <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
     <node id="Data" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar">
-      <cont node="./Value" val="TPL,SI:Int,SF:Float 1 2.0"/>
+      <cont node="./Value" val="TPL,SI:Int,SF:Float,SB:Bool 1 2.0 true"/>
     </node>
     <node id="At" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FAtVar"/>
     <node id="1866000536" parent="Edge">
@@ -19,14 +19,14 @@
       <cont node="./P1" ref="./../../At/Capsule/Inp"/>
     </node>
     <node id="Res" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
-      <cont node="./Value" val="SI 0"/>
+      <cont node="./Value" val="SB false"/>
     </node>
     <node id="1192839534" parent="Edge">
       <cont node="./P2" ref="./../../Res/Capsule/inp"/>
       <cont node="./P1" ref="./../../At/Capsule/out"/>
     </node>
     <node id="Index" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar">
-      <cont node="./Value" val="SS Int"/>
+      <cont node="./Value" val="SS Bool"/>
     </node>
     <node id="734321600" parent="Edge">
       <cont node="./P2" ref="./../../Index/Capsule/out"/>

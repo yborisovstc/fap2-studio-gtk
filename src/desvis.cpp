@@ -389,7 +389,8 @@ bool AVisWidget::OnButtonPress(GdkEventButton* aEvent)
     __ASSERT(estate != NULL);
     estate->Set(aEvent->state);
     // Activate dependencies
-    Elem* eobs = GetNode("./../BtnPressEvent/Int/PinObs");
+    Elem* eobs = GetNode("./../../BtnPressEvent/Int/PinObs");
+    __ASSERT(eobs != NULL);
     RqContext ctx(this);
     TIfRange range = eobs->GetIfi(MDesObserver::Type());
     for (IfIter it = range.first; it != range.second; it++) {
