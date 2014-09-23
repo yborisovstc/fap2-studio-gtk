@@ -128,8 +128,9 @@ AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
 
 void AVisWidget::Construct()
 {
-    iWidget->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK);
+    iWidget->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::POINTER_MOTION_MASK);
     iWidget->signal_button_press_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
+    iWidget->signal_button_release_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
 }
 
 void *AVisWidget::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
@@ -176,6 +177,7 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	bool isdvar = strcmp(aName.c_str(), MDVarGet::Type()) == 0;
 	Elem* cpw = GetNode("./../../Prov_PW");
 	Elem* cph = GetNode("./../../Prov_PH");
+	Elem* bpe = GetNode("./../../BtnPressEvent");
 	if (aCtx->IsInContext(cpw)) {
 	    if (isdvar) {
 		res = (MDVarGet*) &iParProvVarW;
@@ -190,6 +192,11 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	    }
 	    else {
 		res = (MDtGet<Sdata<int> >*) &iParProvVarH;
+	    }
+	}
+	else if (aCtx->IsInContext(bpe)) {
+	    if (isdvar) {
+		res = (MDVarGet*) &mBtnPressEvtProv;
 	    }
 	}
     }

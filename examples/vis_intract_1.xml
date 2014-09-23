@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem" tord="384">
+<node id="Root" parent="Elem" tord="386">
   <node id="Modules" parent="Elem">
     <move id="file:/usr/share/grayb/modules/syst.xml#"/>
     <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
@@ -426,6 +426,8 @@
                 <cont node="./P2" ref="./../../Get_Event/Capsule/Inp"/>
                 <cont node="./P1" ref="./../../Capsule/Inp/Int/PinData"/>
               </node>
+              <cont node="./Data/Prepared/Value" val="SI 0"/>
+              <cont node="./Data/Confirmed/Value" val="SI 0"/>
             </node>
             <node id="415184991" parent="Edge">
               <cont node="./P2" ref="./../../Held/Capsule/Inp"/>
