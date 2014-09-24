@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem" tord="386">
+<node id="Root" parent="Elem" tord="408">
   <node id="Modules" parent="Elem">
     <move id="file:/usr/share/grayb/modules/syst.xml#"/>
     <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
@@ -181,6 +181,14 @@
           <cont node="./P1" ref="./../../Capsule/BtnPressEvent/Int"/>
         </node>
       </node>
+      <node id="Widget_common" parent="Vert">
+        <node id="Btn_event_Press" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+          <cont node="./Value" val="SI 4"/>
+        </node>
+        <node id="Btn_event_Release" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+          <cont node="./Value" val="SI 7"/>
+        </node>
+      </node>
     </node>
     <node id="Simple_vis" parent="Elem">
       <node id="Components" parent="Vert">
@@ -282,7 +290,13 @@
 
 
 
+
+
+
 		    
+              
+              
+              
               
               
               
@@ -421,6 +435,7 @@
               <node id="1549184728" parent="Edge">
                 <cont node="./P2" ref="./../../Get_Event/Capsule/Out"/>
                 <cont node="./P1" ref="./../../Data/Capsule/Inp"/>
+                <cont node="./P1" ref="./../../EQ/Capsule/Inp1"/>
               </node>
               <node id="1945112389" parent="Edge">
                 <cont node="./P2" ref="./../../Get_Event/Capsule/Inp"/>
@@ -428,6 +443,25 @@
               </node>
               <cont node="./Data/Prepared/Value" val="SI 0"/>
               <cont node="./Data/Confirmed/Value" val="SI 0"/>
+              <node id="EQ" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FEQVar"/>
+              <rm node="./(FEQVar:)EQ"/>
+              <node id="EQ" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFEQVar"/>
+              <rm node="./(Edge:)1549184728"/>
+              <node id="643244487" parent="Edge">
+                <cont node="./P2" ref="./../../Get_Event/Capsule/Out"/>
+                <cont node="./P1" ref="./../../EQ/Capsule/Inp1"/>
+              </node>
+              <node id="79834089" parent="Edge">
+                <cont node="./P2" ref="./../../EQ/Capsule/Out"/>
+                <cont node="./P1" ref="./../../Data/Capsule/Inp"/>
+              </node>
+              <node id="Evt_Press" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCVar:)Btn_event_Press"/>
+              <node id="1248134181" parent="Edge">
+                <cont node="./P2" ref="./../../Evt_Press/Capsule/Out"/>
+                <cont node="./P1" ref="./../../EQ/Capsule/Inp2"/>
+              </node>
+              <cont node="./Data/Confirmed/Value" val="SB false"/>
+              <cont node="./Data/Prepared/Value" val="SB false"/>
             </node>
             <node id="415184991" parent="Edge">
               <cont node="./P2" ref="./../../Held/Capsule/Inp"/>

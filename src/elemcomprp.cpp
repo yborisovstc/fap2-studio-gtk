@@ -194,7 +194,7 @@ bool ElemCompRp::DoIsActionSupported(MCrp::Action aAction)
 {
     return (aAction == MCrp::EA_Remove || aAction == MCrp::EA_Rename 
 	    || aAction == MCrp::EA_Save_Chromo && iElem->IsChromoAttached()
-	    || aAction == MCrp::EA_Edit_Content);
+	    || aAction == MCrp::EA_Edit_Content && iElem->IsContChangeable());
 }
 
 void ElemCompRp::DoSetDnDTargSupported(int aTarg)
