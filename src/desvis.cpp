@@ -57,7 +57,7 @@ TInt AVisWidget::ParentSizeProv::Value()
     return iHost->GetParData(iData);
 }
 
-string AVisWidget::ParentSizeProvVar::VarGetIfid() const 
+string AVisWidget::ParentSizeProvVar::VarGetIfid()
 { 
     return MDtGet<Sdata<int> >::Type();
 }
@@ -76,7 +76,7 @@ void *AVisWidget::ParentSizeProvVar::DoGetDObj(const char *aName)
 }
 
 // Data provider for GdkEventButton
-string AVisWidget::EventButtonProv::VarGetIfid() const 
+string AVisWidget::EventButtonProv::VarGetIfid()
 { 
     return MDtGet<NTuple>::Type();
 }

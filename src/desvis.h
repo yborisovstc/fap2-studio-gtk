@@ -82,7 +82,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	class ParentSizeProvVar: public ParentSize, public MDVarGet, public MDtGet<Sdata<int> > {
 	    public:
 	    // From MDVarGet
-	    virtual string VarGetIfid() const;
+	    virtual string VarGetIfid();
 	    virtual void *DoGetDObj(const char *aName);
 	    // From MDtGet
 	    virtual void DtGet(Sdata<int>& aData);
@@ -91,7 +91,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	class EventButtonProv: public DataProv, public MDVarGet, public MDtGet<NTuple> {
 	    public:
 	    // From MDVarGet
-	    virtual string VarGetIfid() const;
+	    virtual string VarGetIfid();
 	    virtual void *DoGetDObj(const char *aName);
 	    // From MDtGet
 	    virtual void DtGet(NTuple& aData);
