@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem" tord="408">
+<node id="Root" parent="Elem" tord="410">
   <node id="Modules" parent="Elem">
     <move id="file:/usr/share/grayb/modules/syst.xml#"/>
     <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
@@ -187,6 +187,9 @@
         </node>
         <node id="Btn_event_Release" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
           <cont node="./Value" val="SI 7"/>
+        </node>
+        <node id="Color" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+          <cont node="./Value" val="TPL,SI:Red,SI:Green,SI:Blue"/>
         </node>
       </node>
     </node>

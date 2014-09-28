@@ -583,6 +583,23 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
     return res;
 }
 
+bool IsParentSafe(Elem* aTarg, const string& aParentUri)
+{
+    bool res = true;
+    __ASSERT(!aParentUri.empty());
+    // Checking if parent rank is correct
+    Elem* parent = aTarg->GetNode(aParentUri);
+    __ASSERT(parent != NULL);
+    Rank targrank;
+    Rank prntrank;
+    aTarg->GetRank(prntrank, parent->Chromos().Root());
+    aTarg->GetLRank(targrank, true);
+    if (prntrank > targrank && !prntrank.IsRankOf(targrank)) {
+	res = false;
+    }
+    return res;
+}
+
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aTargetUri)
 {
     bool err = false;
@@ -600,6 +617,8 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	    rmut.SetAttr(ENa_MutNode, snodeuri);
 	}
 	__ASSERT(!aParentUri.empty());
+	// Checking if parent rank is correct
+	bool prntissafe = IsParentSafe(mutelem, aParentUri);
 	if (!aParentUri.empty()) {
 	    rmut.SetAttr(ENa_Parent, aParentUri);
 	}
