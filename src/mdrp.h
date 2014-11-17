@@ -30,14 +30,13 @@ class MDrp: public MBase
 	virtual tSigCompSelected SignalCompSelected() = 0;
 	virtual tSigCompSelected SignalCompActivated() = 0;
 	virtual tSigDragMotion SignalDragMotion() = 0;
-	virtual tSigAttention SignalAttention() {return mSigAttention;};
+	virtual tSigAttention SignalAttention() = 0;
 	virtual tSigReloadRequired SignalReloadRequired() {return mSigReloadRequired;};
 	virtual void Udno() = 0;
 	virtual bool IsActionSupported(Elem* aComp, const MCrp::Action& aAction) {return false;};
 	virtual bool IsActionSupported(const Action& aAction) {return false;};
 	virtual void OnActionInsert() {};
     protected:
-	tSigAttention mSigAttention;
 	tSigReloadRequired mSigReloadRequired;
 };
 

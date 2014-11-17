@@ -56,6 +56,9 @@ static const Glib::ustring K_Att_DeattachedNode =
 static const Glib::ustring K_Att_DeattachedParent = 
 "Parent node is deattached so doesn't have chromosome and cannot be inherited.";
 
+static const Glib::ustring K_Att_RefToBiggestRank = 
+"Referenced node rank is higher than the rank of mutated node";
+
 
 /*
    static const Gtk::TargetEntry targetentries[] =
@@ -577,13 +580,23 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 	    if (ena_pheno) {
 		res = res->GetCommonOwner(aMnode);
 	    }
+	    // Set mutated node as owner of changed node if mutation type is owner based and 
+	    // the node selected for mutation is changed node itself
+	    if (res == aNode && IsMutOwnerBased(aMutType)) {
+		res = aMnode;
+	    }
 	}
     }
     mSignalAttention.emit(att);
     return res;
 }
 
-bool IsParentSafe(Elem* aTarg, const string& aParentUri)
+bool ElemDetRp::IsMutOwnerBased(TNodeType aMut) const 
+{
+    return aMut == ENt_Move || aMut == ENt_Rm || aMut == ENt_Change;
+}
+
+bool ElemDetRp::IsParentSafe(Elem* aTarg, const string& aParentUri)
 {
     bool res = true;
     __ASSERT(!aParentUri.empty());
@@ -593,7 +606,7 @@ bool IsParentSafe(Elem* aTarg, const string& aParentUri)
     Rank targrank;
     Rank prntrank;
     aTarg->GetRank(prntrank, parent->Chromos().Root());
-    aTarg->GetLRank(targrank, true);
+    aTarg->GetLRank(targrank);
     if (prntrank > targrank && !prntrank.IsRankOf(targrank)) {
 	res = false;
     }
@@ -718,20 +731,25 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 	    }
 	    else {
 		// Pheno disabled, try to shift comp to resolve dep
-		if (iElem->IsComp(depnode)) {
+		if (iElem->IsComp(depnode) || iElem == depnode) {
 		    ShiftCompToEnd(iElem, mutelem != iElem ? mutelem: node);
+		}
+		else {
+		    mutelem = NULL;
+		    mSignalAttention.emit(K_Att_RefToBiggestRank);
 		}
 	    }
 	}
     }
-    GUri nuri;
-    node->GetUri(nuri, mutelem);
-    MChromo& mut = iElem->Mutation();
-    ChromoNode change = mutelem->Mutation().Root().AddChild(ENt_Cont);
-    change.SetAttr(ENa_MutNode, nuri.GetUri(true));
-    change.SetAttr(aRef ? ENa_Ref : ENa_MutVal, aNewContent);
-    mutelem->Mutate();
-    Refresh();
+    if (mutelem != NULL) {
+	GUri nuri;
+	node->GetUri(nuri, mutelem);
+	ChromoNode change = mutelem->Mutation().Root().AddChild(ENt_Cont);
+	change.SetAttr(ENa_MutNode, nuri.GetUri(true));
+	change.SetAttr(aRef ? ENa_Ref : ENa_MutVal, aNewContent);
+	mutelem->Mutate();
+	Refresh();
+    }
 }
 
 void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestUri)
@@ -1019,3 +1037,8 @@ void ElemDrp::OnActionInsert()
 {
     iRp->DoOnActionInsert();
 }
+
+MDrp::tSigAttention ElemDrp::SignalAttention() 
+{
+    return iRp->mSignalAttention;
+};

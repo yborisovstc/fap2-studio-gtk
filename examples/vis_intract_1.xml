@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem" tord="410">
+<node id="Root" parent="Elem" tord="412">
   <node id="Modules" parent="Elem">
     <move id="file:/usr/share/grayb/modules/syst.xml#"/>
     <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
@@ -31,6 +31,17 @@
         <node id="Parent" parent=":Elem:SysComps/ConnPoint">
           <cont node="./Required" val="MVisChild"/>
           <cont node="./Provided" val="MVisContainer"/>
+        </node>
+      </node>
+      <node id="Widget_common" parent="Vert">
+        <node id="Btn_event_Press" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+          <cont node="./Value" val="SI 4"/>
+        </node>
+        <node id="Btn_event_Release" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+          <cont node="./Value" val="SI 7"/>
+        </node>
+        <node id="Color" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+          <cont node="./Value" val="TPL,SI:Red,SI:Green,SI:Blue"/>
         </node>
       </node>
       <node id="Widget" parent="Syst">
@@ -179,17 +190,6 @@
         <node id="1429823494" parent="Edge">
           <cont node="./P2" ref="./../../Drw/BtnPressEvent"/>
           <cont node="./P1" ref="./../../Capsule/BtnPressEvent/Int"/>
-        </node>
-      </node>
-      <node id="Widget_common" parent="Vert">
-        <node id="Btn_event_Press" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-          <cont node="./Value" val="SI 4"/>
-        </node>
-        <node id="Btn_event_Release" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-          <cont node="./Value" val="SI 7"/>
-        </node>
-        <node id="Color" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-          <cont node="./Value" val="TPL,SI:Red,SI:Green,SI:Blue"/>
         </node>
       </node>
     </node>
@@ -485,6 +485,8 @@
             <cont node="./P1" ref="./../../Drw/Capsule/BtnPressEvent"/>
             <cont node="./P2" ref="./../../PullingS/Capsule/BtnPressEvent"/>
           </node>
+          <node id="Color_when_pulling" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCVar:)Color"/>
+          <rm node="./(StateVarC:)Pulling"/>
         </node>
       </node>
     </node>

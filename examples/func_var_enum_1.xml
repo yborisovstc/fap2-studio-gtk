@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem" tord="61">
+  <node id="Note" parent="Description">
+    <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [IRoot]"/>
+  </node>
+  <node id="Modules" parent="Elem">
+    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
+    <move id="file:/usr/share/grayb/modules/data.xml#"/>
+    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+  </node>
+  <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Arg1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar">
+      <cont node="./Value" val="E,One,Two,Three Two"/>
+    </node>
+    <node id="Arg2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar">
+      <cont node="./Value" val="E,One,Two,Three One"/>
+      <cont node="./Value" val="E,One,Two,Three Two"/>
+      <cont node="./Value" val="E,One,Two,Three One"/>
+      <cont node="./Value" val="E,One,Two,Three Two"/>
+      <cont node="./Value" val="E,One,Two,Three,Four Two"/>
+    </node>
+    <node id="EQ" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FEQVar"/>
+    <node id="58453058" parent="Edge">
+      <cont node="./P2" ref="./../../Arg1/Capsule/out"/>
+      <cont node="./P1" ref="./../../EQ/Capsule/Inp1"/>
+    </node>
+    <node id="472056891" parent="Edge">
+      <cont node="./P2" ref="./../../Arg2/Capsule/out"/>
+      <cont node="./P1" ref="./../../EQ/Capsule/Inp2"/>
+      <cont node="./P2" ref="./../../Arg2/Capsule/out"/>
+      <cont node="./P1" val=""/>
+      <cont node="./P1" ref="./../../EQ/Capsule/Inp2"/>
+      <cont node="./P1" val=""/>
+    </node>
+    <node id="Result" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+      <cont node="./Value" val="SB false"/>
+    </node>
+    <node id="1925182352" parent="Edge">
+      <cont node="./P2" ref="./../../EQ/Capsule/out"/>
+      <cont node="./P1" ref="./../../Result/Capsule/inp"/>
+    </node>
+    <node id="ArgBase" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataST:)DataSTVar">
+      <cont node="./Value" val="ffdfd"/>
+      <cont node="./Value" val="Three"/>
+      <cont node="./Type" val="E,One,Two,Three"/>
+      <cont node="./Value" val=""/>
+    </node>
+    <node id="ArgT1" parent="./(DataSTVar:)ArgBase">
+      <cont node="./Value" val="Three"/>
+      <cont node="./Value" val="Two"/>
+      <cont node="./Value" val="One"/>
+      <cont node="./Value" val="Two"/>
+    </node>
+    <node id="36262357" parent="Edge">
+      <cont node="./P2" ref="./../../ArgT1/Capsule/out"/>
+      <cont node="./P1" ref="./../../EQ/Capsule/Inp2"/>
+    </node>
+    <node id="ResT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataST:)DataSTVar">
+      <cont node="./Type" val="SB"/>
+    </node>
+    <rm node="./(Edge:)1925182352"/>
+    <node id="1417545824" parent="Edge">
+      <cont node="./P2" ref="./../../EQ/Capsule/out"/>
+      <cont node="./P1" val=""/>
+      <cont node="./P1" val=""/>
+      <cont node="./P1" ref="./../../ResultT/Capsule/inp"/>
+    </node>
+    <rm node="./(Edge:)472056891"/>
+    <rm node="./(DataSTVar:)ResT"/>
+    <node id="ResultT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataST:)DataTTVar">
+      <cont node="./Type" val="SB"/>
+    </node>
+    <rm node="./(Edge:)1417545824"/>
+    <node id="558997028" parent="Edge">
+      <cont node="./P2" ref="./../../EQ/Capsule/out"/>
+      <cont node="./P1" ref="./../../ResultT/Capsule/inp"/>
+    </node>
+  </node>
+</node>

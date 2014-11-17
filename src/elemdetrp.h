@@ -63,6 +63,8 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	bool DoIsActionSupported(Elem* aComp, const MCrp::Action& aAction);
 	void DoOnActionInsert();
 	void ShiftCompToEnd(Elem* aOwner, Elem* aComp);
+	bool IsParentSafe(Elem* aTarg, const string& aParentUri);
+	bool IsMutOwnerBased(TNodeType aMut) const;
     protected:
 	MSEnv& mStEnv;
 	// Compact representations  provider
@@ -99,7 +101,7 @@ class ElemDrp: public MDrp
 	virtual tSigCompSelected SignalCompSelected();
 	virtual tSigCompSelected SignalCompActivated();
 	virtual tSigDragMotion SignalDragMotion();
-	virtual tSigAttention SignalAttention() {return iRp->mSignalAttention;};
+	virtual tSigAttention SignalAttention();
 	virtual tSigReloadRequired SignalReloadRequired() {return iRp->mSigReloadRequired;};
 	virtual bool IsActionSupported(Elem* aComp, const MCrp::Action& aAction) {return iRp->DoIsActionSupported(aComp, aAction);};
 	virtual void Udno();

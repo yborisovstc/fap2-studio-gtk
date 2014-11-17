@@ -44,6 +44,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual tSigCompSelected SignalCompSelected();
 	virtual tSigCompActivated SignalCompActivated();
 	virtual tSigDragMotion SignalDragMotion();
+	virtual tSigAttention SignalAttention() {return mSignalAttention;};
 	virtual void Udno();
 	virtual void OnActionInsert();
     protected:
