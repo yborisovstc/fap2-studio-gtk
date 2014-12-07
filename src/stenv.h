@@ -36,6 +36,8 @@ class StSettings: public MStSettings
 	virtual void* DoGetSetting(TStSett aSettId);
     protected:
 	 StSetting<bool> mEnablePhenoModif;
+	 // Enable mutation even if broken critical deps are detected
+	 StSetting<bool> mEnableMutWithCritDep;
 	 StSetting<Glib::ustring> mPinnedMutNode;
 	 StSetting<int> mChromoLim;
 	 StSetting<Glib::ustring> mStModulesPath;

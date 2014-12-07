@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem" tord="22">
+  <node id="Note" parent="Description">
+    <cont val="This is model template for incapsulated system. Add required modules to [Modules] node and start creating model in [IRoot]"/>
+    <cont node="" val="This is test of chromo invariant  againts mutations order, ref uc_046&#10;USER tries to change Edge1/P2 to Sys_3, but this breaks safety&#10;SYSTEM has to reorder mutations to keep safety&#10;Also the second dependency is from mut [cont ref=./../Edge1/P1] to&#10;Edge1 which gets reordered. So SYSTEM has to shift this mut also&#10;HOW_TO_TEST: reconnect edge from Sys_2 to Sys_3, save as, reload"/>
+  </node>
+  <node id="Modules" parent="Elem">
+    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
+  </node>
+  <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Sys_1" parent="Syst">
+      <node id="ConnPoint" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(ConnPointBase:)ConnPoint">
+        <cont node="./Provided" val="Slave"/>
+        <cont node="./Required" val="Master"/>
+      </node>
+    </node>
+    <node id="Sys_2" parent="Syst">
+      <node id="ConnPoint" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(ConnPointBase:)ConnPoint">
+        <cont node="./Provided" val="Master"/>
+        <cont node="./Required" val="Slave"/>
+      </node>
+    </node>
+    <node id="Edge1" parent="Edge">
+      <cont node="./P2" ref="./../../Sys_2/ConnPoint"/>
+      <cont node="./P1" ref="./../../Sys_1/ConnPoint"/>
+    </node>
+    <node id="p1" parent="Prop">
+      <cont ref="./../Edge1/P1"/>
+    </node>
+    <node id="Sys_3" parent="./(Syst:)Sys_2"/>
+  </node>
+</node>

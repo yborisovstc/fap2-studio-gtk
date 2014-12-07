@@ -20,6 +20,7 @@ class MStSettings
     public:
 	enum TStSett {
 	    ESts_EnablePhenoModif,
+	    ESts_EnableMutWithCritDep,
 	    ESts_PinnedMutNode,
 	    ESts_ModulesPath,
 	    ESts_ChromoLim // Order of the final mut in chromo to be loaded

@@ -446,6 +446,8 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
     aUnsafe = false;
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
+    MStSetting<bool>& ena_mut_critdeps_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_mut_critdeps_s);
+    bool ena_mut_critdeps= ena_pheno_s.Get(ena_mut_critdeps);
     if (ena_pheno) {
 	MStSetting<Glib::ustring>& pinned_mut_node_s = mStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node_s);
 	const Glib::ustring& pinned_mut_node = pinned_mut_node_s.Get(pinned_mut_node);
@@ -482,16 +484,17 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 		rank = deprank;
 	    }
 	}
-	/* Don't block mut even crit dep. 
-	   if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
-	   att = Glib::ustring::compose(K_Att_CritDep, res->GetUri());
-	   res = NULL;
-	   }
-	   */
+	// Block mut if crit dep and such mutation is not enabled. 
 	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
-	    att = Glib::ustring::compose(K_Att_CritDep_1, res->GetUri());
-	    res = aMnode;
-	    aUnsafe = true;
+	    if (ena_mut_critdeps) {
+		att = Glib::ustring::compose(K_Att_CritDep_1, res->GetUri());
+		res = aMnode;
+		aUnsafe = true;
+	    }
+	    else {
+		att = Glib::ustring::compose(K_Att_CritDep, res->GetUri());
+		res = NULL;
+	    }
 	}
 #if 0
 	// [YB] Verbose handling of error is disabled at the moment, commented out
@@ -719,6 +722,7 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
     __ASSERT(mutelem != NULL);
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
+    /* This functionality is implemented on system level, see option of chromo invariant with regards to muts position
     if (aRef) {
 	Elem* rnode = node->GetNode(aNewContent);
 	if (aRef && !mutelem->IsRefSafe(rnode)) {
@@ -741,6 +745,7 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 	    }
 	}
     }
+    */
     if (mutelem != NULL) {
 	GUri nuri;
 	node->GetUri(nuri, mutelem);

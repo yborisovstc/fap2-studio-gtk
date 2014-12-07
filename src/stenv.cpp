@@ -32,6 +32,7 @@ void* StSettings::DoGetSetting(TStSett aSettId)
 	case ESts_PinnedMutNode: return  &mPinnedMutNode; 
 	case ESts_ModulesPath: return  &mStModulesPath; 
 	case ESts_ChromoLim: return  &mChromoLim;
+	case ESts_EnableMutWithCritDep: return  &mEnableMutWithCritDep;
 	default: return NULL;
     }
 }

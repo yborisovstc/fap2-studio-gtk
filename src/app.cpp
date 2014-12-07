@@ -214,6 +214,9 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     pinned_mut_node.Set("");
     MStSetting<Glib::ustring>& st_modules_path = iStEnv->Settings().GetSetting(MStSettings::ESts_ModulesPath, st_modules_path);
     st_modules_path.Set("/usr/share/fap2-studio-gtk/modules/");
+    // Enable mutation even if broken critical deps are detected
+    MStSetting<bool>& ena_mut_critdeps = iStEnv->Settings().GetSetting(MStSettings::ESts_EnableMutWithCritDep, ena_mut_critdeps);
+    ena_mut_critdeps.Set(false);
     // Create main window
     iMainWnd = new MainWnd();
     iMainWnd->maximize();
@@ -485,6 +488,8 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     MStSetting<bool>& ena_pheno = iStEnv->Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno);
     bool ena_pheno_val = ena_pheno.Get(ena_pheno_val);
     iEnv->ChMgr()->SetEnablePhenoModif(ena_pheno_val);
+    // Enable by default support of chromo invariance with respect to muts position
+    iEnv->ChMgr()->SetEnableReposMuts(true);
     iRepair = false;
     iDesObserver->SetDes(iEnv);
     iEnv->ConstructSystem();
