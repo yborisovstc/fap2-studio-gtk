@@ -474,7 +474,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 	aMnode->GetRank(mnoderank, aMnode->Chromos().Root());
 	Rank rank = noderank;
 	// Checking critical deps
-	Elem::TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
+	TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
 	//Elem::TMDep dep = aNode->GetMajorDep();
 	if (dep.first.first != NULL) {
 	    Rank deprank;
@@ -585,9 +585,15 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 	    }
 	    // Set mutated node as owner of changed node if mutation type is owner based and 
 	    // the node selected for mutation is changed node itself
+	    /*
 	    if (res == aNode && IsMutOwnerBased(aMutType)) {
-		res = aMnode;
+		res = aNode->GetMan();
 	    }
+	    */
+	    // The only owner or node itself is allowed to apply mutation
+	    // Also take into account if the mut is owner based
+	    Elem* pnode = IsMutOwnerBased(aMutType) ? aNode->GetMan() : aNode;
+	    res = res->GetCommonOwner(pnode);
 	}
     }
     mSignalAttention.emit(att);
@@ -682,29 +688,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     __ASSERT(dnode != NULL);
     bool unsafe = false;
     Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Rm, unsafe);
-#if 0
-    // Checking mutation safety
-    bool ismutsafe = iElem->IsMutSafe(dnode);
-    Elem::TMDep mdep = dnode->GetMajorDep();
-    Elem* mnode = mdep.first.first;
-    if (mnode == NULL || ismutsafe) {
-	mnode = iElem;
-    }
-    Elem* mutelem = mnode->GetAttachingMgr();
-    int dres = RESPONSE_OK;
-    if (!ismutsafe) {
-	if (ena_pheno) {
-	    MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_Rm_F1, mnode->GetUri()), 
-		    false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
-	    dres = dlg->run();
-	    delete dlg;
-	}
-	    mSignalAttention.emit(K_Att_Rld);
-	}
-    }
-#endif
-    //if (dres == RESPONSE_OK) {
-    if (true) {
+    if (mutelem != NULL) {
 	GUri nuri;
 	dnode->GetUri(nuri, mutelem);
 	ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
@@ -912,7 +896,7 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     rmut.SetAttr(ENa_Id, iCompSelected->Name() + "~tmp");
     iElem->Mutate();
     // Remove node originated by pheno modif
-    Elem::TMDep dep;
+    TMDep dep;
     iCompSelected->GetDep(dep, ENa_Id, ETrue);
     Elem* depnode = dep.first.first;
     ChromoNode mutr = depnode->Mutation().Root();

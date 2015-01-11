@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem" tord="9">
+  <node id="Note" parent="Description">
+    <cont node="" val="This is the test of system invariance with regard of chromo nodes position.&#10;    Mutation of V_1 creation has postion before that of V_2. &#10;    How to test: create in V_1 component inherited from V_2_1.&#10;    Then save to temp chromo and reload - system has to move V_1 over V_2"/>
+  </node>
+  <node id="Modules" parent="Elem">
+    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
+    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
+  </node>
+  <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="V_1" parent="Vert"/>
+    <node id="V_2" parent="Vert">
+      <node id="V_2_1" parent="Vert"/>
+    </node>
+  </node>
+</node>

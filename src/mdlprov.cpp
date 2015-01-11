@@ -24,6 +24,9 @@ Elem* MdlProv::CreateNode(const string& aType, const string& aName, Elem* aMan, 
     else if (aType.compare(AVisDrawing::Type()) == 0) {
 	res = new AVisDrawing(aName, aMan, aEnv);
     }
+    else if (aType.compare(AVisDrawingElem::Type()) == 0) {
+	res = new AVisDrawingElem(aName, aMan, aEnv);
+    }
     if (res != NULL) {
 	Elem* parent = GetNode(aType);
 	if (parent != NULL) {
@@ -61,6 +64,10 @@ Elem* MdlProv::GetNode(const string& aUri){
 	    parent = prov->GetNode("AVisWidget");
 	    res = new AVisDrawing(NULL, iEnv);
 	}
+	else if (aUri.compare(AVisDrawingElem::Type()) == 0) {
+	    parent = prov->GetNode("AVisWidget");
+	    res = new AVisDrawingElem(NULL, iEnv);
+	}
 	if (res != NULL) {
 	    if (parent != NULL) {
 		parent->AppendChild(res);
@@ -76,5 +83,9 @@ void MdlProv::AppendNodesInfo(vector<string>& aInfo)
 {
     aInfo.push_back(ADesSync::Type());
     aInfo.push_back(AWindow::Type());
+    aInfo.push_back(AVisWidget::Type());
+    aInfo.push_back(AVisFixed::Type());
+    aInfo.push_back(AVisDrawing::Type());
+    aInfo.push_back(AVisDrawingElem::Type());
 }
 

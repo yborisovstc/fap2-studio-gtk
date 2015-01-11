@@ -100,6 +100,9 @@ string AVisWidget::PEType()
     return Elem::PEType() + GUri::KParentSep + Type();
 }
 
+bool AVisWidget::mInit = false;
+AVisWidget::tStatesMap  AVisWidget::mStatesMap;
+
 AVisWidget::AVisWidget(const string& aName, Elem* aMan, MEnv* aEnv): Elem(aName, aMan, aEnv),
     iWidget(NULL), iX(0), iY(0), iH(10), iW(10)
 {
@@ -111,6 +114,16 @@ AVisWidget::AVisWidget(const string& aName, Elem* aMan, MEnv* aEnv): Elem(aName,
     iParProvVarH.SetData(ParentSizeProv::ED_H, this);
     mBtnPressEvtProv.SetHost(this);
     mBtnPressEvt.FromString(KBtnPressEvent_Srep);
+    // TODO [YB] To use the published data "Widget_State" from module ../Widged_common
+    // instead of the internal constants.
+    if (!mInit) {
+	mStatesMap[Gtk::STATE_NORMAL] = string("Normal");
+	mStatesMap[Gtk::STATE_ACTIVE] = string("Active");
+	mStatesMap[Gtk::STATE_PRELIGHT] = string("Prelight");
+	mStatesMap[Gtk::STATE_SELECTED] = string("Selected");
+	mStatesMap[Gtk::STATE_INSENSITIVE] = string("Insensitive");
+	mInit = true;
+    }
 }
 
 AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
@@ -128,9 +141,11 @@ AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
 
 void AVisWidget::Construct()
 {
-    iWidget->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::POINTER_MOTION_MASK);
-    iWidget->signal_button_press_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
-    iWidget->signal_button_release_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
+    if (iWidget != NULL) {
+	iWidget->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::POINTER_MOTION_MASK);
+	iWidget->signal_button_press_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
+	iWidget->signal_button_release_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
+    }
 }
 
 void *AVisWidget::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
@@ -213,13 +228,13 @@ Widget& AVisWidget::GetChild()
     return *iWidget;
 }
 
-TInt AVisWidget::GetParData(ParentSizeProv::TData aData)
+TInt AVisWidget::GetParData(ParentSize::TData aData)
 {
     TInt res = 0;
     // Update parent of widget. It is requied because there is no notification of parent change or
     // connection to parent change. In fact the observation via HandleCompChanged give us only
     // info of local connection change, but not the whole connection chain change. Ref grayb uc_010
-    Container* parent = iWidget->get_parent();
+    Container* parent = iWidget != NULL ? iWidget->get_parent() : NULL;
     if (parent == NULL) {
 	Elem* eprntcp = GetNode("./../../Child");
 	if (eprntcp != NULL) {
@@ -269,18 +284,20 @@ TBool AVisWidget::HandleCompChanged(Elem& aContext, Elem& aComp)
     if (eprntcp != NULL) {
 	if (eprntcp == &aComp || eprntcp->IsComp(&aComp)) {
 	    MVisContainer* mcont = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
-	    if (mcont != NULL) {
-		if (iWidget->get_parent() == NULL) {
-		    Container& cont = mcont->GetContainer();
-		    cont.add(*iWidget);
+	    if (iWidget != NULL) {
+		if (mcont != NULL) {
+		    if (iWidget->get_parent() == NULL) {
+			Container& cont = mcont->GetContainer();
+			cont.add(*iWidget);
+		    }
+		    else {
+			Logger()->Write(MLogRec::EErr, this, "Attempt to attach already attached child");
+			res = EFalse;
+		    }
 		}
-		else {
-		    Logger()->Write(MLogRec::EErr, this, "Attempt to attach already attached child");
-		    res = EFalse;
+		else if (iWidget->get_parent() != NULL) {
+		    iWidget->get_parent()->remove(*iWidget);
 		}
-	    }
-	    else if (iWidget->get_parent() != NULL) {
-		iWidget->get_parent()->remove(*iWidget);
 	    }
 	}
     }
@@ -329,19 +346,47 @@ bool AVisWidget::GetDataInt(const string& aInpUri, int& aData)
     return res;
 }
 
-void AVisWidget::OnUpdated_X(int aX)
+bool AVisWidget::GetInpState(const string& aInpUri, Gtk::StateType& aData)
+{
+    bool res = false;
+    Elem* einp = Host()->GetNode(aInpUri);
+    if (einp != NULL) {
+	// Trying variable data
+	MDVarGet* mvget = (MDVarGet*) einp->GetSIfiC(MDVarGet::Type(), this);
+	if (mvget != NULL) {
+	    MDtGet<Enum>* mdata = mvget->GetDObj(mdata);
+	    if (mdata != NULL) {
+		Enum sd;
+		mdata->DtGet(sd);
+		if (sd.mValid) {
+		    Gtk::StateType data = (Gtk::StateType) sd.mData;
+		    if (sd.mSet.at(data) == mStatesMap.at(data)) {
+			aData = data;
+		    }
+		}
+		res = true;
+	    }
+	}
+    }
+    else {
+	Logger()->Write(MLogRec::EErr, this, "Input [%s] not exists", aInpUri.c_str());
+    }
+    return res;
+}
+
+void AVisWidget::OnUpdated_X(int aOldData)
 {
 }
 
-void AVisWidget::OnUpdated_Y(int aY)
+void AVisWidget::OnUpdated_Y(int aOldData)
 {
 }
 
-void AVisWidget::OnUpdated_W(int aY)
+void AVisWidget::OnUpdated_W(int aOldData)
 {
 }
 
-void AVisWidget::OnUpdated_H(int aY)
+void AVisWidget::OnUpdated_H(int aOldData)
 {
 }
 
@@ -351,32 +396,38 @@ void AVisWidget::OnUpdated()
     // Data providers updated - update the data
     // X coord
     bool res;
-    int sX;
+    int sX, oldX = iX;
     res = GetDataInt("./Inp_X/Int/PinData", sX);
     if (res && sX != iX) {
 	iX = sX;
-	OnUpdated_X(iX);
+	OnUpdated_X(oldX);
     }
     // Y coord
-    int sY;
+    int sY, oldY = iY;
     res = GetDataInt("./Inp_Y/Int/PinData", sY);
     if (res && sY != iY) {
 	iY = sY;
-	OnUpdated_Y(iY);
+	OnUpdated_Y(oldY);
     }
     // Width
-    int sW;
+    int sW, oldW = iW;
     res = GetDataInt("./Inp_W/Int/PinData", sW);
     if (res && sW != iW) {
 	iW = sW;
-	OnUpdated_W(iW);
+	OnUpdated_W(oldW);
     }
     // Heigth
-    int sH;
+    int sH, oldH = iH;
     res = GetDataInt("./Inp_H/Int/PinData", sH);
     if (res && sH != iH) {
 	iH = sH;
-	OnUpdated_H(iH);
+	OnUpdated_H(oldH);
+    }
+    // State
+    Gtk::StateType state;
+    res = GetInpState("./Inp_State/Int/PinData", state);
+    if (res && iWidget != NULL && state != iWidget->get_state()) {
+	iWidget->set_state(state);
     }
 }
 
@@ -385,6 +436,11 @@ void AVisWidget::OnActivated()
 }
 
 bool AVisWidget::OnButtonPress(GdkEventButton* aEvent)
+{
+    return HandleButtonPress(aEvent);
+}
+
+bool AVisWidget::HandleButtonPress(GdkEventButton* aEvent)
 {
     // Cache event value
     iBtnPressEvent = aEvent->type;
@@ -406,6 +462,7 @@ bool AVisWidget::OnButtonPress(GdkEventButton* aEvent)
 	    mobs->OnUpdated();
 	}
     }
+    return false;
 }
 
 
@@ -467,18 +524,29 @@ void AVisFixed::OnChildChanged(Widget* aChild, MVisChild::TPar aPar)
 
 // Agent of drawing area
 
-VisDrwArea::VisDrwArea(): DrawingArea()
+VisDrwArea::VisDrwArea(AVisWidget* aHost): DrawingArea(), mHost(aHost)
 {
 }
 
 bool VisDrwArea::on_expose_event(GdkEventExpose* aEvent)
 {
+    /*
     DrawingArea::on_expose_event(aEvent);
     Glib::RefPtr<Gdk::Window> drw = get_window();
     Glib::RefPtr<Gtk::Style> style = get_style(); 	
     Glib::RefPtr<Gdk::GC> gc = style->get_fg_gc(get_state());
     Allocation alc = get_allocation();
-    drw->draw_rectangle(gc, false, 0, 0, alc.get_width() - 1, alc.get_height() - 1);
+    drw->draw_rectangle(gc, true, 0, 0, alc.get_width() - 1, alc.get_height() - 1);
+    */
+    Elem* eobs = mHost->GetNode("./../../DrawingArea");
+    __ASSERT(eobs != NULL);
+    Elem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
+    for (Elem::IfIter it = range.first; it != range.second; it++) {
+	MVisDrawingElem* mobs = (MVisDrawingElem*) (*it);
+	if (mobs != NULL) {
+	    mobs->OnExpose(aEvent);
+	}
+    }
 }
 
 void VisDrwArea::on_size_allocate(Allocation& aAlloc)
@@ -502,8 +570,9 @@ AVisDrawing::AVisDrawing(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidge
 {
     SetEType(Type(), AVisWidget::PEType());
     SetParent(Type());
-    iWidget = new VisDrwArea(); 
+    iWidget = new VisDrwArea(this); 
     iWidget->set_size_request(iW, iH);
+    iWidget->set_name("AVisDrawing");
     iWidget->show();
     Construct();
 }
@@ -512,7 +581,7 @@ AVisDrawing::AVisDrawing(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
 {
     SetEType(AVisWidget::PEType());
     SetParent(AVisWidget::PEType());
-    iWidget = new VisDrwArea(); 
+    iWidget = new VisDrwArea(this); 
     iWidget->set_size_request(iW, iH);
     iWidget->show();
 }
@@ -523,10 +592,21 @@ void *AVisDrawing::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext
     if (strcmp(aName, Type()) == 0) {
 	res = this;
     } 
+    else if (strcmp(aName, MVisDrawingArea::Type()) == 0) {
+	res = (MVisDrawingArea*) this;
+    } 
     else {
 	res = AVisWidget::DoGetObj(aName, aIncUpHier);
     }
     return res;
+}
+
+Elem::TIfRange AVisDrawing::GetDrawingElems()
+{
+    Elem* eobs = GetNode("./../../DrawingArea");
+    __ASSERT(eobs != NULL);
+    Elem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
+    return range;
 }
 
 VisDrwArea* AVisDrawing::GetDrawing()
@@ -557,7 +637,7 @@ void AVisDrawing::OnUpdated_Y(int aY)
     }
 }
 
-void AVisDrawing::OnUpdated_W(int aData)
+void AVisDrawing::OnUpdated_W(int aOldData)
 {
     Allocation alc = iWidget->get_allocation();
     Container* parent = iWidget->get_parent();
@@ -566,7 +646,7 @@ void AVisDrawing::OnUpdated_W(int aData)
     drw->queue_draw_area(alc.get_x(), alc.get_y(), iW, iH);
 }
 
-void AVisDrawing::OnUpdated_H(int aData)
+void AVisDrawing::OnUpdated_H(int aOldData)
 {
     Allocation alc = iWidget->get_allocation();
     Container* parent = iWidget->get_parent();
@@ -574,3 +654,166 @@ void AVisDrawing::OnUpdated_H(int aData)
     drw->set_size_request(iW, iH);
     drw->queue_draw_area(alc.get_x(), alc.get_y(), iW, iH);
 }
+
+void AVisDrawing::GetAllocation(Rectangle& aRect)
+{
+    VisDrwArea* drw = GetDrawing();
+    aRect = drw->get_allocation();
+}
+
+Glib::RefPtr<Gdk::Window> AVisDrawing::GetWindow()
+{
+    VisDrwArea* drw = GetDrawing();
+    return drw->get_window();
+}
+
+/*
+Glib::RefPtr<Widget> AVisDrawing::GetWidget()
+{
+    return Glib::RefPtr<Widget>(GetDrawing());
+}
+*/
+
+bool AVisDrawing::HandleButtonPress(GdkEventButton* aEvent)
+{
+    bool res = AVisWidget::HandleButtonPress(aEvent);
+    if (!res) {
+	Elem::TIfRange range = GetDrawingElems();
+	for (Elem::IfIter it = range.first; it != range.second; it++) {
+	    MVisDrawingElem* mobs = (MVisDrawingElem*) (*it);
+	    if (mobs != NULL) {
+		mobs->OnAreaButtonPress(aEvent);
+	    }
+	}
+    }
+    return res;
+}
+
+
+// Agent of drawing element
+
+string AVisDrawingElem::PEType()
+{
+    return AVisWidget::PEType() + GUri::KParentSep + Type();
+}
+
+AVisDrawingElem::AVisDrawingElem(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidget(aName, aMan, aEnv)
+{
+    SetEType(Type(), AVisWidget::PEType());
+    SetParent(Type());
+}
+
+AVisDrawingElem::AVisDrawingElem(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
+{
+    SetEType(AVisWidget::PEType());
+    SetParent(AVisWidget::PEType());
+}
+
+void *AVisDrawingElem::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
+{
+    void* res = NULL;
+    if (strcmp(aName, Type()) == 0) {
+	res = this;
+    } else if (strcmp(aName, MVisDrawingElem::Type()) == 0){
+	res = (MVisDrawingElem*) this;
+    } else {
+	res = AVisWidget::DoGetObj(aName, aIncUpHier);
+    }
+    return res;
+}
+
+void AVisDrawingElem::OnExpose(GdkEventExpose* aEvent)
+{
+    MVisDrawingArea* mda = GetDrawingArea();
+    Glib::RefPtr<Gdk::Window> drw = mda->GetWindow();
+    //Glib::RefPtr<Gdk::Window> drw = Glib::wrap((GdkWindowObject*) aEvent->window);
+    Glib::RefPtr<Gdk::GC> gc = Gdk::GC::create(drw);
+    Gdk::Color bg_color;
+    bg_color.set("#ff0000");
+    gc->get_colormap()->alloc_color(bg_color);
+    gc->set_background(bg_color);
+    gc->set_foreground(bg_color);
+    drw->draw_rectangle(gc, true, iX, iY, iW - 1, iH - 1);
+}
+
+void AVisDrawingElem::OnUpdated_X(int aOldData)
+{
+    OnAllocUpdated(Rectangle(aOldData, iY, iW, iH));
+}
+
+void AVisDrawingElem::OnUpdated_Y(int aOldData)
+{
+    OnAllocUpdated(Rectangle(iX, aOldData, iW, iH));
+}
+
+void AVisDrawingElem::OnUpdated_W(int aOldData)
+{
+    OnAllocUpdated(Rectangle(iX, iY, aOldData, iH));
+}
+
+void AVisDrawingElem::OnUpdated_H(int aOldData)
+{
+    OnAllocUpdated(Rectangle(iX, iY, iW, aOldData));
+}
+
+MVisDrawingArea* AVisDrawingElem::GetDrawingArea()
+{
+    MVisDrawingArea* res = NULL;
+    Elem* edacp = GetNode("./../../DrawingElem");
+    if (edacp != NULL) {
+	res = (MVisDrawingArea*) edacp->GetSIfiC(MVisDrawingArea::Type(), this);
+    }
+    return res;
+}
+
+void AVisDrawingElem::OnAllocUpdated(const Rectangle& aOldAlloc)
+{
+    MVisDrawingArea* mda = GetDrawingArea();
+    if (mda != NULL) {
+	Glib::RefPtr<Gdk::Window> wnd = mda->GetWindow();
+	wnd->clear_area(aOldAlloc.get_x(), aOldAlloc.get_y(), aOldAlloc.get_width(), aOldAlloc.get_height());
+	wnd->invalidate_rect(Rectangle(iX, iY, iW, iH), true);
+    }
+}
+
+TInt AVisDrawingElem::GetParData(ParentSize::TData aData)
+{
+    TInt res = 0;
+    MVisDrawingArea* mda = GetDrawingArea();
+    if (mda != NULL) {
+	Allocation palc;
+	mda->GetAllocation(palc);
+	res = aData == ParentSizeProv::ED_W ? palc.get_width() : palc.get_height();
+    }
+    return res;
+}
+
+bool AVisDrawingElem::OnAreaButtonPress(GdkEventButton* aEvent)
+{
+    return AVisWidget::HandleButtonPress(aEvent);
+}
+
+/*
+TBool AVisDrawingElem::HandleCompChanged(Elem& aContext, Elem& aComp)
+{
+    TBool res = AVisWidget::HandleCompChanged(aContext, aComp);
+    if (res) {
+	Elem* edecp = aContext.GetNode("./DrawingElem");
+	if (edecp != NULL) {
+	    if (edecp == &aComp || edecp->IsComp(&aComp)) {
+		MVisDrawingArea* mde = (MVisDrawingArea*) edecp->GetSIfiC(MVisDrawingArea::Type(), this);
+		Glib::RefPtr<Widget> wde = mde->GetWidget();
+		if (mde != NULL) {
+		    wde->signal_button_press_event().connect(sigc::mem_fun(*this, &AVisDrawingElem::OnAreaButtonPress));
+		    wde->signal_button_release_event().connect(sigc::mem_fun(*this, &AVisDrawingElem::OnAreaButtonPress));
+		}
+	    }
+	}
+	else {
+	    Logger()->Write(MLogRec::EErr, this, "Input [DrawingElem] doesn't exist");
+	    res = EFalse;
+	}
+    }
+    return res;
+}
+*/

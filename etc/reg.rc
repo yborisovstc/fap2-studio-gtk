@@ -73,6 +73,18 @@ style "capscrp_style" = "elem_style"
     bg[PRELIGHT] = {0.95, 0.95, 0.95}
 }
 
+style "visdrawing_style" 
+{ 
+    color["background"] = {0.85, 0.85, 0.85}
+    color["foreground"] = {0.0, 0.0, 0.0}
+    color["red"] = {0.9, 0.0, 0.0}
+    fg[NORMAL] = {0.0, 0.9, 0.0}
+    bg[NORMAL] = {0.0, 0.9, 0.0}
+    fg[ACTIVE] = {0.9, 0.0, 0.0}
+    bg[ACTIVE] = {0.9, 0.0, 0.0}
+    GtkLayout::draw-border = {5, 5, 5, 5}
+}
+
 class "GtkLabel" style "def_label_style"
 
 widget "*.*.ElemDrp" style "elem_drp_style"
@@ -83,3 +95,5 @@ widget "*.*.ElemCompRp~da" style "elem_style_da"
 widget "*.*.Edge" style "edge_style"
 widget "*.*.Edge~da" style "edge_style_da"
 widget "*.*.CapsCrp" style "capscrp_style"
+
+widget "*.*.AVisDrawing" style "visdrawing_style"

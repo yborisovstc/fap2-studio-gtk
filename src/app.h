@@ -45,6 +45,8 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	// From MLogObserver
 	virtual void OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent, int aMutId = 0);
 	virtual void OnLogRecDeleting(MLogRec* aLogRec);
+	virtual void AddObservable(MLogRec* aObservable);
+	virtual void RemoveObservable(MLogRec* aObservable);
     protected:
 	MEnv* iDesEnv;
 	tSigDesEnvChanged iSigDesEnvChanged;

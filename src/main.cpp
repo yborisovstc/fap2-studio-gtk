@@ -6,10 +6,12 @@ int main (int argc, char *argv[])
 {
     Gtk::Main kit(argc, argv);
 
-    App app;
+    App* app = new App();
 
     //Shows the window and returns when it is closed.
-    Gtk::Main::run(app.Wnd());
+    Gtk::Main::run(app->Wnd());
+
+    delete app;
 
     return 0;
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem" tord="657">
+<node id="Root" parent="Elem" tord="603">
   <node id="Modules" parent="Elem">
     <move id="file:/usr/share/grayb/modules/syst.xml#"/>
     <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
@@ -121,6 +121,7 @@
         <node node="./Agents" id="WinAgent" parent="AVisDrawing"/>
         <node id="Drawer" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(ConnPointBase:)ConnPoint">
           <cont node="./Required" val="MVisDrawingElem"/>
+          <cont node="./Provided" val="MVisDrawingArea"/>
         </node>
         <change node="./(ConnPoint:)Drawer" attr="id" val="DrawingArea"/>
       </node>
@@ -235,15 +236,19 @@
         <cont node="./Capsule/DrawingArea/Int/Required" val="MVisDrawingElem"/>
         <cont node="./Capsule/DrawingArea/Int/Required" val=""/>
         <cont node="./Capsule/DrawingArea/Int/Provided" val="MVisDrawingElem"/>
+        <cont node="./Capsule/DrawingArea/Int/Required" val="MVisDrawingArea"/>
         <node id="1570127320" parent="Edge">
           <cont node="./P2" ref="./../../Drw/DrawingArea"/>
+          <cont node="./P1" ref="./../../Capsule/DrawingArea/Int"/>
           <cont node="./P1" ref="./../../Capsule/DrawingArea/Int"/>
         </node>
       </node>
       <node id="DrawingElemV" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)WidgetV">
         <node id="DrawingElem" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(ConnPointBase:)ConnPoint">
           <cont node="./Provided" val="MVisDrawingElem"/>
+          <cont node="./Required" val="MVisDrawingArea"/>
         </node>
+        <node node="./Agents" parent="AVisDrawingElem" id="VisAgent"/>
       </node>
       <node id="WidgetVc" parent="./(Des:)DrawingVc">
         <rm node="./(DrawingV:)Drw"/>
@@ -267,13 +272,16 @@
         <cont node="./8562650/P2" ref="./../../DrawingElem/Inp_State"/>
         <node node="./Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(Vert:)Extender" id="DrawingElem"/>
         <cont node="./Capsule/DrawingElem/Int/Required" val="MVisDrawingElem"/>
+        <cont node="./Capsule/DrawingElem/Int/Provided" val="MVisDrawingArea"/>
         <node id="1743955414" parent="Edge">
           <cont node="./P2" ref="./../../DrawingElem/DrawingElem"/>
+          <cont node="./P1" ref="./../../Capsule/DrawingElem/Int"/>
           <cont node="./P1" ref="./../../Capsule/DrawingElem/Int"/>
         </node>
       </node>
       <node id="DrawingElemExt" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(Vert:)Extender">
         <cont node="./Int/Required" val="MVisDrawingElem"/>
+        <cont node="./Int/Provided" val="MVisDrawingArea"/>
       </node>
     </node>
     <node id="Simple_vis" parent="Elem">
@@ -634,6 +642,35 @@
             <cont node="./P2" ref="./../../Capsule/DrawingElem/Int"/>
             <cont node="./P1" ref="./../../Drawer/Capsule/DrawingElem"/>
           </node>
+          <node node="./PullingS/Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(ExtenderInp:)StVarInp" id="Inp_XY"/>
+          <node node="./PullingS/Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(ExtenderInp:)StVarInp" id="Inp_WH"/>
+          <node node="./PullingS/Held/Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(ExtenderInp:)StVarInp" id="Inp_XY"/>
+          <node node="./PullingS/Held/Capsule" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(ExtenderInp:)StVarInp" id="Inp_WH"/>
+          <node id="1265170553" parent="Edge">
+            <cont node="./P2" ref="./../../PullingS/Capsule/Inp_XY"/>
+            <cont node="./P1" ref="./../../Scaled_coord_XY/Capsule/Out"/>
+          </node>
+          <node id="1079072022" parent="Edge">
+            <cont node="./P2" ref="./../../PullingS/Capsule/Inp_WH"/>
+            <cont node="./P1" ref="./../../Scaled_size_WH/Capsule/Out"/>
+          </node>
+          <node node="./PullingS" parent="Edge" id="895536559"/>
+          <cont node="./PullingS/895536559/P2" ref="./../../Held/Capsule/Inp_XY"/>
+          <cont node="./PullingS/895536559/P1" ref="./../../Capsule/Inp_XY/Int"/>
+          <node node="./PullingS" parent="Edge" id="2061893481"/>
+          <cont node="./PullingS/2061893481/P2" ref="./../../Held/Capsule/Inp_WH"/>
+          <cont node="./PullingS/2061893481/P1" ref="./../../Capsule/Inp_WH/Int"/>
+          <node node="./PullingS" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" id="Vect_to_X"/>
+          <cont node="./PullingS/Vect_to_X/Index/Value" val="SI 0"/>
+          <node node="./PullingS" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" id="Vect_to_Y"/>
+          <cont node="./PullingS/Vect_to_Y/Index/Value" val="SI 1"/>
+          <node node="./PullingS" parent="Edge" id="961647255"/>
+          <cont node="./PullingS/961647255/P2" ref="./../../Vect_to_X/Capsule/Inp"/>
+          <cont node="./PullingS/961647255/P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
+          <node node="./PullingS" parent="Edge" id="1277619976"/>
+          <cont node="./PullingS/1277619976/P2" ref="./../../Vect_to_Y/Capsule/Inp"/>
+          <cont node="./PullingS/1277619976/P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
+          <change node="./(Des:)PullingS/(TFAtVarI:)Vect_to_X" attr="id" val="At_0"/>
         </node>
       </node>
     </node>
@@ -688,16 +725,11 @@
       </node>
       <node id="Wdw" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Window"/>
       <node id="Fixed" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Fixed"/>
-      <node id="1107234204" parent="Edge">
-        <cont node="./P2" ref="./../../Wdw/Parent"/>
-        <cont node="./P1" ref="./../../Fixed/Child"/>
-      </node>
-      <node id="1315267126" parent="Edge">
-        <cont node="./P2" ref="./../../Fixed/Parent"/>
-        <cont node="./P1" ref="./../../Solid_vis/Capsule/Child"/>
-      </node>
       <node id="Solid_vis_De" parent="./(Des:)Solid_vis">
-        <node id="Picture_De" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)Simple_vis/(Vert:)Components/(Pic:)PicDe"/>
+        <node id="Picture_De" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)Simple_vis/(Vert:)Components/(Pic:)PicDe">
+          <cont node="./631507917/P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
+          <rm node="./(Edge:)592434651"/>
+        </node>
         <cont node="./1464334493/P1" ref="./../../Picture_De/Capsule/Inp_coords_XY"/>
         <cont node="./1347304952/P1" ref="./../../Picture/Capsule/Vis_Child"/>
         <cont node="./1347304952/P1" ref="./../../Picture_De/Capsule/Vis_Child"/>
@@ -710,7 +742,38 @@
           <cont node="./P2" ref="./../../Capsule/DrawingElem/Int"/>
           <cont node="./P1" ref="./../../Picture_De/Capsule/DrawingElem"/>
         </node>
+        <node node="./Coords" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" id="Add"/>
+        <node node="./Coords" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" id="Delta"/>
+        <cont node="./Coords/Delta/Value" val="MF,V,2 1 1"/>
+        <node node="./Coords" parent="Edge" id="574157369"/>
+        <cont node="./Coords/574157369/P2" ref="./../../Delta/Capsule/Out"/>
+        <cont node="./Coords/574157369/P1" ref="./../../Add/Capsule/Inp"/>
+        <node node="./Coords" parent="Edge" id="1822100664"/>
+        <cont node="./Coords/1822100664/P2" ref="./../../Data/Capsule/Inp"/>
+        <cont node="./Coords/1822100664/P1" ref="./../../Add/Capsule/Out"/>
+        <node node="./Coords" parent="Edge" id="1171599008"/>
+        <cont node="./Coords/1171599008/P2" ref="./../../Add/Capsule/Inp"/>
+        <cont node="./Coords/1171599008/P1" ref="./../../Capsule/Inp/Int/PinData"/>
+        <node id="1441167613" parent="Edge">
+          <cont node="./P2" ref="./../../Coords/Capsule/Out"/>
+          <cont node="./P1" ref="./../../Coords/Capsule/Inp"/>
+        </node>
       </node>
+      <node id="DrawingArea" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(WidgetV:)DrawingV"/>
+      <node id="1315267126" parent="Edge">
+        <cont node="./P2" ref="./../../Fixed/Parent"/>
+        <cont node="./P1" ref="./../../Solid_vis/Capsule/Child"/>
+        <cont node="./P2" val=""/>
+        <cont node="./P1" ref="./../../Solid_vis_De/Capsule/DrawingElem"/>
+        <cont node="./P2" ref="./../../DrawingArea/DrawingArea"/>
+      </node>
+      <node id="1107234204" parent="Edge">
+        <cont node="./P2" ref="./../../Wdw/Parent"/>
+        <cont node="./P1" ref="./../../Fixed/Child"/>
+        <cont node="./P1" ref="./../../DrawingArea/Child"/>
+      </node>
+      <rm node="./(Fixed:)Fixed"/>
+      <rm node="./(Des:)Solid_vis"/>
     </node>
     <node id="Ticker_edge" parent="Edge">
       <cont node="./P2" val="./../../DesRoot/Capsule/Sync"/>

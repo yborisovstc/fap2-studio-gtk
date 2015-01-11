@@ -192,6 +192,17 @@ void DesObserver::OnLogRecDeleting(MLogRec* aLogRec)
     iLogRec = NULL;
 }
 
+void DesObserver::AddObservable(MLogRec* aObservable)
+{
+    __ASSERT(iLogRec == NULL);
+    iLogRec = aObservable;
+}
+
+void DesObserver::RemoveObservable(MLogRec* aObservable)
+{
+    __ASSERT(iLogRec == aObservable);
+    iLogRec = NULL;
+}
 
 
 
@@ -492,7 +503,11 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv->ChMgr()->SetEnableReposMuts(true);
     iRepair = false;
     iDesObserver->SetDes(iEnv);
-    iEnv->ConstructSystem();
+    try {
+	iEnv->ConstructSystem();
+    } catch (std::exception e) {
+	std::cerr << "exception caught: " << e.what() << '\n';
+    }
     iDesObserver->UpdateDesRootObserver();
     iHDetView->SetRoot(iEnv->Root());
     iHDetView->SetCursor(iEnv->Root());

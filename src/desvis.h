@@ -12,6 +12,7 @@
 // DES GTK visualization elems
 
 using namespace Gtk;
+using namespace Gdk;
 
 class MVisChild 
 {
@@ -57,7 +58,9 @@ class AWindow: public Elem, public MVisContainer
 // Base of Agent of widgets
 class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public MDesObserver
 {
-    private:
+    public:
+	typedef std::map<Gtk::StateType, string>  tStatesMap;
+    protected:
 	// Data provider base
 	class DataProv {
 	    public:
@@ -111,7 +114,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	virtual void OnUpdated();
 	virtual void OnActivated();
     protected:
-	TInt GetParData(ParentSizeProv::TData aData);
+	virtual TInt GetParData(ParentSize::TData aData);
 	void GetBtnPressEvent(NTuple& aData) { aData = mBtnPressEvt;};
 	// From Base
 	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
@@ -120,13 +123,15 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	// Widget events handling
 	bool OnButtonPress(GdkEventButton* aEvent);
     protected:
-	virtual void OnUpdated_X(int aData);
-	virtual void OnUpdated_Y(int aData);
-	virtual void OnUpdated_W(int aData);
-	virtual void OnUpdated_H(int aData);
+	virtual void OnUpdated_X(int aOldData);
+	virtual void OnUpdated_Y(int aOldData);
+	virtual void OnUpdated_W(int aOldData);
+	virtual void OnUpdated_H(int aOldData);
+	virtual bool HandleButtonPress(GdkEventButton* aEvent);
     private:
 	Elem* Host();
 	bool GetDataInt(const string& aInpUri, int& aData);
+	bool GetInpState(const string& aInpUri, Gtk::StateType& aData);
 	MVisContainer* GetVisContainer();
     protected:
 	Widget* iWidget;
@@ -141,6 +146,8 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	int iH;
 	int iBtnPressEvent;
 	NTuple mBtnPressEvt;
+	static bool mInit;
+	static tStatesMap  mStatesMap;
 };
 
 // Agent of container with fixed layout
@@ -164,14 +171,36 @@ class VisDrwArea: public DrawingArea
 {
     friend class AVisDrawing;
     public:
-	VisDrwArea();
+	VisDrwArea(AVisWidget* aHost);
 	virtual bool on_expose_event(GdkEventExpose* aEvent);
 	virtual void on_size_allocate(Allocation& aAlloc);
 	virtual void on_size_request(Requisition* aReq);
+	AVisWidget* mHost;
+};
+
+// Interface of drawing area, that uses drawing elements to performs draw 
+class MVisDrawingArea
+{
+    public:
+	static const char* Type() { return "MVisDrawingArea";};
+	virtual void GetAllocation(Rectangle& aRect) = 0;
+	virtual Glib::RefPtr<Gdk::Window> GetWindow() = 0;
+	// [YB] Isn't fully conpliant to agents interaction approach, to reconsider
+	//virtual Glib::RefPtr<Widget> GetWidget() = 0;
+};
+
+
+// Interface of drawing element, that performs partial draw in drawing area
+class MVisDrawingElem
+{
+    public:
+	static const char* Type() { return "MVisDrawingElem";};
+	virtual void OnExpose(GdkEventExpose* aEvent) = 0;
+	virtual bool OnAreaButtonPress(GdkEventButton* aEvent) = 0;
 };
 
 // Agent of drawing area
-class AVisDrawing: public AVisWidget
+class AVisDrawing: public AVisWidget, public MVisDrawingArea
 {
     public:
 	static const char* Type() { return "AVisDrawing";};
@@ -180,14 +209,53 @@ class AVisDrawing: public AVisWidget
 	AVisDrawing(Elem* aMan = NULL, MEnv* aEnv = NULL);
 	VisDrwArea* GetDrawing();
     protected:
-	virtual void OnUpdated_X(int aX);
-	virtual void OnUpdated_Y(int aY);
-	virtual void OnUpdated_W(int aData);
-	virtual void OnUpdated_H(int aData);
+	Elem::TIfRange GetDrawingElems();
+    protected:
+	// From AVisWidget
+	virtual void OnUpdated_X(int aOldData);
+	virtual void OnUpdated_Y(int aOldData);
+	virtual void OnUpdated_W(int aOldData);
+	virtual void OnUpdated_H(int aOldData);
+	virtual bool HandleButtonPress(GdkEventButton* aEvent);
     protected:
 	// From Base
 	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
+	// From MVisDrawingArea
+	virtual void GetAllocation(Rectangle& aRect);
+	virtual Glib::RefPtr<Gdk::Window> GetWindow();
+	// virtual Glib::RefPtr<Widget> GetWidget();
 };
+
+
+// Agent of drawing element
+class AVisDrawingElem: public AVisWidget, public MVisDrawingElem
+{
+    public:
+	static const char* Type() { return "AVisDrawingElem";};
+	static string PEType();
+	AVisDrawingElem(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisDrawingElem(Elem* aMan = NULL, MEnv* aEnv = NULL);
+    protected:
+	void OnAllocUpdated(const Rectangle& aOldAlloc);
+	MVisDrawingArea* GetDrawingArea();
+	//bool OnAreaButtonPress(GdkEventButton* aEvent);
+    public:
+	// From MVisDrawingElem
+	virtual void OnExpose(GdkEventExpose* aEvent);
+	virtual bool OnAreaButtonPress(GdkEventButton* aEvent);
+    protected:
+	// From Base
+	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
+	// From MACompsObserver
+	//virtual TBool HandleCompChanged(Elem& aContext, Elem& aComp);
+	// From AVisWidget
+	virtual void OnUpdated_X(int aOldData);
+	virtual void OnUpdated_Y(int aOldData);
+	virtual void OnUpdated_W(int aOldData);
+	virtual void OnUpdated_H(int aOldData);
+	virtual TInt GetParData(ParentSize::TData aData);
+};
+
 
 
 #endif
