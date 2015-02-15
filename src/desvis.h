@@ -90,8 +90,26 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	    // From MDtGet
 	    virtual void DtGet(Sdata<int>& aData);
 	};
-	// Data provider for GdkEventButton
+	// Data provider for ButtonPress GdkEventButton
 	class EventButtonProv: public DataProv, public MDVarGet, public MDtGet<NTuple> {
+	    public:
+	    // From MDVarGet
+	    virtual string VarGetIfid();
+	    virtual void *DoGetDObj(const char *aName);
+	    // From MDtGet
+	    virtual void DtGet(NTuple& aData);
+	};
+	// Data provider for ButtonRelease GdkEventButton
+	class EventButtonReleaseProv: public DataProv, public MDVarGet, public MDtGet<NTuple> {
+	    public:
+	    // From MDVarGet
+	    virtual string VarGetIfid();
+	    virtual void *DoGetDObj(const char *aName);
+	    // From MDtGet
+	    virtual void DtGet(NTuple& aData);
+	};
+	// Data provider for GdkEventMotion
+	class EventMotionProv: public DataProv, public MDVarGet, public MDtGet<NTuple> {
 	    public:
 	    // From MDVarGet
 	    virtual string VarGetIfid();
@@ -116,18 +134,25 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
     protected:
 	virtual TInt GetParData(ParentSize::TData aData);
 	void GetBtnPressEvent(NTuple& aData) { aData = mBtnPressEvt;};
+	void GetBtnReleaseEvent(NTuple& aData) { aData = mBtnReleaseEvt;};
+	void GetMotionEvent(NTuple& aData) { aData = mMotionEvt;};
+	void ActivateDeps(const string& aUri);
 	// From Base
 	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
 	// Ifaces cache
 	virtual void UpdateIfi(const string& aName, const RqContext* aCtx = NULL);
 	// Widget events handling
 	bool OnButtonPress(GdkEventButton* aEvent);
+	bool OnButtonRelease(GdkEventButton* aEvent);
+	bool OnMotion(GdkEventMotion* aEvent);
     protected:
 	virtual void OnUpdated_X(int aOldData);
 	virtual void OnUpdated_Y(int aOldData);
 	virtual void OnUpdated_W(int aOldData);
 	virtual void OnUpdated_H(int aOldData);
 	virtual bool HandleButtonPress(GdkEventButton* aEvent);
+	virtual bool HandleButtonRelease(GdkEventButton* aEvent);
+	virtual bool HandleMotion(GdkEventMotion* aEvent);
     private:
 	Elem* Host();
 	bool GetDataInt(const string& aInpUri, int& aData);
@@ -140,12 +165,16 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	ParentSizeProvVar iParProvVarW;
 	ParentSizeProvVar iParProvVarH;
 	EventButtonProv mBtnPressEvtProv;
+	EventButtonReleaseProv mBtnReleaseEvtProv;
+	EventMotionProv mMotionEvtProv;
 	int iY;
 	int iX;
 	int iW;
 	int iH;
 	int iBtnPressEvent;
 	NTuple mBtnPressEvt;
+	NTuple mBtnReleaseEvt;
+	NTuple mMotionEvt;
 	static bool mInit;
 	static tStatesMap  mStatesMap;
 };
@@ -197,6 +226,7 @@ class MVisDrawingElem
 	static const char* Type() { return "MVisDrawingElem";};
 	virtual void OnExpose(GdkEventExpose* aEvent) = 0;
 	virtual bool OnAreaButtonPress(GdkEventButton* aEvent) = 0;
+	virtual bool OnAreaButtonRelease(GdkEventButton* aEvent) = 0;
 };
 
 // Agent of drawing area
@@ -217,6 +247,7 @@ class AVisDrawing: public AVisWidget, public MVisDrawingArea
 	virtual void OnUpdated_W(int aOldData);
 	virtual void OnUpdated_H(int aOldData);
 	virtual bool HandleButtonPress(GdkEventButton* aEvent);
+	virtual bool HandleButtonRelease(GdkEventButton* aEvent);
     protected:
 	// From Base
 	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
@@ -243,6 +274,7 @@ class AVisDrawingElem: public AVisWidget, public MVisDrawingElem
 	// From MVisDrawingElem
 	virtual void OnExpose(GdkEventExpose* aEvent);
 	virtual bool OnAreaButtonPress(GdkEventButton* aEvent);
+	virtual bool OnAreaButtonRelease(GdkEventButton* aEvent);
     protected:
 	// From Base
 	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);

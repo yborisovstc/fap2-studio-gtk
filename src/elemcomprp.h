@@ -7,8 +7,11 @@
 #include "gtkmm/label.h"
 #include "gtkmm/drawingarea.h"
 #include "gtkmm/menu.h"
+#include "gtkmm/tooltip.h"
 #include "mcrp.h"
 #include <elem.h>
+
+using namespace Gtk;
 
 class ElemCrpCtxMenu: public Gtk::Menu
 {
@@ -43,6 +46,7 @@ class ElemCompRp: public Gtk::Layout
 	void DoSetDnDTargSupported(int aTarg);
 	bool DoIsDnDTargSupported(TDnDTarg aTarg) const;
 	bool DoIsIntersected(int aX, int aY) const;
+	void GetModelDebugInfo(string& aData) const;
 	virtual bool DoIsActionSupported(MCrp::Action aAction);
 	virtual void on_realize();
 	virtual bool on_expose_event(GdkEventExpose* event);
@@ -52,6 +56,7 @@ class ElemCompRp: public Gtk::Layout
 	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
 	// Signal handlers
 	bool on_name_button_press(GdkEventButton* event);
+	bool on_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Tooltip>& tooltip);
     protected:
 	Elem* iElem;
 	ElemCompHead* iHead;

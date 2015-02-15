@@ -10,24 +10,27 @@
     <move id="file:/usr/share/grayb/modules/func.xml#"/>
   </node>
   <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Result" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-    <cont node="(DataTVar:)Result/(Prop)Value" val="F 0.0"/>
+    <node id="Result" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	<cont node="./(Prop:)Value" val="SF 0.0"/>
+    </node>
     <node id="At" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FAtVar"/>
-    <node id="1167447964" parent="Edge"/>
-    <cont node="(Edge:)1167447964/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAtVar:)At/(Elem:)Capsule/(Out_FVar:)out"/>
-    <cont node="(Edge:)1167447964/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/(ConnPoint:)inp"/>
-    <node id="Index" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-    <cont node="(DataTVar:)Index/(Prop)Value" val="I 1"/>
-    <node id="1208285554" parent="Edge"/>
-    <cont node="(Edge:)1208285554/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Index/(Elem:)Capsule/(ConnPoint:)out"/>
-    <cont node="(Edge:)1208285554/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAtVar:)At/(Elem:)Capsule/(Inp_FVar:)Index"/>
-    <node id="Vector" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-    <cont node="(DataTVar:)Vector/(Prop)Value" val="VF 2.0 3.0"/>
-    <node id="1588110631" parent="Edge"/>
-    <cont node="(Edge:)1588110631/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Vector/(Elem:)Capsule/(ConnPoint:)out"/>
-    <cont node="(Edge:)1588110631/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAtVar:)At/(Elem:)Capsule/(Inp_FVar:)Inp"/>
-    <cont node="(DataTVar:)Index/(Prop)Value" val="I 0"/>
-    <cont node="(DataTVar:)Index/(Prop)Value" val="I 1"/>
-    <cont node="(DataTVar:)Index/(Prop)Value" val="I 0"/>
+    <node id="1167447964" parent="Edge">
+	<cont node="./P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAtVar:)At/(Elem:)Capsule/(Out_FVar:)out"/>
+	<cont node="./P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/inp"/>
+    </node>
+    <node id="Index" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	<cont node="./Value" val="SI 1"/>
+    </node>
+    <node id="1208285554" parent="Edge">
+	<cont node="./P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Index/(Elem:)Capsule/out"/>
+	<cont node="./P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAtVar:)At/(Elem:)Capsule/(Inp_FVar:)Index"/>
+    </node>
+    <node id="Vector" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	<cont node="./Value" val="MF,V,2 2.0 3.0"/>
+    </node>
+    <node id="1588110631" parent="Edge">
+	<cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Vector/(Elem:)Capsule/out"/>
+	<cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAtVar:)At/(Elem:)Capsule/(Inp_FVar:)Inp"/>
+    </node>
   </node>
 </node>

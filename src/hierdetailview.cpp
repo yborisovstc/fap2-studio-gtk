@@ -35,6 +35,7 @@ Glib::ustring sUiPinMutBtn =
 "  </toolbar>"
 "</ui>";
 
+// Note: To change tooltip bg/fg color just edit gtk color scheme: /usr/share/themes/Ambiance/gtk-2.0/gtkrc
 
 const string KToolTip_PinMutNode = "Pin node for mutation";
 const string KToolTip_PinMutNodeA = "Pinned node for mutation: ";

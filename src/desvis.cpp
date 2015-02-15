@@ -2,7 +2,8 @@
 #include <mdata.h>
 #include "desvis.h"
 
-const string KBtnPressEvent_Srep = "TPL,SI:Type,SI:State,SI:Button 0 0 0";
+const string KEventBtn_Srep = "TPL,SI:Type,SI:State,SI:Button,SI:X,SI:Y 0 0 0 0 0";
+const string KMotionEvent_Srep = "TPL,SI:Type,SI:State,SI:X,SI:Y 0 0 0 0";
 
 // Agent of top level window
 
@@ -94,6 +95,46 @@ void AVisWidget::EventButtonProv::DtGet(NTuple& aData)
     aData.mValid = true;
 }
 
+// Data provider for ButoonRelease GdkEventButton
+string AVisWidget::EventButtonReleaseProv::VarGetIfid()
+{ 
+    return MDtGet<NTuple>::Type();
+}
+
+void *AVisWidget::EventButtonReleaseProv::DoGetDObj(const char *aName)
+{
+    void* res = NULL;
+    if (strcmp(aName, MDtGet<NTuple>::Type()) == 0) res = (MDtGet<NTuple>*) this;
+    return res;
+}
+
+void AVisWidget::EventButtonReleaseProv::DtGet(NTuple& aData)
+{
+    iHost->GetBtnReleaseEvent(aData);
+    aData.mValid = true;
+}
+
+
+// Data provider for GdkEventMotion
+string AVisWidget::EventMotionProv::VarGetIfid()
+{ 
+    return MDtGet<NTuple>::Type();
+}
+
+void *AVisWidget::EventMotionProv::DoGetDObj(const char *aName)
+{
+    void* res = NULL;
+    if (strcmp(aName, MDtGet<NTuple>::Type()) == 0) res = (MDtGet<NTuple>*) this;
+    return res;
+}
+
+void AVisWidget::EventMotionProv::DtGet(NTuple& aData)
+{
+    iHost->GetMotionEvent(aData);
+    aData.mValid = true;
+}
+
+
 
 string AVisWidget::PEType()
 {
@@ -113,7 +154,11 @@ AVisWidget::AVisWidget(const string& aName, Elem* aMan, MEnv* aEnv): Elem(aName,
     iParProvVarW.SetData(ParentSizeProv::ED_W, this);
     iParProvVarH.SetData(ParentSizeProv::ED_H, this);
     mBtnPressEvtProv.SetHost(this);
-    mBtnPressEvt.FromString(KBtnPressEvent_Srep);
+    mBtnPressEvt.FromString(KEventBtn_Srep);
+    mBtnReleaseEvtProv.SetHost(this);
+    mBtnReleaseEvt.FromString(KEventBtn_Srep);
+    mMotionEvtProv.SetHost(this);
+    mMotionEvt.FromString(KMotionEvent_Srep);
     // TODO [YB] To use the published data "Widget_State" from module ../Widged_common
     // instead of the internal constants.
     if (!mInit) {
@@ -136,7 +181,11 @@ AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
     iParProvVarW.SetData(ParentSizeProv::ED_W, this);
     iParProvVarH.SetData(ParentSizeProv::ED_H, this);
     mBtnPressEvtProv.SetHost(this);
-    mBtnPressEvt.FromString(KBtnPressEvent_Srep);
+    mBtnPressEvt.FromString(KEventBtn_Srep);
+    mBtnReleaseEvtProv.SetHost(this);
+    mBtnReleaseEvt.FromString(KEventBtn_Srep);
+    mMotionEvtProv.SetHost(this);
+    mMotionEvt.FromString(KMotionEvent_Srep);
 }
 
 void AVisWidget::Construct()
@@ -144,7 +193,8 @@ void AVisWidget::Construct()
     if (iWidget != NULL) {
 	iWidget->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::POINTER_MOTION_MASK);
 	iWidget->signal_button_press_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
-	iWidget->signal_button_release_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
+	iWidget->signal_button_release_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonRelease));
+	iWidget->signal_motion_notify_event().connect(sigc::mem_fun(*this, &AVisWidget::OnMotion));
     }
 }
 
@@ -193,6 +243,8 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	Elem* cpw = GetNode("./../../Prov_PW");
 	Elem* cph = GetNode("./../../Prov_PH");
 	Elem* bpe = GetNode("./../../BtnPressEvent");
+	Elem* bre = GetNode("./../../BtnReleaseEvent");
+	Elem* mte = GetNode("./../../MoutionEvent");
 	if (aCtx->IsInContext(cpw)) {
 	    if (isdvar) {
 		res = (MDVarGet*) &iParProvVarW;
@@ -212,6 +264,16 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	else if (aCtx->IsInContext(bpe)) {
 	    if (isdvar) {
 		res = (MDVarGet*) &mBtnPressEvtProv;
+	    }
+	}
+	else if (aCtx->IsInContext(bre)) {
+	    if (isdvar) {
+		res = (MDVarGet*) &mBtnReleaseEvtProv;
+	    }
+	}
+	else if (aCtx->IsInContext(mte)) {
+	    if (isdvar) {
+		res = (MDVarGet*) &mMotionEvtProv;
 	    }
 	}
     }
@@ -440,6 +502,16 @@ bool AVisWidget::OnButtonPress(GdkEventButton* aEvent)
     return HandleButtonPress(aEvent);
 }
 
+bool AVisWidget::OnButtonRelease(GdkEventButton* aEvent)
+{
+    return HandleButtonRelease(aEvent);
+}
+
+bool AVisWidget::OnMotion(GdkEventMotion* aEvent)
+{
+    return HandleMotion(aEvent);
+}
+
 bool AVisWidget::HandleButtonPress(GdkEventButton* aEvent)
 {
     // Cache event value
@@ -451,8 +523,39 @@ bool AVisWidget::HandleButtonPress(GdkEventButton* aEvent)
     Sdata<int>* estate = dynamic_cast<Sdata<int>*> (mBtnPressEvt.GetElem("State"));
     __ASSERT(estate != NULL);
     estate->Set(aEvent->state);
+    Sdata<int>* ex = dynamic_cast<Sdata<int>*> (mBtnPressEvt.GetElem("X"));
+    __ASSERT(ex != NULL);
+    ex->Set(aEvent->x);
+    Sdata<int>* ey = dynamic_cast<Sdata<int>*> (mBtnPressEvt.GetElem("Y"));
+    __ASSERT(ey != NULL);
+    ey->Set(aEvent->y);
     // Activate dependencies
-    Elem* eobs = GetNode("./../../BtnPressEvent/Int/PinObs");
+    ActivateDeps("./../../BtnPressEvent/Int/PinObs");
+    return false;
+}
+
+bool AVisWidget::HandleButtonRelease(GdkEventButton* aEvent)
+{
+    // Set event data
+    Sdata<int>* etype = dynamic_cast<Sdata<int>*> (mBtnReleaseEvt.GetElem("Type"));
+    __ASSERT(etype != NULL);
+    etype->Set(aEvent->type);
+    Sdata<int>* estate = dynamic_cast<Sdata<int>*> (mBtnReleaseEvt.GetElem("State"));
+    __ASSERT(estate != NULL);
+    estate->Set(aEvent->state);
+    Sdata<int>* ex = dynamic_cast<Sdata<int>*> (mBtnReleaseEvt.GetElem("X"));
+    __ASSERT(ex != NULL);
+    ex->Set(aEvent->x);
+    Sdata<int>* ey = dynamic_cast<Sdata<int>*> (mBtnReleaseEvt.GetElem("Y"));
+    __ASSERT(ey != NULL);
+    ey->Set(aEvent->y);
+    // Activate dependencies
+    ActivateDeps("./../../BtnReleaseEvent/Int/PinObs");
+    return false;
+}
+
+void AVisWidget::ActivateDeps(const string& aUri) {
+    Elem* eobs = GetNode(aUri);
     __ASSERT(eobs != NULL);
     RqContext ctx(this);
     TIfRange range = eobs->GetIfi(MDesObserver::Type());
@@ -462,6 +565,25 @@ bool AVisWidget::HandleButtonPress(GdkEventButton* aEvent)
 	    mobs->OnUpdated();
 	}
     }
+}
+
+bool AVisWidget::HandleMotion(GdkEventMotion* aEvent)
+{
+    // Set event data
+    Sdata<int>* etype = dynamic_cast<Sdata<int>*> (mMotionEvt.GetElem("Type"));
+    __ASSERT(etype != NULL);
+    etype->Set(aEvent->type);
+    Sdata<int>* estate = dynamic_cast<Sdata<int>*> (mMotionEvt.GetElem("State"));
+    __ASSERT(estate != NULL);
+    estate->Set(aEvent->state);
+    Sdata<int>* ex = dynamic_cast<Sdata<int>*> (mMotionEvt.GetElem("X"));
+    __ASSERT(ex != NULL);
+    ex->Set(aEvent->x);
+    Sdata<int>* ey = dynamic_cast<Sdata<int>*> (mMotionEvt.GetElem("Y"));
+    __ASSERT(ey != NULL);
+    ey->Set(aEvent->y);
+    // Activate dependencies
+    ActivateDeps("./../../MotionEvent/Int/PinObs");
     return false;
 }
 
@@ -689,6 +811,22 @@ bool AVisDrawing::HandleButtonPress(GdkEventButton* aEvent)
     return res;
 }
 
+bool AVisDrawing::HandleButtonRelease(GdkEventButton* aEvent)
+{
+    bool res = AVisWidget::HandleButtonRelease(aEvent);
+    if (!res) {
+	Elem::TIfRange range = GetDrawingElems();
+	for (Elem::IfIter it = range.first; it != range.second; it++) {
+	    MVisDrawingElem* mobs = (MVisDrawingElem*) (*it);
+	    if (mobs != NULL) {
+		mobs->OnAreaButtonRelease(aEvent);
+	    }
+	}
+    }
+    return res;
+}
+
+
 
 // Agent of drawing element
 
@@ -791,6 +929,11 @@ TInt AVisDrawingElem::GetParData(ParentSize::TData aData)
 bool AVisDrawingElem::OnAreaButtonPress(GdkEventButton* aEvent)
 {
     return AVisWidget::HandleButtonPress(aEvent);
+}
+
+bool AVisDrawingElem::OnAreaButtonRelease(GdkEventButton* aEvent)
+{
+    return AVisWidget::HandleButtonRelease(aEvent);
 }
 
 /*

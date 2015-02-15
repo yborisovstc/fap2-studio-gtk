@@ -405,7 +405,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 	change.SetAttr(ENa_MutNode, nuri.GetUri());
 	change.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
 	change.SetAttr(ENa_MutVal, aNewName);
-	mutelem->Mutate(false, !unsafe);
+	mutelem->Mutate(false, !unsafe, true);
 	Refresh();
     }
 }
@@ -639,10 +639,14 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	    rmut.SetAttr(ENa_MutNode, snodeuri);
 	}
 	__ASSERT(!aParentUri.empty());
+	Elem* parent = iElem->GetNode(aParentUri);
+	GUri prnturi;
+	parent->GetUri(prnturi, mutelem);
+	string prnturis = prnturi.GetUri(true);
 	// Checking if parent rank is correct
-	bool prntissafe = IsParentSafe(mutelem, aParentUri);
-	if (!aParentUri.empty()) {
-	    rmut.SetAttr(ENa_Parent, aParentUri);
+	bool prntissafe = IsParentSafe(mutelem, prnturis);
+	if (!prnturis.empty()) {
+	    rmut.SetAttr(ENa_Parent, prnturis);
 	}
 	if (!err) {
 	    string sname(aName);
@@ -668,7 +672,7 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	    change.SetAttr(ENa_MutNode, nuri.GetUri());
 	    }
 	    */
-	    mutelem->Mutate();
+	    mutelem->Mutate(false, true, true);
 	    /*
 	       if (iReloadRequired) {
 	       iReloadRequired = false;
@@ -693,7 +697,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 	dnode->GetUri(nuri, mutelem);
 	ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
 	mutn.SetAttr(ENa_MutNode, nuri.GetUri());
-	mutelem->Mutate(false, !unsafe);
+	mutelem->Mutate(false, !unsafe, true);
 	Refresh();
     }
 }
@@ -736,7 +740,7 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 	ChromoNode change = mutelem->Mutation().Root().AddChild(ENt_Cont);
 	change.SetAttr(ENa_MutNode, nuri.GetUri(true));
 	change.SetAttr(aRef ? ENa_Ref : ENa_MutVal, aNewContent);
-	mutelem->Mutate();
+	mutelem->Mutate(false, true, true);
 	Refresh();
     }
 }
@@ -758,7 +762,7 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 		change.SetAttr(ENa_Id, snode->GetUri(cowner));
 		//	change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
 		change.SetAttr(ENa_MutNode, dnode->GetUri(cowner));
-		cowner->Mutate();
+		cowner->Mutate(false, true, true);
 		Refresh();
 	    }
 	}
@@ -768,7 +772,7 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 	    ChromoNode rmut = iElem->Mutation().Root();
 	    ChromoNode change = rmut.AddChild(ENt_Move);
 	    change.SetAttr(ENa_Id, aNodeUri);
-	    iElem->Mutate();
+	    iElem->Mutate(false, true, true);
 	    Refresh();
 	}
     }
@@ -894,7 +898,7 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     parent->GetUri(puri, iElem);
     rmut.SetAttr(ENa_Parent, puri.GetUri(true));
     rmut.SetAttr(ENa_Id, iCompSelected->Name() + "~tmp");
-    iElem->Mutate();
+    iElem->Mutate(false, true, true);
     // Remove node originated by pheno modif
     TMDep dep;
     iCompSelected->GetDep(dep, ENa_Id, ETrue);
@@ -904,7 +908,7 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     GUri nuri;
     iCompSelected->GetUri(nuri, depnode);
     rmutr.SetAttr(ENa_MutNode, nuri.GetUri(true));
-    depnode->Mutate();
+    depnode->Mutate(false, true, true);
     // Squeeze chromo for mutations made to depnode: rm and rename
     ChromoNode lastmut = *(depnode->Chromos().Root().Rbegin());
     Elem* root = iElem->GetRoot();
@@ -914,7 +918,7 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     rmutrn.SetAttr(ENa_MutNode, nuri.GetUri(true) + "~tmp");
     rmutrn.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
     rmutrn.SetAttr(ENa_MutVal, iCompSelected->Name());
-    depnode->Mutate();
+    depnode->Mutate(false, true, true);
     // Squeeze chromo for mutations made to depnode: rm and rename
     lastmut = *(depnode->Chromos().Root().Rbegin());
     root->CompactChromo(lastmut);
@@ -952,7 +956,7 @@ void ElemDetRp::DoOnActionInsert()
 	std::string filename = dialog.get_filename();
 	TBool res = iElem->AppendMutation(filename);
 	if (res) {
-	    iElem->Mutate();
+	    iElem->Mutate(false, true, true);
 	    Refresh();
 	}
     }

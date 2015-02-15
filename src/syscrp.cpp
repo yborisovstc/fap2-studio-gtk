@@ -4,6 +4,7 @@
 #include "syscrp.h"
 #include "common.h"
 #include <iostream>
+#include <gtkmm/toolitem.h>
 
 //  Connection point representation
 CpRp::CpRp(Elem* aCp): iElem(aCp)
@@ -70,6 +71,8 @@ void DataRp::on_comp_changed(Elem* aComp)
 	string cont;
 	iElem->GetCont(cont);
 	set_text(iDataName + ": " + cont);
+	set_has_tooltip();
+	set_tooltip_text(iDataName + ": " + cont);
     }
 }
 
@@ -104,6 +107,8 @@ void SysCrp::Construct()
 	    iCpRps[comp] = rp;
 	}
     }
+    set_has_tooltip();
+    set_tooltip_text("SysCrp Tooltip test");
     // Add Data Crp
     AddDataRp();
 }

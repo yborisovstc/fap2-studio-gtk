@@ -85,6 +85,10 @@ ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(fal
 
 void ElemCompRp::Construct()
 {
+    set_has_tooltip();
+    // Connect to tooltip event
+    signal_query_tooltip().connect(sigc::mem_fun(*this, &ElemCompRp::on_query_tooltip));
+    //set_tooltip_text("ElemCrp Tooltip test");
 }
 
 ElemCompRp::~ElemCompRp()
@@ -145,6 +149,24 @@ void ElemCompRp::on_size_request(Gtk::Requisition* aRequisition)
 bool ElemCompRp::on_name_button_press(GdkEventButton* event)
 {
     iSigButtonPressName.emit(event);
+}
+
+bool ElemCompRp::on_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Tooltip>& tooltip)
+{
+    //std::cout << "ElemCompRp on_query_tooltip" << std::endl;
+    string info;
+    GetModelDebugInfo(info);
+    tooltip->set_text(info);
+    return true;
+}
+
+void ElemCompRp::GetModelDebugInfo(string& aData) const
+{
+    for (int cnt = 0; cnt < iElem->GetContCount(); cnt++) {
+	string name, value;
+	iElem->GetCont(cnt, name, value);
+	aData += name + ": " + value + "\n";
+    }
 }
 
 void ElemCompRp::DoSetHighlighted(bool aSet)

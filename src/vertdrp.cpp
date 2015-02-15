@@ -427,21 +427,26 @@ bool VertDrpw_v1::on_motion_notify_event(GdkEventMotion* aEvent)
     // Propagate event to edges, recalculating the event coord from originated window to the target
     // Note that we need to use edges allocation to recalulation instead of edges window because edges
     // window is hidden (EventBox)
-    int ox, oy;
-    gdk_window_get_position(aEvent->window, &ox, &oy);
-    int ex = aEvent->x, ey = aEvent->y;
-    //std::cout << "VertDrpw_v1 on_motion_notify_event, ewpos = (" << ox << " , " << oy << "), ecoord = (" 
-    //	<< aEvent->x << " , " << aEvent->y << ")" << std::endl;
-    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
-	MCrp* crp = it->second;
-	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
-	if (medgecrp != NULL) {
-	    Gtk::Widget& wd = crp->Widget();
-	    Gtk::Allocation talc = wd.get_allocation();
-	    //std::cout << "edge [" << wd.get_name() << "], orig = [" << talc.get_x() << " , " << talc.get_y() << ")" << std::endl;
-	    aEvent->x = ex + ox - talc.get_x();
-	    aEvent->y = ey + oy - talc.get_y();
-	    res = wd.event((GdkEvent*) aEvent);
+    // We also need to use only this DRP window event. This is because events from childs, e.g. CRPs can be
+    // propagated to this handler, ref. S.Weiss Drawing in GTK+, sect. "More About Events in GTK+"
+    //std::cout << "VertDrpw_v1 on_motion_notify_event, own_wnd: " << get_bin_window()->gobj() << " , event_wnd: " << aEvent->window << std::endl;
+    if (get_bin_window()->gobj() == aEvent->window) {
+	int ox, oy;
+	gdk_window_get_position(aEvent->window, &ox, &oy);
+	int ex = aEvent->x, ey = aEvent->y;
+	//std::cout << "VertDrpw_v1 on_motion_notify_event, ewpos = (" << ox << " , " << oy << "), ecoord = (" 
+	//	<< aEvent->x << " , " << aEvent->y << ")" << std::endl;
+	for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	    MCrp* crp = it->second;
+	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	    if (medgecrp != NULL) {
+		Gtk::Widget& wd = crp->Widget();
+		Gtk::Allocation talc = wd.get_allocation();
+		//std::cout << "edge [" << wd.get_name() << "], orig = [" << talc.get_x() << " , " << talc.get_y() << ")" << std::endl;
+		aEvent->x = ex + ox - talc.get_x();
+		aEvent->y = ey + oy - talc.get_y();
+		res = wd.event((GdkEvent*) aEvent);
+	    }
 	}
     }
     return true;

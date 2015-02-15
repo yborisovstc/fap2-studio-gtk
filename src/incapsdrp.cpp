@@ -226,6 +226,7 @@ void IncapsDrp::Construct()
     Gtk::Widget& capscrpw = mCapsLCrp->Widget();
     add(capscrpw);
     iCompRps[caps] = mCapsLCrp;
+    //capscrpw.set_receives_default(false);
     capscrpw.show();
     // Add CRPs from body
     assert(caps != NULL);

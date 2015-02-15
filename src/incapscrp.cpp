@@ -38,6 +38,8 @@ void IncapsCrp::Construct()
 	    iCpRps[comp] = rp;
 	}
     }
+    set_has_tooltip();
+    set_tooltip_text("IncapsCrp Tooltip test");
     // Add Data Crp
     AddDataRp();
 }

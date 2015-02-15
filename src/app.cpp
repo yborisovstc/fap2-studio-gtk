@@ -13,6 +13,7 @@ const char* KRcFileName = "/usr/share/fap2-studio-gtk/conf/reg.rc";
 const string KTitleUnsaved = "unsaved";
 const string KMsgUnsaved = "The model has been modified. Do you want to save it?";
 const string KBtnTxtDiscard = "Discard";
+const string KToolTip_Repair = "Repair";
 
 /* Time slice of FAP environment, in milliseconds */
 const gint KFapeTimeSlice = 50;
@@ -243,6 +244,8 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iMainWnd->UIManager()->get_action("ui/ToolBar/Undo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_undo));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Redo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_redo));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Repair")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_repair));
+    Gtk::ToolItem* repair_ti = dynamic_cast<Gtk::ToolItem*>(iMainWnd->UIManager()->get_widget("ui/ToolBar/Repair"));
+    repair_ti->set_tooltip_text(KToolTip_Repair);
     // Create studio DES environment
     iStDesEnv = new StDesEnv(iMainWnd->UIManager(), iMainWnd->VisWindow());
     iStDesEnv->SigActionRecreate().connect(sigc::mem_fun(*this, &App::on_action_recreate));

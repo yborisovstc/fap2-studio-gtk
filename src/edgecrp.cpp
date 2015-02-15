@@ -249,7 +249,7 @@ bool EdgeCrp::on_motion_notify_event(GdkEventMotion* aEvent)
     // std::cout << "EdgeCrp on_motion_notify_event [" << get_name() << "], coord (" << aEvent->x << "," << aEvent->y << "), ewnd " 
     //	<< aEvent->window << ", wnd " << get_window()->gobj() << std::endl;
     Gtk::Allocation alc = get_allocation();
-    // std::cout << "alc = [ " << alc.get_x() << "," << alc.get_y() << "," << alc.get_width() << "," << alc.get_height() << "]" << std::endl;
+     //std::cout << "alc = [ " << alc.get_x() << "," << alc.get_y() << "," << alc.get_width() << "," << alc.get_height() << "]" << std::endl;
     // std::cout << "cp1 = [ " << iCp1.iCoord.width << "," << iCp1.iCoord.height << "]" << std::endl;
     // Set highlighted state if point is in
     bool isin = IsPointIn(aEvent->x, aEvent->y);
@@ -308,9 +308,11 @@ bool EdgeCrp::on_button_press_event(GdkEventButton* aEvent)
 	    res = true;
 	}
 	else {
+	    //std::cout << "EdgeCrp on_button_press_event [" << get_name() << "], coord (" << aEvent->x << "," << aEvent->y << "), ewnd " 
+		//<< aEvent->window << ", wnd " << get_window()->gobj() << std::endl;
 	    bool isin = IsPointIn(aEvent->x, aEvent->y);
 	    if (isin) {
-		//std::cout << "EdgeCrp iSigButtonPress emit "  << std::endl;
+		std::cout << "EdgeCrp iSigButtonPress emit "  << std::endl;
 		iSigButtonPress.emit(aEvent);
 	    }
 	    if (aEvent->button == 1) {
