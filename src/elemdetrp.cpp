@@ -83,11 +83,13 @@ ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): 
     // TODO [YB] Consider saving from app - saving current app context instead of using context menu
     Gtk::Menu_Helpers::MenuElem e_save_chromo("_Save chromo", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_save_chromo));
     Gtk::Menu_Helpers::MenuElem e_transtomut("_Transform to mut", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_trans_to_mut));
+    Gtk::Menu_Helpers::MenuElem e_getparentsmodif("_Get parents modif", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_get_parents_modif));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Rename, e_rename));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Remove, e_remove));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Edit_Content, e_editcont));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Save_Chromo, e_save_chromo));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_TransToMut, e_transtomut));
+    iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_GetParentsModifs, e_getparentsmodif));
     // Setup components context menu
     Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
     /*
@@ -783,6 +785,8 @@ TBool ElemDetRp::DoIsActionSupported(Elem* aComp, const MCrp::Action& aAction)
     TBool res = ETrue;
     if (aAction == MCrp::EA_TransToMut) {
 	res = aComp->IsPhenoModif();
+    } else if (aAction == MCrp::EA_GetParentsModifs) {
+	res = aComp->HasParentModifs();
     }
     return res;
 }
@@ -807,6 +811,9 @@ void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp)
     }
     if (DoIsActionSupported(aComp, MCrp::EA_TransToMut)) {
 	menulist.push_back(iCompMenuElems.at(MCrp::EA_TransToMut));
+    }
+    if (DoIsActionSupported(aComp, MCrp::EA_GetParentsModifs)) {
+	menulist.push_back(iCompMenuElems.at(MCrp::EA_GetParentsModifs));
     }
     iCrpContextMenu.popup(event->button, event->time);
 }
@@ -922,6 +929,12 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     // Squeeze chromo for mutations made to depnode: rm and rename
     lastmut = *(depnode->Chromos().Root().Rbegin());
     root->CompactChromo(lastmut);
+}
+
+void ElemDetRp::on_comp_menu_get_parents_modif()
+{
+    assert(iCompSelected != NULL);
+    iCompSelected->CopyModifsFromParent();
 }
 
 // Shifting of component to the latest rank

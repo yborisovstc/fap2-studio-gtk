@@ -20,7 +20,8 @@ class MCrp: public MBase
 	    EA_Remove,
 	    EA_Edit_Content,
 	    EA_Save_Chromo,
-	    EA_TransToMut
+	    EA_TransToMut,
+	    EA_GetParentsModifs
 	};
 	// Layout area, vertical based
 	enum TLArea {

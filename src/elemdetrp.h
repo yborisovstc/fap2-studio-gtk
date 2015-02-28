@@ -59,6 +59,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void on_comp_menu_edit_content();
 	void on_comp_menu_save_chromo();
 	void on_comp_menu_trans_to_mut();
+	void on_comp_menu_get_parents_modif();
 	bool IsCrpLogged(MCrp* aCrp, MLogRec::TLogRecCtg aCtg) const;
 	bool DoIsActionSupported(Elem* aComp, const MCrp::Action& aAction);
 	void DoOnActionInsert();
