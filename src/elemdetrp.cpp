@@ -561,7 +561,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 	}
 	if (res != NULL) {
 	    if (!res->IsChromoAttached()) {
-		res = res->GetAttachingMgr(); 
+		res = res->GetAttachingMgr();
 	    }
 #if 0
 	    if (!ena_pheno && res != aNode && deptype == ENa_Parent) {
@@ -596,6 +596,9 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 	    // Also take into account if the mut is owner based
 	    Elem* pnode = IsMutOwnerBased(aMutType) ? aNode->GetMan() : aNode;
 	    res = res->GetCommonOwner(pnode);
+	    if (!res->IsChromoAttached()) {
+		res = res->GetAttachingMgr(); 
+	    }
 	}
     }
     mSignalAttention.emit(att);
@@ -709,33 +712,6 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
     Elem* node = iElem->GetNode(aNodeUri);
     bool unsafe = false;
     Elem* mutelem = GetObjForSafeMut(iElem, node, ENt_Cont, unsafe);
-    __ASSERT(mutelem != NULL);
-    MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
-    bool ena_pheno = ena_pheno_s.Get(ena_pheno);
-    /* This functionality is implemented on system level, see option of chromo invariant with regards to muts position
-    if (aRef) {
-	Elem* rnode = node->GetNode(aNewContent);
-	if (aRef && !mutelem->IsRefSafe(rnode)) {
-	    Elem::TMDep rdep;
-	    rnode->GetDep(rdep, ENa_Id);
-	    Elem* depnode = rdep.first.first;
-	    if (ena_pheno) {
-		// Pheno enabled, select safe mutelem
-		mutelem = depnode;
-	    }
-	    else {
-		// Pheno disabled, try to shift comp to resolve dep
-		if (iElem->IsComp(depnode) || iElem == depnode) {
-		    ShiftCompToEnd(iElem, mutelem != iElem ? mutelem: node);
-		}
-		else {
-		    mutelem = NULL;
-		    mSignalAttention.emit(K_Att_RefToBiggestRank);
-		}
-	    }
-	}
-    }
-    */
     if (mutelem != NULL) {
 	GUri nuri;
 	node->GetUri(nuri, mutelem);

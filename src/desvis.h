@@ -117,6 +117,15 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	    // From MDtGet
 	    virtual void DtGet(NTuple& aData);
 	};
+	// Data provider for Allocation
+	class AllocationProv: public DataProv, public MDVarGet, public MDtGet<NTuple> {
+	    public:
+	    // From MDVarGet
+	    virtual string VarGetIfid();
+	    virtual void *DoGetDObj(const char *aName);
+	    // From MDtGet
+	    virtual void DtGet(NTuple& aData);
+	};
     public:
 	static const char* Type() { return "AVisWidget";};
 	static string PEType();
@@ -167,14 +176,15 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	EventButtonProv mBtnPressEvtProv;
 	EventButtonReleaseProv mBtnReleaseEvtProv;
 	EventMotionProv mMotionEvtProv;
+	AllocationProv mAllocationProv;
 	int iY;
 	int iX;
 	int iW;
 	int iH;
-	int iBtnPressEvent;
 	NTuple mBtnPressEvt;
 	NTuple mBtnReleaseEvt;
 	NTuple mMotionEvt;
+	NTuple mAllocation;
 	static bool mInit;
 	static tStatesMap  mStatesMap;
 };
@@ -227,6 +237,7 @@ class MVisDrawingElem
 	virtual void OnExpose(GdkEventExpose* aEvent) = 0;
 	virtual bool OnAreaButtonPress(GdkEventButton* aEvent) = 0;
 	virtual bool OnAreaButtonRelease(GdkEventButton* aEvent) = 0;
+	virtual bool OnAreaMotion(GdkEventMotion* aEvent) = 0;
 };
 
 // Agent of drawing area
@@ -248,6 +259,7 @@ class AVisDrawing: public AVisWidget, public MVisDrawingArea
 	virtual void OnUpdated_H(int aOldData);
 	virtual bool HandleButtonPress(GdkEventButton* aEvent);
 	virtual bool HandleButtonRelease(GdkEventButton* aEvent);
+	virtual bool HandleMotion(GdkEventMotion* aEvent);
     protected:
 	// From Base
 	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
@@ -275,6 +287,7 @@ class AVisDrawingElem: public AVisWidget, public MVisDrawingElem
 	virtual void OnExpose(GdkEventExpose* aEvent);
 	virtual bool OnAreaButtonPress(GdkEventButton* aEvent);
 	virtual bool OnAreaButtonRelease(GdkEventButton* aEvent);
+	virtual bool OnAreaMotion(GdkEventMotion* aEvent);
     protected:
 	// From Base
 	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);

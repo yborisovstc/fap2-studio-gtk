@@ -125,11 +125,15 @@ void ADesSync::DoStep() {
     MDesSyncable* out = eout->GetObj(out);
     if (eout != NULL) {
 	Logger()->Write(MLogRec::EDbg, this, "Step %d", iCount++);
-	if (out->IsActive()) {
-	    out->Update();
-	}
-	if (out->IsUpdated()) {
-	    out->Confirm();
+	try {
+	    if (out->IsActive()) {
+		out->Update();
+	    }
+	    if (out->IsUpdated()) {
+		out->Confirm();
+	    }
+	} catch (const std::exception& e) {
+	    cout << "ADesSync DoStep expection: " << e.what() << '\n';
 	}
     }
 }

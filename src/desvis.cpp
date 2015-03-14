@@ -4,6 +4,7 @@
 
 const string KEventBtn_Srep = "TPL,SI:Type,SI:State,SI:Button,SI:X,SI:Y 0 0 0 0 0";
 const string KMotionEvent_Srep = "TPL,SI:Type,SI:State,SI:X,SI:Y 0 0 0 0";
+const string KAllocation_Srep = "TPL,SI:X,SI:Y,SI:W,SI:H 0 0 0 0";
 
 // Agent of top level window
 
@@ -134,6 +135,26 @@ void AVisWidget::EventMotionProv::DtGet(NTuple& aData)
     aData.mValid = true;
 }
 
+// Data provider for Allocation
+string AVisWidget::AllocationProv::VarGetIfid()
+{
+    return MDtGet<NTuple>::Type();
+}
+
+void *AVisWidget::AllocationProv::DoGetDObj(const char *aName)
+{
+    void* res = NULL;
+    if (strcmp(aName, MDtGet<NTuple>::Type()) == 0) res = (MDtGet<NTuple>*) this;
+    return res;
+}
+
+void AVisWidget::AllocationProv::DtGet(NTuple& aData)
+{
+    aData = iHost->mAllocation;
+    aData.mValid = true;
+}
+
+
 
 
 string AVisWidget::PEType()
@@ -159,6 +180,8 @@ AVisWidget::AVisWidget(const string& aName, Elem* aMan, MEnv* aEnv): Elem(aName,
     mBtnReleaseEvt.FromString(KEventBtn_Srep);
     mMotionEvtProv.SetHost(this);
     mMotionEvt.FromString(KMotionEvent_Srep);
+    mAllocationProv.SetHost(this);
+    mAllocation.FromString(KAllocation_Srep);
     // TODO [YB] To use the published data "Widget_State" from module ../Widged_common
     // instead of the internal constants.
     if (!mInit) {
@@ -186,6 +209,8 @@ AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
     mBtnReleaseEvt.FromString(KEventBtn_Srep);
     mMotionEvtProv.SetHost(this);
     mMotionEvt.FromString(KMotionEvent_Srep);
+    mAllocationProv.SetHost(this);
+    mAllocation.FromString(KAllocation_Srep);
 }
 
 void AVisWidget::Construct()
@@ -193,7 +218,7 @@ void AVisWidget::Construct()
     if (iWidget != NULL) {
 	iWidget->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::POINTER_MOTION_MASK);
 	iWidget->signal_button_press_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
-	iWidget->signal_button_release_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonRelease));
+	iWidget->signal_button_release_event().connect(sigc::mem_fun(*this, &AVisWidget::OnButtonPress));
 	iWidget->signal_motion_notify_event().connect(sigc::mem_fun(*this, &AVisWidget::OnMotion));
     }
 }
@@ -244,7 +269,8 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	Elem* cph = GetNode("./../../Prov_PH");
 	Elem* bpe = GetNode("./../../BtnPressEvent");
 	Elem* bre = GetNode("./../../BtnReleaseEvent");
-	Elem* mte = GetNode("./../../MoutionEvent");
+	Elem* mte = GetNode("./../../MotionEvent");
+	Elem* alc = GetNode("./../../Allocation");
 	if (aCtx->IsInContext(cpw)) {
 	    if (isdvar) {
 		res = (MDVarGet*) &iParProvVarW;
@@ -274,6 +300,11 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	else if (aCtx->IsInContext(mte)) {
 	    if (isdvar) {
 		res = (MDVarGet*) &mMotionEvtProv;
+	    }
+	}
+	else if (aCtx->IsInContext(alc)) {
+	    if (isdvar) {
+		res = (MDVarGet*) &mAllocationProv;
 	    }
 	}
     }
@@ -462,6 +493,10 @@ void AVisWidget::OnUpdated()
     res = GetDataInt("./Inp_X/Int/PinData", sX);
     if (res && sX != iX) {
 	iX = sX;
+	// Set allocation data
+	Sdata<int>* adata = dynamic_cast<Sdata<int>*> (mAllocation.GetElem("X"));
+	__ASSERT(adata != NULL);
+	adata->Set(iX);
 	OnUpdated_X(oldX);
     }
     // Y coord
@@ -469,6 +504,10 @@ void AVisWidget::OnUpdated()
     res = GetDataInt("./Inp_Y/Int/PinData", sY);
     if (res && sY != iY) {
 	iY = sY;
+	// Set allocation data
+	Sdata<int>* adata = dynamic_cast<Sdata<int>*> (mAllocation.GetElem("Y"));
+	__ASSERT(adata != NULL);
+	adata->Set(iY);
 	OnUpdated_Y(oldY);
     }
     // Width
@@ -476,6 +515,10 @@ void AVisWidget::OnUpdated()
     res = GetDataInt("./Inp_W/Int/PinData", sW);
     if (res && sW != iW) {
 	iW = sW;
+	// Set allocation data
+	Sdata<int>* adata = dynamic_cast<Sdata<int>*> (mAllocation.GetElem("W"));
+	__ASSERT(adata != NULL);
+	adata->Set(iW);
 	OnUpdated_W(oldW);
     }
     // Heigth
@@ -483,6 +526,10 @@ void AVisWidget::OnUpdated()
     res = GetDataInt("./Inp_H/Int/PinData", sH);
     if (res && sH != iH) {
 	iH = sH;
+	// Set allocation data
+	Sdata<int>* adata = dynamic_cast<Sdata<int>*> (mAllocation.GetElem("H"));
+	__ASSERT(adata != NULL);
+	adata->Set(iH);
 	OnUpdated_H(oldH);
     }
     // State
@@ -514,8 +561,6 @@ bool AVisWidget::OnMotion(GdkEventMotion* aEvent)
 
 bool AVisWidget::HandleButtonPress(GdkEventButton* aEvent)
 {
-    // Cache event value
-    iBtnPressEvent = aEvent->type;
     // Set event data
     Sdata<int>* etype = dynamic_cast<Sdata<int>*> (mBtnPressEvt.GetElem("Type"));
     __ASSERT(etype != NULL);
@@ -826,6 +871,20 @@ bool AVisDrawing::HandleButtonRelease(GdkEventButton* aEvent)
     return res;
 }
 
+bool AVisDrawing::HandleMotion(GdkEventMotion* aEvent)
+{
+    bool res = AVisWidget::HandleMotion(aEvent);
+    if (!res) {
+	Elem::TIfRange range = GetDrawingElems();
+	for (Elem::IfIter it = range.first; it != range.second; it++) {
+	    MVisDrawingElem* mobs = (MVisDrawingElem*) (*it);
+	    if (mobs != NULL) {
+		mobs->OnAreaMotion(aEvent);
+	    }
+	}
+    }
+    return res;
+}
 
 
 // Agent of drawing element
@@ -911,6 +970,7 @@ void AVisDrawingElem::OnAllocUpdated(const Rectangle& aOldAlloc)
 	Glib::RefPtr<Gdk::Window> wnd = mda->GetWindow();
 	wnd->clear_area(aOldAlloc.get_x(), aOldAlloc.get_y(), aOldAlloc.get_width(), aOldAlloc.get_height());
 	wnd->invalidate_rect(Rectangle(iX, iY, iW, iH), true);
+	ActivateDeps("./../../Allocation/Int/PinObs");
     }
 }
 
@@ -934,6 +994,11 @@ bool AVisDrawingElem::OnAreaButtonPress(GdkEventButton* aEvent)
 bool AVisDrawingElem::OnAreaButtonRelease(GdkEventButton* aEvent)
 {
     return AVisWidget::HandleButtonRelease(aEvent);
+}
+
+bool AVisDrawingElem::OnAreaMotion(GdkEventMotion* aEvent)
+{
+    return AVisWidget::HandleMotion(aEvent);
 }
 
 /*
