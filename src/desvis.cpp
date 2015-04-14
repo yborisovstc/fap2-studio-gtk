@@ -705,6 +705,7 @@ bool VisDrwArea::on_expose_event(GdkEventExpose* aEvent)
     Allocation alc = get_allocation();
     drw->draw_rectangle(gc, true, 0, 0, alc.get_width() - 1, alc.get_height() - 1);
     */
+    mHost->Logger()->Write(MLogRec::EInfo, mHost, "on_expose_event");
     Elem* eobs = mHost->GetNode("./../../DrawingArea");
     __ASSERT(eobs != NULL);
     Elem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
@@ -723,6 +724,7 @@ void VisDrwArea::on_size_allocate(Allocation& aAlloc)
 
 void VisDrwArea::on_size_request(Requisition* aReq)
 {
+    mHost->Logger()->Write(MLogRec::EInfo, mHost, "on_size_request");
     DrawingArea::on_size_request(aReq);
 }
 

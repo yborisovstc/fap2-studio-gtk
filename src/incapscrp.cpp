@@ -31,12 +31,10 @@ void IncapsCrp::Construct()
     assert(caps != NULL);
     for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
 	Elem* comp = *it;
-	if (comp->IsHeirOf(ConnPointBase::PEType()) || comp->IsHeirOf("Vert:Extender")) {
-	    CpRp* rp = new CpRp(comp);
-	    add(*rp);
-	    rp->show();
-	    iCpRps[comp] = rp;
-	}
+	CpRp* rp = new CpRp(comp);
+	add(*rp);
+	rp->show();
+	iCpRps[comp] = rp;
     }
     set_has_tooltip();
     set_tooltip_text("IncapsCrp Tooltip test");

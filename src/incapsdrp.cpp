@@ -233,7 +233,7 @@ void IncapsDrp::Construct()
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
 	assert(comp != NULL);
-	if (!comp->IsRemoved() && comp != caps) {
+	if (comp != caps) {
 	    MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	    Gtk::Widget& rpw = rp->Widget();
 	    // Using specific signal for button press instead of standard because some Crps can have complex layout

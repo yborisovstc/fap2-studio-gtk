@@ -43,18 +43,20 @@ class LogListClrec: public Gtk::TreeModel::ColumnRecord
 {
     public:
 	enum ColumnIndex {
-	    ECol_Ctg = 0,
-	    ECol_Mnode = 1,
-	    ECol_Mutid = 2,
-	    ECol_Content = 3,
+	    ECol_Time = 0,
+	    ECol_Ctg = 1,
+	    ECol_Mnode = 2,
+	    ECol_Mutid = 3,
+	    ECol_Content = 4,
 	};
     public:
+	Gtk::TreeModelColumn<Glib::ustring> timestamp;
 	Gtk::TreeModelColumn<Glib::ustring> ctg;
 	Gtk::TreeModelColumn<Glib::ustring> mnode;
 	Gtk::TreeModelColumn<int> mutid;
 	Gtk::TreeModelColumn<Glib::ustring> content;
     public:
-	LogListClrec() { add(ctg); add(mnode); add(mutid); add(content);};
+	LogListClrec() { add(timestamp); add(ctg); add(mnode); add(mutid); add(content);};
 };
 
 // Des log
@@ -84,7 +86,7 @@ class LogViewL: public TreeView
 	void Select(Elem* aNode, MLogRec::TLogRecCtg aCtg);
 	tSigLogRecActivated SignalLogRecActivated() {return mSigLogRecActivated;};
     protected:
-	void on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, int aMutId, const std::string& aContent);
+	void on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, Elem* aNode, int aMutId, const std::string& aContent);
 	void on_des_env_changed();
 	static const string& CtgName(MLogRec::TLogRecCtg aCtg); 
 	virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);

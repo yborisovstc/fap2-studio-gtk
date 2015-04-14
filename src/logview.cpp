@@ -113,6 +113,7 @@ void LogViewL::SetDesEnv(MEnv* aDesEnv)
 	if (iDesEnv != NULL) {
 	    Glib::RefPtr<ListStore> mdl = ListStore::create(iColRec);
 	    set_model(mdl);
+	    append_column( "Time", iColRec.timestamp);
 	    append_column( "Type", iColRec.ctg);
 	    append_column( "Node", iColRec.mnode);
 	    append_column( "Content", iColRec.content);
@@ -139,12 +140,13 @@ const string& LogViewL::CtgName(MLogRec::TLogRecCtg aCtg)
     else __ASSERT(false);
 }
 
-void LogViewL::on_log_added(MLogRec::TLogRecCtg aCtg, Elem* aNode, int aMutId, const std::string& aContent)
+void LogViewL::on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, Elem* aNode, int aMutId, const std::string& aContent)
 {
     Glib::RefPtr<TreeModel> mdl = get_model();
     //ListStore* lmdl = (ListStore*) mdl.operator->();
     Glib::RefPtr<ListStore> lsmdl = Glib::RefPtr<ListStore>::cast_dynamic<TreeModel>(mdl);
     TreeIter it = lsmdl->append();
+    it->set_value(iColRec.timestamp, Glib::ustring::compose("%1", aTimeStamp));
     it->set_value(iColRec.ctg, Glib::ustring(CtgName(aCtg).c_str()));
     GUri fullpath;
     aNode->GetUri(fullpath);

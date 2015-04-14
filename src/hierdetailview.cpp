@@ -130,7 +130,7 @@ void HierDetailView::UpdateBtnGoParent()
     Elem* cursor = iDetRp == NULL ? NULL : iDetRp->Model();
     Elem* parent = cursor->GetParent();
     //Elem* cursor = iRoot->GetNode(iCursor);
-    item->set_sensitive(cursor != NULL && parent != NULL && !parent->IsRemoved());
+    item->set_sensitive(cursor != NULL && parent != NULL);
 }
 
 void HierDetailView::on_action_insert()
@@ -163,7 +163,7 @@ void HierDetailView::on_action_goparent()
 {
     Elem* cursor = iDetRp->Model();
     Elem* parent = cursor->GetParent();
-    if (parent != NULL && !parent->IsRemoved()) {
+    if (parent != NULL) {
 	SetCursor(cursor->GetParent());
     }
 }

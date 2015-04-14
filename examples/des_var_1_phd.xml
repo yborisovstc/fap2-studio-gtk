@@ -13,13 +13,13 @@
       <node id="st" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVar" ord="10">
         <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/TFAddVar" ord="11"/>
         <node id="222049375" parent="Edge" ord="12">
-          <cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/Inp/(StInpSocket:)Int/PinData" ord="14"/>
+          <cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Capsule/Inp/(StInpSocket:)Int/PinData" ord="14"/>
           <cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Add/Capsule/Inp" ord="15"/>
         </node>
         <node id="820889547" parent="Edge" ord="16">
           <cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Add/Capsule/Out" ord="17"/>
           <cont node="./(Prop:)P1" val="" ord="18"/>
-          <cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSCVar:)Prepared/(Elem:)Capsule/Inp" ord="19"/>
+          <cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSCVar:)Prepared/Capsule/Inp" ord="19"/>
         </node>
         <node id="Const" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSU:)DataSUInt" ord="20"/>
         <rm node="./(DataSUInt:)Const" ord="23"/>
@@ -27,17 +27,17 @@
           <cont node="./(Prop:)Value" val="F 0.1" ord="30"/>
         </node>
         <node id="969163775" parent="Edge" ord="31">
-          <cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUInt:)Const/(Elem:)Capsule/out" ord="22"/>
+          <cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUInt:)Const/Capsule/out" ord="22"/>
           <cont node="./(Prop:)P1" val="" ord="24"/>
           <cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Add/Capsule/Inp" ord="27"/>
-          <cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUVar:)Const1/(Elem:)Capsule/out" ord="26"/>
+          <cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUVar:)Const1/Capsule/out" ord="26"/>
         </node>
         <cont node="./(DataSCVar:)Confirmed/(Prop)Value" val="F 0" ord="28"/>
         <cont node="./(DataSCVar:)Prepared/(Prop)Value" val="F 0" ord="29"/>
       </node>
       <node id="1197245649" parent="Edge" ord="32">
-        <cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/Out" ord="32"/>
-        <cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/Inp" ord="33"/>
+        <cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Capsule/Out" ord="32"/>
+        <cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Capsule/Inp" ord="33"/>
       </node>
     </node>
     <node id="Ticker_edge" parent="Edge" ord="34">

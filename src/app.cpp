@@ -40,11 +40,13 @@ DesObserver::~DesObserver()
 void DesObserver::SetDes(MEnv* aDesEnv)
 {
     assert(aDesEnv != NULL && iDesEnv == NULL || aDesEnv == NULL);
-    if (iDesEnv != NULL) {
-	iDesEnv->Logger()->RemoveLogObserver(this);
-	Elem* root = iDesEnv->Root();
-	root->SetObserver(NULL);
-	iDesEnv = NULL;
+    if (aDesEnv == NULL) {
+	if (iDesEnv != NULL) {
+	    iDesEnv->Logger()->RemoveLogObserver(this);
+	    Elem* root = iDesEnv->Root();
+	    root->SetObserver(NULL);
+	    iDesEnv = NULL;
+	}
     }
     else {
 	iDesEnv = aDesEnv;
@@ -181,9 +183,9 @@ TBool DesObserver::OnContentChanged(Elem& aComp)
     return true;
 }
 
-void DesObserver::OnLogAdded(MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent, int aMutId)
+void DesObserver::OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent, int aMutId)
 {
-    iSigLogAdded.emit(aCtg, aNode, aMutId,  aContent);
+    iSigLogAdded.emit(aTimestamp, aCtg, aNode, aMutId,  aContent);
 }
 
 void DesObserver::OnLogRecDeleting(MLogRec* aLogRec)
@@ -270,11 +272,13 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
 }
 
 App::~App() {
-    delete iMainWnd;
+    // Deattach observer to avoid massive notifications from the model
+    iDesObserver->SetDes(NULL);
     delete iEnv;
+    delete iMainWnd;
     delete iStEnv;
     delete iStDesEnv;
-    delete iMdlProv;
+    // iMdlProv is owned by iEnv, so no need to delete it
     delete iDesObserver;
 }
 
@@ -492,6 +496,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
 {
     if (iEnv != NULL) {
 	iDesObserver->SetDes(NULL);
+	iEnv->RemoveProvider(iMdlProv);
 	delete iEnv;
 	iEnv = NULL;
     }
@@ -499,6 +504,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv->AddProvider(iMdlProv);
     iEnv->ChMgr()->SetLim(iChromoLim);
     iEnv->ChMgr()->SetEnableFixErrors(iRepair);
+    iEnv->ChMgr()->SetEnableCheckSafety(false);
     MStSetting<bool>& ena_pheno = iStEnv->Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno);
     bool ena_pheno_val = ena_pheno.Get(ena_pheno_val);
     iEnv->ChMgr()->SetEnablePhenoModif(ena_pheno_val);

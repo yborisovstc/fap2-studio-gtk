@@ -100,12 +100,10 @@ void SysCrp::Construct()
     // Add CPs
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
-	if (comp->IsHeirOf(ConnPointBase::PEType()) || comp->IsHeirOf("Vert:Extender")) {
-	    CpRp* rp = new CpRp(comp);
-	    add(*rp);
-	    rp->show();
-	    iCpRps[comp] = rp;
-	}
+	CpRp* rp = new CpRp(comp);
+	add(*rp);
+	rp->show();
+	iCpRps[comp] = rp;
     }
     set_has_tooltip();
     set_tooltip_text("SysCrp Tooltip test");

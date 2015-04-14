@@ -116,23 +116,21 @@ void ElemDetRp::Construct()
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
 	assert(comp != NULL);
-	if (!comp->IsRemoved()) {
-	    MCrp* rp = iCrpProv.CreateRp(*comp, this);
-	    if (rp == NULL) {
-		rp = iCrpProv.CreateRp(*comp, this);
-	    }
-	    if (IsCrpLogged(rp, MLogRec::EErr)) {
-		rp->SetErroneous(true);
-	    }
-	    Gtk::Widget& rpw = rp->Widget();
-	    //rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
-	    // Using specific signal for button press instead of standard because some Crps can have complex layout
-	    rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
-	    rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
-	    add(rpw);
-	    iCompRps[comp] = rp;
-	    rpw.show();
+	MCrp* rp = iCrpProv.CreateRp(*comp, this);
+	if (rp == NULL) {
+	    rp = iCrpProv.CreateRp(*comp, this);
 	}
+	if (IsCrpLogged(rp, MLogRec::EErr)) {
+	    rp->SetErroneous(true);
+	}
+	Gtk::Widget& rpw = rp->Widget();
+	//rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
+	// Using specific signal for button press instead of standard because some Crps can have complex layout
+	rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
+	rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
+	add(rpw);
+	iCompRps[comp] = rp;
+	rpw.show();
     }
 }
 
@@ -198,16 +196,13 @@ void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
     // Allocate components
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	Elem* comp = *it;
-	if (!comp->IsRemoved()) {
-	    MCrp* crp = iCompRps.at(*it);
-	    Gtk::Widget* comp = &(crp->Widget());
-	    Gtk::Requisition req = comp->size_request();
-	    int comp_body_center_x = req.width / 2;
-	    Gtk::Allocation allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, req.height);
-	    comp->size_allocate(allc);
-	    compb_y += req.height + KViewCompGapHight;
-	}
+	MCrp* crp = iCompRps.at(*it);
+	Gtk::Widget* comp = &(crp->Widget());
+	Gtk::Requisition req = comp->size_request();
+	int comp_body_center_x = req.width / 2;
+	Gtk::Allocation allc = Gtk::Allocation(compb_x - comp_body_center_x, compb_y, req.width, req.height);
+	comp->size_allocate(allc);
+	compb_y += req.height + KViewCompGapHight;
     }
 }
 
