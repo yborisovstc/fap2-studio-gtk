@@ -10,6 +10,8 @@ const char* KTemplDirName = "/usr/share/fap2-studio-gtk/templ";
 const char* KAppName = "fap2-studio";
 const char* KRcFileName = "/usr/share/fap2-studio-gtk/conf/reg.rc";
 
+const string KModulesPath = "/usr/share/fap2-studio-gtk/modules/";
+
 const string KTitleUnsaved = "unsaved";
 const string KMsgUnsaved = "The model has been modified. Do you want to save it?";
 const string KBtnTxtDiscard = "Discard";
@@ -502,6 +504,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     }
     iEnv = new Env("DesEnv", aFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
+    iEnv->ImpsMgr()->AddImportsPaths(KModulesPath);
     iEnv->ChMgr()->SetLim(iChromoLim);
     iEnv->ChMgr()->SetEnableFixErrors(iRepair);
     iEnv->ChMgr()->SetEnableCheckSafety(false);

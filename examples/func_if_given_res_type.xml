@@ -3,41 +3,40 @@
   <node id="Note" parent="Description">
     <cont val="This is the test of using of IF function. Specific is that res type is not specified explicitly but depends on args"/>
   </node>
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+  <node id="Modules" parent="AImports">
+      <import id="/IncapsComps/Incaps"/>
+      <import id="/DataComps/DataTVar"/>
+      <import id="/FuncComps/FSwitchVar"/>
   </node>
   <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Result" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+      <node id="Result" node="./Capsule" parent="/Root/Modules/DataComps/(DataS:)DataTVar">
 	<cont node="./(Prop)Value" val="F 0.0"/>
     </node>
-    <node id="If" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FSwitchVar"/>
-    <node id="Control" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+    <node id="If" parent="/Root/Modules/(Elem:)FuncComps/(FuncVar:)FSwitchVar"/>
+    <node id="Control" parent="/Root/Modules/DataComps/(DataS:)DataTVar">
 	<cont node="./(Prop)Value" val="B false"/>
     </node>
-    <node id="Case1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+    <node id="Case1" parent="/Root/Modules/DataComps/(DataS:)DataTVar">
 	<cont node="./(Prop)Value" val="F 2.4"/>
     </node>
-    <node id="Case2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+    <node id="Case2" parent="/Root/Modules/DataComps/(DataS:)DataTVar">
 	<cont node="./(Prop)Value" val="F 5.1"/>
     </node>
     <node id="1940241559" parent="Edge">
-	<cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/inp"/>
-	<cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FSwitchVar:)If/(Elem:)Capsule/(Out_FVar:)out"/>
+	<cont node="./(Prop:)P2" ref="/Root/(Incaps:)IRoot/Capsule/(DataTVar:)Result/Capsule/inp"/>
+	<cont node="./(Prop:)P1" ref="/Root/(Incaps:)IRoot/(FSwitchVar:)If/Capsule/(Out_FVar:)out"/>
     </node>
     <node id="2047879454" parent="Edge">
-	<cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FSwitchVar:)If/(Elem:)Capsule/(Inp_FVar:)Sel"/>
-	<cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Control/(Elem:)Capsule/out"/>
+	<cont node="./(Prop:)P2" ref="/Root/(Incaps:)IRoot/(FSwitchVar:)If/Capsule/(Inp_FVar:)Sel"/>
+	<cont node="./(Prop:)P1" ref="/Root/(Incaps:)IRoot/(DataTVar:)Control/Capsule/out"/>
     </node>
     <node id="73447618" parent="Edge">
-	<cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FSwitchVar:)If/(Elem:)Capsule/(Inp_FVar:)Inp1"/>
-	<cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Case1/(Elem:)Capsule/out"/>
+	<cont node="./(Prop:)P2" ref="/Root/(Incaps:)IRoot/(FSwitchVar:)If/Capsule/(Inp_FVar:)Inp1"/>
+	<cont node="./(Prop:)P1" ref="/Root/(Incaps:)IRoot/(DataTVar:)Case1/Capsule/out"/>
     </node>
     <node id="746877308" parent="Edge">
-	<cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FSwitchVar:)If/(Elem:)Capsule/(Inp_FVar:)Inp2"/>
-	<cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Case2/(Elem:)Capsule/out"/>
+	<cont node="./(Prop:)P2" ref="/Root/(Incaps:)IRoot/(FSwitchVar:)If/Capsule/(Inp_FVar:)Inp2"/>
+	<cont node="./(Prop:)P1" ref="/Root/(Incaps:)IRoot/(DataTVar:)Case2/Capsule/out"/>
     </node>
   </node>
 </node>

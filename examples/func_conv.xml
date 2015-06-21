@@ -9,62 +9,74 @@
 <!DOCTYPE node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
 
 <node id="testroot" parent="Elem">
-    <!-- Module containing components of system layer -->
-    <move id="file:/usr/share/grayb/modules/syst.xml#SysComps" />
-    <!-- Module containing components of incaps layer -->
-    <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
-    <!-- Module containing components of data -->
-    <move id="file:/usr/share/grayb/modules/data.xml#DataComps" />
-    <!-- Module containing components of func -->
-    <move id="file:/usr/share/grayb/modules/func.xml#FuncComps" />
 
-    <node id="test" parent="./IncapsComps/Incaps">
+    <node id="About" parent="Description">
+	<cont node="" val="This is tests function 'Inputs Convolution, solution#1' - 
+	    with working function connected to specific output of base function
+	    In fact this is transition function for Snail's mass state"/>
+    </node>
 
-	<node id="DataS_Int_1" parent="./../DataComps/DataSInt">
+    <node id="Modules" parent="AImports">
+	<import id="/SysComps/ConnPointInp"/>
+	<import id="/SysComps/ConnPointOut"/>
+	<import id="/IncapsComps/Incaps"/>
+	<import id="/DataComps/DataSInt"/>
+	<import id="/FuncComps/FConvInt"/>
+	<import id="/FuncComps/FGTInt"/>
+	<import id="/FuncComps/FBoolToInt"/>
+	<import id="/FuncComps/FSubInt"/>
+	<import id="/FuncComps/FLimInt"/>
+	<import id="/FuncComps/FDivInt"/>
+	<import id="/FuncComps/FuncIntRes"/>
+    </node>
+
+    <node id="test" parent="./Modules/IncapsComps/Incaps">
+
+	<node id="DataS_Int_1" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="10"/> 
 	</node>
 
-	<node id="DataS_Int_2" parent="./../DataComps/DataSInt">
+	<node id="DataS_Int_2" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="20"/> 
 	</node>
 
-	<node id="DataS_Int_3" parent="./../DataComps/DataSInt">
+	<node id="DataS_Int_3" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="30"/> 
 	</node>
 
-	<node id="Data_MaxFeed" parent="./../DataComps/DataSInt">
+	<node id="Data_MaxFeed" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="3"/> 
 	</node>
 
-	<node id="Data_SelfCoord" parent="./../DataComps/DataSInt">
+	<node id="Data_SelfCoord" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="5"/> 
 	</node>
 
-	<node id="Data_SelfMass" parent="./../DataComps/DataSInt">
+	<node id="Data_SelfMass" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="1"/> 
 	</node>
 
-	<node id="Data_MinMass" parent="./../DataComps/DataSInt">
+	<node id="Data_MinMass" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="1"/> 
 	</node>
 
-	<node id="Data_MaxMass" parent="./../DataComps/DataSInt">
+	<node id="Data_MaxMass" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="3"/> 
 	</node>
 
-	<node id="Data_Const1" parent="./../DataComps/DataSInt">
+	<node id="Data_Const1" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="1"/> 
 	</node>
 
 	<!-- Mass transition -->
-	<node id="Conv" parent="./../FuncComps/FConvInt"/>
-	<node id="Comp" parent="./../FuncComps/FGTInt"/>
-	<node id="ToInt" parent="./../FuncComps/FBoolToInt"/>
-	<node id="Sub" parent="./../FuncComps/FSubInt"/>
-	<node id="Sub2" parent="./../FuncComps/FSubInt"/>
-	<node id="Lim" parent="./../FuncComps/FLimInt"/>
-	<node id="Result" parent="./../FuncComps/FuncIntRes"/>
-	<node id="ResData" parent="./../DataComps/DataSInt"/>
+	<node id="Conv" parent="./../Modules/FuncComps/FConvInt"/>
+	<node id="Comp" parent="./../Modules/FuncComps/FGTInt"/>
+	<node id="ToInt" parent="./../Modules/FuncComps/FBoolToInt"/>
+	<node id="Sub" parent="./../Modules/FuncComps/FSubInt"/>
+	<node id="Sub2" parent="./../Modules/FuncComps/FSubInt"/>
+	<node id="Lim" parent="./../Modules/FuncComps/FLimInt"/>
+	<node id="Result" parent="./../Modules/FuncComps/FuncIntRes"/>
+	<node id="ResData" node="./Capsule" parent="./../Modules/DataComps/DataSInt"/>
 
 	<node id="E01" parent="Edge"> 
 	    <cont node="./P1" ref="./../../DataS_Int_1/Capsule/out"/> <cont node="./P2" ref="./../../Conv/Capsule/inp"/> </node>
@@ -99,21 +111,21 @@
 	<node id="E16" parent="Edge">
 	    <cont node="./P1" ref="./../../Lim/Capsule/out"/> <cont node="./P2" ref="./../../Result/Capsule/inp"/> </node>
 	<node id="E17" parent="Edge">
-	    <cont node="./P1" ref="./../../Result/Capsule/out"/> <cont node="./P2" ref="./../../ResData/Capsule/inp"/> </node>
+	    <cont node="./P1" ref="./../../Result/Capsule/out"/> <cont node="./P2" ref="./../../Capsule/ResData/Capsule/inp"/> </node>
 
 	<!-- Coord transion -->
 
-	<node id="Data_DD" parent="./../DataComps/DataSInt">
+	<node id="Data_DD" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="8"/> 
 	</node>
 
-	<node id="Data_DR" parent="./../DataComps/DataSInt">
+	<node id="Data_DR" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="2"/> 
 	</node>
 
-	<node id="Div" parent="./../FuncComps/FDivInt"/>
-	<node id="DivRes" parent="./../FuncComps/FuncIntRes"/>
-	<node id="DivResData" parent="./../DataComps/DataSInt"/>
+	<node id="Div" parent="./../Modules/FuncComps/FDivInt"/>
+	<node id="DivRes" parent="./../Modules/FuncComps/FuncIntRes"/>
+	<node id="DivResData" node="./Capsule" parent="./../Modules/DataComps/DataSInt"/>
 
 	<node id="E20" parent="Edge">
 	    <cont node="./P1" ref="./../../Data_DD/Capsule/out"/> <cont node="./P2" ref="./../../Div/Capsule/Inp_DD"/> </node>
@@ -122,7 +134,7 @@
 	<node id="E22" parent="Edge">
 	    <cont node="./P1" ref="./../../Div/Capsule/out"/> <cont node="./P2" ref="./../../DivRes/Capsule/inp"/> </node>
 	<node id="E23" parent="Edge">
-	    <cont node="./P1" ref="./../../DivRes/Capsule/out"/> <cont node="./P2" ref="./../../DivResData/Capsule/inp"/> </node>
+	    <cont node="./P1" ref="./../../DivRes/Capsule/out"/> <cont node="./P2" ref="./../../Capsule/DivResData/Capsule/inp"/> </node>
 
     </node>
 

@@ -1,31 +1,31 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem" tord="28">
   <node id="Note" parent="Description">
-    <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [IRoot]"/>
+    <cont val="Test of getting component from variable type tuple data. Change [Index] and verify [Res]."/>
   </node>
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+  <node id="Modules" parent="AImports">
+      <import id="/IncapsComps/Incaps"/>
+      <import id="/DataComps/DataSVar"/>
+      <import id="/DataComps/DataTVar"/>
+      <import id="/FuncComps/FAtVar"/>
   </node>
   <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Data" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar">
+    <node id="Data" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataSVar">
       <cont node="./Value" val="TPL,SI:Int,SF:Float,SB:Bool 1 2.0 true"/>
     </node>
-    <node id="At" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FAtVar"/>
+    <node id="At" parent="/Root/Modules/(Elem:)FuncComps/(FuncVar:)FAtVar"/>
     <node id="1866000536" parent="Edge">
       <cont node="./P2" ref="./../../Data/Capsule/out"/>
       <cont node="./P1" ref="./../../At/Capsule/Inp"/>
     </node>
-    <node id="Res" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+    <node id="Res" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
       <cont node="./Value" val="SB false"/>
     </node>
     <node id="1192839534" parent="Edge">
       <cont node="./P2" ref="./../../Res/Capsule/inp"/>
       <cont node="./P1" ref="./../../At/Capsule/out"/>
     </node>
-    <node id="Index" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar">
+    <node id="Index" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataSVar">
       <cont node="./Value" val="SS Bool"/>
     </node>
     <node id="734321600" parent="Edge">

@@ -1,39 +1,39 @@
-<?xml version="1.0" ?>
-
-<!-- Unit test for ceation of Incapsulated system. It has capsule component that includes connpoint.
-     -->
-
-
-<!DOCTYPE node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
-
-<node id="testroot" parent="Elem">
-    <!-- Module containing components of system layer -->
-    <move id="file:/usr/share/grayb/modules/syst.xml#SysComps" />
-    <!-- Module containing components of incaps layer -->
-    <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
-
-    <node id="test" parent="./IncapsComps/Incaps">
-	<node id="Ics1" parent="./../IncapsComps/Incaps">
-	    <node id="cp_int" parent="./../../SysComps/ConnPoint"> 
-		<cont node="./Provided" val="Role3"/> <cont node="./Required" val="Role4"/>
-	    </node>
-	    <node node="./Capsule" id="ep" parent="./../../SysComps/Extender"> 
-		<cont node="./Int/Provided" val="Role4"/> <cont node="./Int/Required" val="Role3"/>
-	    </node>
-	</node>
-
-	<node id="Ics2" parent="./../IncapsComps/Incaps">
-	    <node node="./Capsule" id="ep" parent="./../../SysComps/Extender"> 
-		<cont node="./Int/Provided" val="Role3"/> <cont node="./Int/Required" val="Role4"/>
-	    </node>
-	</node>
-
-	<!-- Trying to connect extention points from capsules - right way to connect -->
-	<node id="E1" parent="Edge"> <cont node="./P1" ref="./../../Ics1/Capsule/ep"/> <cont node="./P2" ref="./../../Ics2/Capsule/ep"/> </node>
-
-	<!-- Trying to connect internal conn points - that should be refused by incapsulated system -->
-	<node id="E2" parent="Edge"> <cont node="./P1" ref="./../../Ics1/cp_int"/> <cont node="./P2" ref="./../../Ics2/Capsule/ep"/> </node>
-
+<?xml version="1.0"?>
+<node id="testroot" parent="Elem" tord="25">
+  <node id="Modules" parent="AImports">
+    <import id="/SysComps"/>
+    <import id="/IncapsComps/Incaps"/>
+  </node>
+  <node id="test" parent="./Modules/IncapsComps/Incaps">
+    <node id="Ics1" parent="./../Modules/IncapsComps/Incaps">
+      <node id="cp_int" parent="./../../Modules/SysComps/ConnPoint">
+        <cont node="./Provided" val="Role3"/>
+        <cont node="./Required" val="Role4"/>
+      </node>
+      <node id="ep" parent="./../../Modules/SysComps/Extender" node="./Capsule">
+        <cont node="./Int/Provided" val="Role4"/>
+        <cont node="./Int/Required" val="Role3"/>
+      </node>
     </node>
+    <node id="Ics2" parent="./../Modules/IncapsComps/Incaps">
+      <node id="ep" parent="./../../Modules/SysComps/Extender" node="./Capsule">
+        <cont node="./Int/Provided" val="Role3"/>
+        <cont node="./Int/Required" val="Role4"/>
+      </node>
+    </node>
+    <node id="E1" parent="Edge">
+      <cont node="./P1" ref="./../../Ics1/Capsule/ep"/>
+      <cont node="./P2" ref="./../../Ics2/Capsule/ep"/>
+    </node>
+    <node id="E2" parent="Edge">
+      <cont node="./P1" ref="./../../Ics1/cp_int"/>
+      <cont node="./P2" ref="./../../Ics2/Capsule/ep"/>
+    </node>
+    <node id="Note" parent="Description">
+      <cont node="" val="Incapsulated system is system that has special agent &quot;Capsula&quot; for connection points.&#10;Only connection points places in caplula are allowed for connection. Incapsulated system refuses all connection apart of caplula.&#10;So all agent &quot;under&quot; capsula are &quot;internal&quot; and are not isolated from external agents"/>
+    </node>
+  </node>
+  <node id="About" parent="Description">
+    <cont node="" val="This example demonstrates using of incapsulated system"/>
+  </node>
 </node>
-

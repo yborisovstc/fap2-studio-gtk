@@ -55,10 +55,12 @@ enum TDnDTarg {
     EDT_Node = 1,
     EDT_EdgeCp = 2,
     EDT_Comp = 4, // Local component
+    EDT_Import = 5, // Import component from external module
 };
 
 // TODO [YB] To rename to FAP_NODE_URI
 static const gchar* KDnDTarg_Comp = "FAP_COMP";
 static const gchar* KDnDTarg_EdgeCp = "FAP_EDGE_CP";
+static const gchar* KDnDTarg_Import = "FAP_DND_IMPORT";
 
 #endif

@@ -1,34 +1,35 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem">
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
-    <move id="file:/usr/share/grayb/modules/des.xml#"/>
-  </node>
-  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
-    <node id="Ticker_edge" parent="Edge"/>
-    <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
-      <node id="Gen_Data" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-      <cont node="Gen_Data/Value" val="SF 1.2"/>
-      <node id="Arg_1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-      <node id="Arg_2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-      <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FAddVar"/>
-      <cont node="Arg_1/Value" val="SF 3"/>
-      <cont node="Arg_2/Value" val="SF 4"/>
-      <node id="1144240682" parent="Edge"/>
-      <cont node="1144240682/P2" ref="../../Arg_1/Capsule/out"/>
-      <cont node="1144240682/P1" ref="../../Add/Capsule/Inp"/>
-      <node id="704183139" parent="Edge"/>
-      <cont node="704183139/P2" ref="../../Arg_2/Capsule/out"/>
-      <cont node="704183139/P1" ref="../../Add/Capsule/Inp"/>
-      <node id="449261987" parent="Edge"/>
-      <cont node="449261987/P2" ref="../../Add/Capsule/out"/>
-      <cont node="449261987/P1" ref="../../Gen_Data/Capsule/inp"/>
+    <node id="Note" parent="Description">
+	<cont val="This is test of addition of variable type data. Change [Arg_*] and verify [Result]"/>
     </node>
-    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
-    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
-  </node>
+    <node id="Modules" parent="AImports">
+	<import id="/IncapsComps/Incaps"/>
+	<import id="/DataComps/DataTVar"/>
+	<import id="/FuncComps/FAddVar"/>
+    </node>
+    <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+	<node id="Result" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	    <cont node="./Value" val="SF 0"/>
+	</node>
+	<node id="Arg_1" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	    <cont node="./Value" val="SF 3"/>
+	</node>
+	<node id="Arg_2" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	    <cont node="./Value" val="SF 4"/>
+	</node>
+	<node id="Add" parent="/Root/Modules/(Elem:)FuncComps/(FuncVar:)FAddVar"/>
+	<node id="1144240682" parent="Edge">
+	    <cont node="./P2" ref="./../../Arg_1/Capsule/out"/>
+	    <cont node="./P1" ref="./../../Add/Capsule/Inp"/>
+	</node>
+	<node id="704183139" parent="Edge">
+	    <cont node="./P2" ref="./../../Arg_2/Capsule/out"/>
+	    <cont node="./P1" ref="./../../Add/Capsule/Inp"/>
+	</node>
+	<node id="449261987" parent="Edge">
+	    <cont node="./P2" ref="./../../Add/Capsule/out"/>
+	    <cont node="./P1" ref="./../../Result/Capsule/inp"/>
+	</node>
+    </node>
 </node>

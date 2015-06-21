@@ -1,18 +1,22 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem">
-  <node id="Modules" parent="Elem">
-	<move id="file:/usr/share/grayb/modules/syst.xml#"/>
-	<move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-	<move id="file:/usr/share/grayb/modules/data.xml#"/>
-	<move id="file:/usr/share/grayb/modules/func.xml#"/>
-	<move id="file:/usr/share/grayb/modules/des.xml#"/>
-  </node>
-  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
-    <node id="DesRoot" parent="/Root/Modules/DesComps/Des"/>
-    <node id="Ticker_edge" parent="Edge">
-	<cont node="./P2" val="./../../DesRoot/Capsule/Sync"/>
-	<cont node="./P1" val="./../../Ticker/Capsule/Out"/>
+    <node id="Modules" parent="AImports">
+	<import id="/IncapsComps/Incaps"/>
+	<import id="/DesComps/DesTicker"/>
+	<import id="/DesComps/Des"/>
+	<import id="/DesComps/StateVarCT"/>
     </node>
+    <node id="MRoot" parent="/Root/Modules/IncapsComps/Incaps">
+	<node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
+	<node id="DesRoot" parent="/Root/Modules/DesComps/Des"/>
+	<node id="Ticker_edge" parent="Edge">
+	    <cont node="./P2" val="./../../DesRoot/Capsule/Sync"/>
+	    <cont node="./P1" val="./../../Ticker/Capsule/Out"/>
+	</node>
+    </node>
+    <node id="Note" parent="Description">
+      <cont val="This is template for Discrete Events System (DES). 
+	  Add required modules to [Modules] node and start creating model in [DesRoot]
+	  Use Ticker agent controls on toolbar to generate system ticks."/>
   </node>
 </node>

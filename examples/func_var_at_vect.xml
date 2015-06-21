@@ -1,36 +1,35 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem">
   <node id="Note" parent="Description">
-    <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [IRoot]"/>
+    <cont val="This is test of vector At function. Change content of [Index] and verify the result in [Result]"/>
   </node>
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+  <node id="Modules" parent="AImports">
+      <import id="/IncapsComps/Incaps"/>
+      <import id="/DataComps/DataTVar"/>
+      <import id="/FuncComps/FAtVar"/>
   </node>
   <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Result" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+    <node id="Result" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
 	<cont node="./(Prop:)Value" val="SF 0.0"/>
     </node>
-    <node id="At" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FAtVar"/>
+    <node id="At" parent="/Root/Modules/(Elem:)FuncComps/(FuncVar:)FAtVar"/>
     <node id="1167447964" parent="Edge">
-	<cont node="./P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAtVar:)At/Capsule/(Out_FVar:)out"/>
-	<cont node="./P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/Capsule/inp"/>
+	<cont node="./P2" ref="/Root/IRoot/(FAtVar:)At/Capsule/(Out_FVar:)out"/>
+	<cont node="./P1" ref="/Root/IRoot/(DataTVar:)Result/Capsule/inp"/>
     </node>
-    <node id="Index" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+    <node id="Index" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
 	<cont node="./Value" val="SI 1"/>
     </node>
     <node id="1208285554" parent="Edge">
-	<cont node="./P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Index/Capsule/out"/>
-	<cont node="./P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAtVar:)At/Capsule/(Inp_FVar:)Index"/>
+	<cont node="./P2" ref="/Root/IRoot/(DataTVar:)Index/Capsule/out"/>
+	<cont node="./P1" ref="/Root/IRoot/(FAtVar:)At/Capsule/(Inp_FVar:)Index"/>
     </node>
-    <node id="Vector" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar">
+    <node id="Vector" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
 	<cont node="./Value" val="MF,V,2 2.0 3.0"/>
     </node>
     <node id="1588110631" parent="Edge">
-	<cont node="./(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Vector/Capsule/out"/>
-	<cont node="./(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(FAtVar:)At/Capsule/(Inp_FVar:)Inp"/>
+	<cont node="./(Prop:)P2" ref="/Root/IRoot/(DataTVar:)Vector/Capsule/out"/>
+	<cont node="./(Prop:)P1" ref="/Root/IRoot/(FAtVar:)At/Capsule/(Inp_FVar:)Inp"/>
     </node>
   </node>
 </node>

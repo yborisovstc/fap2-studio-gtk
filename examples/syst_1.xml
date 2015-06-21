@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem" tord="10">
   <node id="Note" parent="Description" ord="1">
-    <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [IRoot]" ord="2"/>
+    <cont val="This is example of simple system." ord="2"/>
   </node>
-  <node id="Modules" parent="Elem" ord="3">
-    <move id="file:/usr/share/grayb/modules/syst.xml#" ord="4"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#" ord="5"/>
+  <node id="Modules" parent="AImports">
+    <import id="/IncapsComps/Incaps"/>
   </node>
   <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps" ord="6">
     <node id="Syst_1" parent="Syst" ord="7">

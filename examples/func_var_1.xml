@@ -1,30 +1,36 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem">
-  <node id="Note" parent="Description">
-    <cont val="This is exampe of using variable type functions and data. Pheno modif is enabled and used."/>
+<node id="Root" parent="Elem" tord="24">
+  <node id="Note" parent="Description" ord="1">
+    <cont val="This is exampe of using variable type functions and data. Pheno modif is disabled." ord="2"/>
   </node>
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+  <node id="Modules" parent="AImports">
+      <import id="/IncapsComps/Incaps"/>
+      <import id="/DataComps/DataTVar"/>
+      <import id="/DataComps/DataSVar"/>
+      <import id="/FuncComps/FAddVar"/>
   </node>
-  <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Result" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-    <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FAddVar"/>
-    <node id="Arg_1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar"/>
-    <node id="Arg_2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar"/>
-    <cont node="./(DataTVar:)Result/(Prop)Value" val="F 0.0"/>
-    <cont node="./(DataSVar:)Arg_1/(Prop)Value" val="I 4"/>
-    <cont node="./(DataSVar:)Arg_2/(Prop)Value" val="F 7.5"/>
-    <node id="934924337" parent="Edge"/>
-    <node id="34541368" parent="Edge"/>
-    <node id="1575836229" parent="Edge"/>
-    <cont node="./(Edge:)934924337/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Out_FVar:)out"/>
-    <cont node="./(Edge:)934924337/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataTVar:)Result/(Elem:)Capsule/inp"/>
-    <cont node="./(Edge:)34541368/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
-    <cont node="./(Edge:)34541368/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_1/(Elem:)Capsule/out"/>
-    <cont node="./(Edge:)1575836229/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IRoot/(FAddVar:)Add/(Elem:)Capsule/(Inp_FVar:)Inp"/>
-    <cont node="./(Edge:)1575836229/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IRoot/(DataSVar:)Arg_2/(Elem:)Capsule/out"/>
+  <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps" ord="8">
+    <node id="Result" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar" ord="9">
+      <cont node="./(Prop:)Value" val="F 0.0" ord="13"/>
+    </node>
+    <node id="Add" parent="/Root/Modules/(Elem:)FuncComps/(FuncVar:)FAddVar" ord="10"/>
+    <node id="Arg_1" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataSVar" ord="11">
+      <cont node="./(Prop:)Value" val="I 4" ord="14"/>
+    </node>
+    <node id="Arg_2" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataSVar" ord="12">
+      <cont node="./(Prop:)Value" val="F 7.5" ord="15"/>
+    </node>
+    <node id="934924337" parent="Edge" ord="16">
+      <cont node="./(Prop:)P2" ref="/Root/IRoot/(FAddVar:)Add/Capsule/(Out_FVar:)out" ord="19"/>
+      <cont node="./(Prop:)P1" ref="/Root/IRoot/(DataTVar:)Result/Capsule/inp" ord="20"/>
+    </node>
+    <node id="34541368" parent="Edge" ord="17">
+      <cont node="./(Prop:)P2" ref="/Root/IRoot/(FAddVar:)Add/Capsule/(Inp_FVar:)Inp" ord="21"/>
+      <cont node="./(Prop:)P1" ref="/Root/IRoot/(DataSVar:)Arg_1/Capsule/out" ord="22"/>
+    </node>
+    <node id="1575836229" parent="Edge" ord="18">
+      <cont node="./(Prop:)P2" ref="/Root/IRoot/(FAddVar:)Add/Capsule/(Inp_FVar:)Inp" ord="23"/>
+      <cont node="./(Prop:)P1" ref="/Root/IRoot/(DataSVar:)Arg_2/Capsule/out" ord="24"/>
+    </node>
   </node>
 </node>

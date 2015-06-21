@@ -53,6 +53,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void remove_node(const std::string& aNodeUri);
 	void change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef = false);
 	void move_node(const std::string& aNodeUri, const std::string& aDestUri);
+	void import(const std::string& aUri);
 	void ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp);
 	void on_comp_menu_rename();
 	void on_comp_menu_remove();

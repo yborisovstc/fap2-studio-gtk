@@ -5,7 +5,11 @@
 <!DOCTYPE  node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
 
 <node id="Root" parent="Elem">
-    <node id="Modules" parent="Elem"/>
-    <node id="Start" parent="Elem"/>
+    <node id="Modules" parent="AImports"/>
+    <node id="MRoot" parent="Elem"/>
+    <node id="Note" parent="Description">
+	<cont val="This is template for simple model. 
+	    Add required modules to [Modules] node and start creating model in [MRoot]"/>
+    </node>
 </node> 
 

@@ -1,43 +1,48 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem" tord="31">
-  <node id="Modules" parent="Elem" ord="1">
-    <move id="file:/usr/share/grayb/modules/syst.xml#" ord="2"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#" ord="3"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#" ord="4"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#" ord="5"/>
-    <move id="file:/usr/share/grayb/modules/des.xml#" ord="6"/>
+<node id="Root" parent="Elem" tord="34">
+  <node id="Modules" parent="Elem">
+    <import id="/IncapsComps/Incaps"/>
+    <import id="/DesComps/DesTicker"/>
+    <import id="/DesComps/Des"/>
+    <import id="/DesComps/StateVarC"/>
+    <import id="/FuncComps/TFAddVar"/>
+    <import id="/DataComps/DataSUInt"/>
+    <import id="/DataComps/DataSUVar"/>
   </node>
-  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps" ord="7">
-    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker" ord="8"/>
-    <node id="DesRoot" parent="/Root/Modules/DesComps/Des" ord="9">
-      <node id="ss" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC" ord="10">
-        <node id="add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/TFAddVar" ord="11"/>
-        <node id="237990136" parent="Edge" ord="12">
-          <cont node="./P1" ref="./../../add/Capsule/Out" ord="14"/>
-          <cont node="./P2" ref="./../../Data/Capsule/Inp" ord="15"/>
+  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
+    <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
+      <node id="ss" parent="/(Elem:)Root/Modules/(Elem:)DesComps/(State:)StateVarC">
+        <node id="add" parent="/(Elem:)Root/Modules/(Elem:)FuncComps/TFAddVar"/>
+        <node id="237990136" parent="Edge">
+          <cont node="./P1" ref="./../../add/Capsule/Out"/>
+          <cont node="./P2" ref="./../../Data/Capsule/Inp"/>
         </node>
-        <node id="2009532263" parent="Edge" ord="16">
-          <cont node="./P1" ref="./../../add/Capsule/Inp" ord="17"/>
-          <cont node="./P2" ref="./../../Capsule/Inp/Int/PinData" ord="18"/>
+        <node id="2009532263" parent="Edge">
+          <cont node="./P1" ref="./../../add/Capsule/Inp"/>
+          <cont node="./P2" ref="./../../Capsule/Inp/Int/PinData"/>
         </node>
-        <cont node="./Data/Prepared/Value" val="F 0.0" ord="19"/>
-        <cont node="./Data/Confirmed/Value" val="F 1.0" ord="20"/>
-        <node id="cc" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" ord="21">
-          <cont node="./(Prop:)Value" val="F 0.3" ord="25"/>
+        <cont node="./Data/Prepared/Value" val="F 0.0"/>
+        <cont node="./Data/Confirmed/Value" val="F 1.0"/>
+        <node id="cc" parent="/(Elem:)Root/Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
+          <cont node="./(Prop:)Value" val="F 0.3"/>
         </node>
-        <node id="1912363833" parent="Edge" ord="26">
-          <cont node="./(Prop:)P1" ref="./../../cc/Capsule/Out" ord="27"/>
-          <cont node="./(Prop:)P2" ref="./../../add/Capsule/Inp" ord="28"/>
+        <node id="1912363833" parent="Edge">
+          <cont node="./(Prop:)P1" ref="./../../cc/Capsule/Out"/>
+          <cont node="./(Prop:)P2" ref="./../../add/Capsule/Inp"/>
         </node>
       </node>
-      <node id="182652761" parent="Edge" ord="29">
-        <cont node="./P1" ref="./../../ss/Capsule/Out" ord="22"/>
-        <cont node="./P2" ref="./../../ss/Capsule/Inp" ord="23"/>
+      <node id="182652761" parent="Edge">
+        <cont node="./P1" ref="./../../ss/Capsule/Out"/>
+        <cont node="./P2" ref="./../../ss/Capsule/Inp"/>
       </node>
     </node>
-    <node id="Ticker_edge" parent="Edge" ord="30">
-      <cont node="./(Prop:)P2" ref="./../../DesRoot/Capsule/Sync" ord="30"/>
-      <cont node="./(Prop:)P1" ref="./../../Ticker/Capsule/Out" ord="31"/>
+    <node id="Ticker_edge" parent="Edge">
+      <cont node="./(Prop:)P2" ref="./../../DesRoot/Capsule/Sync"/>
+      <cont node="./(Prop:)P1" ref="./../../Ticker/Capsule/Out"/>
     </node>
+  </node>
+  <node id="About_example" parent="Description">
+    <cont node="" val="This is example of simple DES using combined state (the state with combined prepared/confirmed pair)"/>
   </node>
 </node>

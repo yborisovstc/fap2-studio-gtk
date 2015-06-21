@@ -16,6 +16,7 @@
 static GtkTargetEntry targetentries[] =
 {
     { (gchar*) KDnDTarg_Comp, 0, 0 },
+    { (gchar*) KDnDTarg_Import, 0, 4 },
     { (gchar*) "STRING",        0, 0 },
     { (gchar*) "text/plain",    0, 1 },
     { (gchar*) "text/uri-list", 0, 2 },
@@ -302,6 +303,9 @@ bool ElemDetRp::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context, i
 	    res = true;
 	    //context->drag_status(Gdk::ACTION_COPY, time);
 	    context->drag_status(saction, time);
+	} else if (iDnDTarg == EDT_Import) {
+	    context->drag_status(saction, time);
+	    res = true;
 	}
     }
     return res;
@@ -333,6 +337,15 @@ bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int 
 	iDropBaseCandidate = NULL;
 	res = true;
 	queue_resize();
+    } else if (iDnDTarg == EDT_Import) {
+	context->drag_finish(true, false, time);
+	if (action == Gdk::ACTION_COPY) {
+	    import(iDndReceivedData);
+	}
+	iDnDTarg = EDT_Unknown;
+	iDndReceivedData.clear();
+	res = true;
+	queue_resize();
     }
     return res;
 }
@@ -347,12 +360,15 @@ void ElemDetRp::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& cont
 	// Classify DnD target
 	if (targ == KDnDTarg_Comp) {
 	    iDnDTarg = EDT_Node;
-	    std::cout << "ElemDetRp on_drag_data_received, DnD targ: " << iDnDTarg << ", action - MOVE" << std::endl;
+	    std::cout << "ElemDetRp on_drag_data_received, DnD targ: [EDT_Node], action - MOVE" << std::endl;
 	    context->drag_status(Gdk::ACTION_MOVE, time);
-	}
-	if (targ == "STRING") {
+	} else if (targ == KDnDTarg_Import) {
+	    iDnDTarg = EDT_Import;
+	    std::cout << "ElemDetRp on_drag_data_received, DnD targ: [EDT_Import], action - COPY" << std::endl;
+	    context->drag_status(Gdk::ACTION_COPY, time);
+	} else if (targ == "STRING") {
 	    iDnDTarg = EDT_Node;
-	    std::cout << "ElemDetRp on_drag_data_received, DnD targ: " << iDnDTarg << ", action - COPY" << std::endl;
+	    std::cout << "ElemDetRp on_drag_data_received, DnD targ: [EDT_Node], action - COPY" << std::endl;
 	    context->drag_status(Gdk::ACTION_COPY, time);
 	}
     }
@@ -405,6 +421,16 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 	mutelem->Mutate(false, !unsafe, true);
 	Refresh();
     }
+}
+
+void ElemDetRp::import(const std::string& aUri)
+{
+    Elem* mutelem = iElem;
+    ChromoNode mut = mutelem->Mutation().Root();
+    ChromoNode rmut = mut.AddChild(ENt_Import);
+    rmut.SetAttr(ENa_Id, aUri);
+    mutelem->Mutate();
+    Refresh();
 }
 
 void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aTargetUri)

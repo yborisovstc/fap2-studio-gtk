@@ -1,42 +1,51 @@
 <?xml version="1.0"?>
-<node id="Root" parent="Elem">
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
-    <move id="file:/usr/share/grayb/modules/des.xml#"/>
+<node id="Root" parent="Elem" tord="37">
+  <node id="Modules" parent="AImports">
+    <import id="/IncapsComps/Incaps"/>
+    <import id="/DesComps/DesTicker"/>
+    <import id="/DesComps/Des"/>
+    <import id="/DesComps/StateVar"/>
+    <import id="/FuncComps/TFAddVar"/>
+    <import id="/DataComps/DataSUInt"/>
+    <import id="/DataComps/DataSUVar"/>
   </node>
   <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
     <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
-    <node id="Ticker_edge" parent="Edge"/>
     <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
-      <node id="st" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVar">
-        <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/TFAddVar"/>
-        <node id="222049375" parent="Edge"/>
-        <cont node="./(Edge:)222049375/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/Inp/(StInpSocket:)Int/PinData"/>
-	<cont node="./(Edge:)222049375/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Add/Capsule/Inp"/>
-        <node id="820889547" parent="Edge"/>
-	<cont node="./(Edge:)820889547/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Add/Capsule/Out"/>
-        <cont node="./(Edge:)820889547/(Prop:)P1" val=""/>
-        <cont node="./(Edge:)820889547/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSCVar:)Prepared/(Elem:)Capsule/Inp"/>
-        <node id="Const" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSU:)DataSUInt"/>
-        <node id="969163775" parent="Edge"/>
-        <cont node="./(Edge:)969163775/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUInt:)Const/(Elem:)Capsule/out"/>
+      <node id="st" parent="/Root/Modules/DesComps/StateVar">
+        <node id="Add" parent="/Root/Modules/FuncComps/TFAddVar"/>
+        <node id="222049375" parent="Edge">
+          <cont node="./(Prop:)P1" ref="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Capsule/Inp/(StInpSocket:)Int/PinData"/>
+          <cont node="./(Prop:)P2" ref="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Add/Capsule/Inp"/>
+        </node>
+        <node id="820889547" parent="Edge">
+          <cont node="./(Prop:)P2" ref="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Add/Capsule/Out"/>
+          <cont node="./(Prop:)P1" val=""/>
+          <cont node="./(Prop:)P1" ref="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSCVar:)Prepared/Capsule/Inp"/>
+        </node>
+        <node id="Const" parent="/Root/Modules/DataComps/(DataSU:)DataSUInt"/>
         <rm node="./(DataSUInt:)Const"/>
-        <cont node="./(Edge:)969163775/(Prop:)P1" val=""/>
-        <node id="Const1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSU:)DataSUVar"/>
-        <cont node="./(Edge:)969163775/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUVar:)Const1/(Elem:)Capsule/out"/>
-	<cont node="./(Edge:)969163775/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Add/Capsule/Inp"/>
+        <node id="Const1" parent="/Root/Modules/DataComps/(DataSU:)DataSUVar">
+          <cont node="./(Prop:)Value" val="F 0.1"/>
+        </node>
+        <node id="969163775" parent="Edge">
+          <cont node="./(Prop:)P1" ref="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Add/Capsule/Inp"/>
+          <cont node="./(Prop:)P2" ref="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(DataSUVar:)Const1/Capsule/out"/>
+        </node>
         <cont node="./(DataSCVar:)Confirmed/(Prop)Value" val="F 0"/>
         <cont node="./(DataSCVar:)Prepared/(Prop)Value" val="F 0"/>
-        <cont node="./(DataSUVar:)Const1/(Prop)Value" val="F 0.1"/>
       </node>
-      <node id="1197245649" parent="Edge"/>
-      <cont node="./(Edge:)1197245649/(Prop:)P2" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/Out"/>
-      <cont node="./(Edge:)1197245649/(Prop:)P1" ref="/(Elem:)Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/(Elem:)Capsule/Inp"/>
+      <node id="1197245649" parent="Edge">
+        <cont node="./(Prop:)P2" ref="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Capsule/Out"/>
+        <cont node="./(Prop:)P1" ref="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(StateVar:)st/Capsule/Inp"/>
+      </node>
     </node>
-    <cont node="./Ticker_edge/P2" ref="./../../DesRoot/Capsule/Sync"/>
-    <cont node="./Ticker_edge/P1" ref="./../../Ticker/Capsule/Out"/>
+    <node id="Ticker_edge" parent="Edge">
+      <cont node="./(Prop:)P1" ref="./../../Ticker/Capsule/Out"/>
+      <cont node="./(Prop:)P2" ref="./../../DesRoot/Capsule/Sync"/>
+    </node>
+  </node>
+  <node id="About" parent="Description">
+    <cont node="" val="This is example of simple DES (incrementor) using variable type arithmetic"/>
   </node>
 </node>

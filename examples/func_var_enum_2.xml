@@ -1,34 +1,35 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem" tord="81">
   <node id="Note" parent="Description">
-    <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [IRoot]"/>
+    <cont val="This is test of switching of enums. Data with separate type definition is also used. Change [Selector] and verify [ResultT]"/>
   </node>
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
+  <node id="Modules" parent="AImports">
+      <import id="/IncapsComps/Incaps"/>
+      <import id="/DataComps/DataSVar"/>
+      <import id="/DataComps/DataTTVar"/>
+      <import id="/DataComps/DataSTVar"/>
+      <import id="/FuncComps/FSwitchVar"/>
   </node>
   <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Arg1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar">
+    <node id="Arg1" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataSVar">
       <cont node="./Value" val="E,One,Two,Three Two"/>
     </node>
-    <node id="ArgBase" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataST:)DataSTVar">
+    <node id="ArgBase" parent="/Root/Modules/(Elem:)DataComps/(DataST:)DataSTVar">
       <cont node="./Type" val="E,One,Two,Three"/>
       <cont node="./Value" val=""/>
     </node>
     <node id="ArgT1" parent="./(DataSTVar:)ArgBase">
       <cont node="./Value" val="Three"/>
     </node>
-    <node id="ResultT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataST:)DataTTVar">
+    <node id="ResultT" parent="/Root/Modules/(Elem:)DataComps/(DataST:)DataTTVar">
       <cont node="./Type" val="E,One,Two,Three"/>
       <cont node="./Value" val="One"/>
     </node>
-    <node id="Selector" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataSVar">
+    <node id="Selector" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataSVar">
       <cont node="./Value" val="B true"/>
       <cont node="./Value" val="SB true"/>
     </node>
-    <node id="Switch" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FSwitchVar"/>
+    <node id="Switch" parent="/Root/Modules/(Elem:)FuncComps/(FuncVar:)FSwitchVar"/>
     <node id="558997028" parent="Edge">
       <cont node="./P1" ref="./../../ResultT/Capsule/inp"/>
       <cont node="./P2" ref="./../../Switch/Capsule/out"/>

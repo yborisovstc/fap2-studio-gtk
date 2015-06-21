@@ -1,53 +1,50 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem">
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
-    <move id="file:/usr/share/grayb/modules/des.xml#"/>
-  </node>
-  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
-    <node id="Ticker_edge" parent="Edge"/>
-    <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
-      <node id="Arg1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-      <cont node="Arg1/Value" val="MF,D,2 1 1"/>
-      <node id="Arg2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-      <cont node="Arg2/Value" val="MF,D,2 3 4"/>
-      <node id="Res" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-      <cont node="Res/Value" val="MF,R,2,2 0 0 0 0 "/>
-      <node id="Mpl" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FMplncVar"/>
-      <node id="414367123" parent="Edge"/>
-      <cont node="414367123/P2" ref="../../Arg1/Capsule/out"/>
-      <cont node="414367123/P1" ref="../../Mpl/Capsule/Inp1"/>
-      <node id="275458525" parent="Edge"/>
-      <cont node="275458525/P2" ref="../../Arg2/Capsule/out"/>
-      <cont node="275458525/P1" ref="../../Mpl/Capsule/Inp2"/>
-      <node id="1204303732" parent="Edge"/>
-      <cont node="1204303732/P2" ref="../../Mpl/Capsule/out"/>
-      <cont node="1204303732/P1" ref="../../Res/Capsule/inp"/>
-      <cont node="Res/Value" val="MF,V,2 3 4"/>
-      <cont node="Arg2/Value" val="MF,V,2 3 4"/>
-      <cont node="Arg2/Value" val="MF,V,2 5 4"/>
-      <cont node="Res/Value" val="MF,R,2,2"/>
-      <cont node="Arg2/Value" val="MF,R,2,2 5 4 8 9 "/>
-      <cont node="Res/Value" val="MF,R,2,2 0 0 0 0"/>
-      <cont node="Arg2/Value" val="MF,R,2,2 5 4 8 6"/>
-      <cont node="Arg2/Value" val="MF,R,2,2 5 4 8 6 "/>
-      <cont node="Arg2/Value" val="MF,R,2,2 5 4 8 6"/>
-      <cont node="Arg1/Value" val="MF,D,2 1 2"/>
-      <node id="Res_inv" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataS:)DataTVar"/>
-      <cont node="Res_inv/Value" val="MF,D,2 0 0"/>
-      <node id="Inv" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FMplinvVar"/>
-      <node id="319280966" parent="Edge"/>
-      <cont node="319280966/P2" ref="../../Arg1/Capsule/out"/>
-      <cont node="319280966/P1" ref="../../Inv/Capsule/Inp"/>
-      <node id="860286726" parent="Edge"/>
-      <cont node="860286726/P2" ref="../../Inv/Capsule/out"/>
-      <cont node="860286726/P1" ref="../../Res_inv/Capsule/inp"/>
+    <node id="Note" parent="Description">
+	<cont val="This is test of matrix mpl and inversion. Change [Arg1], [Arg2] and verify [Res], [Res_inv]"/>
     </node>
-    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
-    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
-  </node>
+    <node id="Modules" parent="AImports">
+	<import id="/IncapsComps/Incaps"/>
+	<import id="/DataComps/DataTVar"/>
+	<import id="/FuncComps/FMplncVar"/>
+	<import id="/FuncComps/FMplinvVar"/>
+    </node>
+    <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+	<node id="Arg1" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	    <cont node="./Value" val="MF,D,2 1 1"/>
+	    <cont node="./Value" val="MF,D,2 1 2"/>
+	</node>
+	<node id="Arg2" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	    <cont node="./Value" val="MF,D,2 3 4"/>
+	    <cont node="./Value" val="MF,R,2,2 5 4 8 6"/>
+	</node>
+	<node id="Res" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	    <cont node="./Value" val="MF,R,2,2 0 0 0 0 "/>
+	</node>
+	<node id="Mpl" parent="/Root/Modules/(Elem:)FuncComps/(FuncVar:)FMplncVar"/>
+	<node id="414367123" parent="Edge">
+	    <cont node="./P2" ref="./../../Arg1/Capsule/out"/>
+	    <cont node="./P1" ref="./../../Mpl/Capsule/Inp1"/>
+	</node>
+	<node id="275458525" parent="Edge">
+	    <cont node="./P2" ref="./../../Arg2/Capsule/out"/>
+	    <cont node="./P1" ref="./../../Mpl/Capsule/Inp2"/>
+	</node>
+	<node id="1204303732" parent="Edge">
+	    <cont node="./P2" ref="./../../Mpl/Capsule/out"/>
+	    <cont node="./P1" ref="./../../Res/Capsule/inp"/>
+	</node>
+	<node id="Res_inv" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar">
+	    <cont node="./Value" val="MF,D,2 0 0"/>
+	</node>
+	<node id="Inv" parent="/Root/Modules/(Elem:)FuncComps/(FuncVar:)FMplinvVar"/>
+	<node id="319280966" parent="Edge">
+	    <cont node="./P2" ref="./../../Arg1/Capsule/out"/>
+	    <cont node="./P1" ref="./../../Inv/Capsule/Inp"/>
+	</node>
+	<node id="860286726" parent="Edge">
+	    <cont node="./P2" ref="./../../Inv/Capsule/out"/>
+	    <cont node="./P1" ref="./../../Res_inv/Capsule/inp"/>
+	</node>
+    </node>
 </node>

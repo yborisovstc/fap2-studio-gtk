@@ -1,2085 +1,426 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem" tord="1641">
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
-    <move id="file:/usr/share/grayb/modules/des.xml#"/>
-    <!--
-    <move id="file:/usr/share/grayb/modules/vis.xml#"/>
-    <move id="file:/usr/share/fap2-studio-gtk/modules/simple_vis.xml#"/>
-    <rm node="./(Elem:)Simple_vis"/>
-    <rm node="./(Elem:)VisComps"/>
--->
-    <node id="VisComps" parent="Elem">
-      <node id="Parent" parent=":Elem:SysComps/ConnPoint">
-        <cont node="./Required" val="MVisChild"/>
-        <cont node="./Provided" val="MVisContainer"/>
-      </node>
-      <node id="Child" parent=":Elem:SysComps/ConnPoint">
-        <cont node="./Required" val="MVisContainer"/>
-        <cont node="./Provided" val="MVisChild"/>
-      </node>
-      <node id="Child" parent=":Elem:SysComps/Extender">
-        <rm node="./Int"/>
-        <node id="Int" parent="./../Parent"/>
-      </node>
-      <node id="DIntProv" parent=":Elem:SysComps/ConnPoint">
-        <cont node="./Provided" val="MDIntGet"/>
-      </node>
-      <node id="Window" parent="Syst">
-        <node id="WinAgent" parent="AWindow" node="./Agents"/>
-        <node id="Parent" parent=":Elem:SysComps/ConnPoint">
-          <cont node="./Required" val="MVisChild"/>
-          <cont node="./Provided" val="MVisContainer"/>
-        </node>
-      </node>
-      <node id="Widget_common" parent="Vert">
-        <node id="Btn_event_Press" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-          <cont node="./Value" val="SI 4"/>
-        </node>
-        <node id="Btn_event_Release" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-          <cont node="./Value" val="SI 7"/>
-        </node>
-        <node id="Color" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-          <cont node="./Value" val="TPL,SI:Red,SI:Green,SI:Blue"/>
-        </node>
-        <node id="Widget_State" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataST:)DataSTVar">
-          <node id="D_2" parent="Description">
-            <cont node="" val="This is the type of widget state"/>
-          </node>
-          <cont node="./Type" val="E,Normal,Active,Prelight,Selected,Insensitive"/>
-          <cont node="./Value" val="Normal"/>
-        </node>
-        <change node="./(DataSTVar:)Widget_State" attr="id" val="WidgetState_Data"/>
-        <node id="WidgetState_DataSCT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSCT:)DataSCTVar">
-          <cont node="./Type" val="E,Normal,Active,Prelight,Selected,Insensitive"/>
-          <cont node="./Value" val="Normal"/>
-        </node>
-        <node id="WidgetState_State" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-          <rm node="./Data/Prepared"/>
-          <rm node="./Data/Confirmed"/>
-          <node id="Prepared" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSTVar:)WidgetState_Data" node="./Data"/>
-          <cont node="./Data/E_Inp_Prep/P2" val=""/>
-          <cont node="./Data/E_Inp_Prep/P2" val=""/>
-          <rm node="./(Incaps:)Data/(WidgetState_Data:)Prepared"/>
-          <node id="Prepared" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCTVar:)WidgetState_DataSCT" node="./Data"/>
-          <cont node="./Data/E_Inp_Prep/P2" ref="./../../Prepared/Capsule/Inp"/>
-          <node id="Confirmed" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCTVar:)WidgetState_DataSCT" node="./Data"/>
-          <cont node="./Data/E_Conf_Out/P1" ref="./../../Confirmed/Capsule/Out"/>
-          <cont node="./Data/E_Prep_Conf/P1" ref="./../../Prepared/Capsule/Out"/>
-          <cont node="./Data/E_Prep_Conf/P2" ref="./../../Confirmed/Capsule/Inp"/>
-        </node>
-        <node id="WidgetButtonPressEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSCT:)DataSCTVar">
-          <cont node="./Type" val="TPL,SI:Type,SI:State,SI:Button,SI:X,SI:Y 0 0 0 0 0"/>
-          <node id="D_1" parent="Description">
-            <cont node="" val="Button: the button which was pressed or released, numbered from 1 to 5. Normally button 1 is the left mouse button, 2 is the middle button, and 3 is the right button."/>
-          </node>
-        </node>
-      </node>
-      <node id="Widget" parent="Syst">
-        <node id="Child" parent=":Elem:SysComps/ConnPoint">
-          <cont node="./Required" val="MVisContainer"/>
-          <cont node="./Provided" val="MVisChild"/>
-        </node>
-        <node id="Inp_X" parent=":Elem:DesComps/StIntInp"/>
-        <node id="Inp_Y" parent=":Elem:DesComps/StIntInp"/>
-        <node id="Inp_W" parent=":Elem:DesComps/StIntInp"/>
-        <node id="Inp_H" parent=":Elem:DesComps/StIntInp"/>
-        <node id="Prov_PW" parent=":Elem:DesComps/StIntOut"/>
-        <node id="Prov_PH" parent=":Elem:DesComps/StIntOut"/>
-      </node>
-      <node id="WidgetV" parent="Syst">
-        <node id="Child" parent=":Elem:SysComps/ConnPoint">
-          <cont node="./Required" val="MVisContainer"/>
-          <cont node="./Provided" val="MVisChild"/>
-        </node>
-        <node id="Inp_X" parent=":Elem:DesComps/StVarInp"/>
-        <node id="Inp_Y" parent=":Elem:DesComps/StVarInp"/>
-        <node id="Inp_W" parent=":Elem:DesComps/StVarInp"/>
-        <node id="Inp_H" parent=":Elem:DesComps/StVarInp"/>
-        <node id="Prov_PW" parent=":Elem:DesComps/StVarOut"/>
-        <node id="Prov_PH" parent=":Elem:DesComps/StVarOut"/>
-        <node id="BtnPressEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarOut"/>
-        <node id="Note_1" parent="Description">
-          <cont node="" val="BtnPressEvent: tuple, TPL,SI:Type,SI:State,SI:Button"/>
-        </node>
-        <node id="Inp_State" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp">
-          <node id="Note_1" parent="Description">
-            <cont node="" val="This in input for widget state"/>
-          </node>
-        </node>
-        <node id="MotionEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarOut"/>
-        <node id="BtnReleaseEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarOut"/>
-        <node id="Allocation" parent="/Root/Modules/DesComps/StVarOut"/>
-      </node>
-      <node id="Fixed" parent="Syst">
-        <node id="WinAgent" parent="AVisFixed" node="./Agents"/>
-        <node id="Child" parent=":Elem:SysComps/ConnPoint">
-          <cont node="./Required" val="MVisContainer"/>
-          <cont node="./Provided" val="MVisChild"/>
-        </node>
-        <node id="Parent" parent=":Elem:SysComps/ConnPoint">
-          <cont node="./Required" val="MVisChild"/>
-          <cont node="./Provided" val="MVisContainer"/>
-        </node>
-      </node>
-      <node id="Drawing" parent="./Widget">
-        <node id="WinAgent" parent="AVisDrawing" node="./Agents"/>
-      </node>
-      <node id="DrawingV" parent="./WidgetV">
-        <node id="WinAgent" parent="AVisDrawing" node="./Agents"/>
-        <node id="Drawer" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(ConnPointBase:)ConnPoint">
-          <cont node="./Required" val="MVisDrawingElem"/>
-          <cont node="./Provided" val="MVisDrawingArea"/>
-        </node>
-        <change node="./(ConnPoint:)Drawer" attr="id" val="DrawingArea"/>
-      </node>
-      <node id="DrawingVc" parent=":Elem:DesComps/Des">
-        <node id="VectComp" parent=":Elem:DesComps/StateVarC">
-          <cont node="./Data/Prepared/Value" val="SI 0"/>
-          <cont node="./Data/Confirmed/Value" val="SI 0"/>
-          <node id="At" parent=":Elem:FuncComps/TFAtVarI"/>
-          <node id="E1" parent="Edge">
-            <cont node="./P1" ref="./../../Capsule/Inp/Int/PinData"/>
-            <cont node="./P2" ref="./../../At/Capsule/Inp"/>
-          </node>
-          <node id="E2" parent="Edge">
-            <cont node="./P1" ref="./../../At/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Data/Capsule/Inp"/>
-          </node>
-        </node>
-        <node id="PWHtoV" parent=":Elem:DesComps/StateVarC">
-          <node id="Inp2" parent=":Elem:DesComps/StVarInp" node="./Capsule"/>
-          <cont node="./Data/Prepared/Value" val="MI,V,2 0 0"/>
-          <cont node="./Data/Confirmed/Value" val="MI,V,2 0 0"/>
-          <node id="Composer" parent=":Elem:FuncComps/TFCpsVectVar"/>
-          <node id="E1" parent="Edge">
-            <cont node="./P1" ref="./../../Capsule/Inp/Int/PinData"/>
-            <cont node="./P2" ref="./../../Composer/Capsule/Inp1"/>
-          </node>
-          <node id="E2" parent="Edge">
-            <cont node="./P1" ref="./../../Capsule/Inp2/Int/PinData"/>
-            <cont node="./P2" ref="./../../Composer/Capsule/Inp2"/>
-          </node>
-          <node id="E3" parent="Edge">
-            <cont node="./P1" ref="./../../Composer/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Data/Capsule/Inp"/>
-          </node>
-        </node>
-        <node id="Child" parent="./../(Extender:)Child" node="./Capsule"/>
-        <node id="Drw" parent="./../DrawingV"/>
-        <node id="Inp_XY" parent=":Elem:DesComps/StVarInp" node="./Capsule"/>
-        <node id="Inp_WH" parent=":Elem:DesComps/StVarInp" node="./Capsule"/>
-        <node id="Prov_PWH" parent=":Elem:DesComps/StVarOut" node="./Capsule"/>
-        <node id="ECH" parent="Edge">
-          <cont node="./P1" ref="./../../Drw/Child"/>
-          <cont node="./P2" ref="./../../Capsule/Child/Int"/>
-        </node>
-        <node id="XYtoX" parent="./VectComp">
-          <cont node="./At/Index/Value" val="SI 0"/>
-        </node>
-        <node id="EX1" parent="Edge">
-          <cont node="./P1" ref="./../../Capsule/Inp_XY/Int"/>
-          <cont node="./P2" ref="./../../XYtoX/Capsule/Inp"/>
-        </node>
-        <node id="EX2" parent="Edge">
-          <cont node="./P1" ref="./../../XYtoX/Capsule/Out"/>
-          <cont node="./P2" ref="./../../Drw/Inp_X"/>
-        </node>
-        <node id="XYtoY" parent="./VectComp">
-          <cont node="./At/Index/Value" val="SI 1"/>
-        </node>
-        <node id="EY1" parent="Edge">
-          <cont node="./P1" ref="./../../Capsule/Inp_XY/Int"/>
-          <cont node="./P2" ref="./../../XYtoY/Capsule/Inp"/>
-        </node>
-        <node id="EY2" parent="Edge">
-          <cont node="./P1" ref="./../../XYtoY/Capsule/Out"/>
-          <cont node="./P2" ref="./../../Drw/Inp_Y"/>
-        </node>
-        <node id="WHtoW" parent="./VectComp">
-          <cont node="./At/Index/Value" val="SI 0"/>
-        </node>
-        <node id="EW1" parent="Edge">
-          <cont node="./P1" ref="./../../Capsule/Inp_WH/Int"/>
-          <cont node="./P2" ref="./../../WHtoW/Capsule/Inp"/>
-        </node>
-        <node id="EW2" parent="Edge">
-          <cont node="./P1" ref="./../../WHtoW/Capsule/Out"/>
-          <cont node="./P2" ref="./../../Drw/Inp_W"/>
-        </node>
-        <node id="WHtoH" parent="./VectComp">
-          <cont node="./At/Index/Value" val="SI 1"/>
-        </node>
-        <node id="EH1" parent="Edge">
-          <cont node="./P1" ref="./../../Capsule/Inp_WH/Int"/>
-          <cont node="./P2" ref="./../../WHtoH/Capsule/Inp"/>
-        </node>
-        <node id="EH2" parent="Edge">
-          <cont node="./P1" ref="./../../WHtoH/Capsule/Out"/>
-          <cont node="./P2" ref="./../../Drw/Inp_H"/>
-        </node>
-        <node id="EP1" parent="Edge">
-          <cont node="./P1" ref="./../../Drw/Prov_PW"/>
-          <cont node="./P2" ref="./../../PWHtoV/Capsule/Inp"/>
-        </node>
-        <node id="EP2" parent="Edge">
-          <cont node="./P1" ref="./../../Drw/Prov_PH"/>
-          <cont node="./P2" ref="./../../PWHtoV/Capsule/Inp2"/>
-        </node>
-        <node id="EP3" parent="Edge">
-          <cont node="./P1" ref="./../../PWHtoV/Capsule/Out"/>
-          <cont node="./P2" ref="./../../Capsule/Prov_PWH/Int"/>
-        </node>
-        <node id="BtnPressEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarOut" node="./Capsule"/>
-        <node id="1429823494" parent="Edge">
-          <cont node="./P2" ref="./../../Drw/BtnPressEvent"/>
-          <cont node="./P1" ref="./../../Capsule/BtnPressEvent/Int"/>
-        </node>
-        <node id="Inp_State" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-        <node id="8562650" parent="Edge">
-          <cont node="./P2" ref="./../../Drw/Inp_State"/>
-          <cont node="./P1" ref="./../../Capsule/Inp_State/Int"/>
-        </node>
-        <node id="DrawingArea" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(Vert:)Extender" node="./Capsule">
-          <cont node="./Int/Required" val="MVisDrawingArea"/>
-          <cont node="./Int/Provided" val="MVisDrawingElem"/>
-        </node>
-        <node id="1570127320" parent="Edge">
-          <cont node="./P2" ref="./../../Drw/DrawingArea"/>
-          <cont node="./P1" ref="./../../Capsule/DrawingArea/Int"/>
-          <cont node="./P1" ref="./../../Capsule/DrawingArea/Int"/>
-        </node>
-      </node>
-      <node id="DrawingElemV" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)WidgetV">
-        <node id="DrawingElem" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(ConnPointBase:)ConnPoint">
-          <cont node="./Provided" val="MVisDrawingElem"/>
-          <cont node="./Required" val="MVisDrawingArea"/>
-        </node>
-        <node id="VisAgent" parent="AVisDrawingElem" node="./Agents"/>
-      </node>
-      <node id="WidgetVc" parent="./(Des:)DrawingVc">
-        <rm node="./(DrawingV:)Drw"/>
-        <rm node="./(Edge:)1570127320"/>
-        <rm node="./Capsule/(Extender:)DrawingArea"/>
-        <node id="D_1" parent="Description">
-          <cont node="" val="This is template for widget with vector inputs/outputs. Just add widget of required type, connect edges and customize if required"/>
-        </node>
-        <node id="MotionEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarOut" node="./Capsule"/>
-        <node id="BtnReleaseEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarOut" node="./Capsule"/>
-        <node id="Allocation" parent="/Root/Modules/DesComps/StVarOut" node="./Capsule"/>
-      </node>
-      <node id="DrawingElemVc" parent="./(DrawingVc:)WidgetVc">
-        <node id="DrawingElem" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(WidgetV:)DrawingElemV"/>
-        <cont node="./EX2/P2" ref="./../../DrawingElem/Inp_X"/>
-        <cont node="./EY2/P2" ref="./../../DrawingElem/Inp_Y"/>
-        <cont node="./EW2/P2" ref="./../../DrawingElem/Inp_W"/>
-        <cont node="./EH2/P2" ref="./../../DrawingElem/Inp_H"/>
-        <cont node="./ECH/P1" ref="./../../DrawingElem/Child"/>
-        <cont node="./1429823494/P2" ref="./../../DrawingElem/BtnPressEvent"/>
-        <cont node="./EP1/P1" ref="./../../DrawingElem/Prov_PW"/>
-        <cont node="./EP2/P1" ref="./../../DrawingElem/Prov_PH"/>
-        <cont node="./8562650/P2" ref="./../../DrawingElem/Inp_State"/>
-        <node id="DrawingElem" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(Vert:)Extender" node="./Capsule">
-          <cont node="./(ConnPoint:)Int/(Prop:)Required" val="MVisDrawingElem"/>
-          <cont node="./(ConnPoint:)Int/(Prop:)Provided" val="MVisDrawingArea"/>
-        </node>
-        <node id="1743955414" parent="Edge">
-          <cont node="./P2" ref="./../../DrawingElem/DrawingElem"/>
-          <cont node="./P1" ref="./../../Capsule/DrawingElem/Int"/>
-          <cont node="./P1" ref="./../../Capsule/DrawingElem/Int"/>
-        </node>
-        <node id="899604291" parent="Edge">
-          <cont node="./P2" ref="./../../Capsule/MotionEvent/Int"/>
-          <cont node="./P1" ref="./../../DrawingElem/MotionEvent"/>
-        </node>
-        <node id="323900215" parent="Edge">
-          <cont node="./P2" ref="./../../Capsule/BtnReleaseEvent/Int"/>
-          <cont node="./P1" ref="./../../DrawingElem/BtnReleaseEvent"/>
-        </node>
-        <node id="456962643" parent="Edge">
-          <cont node="./P2" ref="./../../Capsule/Allocation/Int"/>
-          <cont node="./P1" ref="./../../DrawingElem/Allocation"/>
-        </node>
-      </node>
-      <node id="DrawingElemExt" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)SysComps/(Vert:)Extender">
-        <cont node="./Int/Required" val="MVisDrawingElem"/>
-        <cont node="./Int/Provided" val="MVisDrawingArea"/>
-      </node>
+
+    <node id="About" parent="Description">
+	<cont val="Test of visualization module handling of mouse events
+	    To test open Visialization tab, tap Run btn on toolbar DES ticker control, and pull the widget. "/>
     </node>
-    <node id="Simple_vis" parent="Elem">
-      <node id="Components" parent="Vert">
-        <node id="Scaled_coord_2d" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-          <cont node="./Data/Confirmed/Value" val="MI,V,2 0 0"/>
-          <cont node="./Data/Prepared/Value" val="MI,V,2 0 0"/>
-          <node id="Cast_I_to_F" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCastVar"/>
-          <node id="Inp_Par_NU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-          <node id="Inp_Par_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-          <node id="Inp_Scale" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-          <node id="198851363" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Capsule/(StVarInp:)Inp_Par_NU/(StInpSocket:)Int/PinData"/>
-            <cont node="./(Prop:)P1" ref="./../../Cast_I_to_F/Capsule/Inp"/>
-          </node>
-          <node id="MD_constr_NU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCpsMtrdVar"/>
-          <node id="Mpl_NU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
-          <node id="1524879411" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../MD_constr_NU/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../Mpl_NU/Capsule/Inp1"/>
-          </node>
-          <node id="Mpl_Sc" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
-          <node id="567261452" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Mpl_NU/Capsule/Inp2"/>
-            <cont node="./(Prop:)P2" ref="./../../Capsule/Inp/Int/PinData"/>
-            <cont node="./(Prop:)P1" ref="./../../Mpl_NU/Capsule/Inp2"/>
-            <cont node="./(Prop:)P2" ref="./../../Mpl_Sc/Capsule/Out"/>
-          </node>
-          <node id="2107330758" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Capsule/(StVarInp:)Inp_Scale/(StInpSocket:)Int/PinData"/>
-            <cont node="./(Prop:)P1" ref="./../../Mpl_Sc/Capsule/Inp1"/>
-          </node>
-          <node id="771202220" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Mpl_NU/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../Mpl_Sc/Capsule/Inp2"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
-          </node>
-          <node id="MD_constr_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCpsMtrdVar"/>
-          <node id="626912110" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Capsule/(StVarInp:)Inp_Par_LU/(StInpSocket:)Int/PinData"/>
-            <cont node="./(Prop:)P1" ref="./../../MD_constr_LU/Capsule/Inp"/>
-          </node>
-          <node id="Invert_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplinvVar"/>
-          <node id="1151406191" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../MD_constr_LU/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../Invert_LU/Capsule/Inp"/>
-          </node>
-          <node id="Mpl_LU" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
-          <node id="1141000844" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Mpl_LU/Capsule/Inp2"/>
-            <cont node="./(Prop:)P2" ref="./../../Mpl_Sc/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../Mpl_NU/Capsule/Out"/>
-          </node>
-          <node id="2103969622" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Invert_LU/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../Mpl_LU/Capsule/Inp1"/>
-          </node>
-          <node id="Cast_F_To_I" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFCastVar">
-            <cont node="./InpType" val="MDtGet_MF"/>
-          </node>
-          <node id="143004299" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Mpl_LU/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
-            <cont node="./(Prop:)P2" ref="./../../Cast_F_To_I/Capsule/Inp"/>
-          </node>
-          <node id="1258189486" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Cast_F_To_I/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
-          </node>
-          <node id="1243979483" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Cast_I_to_F/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../MD_constr_NU/Capsule/Inp"/>
-          </node>
-        </node>
-        <node id="Vect_to_Y_Vect" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-          <node id="Const_Matrix" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-            <cont node="./(Prop:)Value" val="MI,R,2,2 0 1 0 1"/>
-          </node>
-          <node id="Mpl" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
-          <node id="950720624" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Mpl/Capsule/Inp1"/>
-            <cont node="./(Prop:)P2" ref="./../../Const_Matrix/Capsule/Out"/>
-          </node>
-          <node id="2041850272" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Mpl/Capsule/Inp2"/>
-            <cont node="./(Prop:)P2" ref="./../../Capsule/Inp/Int/PinData"/>
-          </node>
-          <node id="1908863628" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Mpl/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
-          </node>
-        </node>
-        <node id="Pic" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des">
-          <node id="Scaled_coord_XY" parent=":Elem:Vert:Syst:Incaps:State:StateVarC:Scaled_coord_2d">
-            <node id="Descrip_scaled_XY" parent="Description">
-              <cont node="" val="Scaled_coord_XY (XY_NU) is Rock coords  in Native Utits (integer Vector)&#10;     Inp_Par_NU is parent size WH width-hieght in Native Units (integer Vector).&#10;&#10;XY_NU = (Inp_Par_NU) * (Inp_Scale) * (1/Inp_Par_LU)&#10;     As in Native units system of coords Y goes down, and in logic system of coors Y goes up: &#10;0____x         y&#10;  |                      |    LU&#10;y|   NU        0 |___x&#10;&#10;XY_NU: Xres = X, Yres = H - Y&#10;">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			    </cont>
-            </node>
-            <node id="Const_MD_01" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-              <cont node="./(Prop:)Value" val="MI,D,2 0 1"/>
-            </node>
-            <node id="Mpl_NU_to_0H" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
-            <node id="1799596607" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Const_MD_01/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../Mpl_NU_to_0H/Capsule/Inp1"/>
-            </node>
-            <node id="142871116" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Mpl_NU_to_0H/Capsule/Inp2"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_Par_NU/Int/PinData"/>
-            </node>
-            <node id="Const_MD_1_m1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-              <cont node="./(Prop:)Value" val="MI,D,2 1 -1"/>
-            </node>
-            <node id="Mpl_L_X_mY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
-            <node id="1035904628" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Mpl_L_X_mY/Capsule/Inp1"/>
-              <cont node="./(Prop:)P1" ref="./../../Const_MD_1_m1/Capsule/Out"/>
-            </node>
-            <cont node="./1258189486/P2" ref="./../../Mpl_L_X_mY/Capsule/Inp2"/>
-            <node id="Add_vect" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar"/>
-            <node id="495595319" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Add_vect/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Mpl_L_X_mY/Capsule/Out"/>
-            </node>
-            <node id="461460394" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Add_vect/Capsule/Out"/>
-            </node>
-            <node id="976342431" parent="Edge">
-              <cont node="./(Prop:)P1" ref="./../../Mpl_NU_to_0H/Capsule/Out"/>
-              <cont node="./(Prop:)P2" ref="./../../Add_vect/Capsule/Inp"/>
-            </node>
-          </node>
-          <node id="Scaled_size_WH" parent=":Elem:Vert:Syst:Incaps:State:StateVarC:Scaled_coord_2d">
-            <node id="Const_Mtx" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar">
-              <cont node="./(Prop:)Value" val="MF,R,2,2 0 1 0 1"/>
-            </node>
-            <node id="Mpl_HH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplncVar"/>
-            <node id="835909112" parent="Edge">
-              <cont node="./(Prop:)P1" ref="./../../MD_constr_NU/Capsule/Inp"/>
-              <cont node="./(Prop:)P2" ref="./../../Mpl_HH/Capsule/Out"/>
-            </node>
-            <node id="127267067" parent="Edge">
-              <cont node="./(Prop:)P1" ref="./../../Mpl_HH/Capsule/Inp1"/>
-              <cont node="./(Prop:)P2" ref="./../../Const_Mtx/Capsule/Out"/>
-            </node>
-            <cont node="./1243979483/P1" ref="./../../Mpl_HH/Capsule/Inp2"/>
-            <node id="Descrip_Native_size_WH" parent="Description">
-              <cont node="" val="Scaled_size_WH (WH_NU) is Rock size WH in Native Utits (integer Vector)&#10;     Inp_Par_NU is parent size WH width-hieght in Native Units (integer Vector). Width of parent does not influence Rock size.&#10;&#10;WH_NU = ([Const_Mtx] * [Inp_Par_NU]) * (Inp_Scale) * (1/Inp_Par_LU)"/>
-            </node>
-          </node>
-          <node id="Inp_coords_XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-          <node id="Inp_Par_Size_WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-          <node id="Inp_Size_WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-          <node id="Inp_Scale_WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-          <node id="Vis_Child" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Extender:)Child" node="./Capsule"/>
-          <node id="271557264" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Capsule/(StVarInp:)Inp_Scale_WH/(StInpSocket:)Int"/>
-            <cont node="./(Prop:)P1" ref="./../../(Scaled_coord_2d:)Scaled_size_WH/Capsule/(StVarInp:)Inp_Scale"/>
-          </node>
-          <node id="Scale_XY_Const" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-            <cont node="./Data/Confirmed/Value" val="MDF 1.0 1.0"/>
-            <cont node="./Data/Prepared/Value" val="MF,D,2 1.0 1.0"/>
-            <cont node="./Data/Confirmed/Value" val="MF,D,2 1.0 1.0"/>
-          </node>
-          <node id="1370956867" parent="Edge">
-            <cont node="./P1" ref="./../../Scaled_coord_XY/Capsule/Inp_Scale"/>
-            <cont node="./(Prop:)P2" ref="./../../Scale_XY_Const/Capsule/Out"/>
-          </node>
-          <node id="772999819" parent="Edge">
-            <cont node="./P1" ref="./../../Capsule/Inp_Size_WH/Int"/>
-            <cont node="./P2" ref="./../../Scaled_size_WH/Capsule/Inp"/>
-          </node>
-          <node id="237970249" parent="Edge">
-            <cont node="./P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
-            <cont node="./P2" ref="./../../Scaled_coord_XY/Capsule/Inp_Par_LU"/>
-          </node>
-          <node id="1775164595" parent="Edge">
-            <cont node="./P1" ref="./../../Capsule/Inp_coords_XY/Int"/>
-            <cont node="./P2" ref="./../../Scaled_coord_XY/Capsule/Inp"/>
-          </node>
-          <node id="Drw" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Des:)DrawingVc"/>
-          <node id="443585534" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Drw/Capsule/Child"/>
-            <cont node="./(Prop:)P2" ref="./../../Capsule/Vis_Child/Int"/>
-          </node>
-          <node id="126865284" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Inp_XY"/>
-            <cont node="./(Prop:)P1" ref="./../../Scaled_coord_XY/Capsule/Out"/>
-          </node>
-          <node id="710752306" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Inp_WH"/>
-            <cont node="./(Prop:)P1" ref="./../../Scaled_size_WH/Capsule/Out"/>
-          </node>
-          <node id="1867224546" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Prov_PWH"/>
-            <cont node="./(Prop:)P1" ref="./../../Scaled_coord_XY/Capsule/Inp_Par_NU"/>
-          </node>
-          <node id="1043037733" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Drw/Capsule/Prov_PWH"/>
-            <cont node="./(Prop:)P1" ref="./../../Scaled_size_WH/Capsule/Inp_Par_NU"/>
-          </node>
-          <node id="Inp_Par_Size_HH" parent=":Elem:Vert:Syst:Incaps:State:StateVarC:Vect_to_Y_Vect"/>
-          <node id="631507917" parent="Edge">
-            <cont node="./(Prop:)P2" ref="./../../Scaled_size_WH/Capsule/Inp_Par_LU"/>
-            <cont node="./(Prop:)P1" ref="./../../Inp_Par_Size_HH/Capsule/Out"/>
-          </node>
-          <node id="592434651" parent="Edge">
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
-            <cont node="./(Prop:)P2" ref="./../../Inp_Par_Size_HH/Capsule/Inp"/>
-          </node>
-          <node id="Pulling" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-            <change node="./Capsule/(ExtenderInp:)Inp" attr="id" val="BtnPressEvent"/>
-            <cont node="./Data/Prepared/Value" val="MF,V,2 0 0"/>
-            <cont node="./Data/Confirmed/Value" val="MF,V,2 0 0"/>
-          </node>
-          <node id="Pulling" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarOut" node="./Capsule"/>
-          <node id="PullingS" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des">
-            <node id="Pulling" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarOut" node="./Capsule"/>
-            <node id="BtnPressEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="Held" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-              <cont node="./Data/Prepared/Value" val="SB false"/>
-              <cont node="./Data/Confirmed/Value" val="SB false"/>
-              <node id="Get_Event" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-                <cont node="./Index/Value" val="SS Type"/>
-              </node>
-              <node id="1945112389" parent="Edge">
-                <cont node="./P2" ref="./../../Get_Event/Capsule/Inp"/>
-                <cont node="./P1" ref="./../../Capsule/Inp/Int/PinData"/>
-              </node>
-              <cont node="./Data/Prepared/Value" val="SI 0"/>
-              <cont node="./Data/Confirmed/Value" val="SI 0"/>
-              <node id="EQ" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(FuncVar:)FEQVar"/>
-              <rm node="./(FEQVar:)EQ"/>
-              <node id="EQ" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFEQVar"/>
-              <node id="643244487" parent="Edge">
-                <cont node="./P2" ref="./../../Get_Event/Capsule/Out"/>
-                <cont node="./P1" ref="./../../EQ/Capsule/Inp1"/>
-              </node>
-              <node id="79834089" parent="Edge">
-                <cont node="./P2" ref="./../../EQ/Capsule/Out"/>
-                <cont node="./P1" ref="./../../Data/Capsule/Inp"/>
-              </node>
-              <node id="Evt_Press" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCVar:)Btn_event_Press"/>
-              <node id="1248134181" parent="Edge">
-                <cont node="./P2" ref="./../../Evt_Press/Capsule/Out"/>
-                <cont node="./P1" ref="./../../EQ/Capsule/Inp2"/>
-              </node>
-              <cont node="./Data/Confirmed/Value" val="SB false"/>
-              <cont node="./Data/Prepared/Value" val="SB false"/>
-            </node>
-            <node id="415184991" parent="Edge">
-              <cont node="./P2" ref="./../../Held/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../Capsule/BtnPressEvent/Int"/>
-              <cont node="./P1" val=""/>
-              <cont node="./P1" val=""/>
-              <cont node="./P1" ref="./../../Capsule/BtnPressEvent/Int"/>
-            </node>
-            <node id="1782655257" parent="Edge">
-              <cont node="./P2" ref="./../../Held/Capsule/Out"/>
-              <cont node="./P1" ref="./../../Capsule/Pulling/Int"/>
-            </node>
-          </node>
-          <node id="1881386429" parent="Edge">
-            <cont node="./P2" ref="./../../Pulling/Capsule/Out"/>
-            <cont node="./P1" val=""/>
-            <cont node="./P1" ref="./../../Capsule/Pulling/Int"/>
-            <cont node="./P2" ref="./../../PullingS/Capsule/Pulling"/>
-          </node>
-          <node id="1163640034" parent="Edge">
-            <cont node="./P2" ref="./../../Pulling/Capsule/BtnPressEvent"/>
-            <cont node="./P1" ref="./../../Drw/Capsule/BtnPressEvent"/>
-            <cont node="./P2" ref="./../../PullingS/Capsule/BtnPressEvent"/>
-          </node>
-          <node id="Color_when_pulling" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCVar:)Color"/>
-          <rm node="./(StateVarC:)Pulling"/>
-          <node id="Widget_State" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(StateVarC:)WidgetState_State">
-            <change node="./Capsule/(ExtenderInp:)Inp" attr="id" val="Inp_Self"/>
-            <node id="Inp_Pulling" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="St_Active" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSTVar:)WidgetState_Data"/>
-            <node id="Switch" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFSwitchVar"/>
-            <rm node="./(WidgetState_Data:)St_Active"/>
-            <node id="St_Active" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCTVar:)WidgetState_DataSCT">
-              <cont node="./Value" val="Active"/>
-            </node>
-            <node id="1300387984" parent="Edge">
-              <cont node="./P1" val=""/>
-              <cont node="./P2" ref="./../../St_Active/Capsule/Out"/>
-              <cont node="./P1" ref="./../../Switch/Capsule/Inp2"/>
-            </node>
-            <node id="2119582550" parent="Edge">
-              <cont node="./P2" ref="./../../Switch/Capsule/Sel"/>
-              <cont node="./P1" ref="./../../Capsule/Inp_Pulling/Int/PinData"/>
-            </node>
-            <node id="116328456" parent="Edge">
-              <cont node="./P2" ref="./../../Switch/Capsule/Out"/>
-              <cont node="./P1" ref="./../../Data/Capsule/Inp"/>
-            </node>
-            <node id="St_Normal" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCTVar:)WidgetState_DataSCT"/>
-            <node id="242679410" parent="Edge">
-              <cont node="./P2" ref="./../../Switch/Capsule/Inp1"/>
-              <cont node="./P1" ref="./../../Capsule/Inp_Self/Int/PinData"/>
-              <cont node="./P1" ref="./../../St_Normal/Capsule/Out"/>
-            </node>
-          </node>
-          <node id="726816223" parent="Edge">
-            <cont node="./P2" ref="./../../Widget_State/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Drw/Capsule/Inp_State"/>
-          </node>
-          <node id="440290890" parent="Edge">
-            <cont node="./P2" ref="./../../Widget_State/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Widget_State/Capsule/Inp_Self"/>
-          </node>
-          <node id="1982550483" parent="Edge">
-            <cont node="./P2" ref="./../../Widget_State/Capsule/Inp_Pulling"/>
-            <cont node="./P1" ref="./../../PullingS/Capsule/Pulling"/>
-          </node>
-          <rm node="./(Edge:)440290890"/>
-        </node>
-        <node id="PicDe" parent="./(Des:)Pic">
-          <node id="D_1" parent="Description">
-            <cont node="" val="This is simple picture basing on drawing elem. The elem draws into drawing area window"/>
-          </node>
-          <node id="Drawer" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(WidgetVc:)DrawingElemVc"/>
-          <cont node="./126865284/P2" ref="./../../Drawer/Capsule/Inp_XY"/>
-          <cont node="./710752306/P2" ref="./../../Drawer/Capsule/Inp_WH"/>
-          <cont node="./726816223/P1" ref="./../../Drawer/Capsule/Inp_State"/>
-          <cont node="./443585534/P1" ref="./../../Drawer/Capsule/Child"/>
-          <cont node="./1867224546/P2" ref="./../../Drw/Capsule/Prov_PWH"/>
-          <cont node="./1867224546/P2" ref="./../../Drw/Capsule/Prov_PWH"/>
-          <cont node="./1867224546/P2" ref="./../../Drawer/Capsule/Prov_PWH"/>
-          <cont node="./1043037733/P2" ref="./../../Drawer/Capsule/Prov_PWH"/>
-          <cont node="./1163640034/P1" ref="./../../Drawer/Capsule/BtnPressEvent"/>
-          <rm node="./(DrawingVc:)Drw"/>
-          <node id="DrawingElem" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Extender:)DrawingElemExt" node="./Capsule"/>
-          <node id="815321115" parent="Edge">
-            <cont node="./P2" ref="./../../Capsule/DrawingElem/Int"/>
-            <cont node="./P1" ref="./../../Drawer/Capsule/DrawingElem"/>
-          </node>
-          <node id="Inp_XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./PullingS/Capsule"/>
-          <node id="Inp_WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./PullingS/Capsule"/>
-          <node id="Inp_XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./PullingS/Held/Capsule"/>
-          <node id="Inp_WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./PullingS/Held/Capsule"/>
-          <node id="1265170553" parent="Edge">
-            <cont node="./P2" ref="./../../PullingS/Capsule/Inp_XY"/>
-            <cont node="./P1" ref="./../../Scaled_coord_XY/Capsule/Out"/>
-          </node>
-          <node id="1079072022" parent="Edge">
-            <cont node="./P2" ref="./../../PullingS/Capsule/Inp_WH"/>
-            <cont node="./P1" ref="./../../Scaled_size_WH/Capsule/Out"/>
-          </node>
-          <node id="Vect_to_X" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS">
-            <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SI 0"/>
-          </node>
-          <node id="Vect_to_Y" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS">
-            <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SI 1"/>
-          </node>
-          <node id="961647255" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Vect_to_X/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
-            <cont node="./(Prop:)P2" val=""/>
-          </node>
-          <node id="1277619976" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Vect_to_Y/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
-          </node>
-          <change node="./(Des:)PullingS/(TFAtVarI:)Vect_to_X" attr="id" val="At_0"/>
-          <change node="./(Des:)PullingS/(TFAtVarI:)At_0" attr="id" val="Get_X"/>
-          <change node="./(Des:)PullingS/(TFAtVarI:)Vect_to_Y" attr="id" val="Get_Y"/>
-          <node id="Get_W" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS">
-            <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SI 0"/>
-          </node>
-          <node id="Get_H" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS">
-            <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SI 1"/>
-          </node>
-          <node id="1257177416" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Get_W/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_WH/Int/PinData"/>
-          </node>
-          <node id="359187246" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Get_H/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_WH/Int/PinData"/>
-          </node>
-          <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" node="./PullingS"/>
-          <node id="245625553" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Get_X/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../Capsule/BtnPressEvent/Int/PinData"/>
-          </node>
-          <node id="306894011" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Get_W/Capsule/Out"/>
-          </node>
-          <node id="Add1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" node="./PullingS"/>
-          <node id="415240532" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Add1/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Get_Y/Capsule/Out"/>
-          </node>
-          <node id="861093065" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Add1/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Get_H/Capsule/Out"/>
-          </node>
-          <rm node="./(Des:)PullingS/(TFAddVar:)Add"/>
-          <rm node="./(Des:)PullingS/(TFAtVarI:)Get_H"/>
-          <rm node="./(Des:)PullingS/(TFAtVarI:)Get_Y"/>
-          <rm node="./(Des:)PullingS/(TFAtVarI:)Get_W"/>
-          <rm node="./(Des:)PullingS/(TFAtVarI:)Get_X"/>
-          <rm node="./(Des:)PullingS/(TFAddVar:)Add1"/>
-          <rm node="./(Des:)PullingS/(Edge:)1277619976"/>
-          <rm node="./(Des:)PullingS/(Edge:)961647255"/>
-          <rm node="./(Des:)PullingS/(Edge:)359187246"/>
-          <rm node="./(Des:)PullingS/(Edge:)1257177416"/>
-          <rm node="./(Des:)PullingS/(Edge:)861093065"/>
-          <rm node="./(Des:)PullingS/(Edge:)415240532"/>
-          <rm node="./(Des:)PullingS/(Edge:)245625553"/>
-          <rm node="./(Des:)PullingS/(Edge:)306894011"/>
-          <node id="Get_X" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS/Held">
-            <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SI 0"/>
-          </node>
-          <node id="1291595120" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_X/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
-          </node>
-          <node id="Get_Y" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS/Held"/>
-          <node id="Get_W" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS/Held">
-            <cont node="./Index/Value" val="SI 0"/>
-          </node>
-          <node id="Get_H" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS/Held"/>
-          <node id="2076206253" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_Y/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
-          </node>
-          <node id="1084365925" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_W/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_WH/Int/PinData"/>
-          </node>
-          <node id="1053873852" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_H/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_WH/Int/PinData"/>
-          </node>
-          <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" node="./PullingS/Held"/>
-          <node id="Add1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" node="./PullingS/Held"/>
-          <node id="167992513" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Get_X/Capsule/Out"/>
-          </node>
-          <node id="1393612811" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Get_W/Capsule/Out"/>
-          </node>
-          <node id="GE" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFGEVar" node="./PullingS/Held"/>
-          <node id="1545159782" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp1"/>
-            <cont node="./(Prop:)P1" ref="./../../Get_X/Capsule/Out"/>
-            <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp2"/>
-          </node>
-          <node id="Get_Event_X" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS/Held">
-            <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS Type"/>
-            <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS X"/>
-          </node>
-          <node id="1802209564" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" val=""/>
-            <cont node="./(Prop:)P1" val=""/>
-            <cont node="./(Prop:)P1" val=""/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
-            <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp2"/>
-            <cont node="./(Prop:)P2" ref="./../../Get_Event_X/Capsule/Inp"/>
-          </node>
-          <node id="917338267" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp1"/>
-            <cont node="./(Prop:)P1" ref="./../../Get_Event_X/Capsule/Out"/>
-          </node>
-          <node id="And" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar" node="./PullingS/Held"/>
-          <node id="1026125340" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../And/Capsule/Inp"/>
-          </node>
-          <node id="And1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar" node="./PullingS/Held"/>
-          <node id="992855183" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../EQ/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../And1/Capsule/Inp"/>
-          </node>
-          <cont node="./PullingS/Held/79834089/P2" ref="./../../Add1/Capsule/Out"/>
-          <cont node="./PullingS/Held/79834089/P2" ref="./../../And1/Capsule/Out"/>
-          <node id="1040240114" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../And1/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../And/Capsule/Out"/>
-          </node>
-          <node id="LT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFLTVar" node="./PullingS/Held"/>
-          <node id="1896125264" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../LT/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../And/Capsule/Inp"/>
-          </node>
-          <node id="1418800433" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_Event_X/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../LT/Capsule/Inp1"/>
-          </node>
-          <node id="2079026544" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../LT/Capsule/Inp2"/>
-            <cont node="./(Prop:)P1" ref="./../../Add/Capsule/Out"/>
-          </node>
-          <node id="1391234383" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_Y/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../Add1/Capsule/Inp"/>
-          </node>
-          <node id="1394132603" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_H/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../Add1/Capsule/Inp"/>
-          </node>
-          <node id="And2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar" node="./PullingS/Held"/>
-          <node id="287458213" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../And2/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../And1/Capsule/Inp"/>
-          </node>
-          <node id="GE1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFGEVar" node="./PullingS/Held"/>
-          <node id="1923795691" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../GE1/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../And2/Capsule/Inp"/>
-          </node>
-          <node id="Get_Event_Y" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS/Held">
-            <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS Y"/>
-          </node>
-          <node id="443162702" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_Event_Y/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../GE1/Capsule/Inp1"/>
-          </node>
-          <node id="679014495" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_Event_Y/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
-          </node>
-          <node id="1608439170" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../GE1/Capsule/Inp2"/>
-            <cont node="./(Prop:)P1" ref="./../../Get_Y/Capsule/Out"/>
-          </node>
-          <node id="LT1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFLTVar" node="./PullingS/Held"/>
-          <node id="298817527" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../LT1/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../And2/Capsule/Inp"/>
-          </node>
-          <node id="910739925" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../LT1/Capsule/Inp1"/>
-            <cont node="./(Prop:)P1" val=""/>
-            <cont node="./(Prop:)P1" ref="./../../Get_Event_Y/Capsule/Out"/>
-          </node>
-          <node id="337232896" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../LT1/Capsule/Inp2"/>
-            <cont node="./(Prop:)P1" ref="./../../Add1/Capsule/Out"/>
-          </node>
-          <node id="Self" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./PullingS/Held/Capsule"/>
-          <node id="BtnReleaseEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./PullingS/Capsule"/>
-          <node id="BtnReleaseEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./PullingS/Held/Capsule"/>
-          <node id="1505732152" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Held/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../Held/Capsule/Self"/>
-          </node>
-          <node id="Get_Event_2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI" node="./PullingS/Held">
-            <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS Type"/>
-          </node>
-          <node id="1967096214" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Get_Event_2/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/BtnReleaseEvent/Int/PinData"/>
-          </node>
-          <node id="Is_Release_Evt" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFEQVar" node="./PullingS/Held"/>
-          <node id="1211685360" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P1" ref="./../../Is_Release_Evt/Capsule/Inp1"/>
-            <cont node="./(Prop:)P2" ref="./../../Get_Event_2/Capsule/Out"/>
-          </node>
-          <node id="Evt_Release" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCVar:)Btn_event_Release" node="./PullingS/Held"/>
-          <node id="769691404" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Evt_Release/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../Is_Release_Evt/Capsule/Inp2"/>
-          </node>
-          <node id="OR" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" node="./PullingS/Held"/>
-          <node id="261773345" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../OR/Capsule/Out"/>
-          </node>
-          <cont node="./PullingS/Held/79834089/P1" ref="./../../OR/Capsule/Inp"/>
-          <node id="Self_n_notreleased" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar" node="./PullingS/Held"/>
-          <node id="1751460599" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Self_n_notreleased/Capsule/Out"/>
-            <cont node="./(Prop:)P1" ref="./../../OR/Capsule/Inp"/>
-          </node>
-          <node id="1279357281" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Self_n_notreleased/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Self/Int/PinData"/>
-          </node>
-          <node id="931739968" parent="Edge">
-            <cont node="./P2" ref="./../../Drawer/Capsule/BtnReleaseEvent"/>
-            <cont node="./P1" ref="./../../PullingS/Capsule/BtnReleaseEvent"/>
-          </node>
-          <node id="Neg" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFNegVar" node="./PullingS/Held"/>
-          <node id="1708479246" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Self_n_notreleased/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Neg/Capsule/Out"/>
-          </node>
-          <node id="230708065" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Neg/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Is_Release_Evt/Capsule/Out"/>
-          </node>
-          <node id="Self_Neg" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFNegVar" node="./PullingS/Held"/>
-          <node id="1885891396" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../And1/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Self_Neg/Capsule/Out"/>
-          </node>
-          <node id="1804823084" parent="Edge" node="./PullingS/Held">
-            <cont node="./(Prop:)P2" ref="./../../Self_Neg/Capsule/Inp"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Self/Int/PinData"/>
-          </node>
-          <node id="Press_Sharpened" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC" node="./PullingS">
-            <node id="And" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar"/>
-            <cont node="./(Incaps:)Data/(DataSCVar:)Prepared/(Prop:)Value" val="SB 0"/>
-            <cont node="./(Incaps:)Data/(DataSCVar:)Confirmed/(Prop:)Value" val="SB 0"/>
-            <node id="Reset" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="Not" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFNegVar"/>
-            <node id="814401419" parent="Edge">
-              <cont node="./P2" ref="./../../And/Capsule/Out"/>
-              <cont node="./P1" ref="./../../Data/Capsule/Inp"/>
-            </node>
-            <node id="747413207" parent="Edge">
-              <cont node="./P2" ref="./../../And/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../Not/Capsule/Out"/>
-            </node>
-            <node id="1996368625" parent="Edge">
-              <cont node="./P2" ref="./../../And/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../Capsule/Inp/Int/PinData"/>
-            </node>
-            <node id="1618751034" parent="Edge">
-              <cont node="./P2" ref="./../../Not/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../Capsule/Reset/Int/PinData"/>
-            </node>
-          </node>
-          <node id="580704208" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../Press_Sharpened/Capsule/Inp"/>
-            <cont node="./P1" val=""/>
-            <cont node="./P1" ref="./../../Capsule/BtnPressEvent/Int"/>
-          </node>
-          <cont node="./PullingS/415184991/P1" ref="./../../Press_Sharpened/Capsule/Out"/>
-          <node id="1585168001" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../Held/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Press_Sharpened/Capsule/Reset"/>
-          </node>
-          <node id="Release_Sharpened" parent="./PullingS/Press_Sharpened" node="./PullingS">
-            <cont node="./747413207/P1" ref="./../../Not/Capsule/Out"/>
-            <rm node="./(Edge:)747413207"/>
-            <rm node="./(TFNegVar:)Not"/>
-            <cont node="./1618751034/P2" ref="./../../And/Capsule/Inp"/>
-          </node>
-          <node id="1238117189" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Held/Capsule/BtnReleaseEvent"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/BtnReleaseEvent/Int"/>
-            <cont node="./P1" ref="./../../Release_Sharpened/Capsule/Out"/>
-          </node>
-          <node id="500515581" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../Release_Sharpened/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/BtnReleaseEvent/Int"/>
-          </node>
-          <node id="932870035" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../Held/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Release_Sharpened/Capsule/Reset"/>
-          </node>
-          <node id="Pressed" parent="./PullingS/Held" node="./PullingS">
-            <node id="Inp_XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="Inp_WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="Get_X" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SI 0"/>
-            </node>
-            <node id="1291595120" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_X/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
-            </node>
-            <node id="Get_Y" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./Index/Value" val="SI 1"/>
-            </node>
-            <node id="Get_W" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./Index/Value" val="SI 0"/>
-            </node>
-            <node id="Get_H" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./Index/Value" val="SI 1"/>
-            </node>
-            <node id="2076206253" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Y/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
-            </node>
-            <node id="1084365925" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_W/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_WH/Int/PinData"/>
-            </node>
-            <node id="1053873852" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_H/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_WH/Int/PinData"/>
-            </node>
-            <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar"/>
-            <node id="Add1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar"/>
-            <node id="167992513" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_X/Capsule/Out"/>
-            </node>
-            <node id="1393612811" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_W/Capsule/Out"/>
-            </node>
-            <node id="GE" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFGEVar"/>
-            <node id="1545159782" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp1"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_X/Capsule/Out"/>
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp2"/>
-            </node>
-            <node id="Get_Event_X" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS Type"/>
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS X"/>
-            </node>
-            <node id="1802209564" parent="Edge">
-              <cont node="./(Prop:)P2" val=""/>
-              <cont node="./(Prop:)P1" val=""/>
-              <cont node="./(Prop:)P1" val=""/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp2"/>
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_X/Capsule/Inp"/>
-            </node>
-            <node id="917338267" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp1"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_Event_X/Capsule/Out"/>
-            </node>
-            <node id="And" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar"/>
-            <node id="1026125340" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And/Capsule/Inp"/>
-            </node>
-            <node id="And1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar"/>
-            <node id="992855183" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../EQ/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And1/Capsule/Inp"/>
-            </node>
-            <cont node="./(Edge:)79834089/(Prop:)P2" ref="./../../Add1/Capsule/Out"/>
-            <cont node="./(Edge:)79834089/(Prop:)P2" ref="./../../And1/Capsule/Out"/>
-            <node id="1040240114" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../And1/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../And/Capsule/Out"/>
-            </node>
-            <node id="LT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFLTVar"/>
-            <node id="1896125264" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And/Capsule/Inp"/>
-            </node>
-            <node id="1418800433" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_X/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../LT/Capsule/Inp1"/>
-            </node>
-            <node id="2079026544" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT/Capsule/Inp2"/>
-              <cont node="./(Prop:)P1" ref="./../../Add/Capsule/Out"/>
-            </node>
-            <node id="1391234383" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Y/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../Add1/Capsule/Inp"/>
-            </node>
-            <node id="1394132603" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_H/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../Add1/Capsule/Inp"/>
-            </node>
-            <node id="And2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar"/>
-            <node id="287458213" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../And2/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And1/Capsule/Inp"/>
-            </node>
-            <node id="GE1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFGEVar"/>
-            <node id="1923795691" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE1/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And2/Capsule/Inp"/>
-            </node>
-            <node id="Get_Event_Y" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS Y"/>
-            </node>
-            <node id="443162702" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_Y/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../GE1/Capsule/Inp1"/>
-            </node>
-            <node id="679014495" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_Y/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
-            </node>
-            <node id="1608439170" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE1/Capsule/Inp2"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_Y/Capsule/Out"/>
-            </node>
-            <node id="LT1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFLTVar"/>
-            <node id="298817527" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT1/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And2/Capsule/Inp"/>
-            </node>
-            <node id="910739925" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT1/Capsule/Inp1"/>
-              <cont node="./(Prop:)P1" val=""/>
-              <cont node="./(Prop:)P1" ref="./../../Get_Event_Y/Capsule/Out"/>
-            </node>
-            <node id="337232896" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT1/Capsule/Inp2"/>
-              <cont node="./(Prop:)P1" ref="./../../Add1/Capsule/Out"/>
-            </node>
-            <node id="Self" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="BtnReleaseEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="Get_Event_2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS Type"/>
-            </node>
-            <node id="1967096214" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_2/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/BtnReleaseEvent/Int/PinData"/>
-            </node>
-            <node id="Is_Release_Evt" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFEQVar"/>
-            <node id="1211685360" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_2/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../Is_Release_Evt/Capsule/Inp1"/>
-              <cont node="./(Prop:)P2" ref="./../../Get_Event/Capsule/Out"/>
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_2/Capsule/Out"/>
-            </node>
-            <node id="Evt_Release" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCVar:)Btn_event_Release"/>
-            <node id="769691404" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Evt_Release/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../Is_Release_Evt/Capsule/Inp2"/>
-            </node>
-            <node id="OR" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar"/>
-            <node id="261773345" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../OR/Capsule/Out"/>
-            </node>
-            <cont node="./(Edge:)79834089/(Prop:)P1" ref="./../../OR/Capsule/Inp"/>
-            <node id="Self_n_notreleased" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar"/>
-            <node id="1751460599" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Self_n_notreleased/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../OR/Capsule/Inp"/>
-            </node>
-            <node id="1279357281" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Self_n_notreleased/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Self/Int/PinData"/>
-            </node>
-            <node id="Neg" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFNegVar"/>
-            <node id="1708479246" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Self_n_notreleased/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Neg/Capsule/Out"/>
-            </node>
-            <node id="230708065" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Neg/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Is_Release_Evt/Capsule/Out"/>
-            </node>
-            <node id="Self_Neg" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFNegVar"/>
-            <node id="1885891396" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../And1/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Self_Neg/Capsule/Out"/>
-            </node>
-            <node id="1804823084" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Self_Neg/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Self/Int/PinData"/>
-            </node>
-            <cont node="./79834089/P1" ref="./../../Data/Capsule/Inp"/>
-            <rm node="./(Edge:)1967096214"/>
-            <rm node="./Capsule/(StVarInp:)BtnReleaseEvent"/>
-            <rm node="./(Btn_event_Release:)Evt_Release"/>
-            <rm node="./(TFAtVarI:)Get_Event_2"/>
-            <rm node="./(Edge:)769691404"/>
-            <rm node="./(Edge:)1211685360"/>
-            <rm node="./(TFEQVar:)Is_Release_Evt"/>
-            <change node="./Capsule/(StVarInp:)Self" attr="id" val="Ack"/>
-            <rm node="./(Edge:)230708065"/>
-            <rm node="./(TFNegVar:)Neg"/>
-            <rm node="./(Edge:)1708479246"/>
-            <rm node="./(Edge:)1279357281"/>
-            <rm node="./(TFMplVar:)Self_n_notreleased"/>
-            <rm node="./(Edge:)1751460599"/>
-            <rm node="./(TFAddVar:)OR"/>
-            <rm node="./(Edge:)261773345"/>
-          </node>
-          <node id="IsHeld" parent="/Root/Modules/DesComps/StateVarC" node="./PullingS">
-            <cont node="./Data/Prepared/Value" val="SB false"/>
-            <cont node="./Data/Confirmed/Value" val="SB false"/>
-            <change node="./Capsule/(ExtenderInp:)Inp" attr="id" val="Pressed"/>
-            <node id="Self" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-            <node id="OR" parent="/Root/Modules/FuncComps/TFMplVar"/>
-            <node id="Released" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-            <node id="And" parent="/Root/Modules/FuncComps/TFMplVar"/>
-            <node id="1785205733" parent="Edge">
-              <cont node="./P2" ref="./../../Data/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../And/Capsule/Out"/>
-            </node>
-            <node id="Not" parent="/Root/Modules/FuncComps/TFNegVar"/>
-            <node id="1506879460" parent="Edge">
-              <cont node="./P2" ref="./../../And/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../Not/Capsule/Out"/>
-            </node>
-            <node id="1727174914" parent="Edge">
-              <cont node="./P2" ref="./../../Not/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../Capsule/Released/Int/PinData"/>
-            </node>
-            <node id="OR" parent="/Root/Modules/FuncComps/TFAddVar"/>
-            <rm node="./(TFAddVar:)OR"/>
-            <node id="OR1" parent="/Root/Modules/FuncComps/TFAddVar"/>
-            <node id="1047351570" parent="Edge">
-              <cont node="./P2" ref="./../../OR/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../Capsule/Pressed/Int/PinData"/>
-              <cont node="./P2" ref="./../../OR1/Capsule/Inp"/>
-            </node>
-            <node id="1524256822" parent="Edge">
-              <cont node="./P2" ref="./../../OR/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../Capsule/Self/Int/PinData"/>
-              <cont node="./P2" ref="./../../OR1/Capsule/Inp"/>
-            </node>
-            <node id="606503561" parent="Edge">
-              <cont node="./P2" ref="./../../OR/Capsule/Out"/>
-              <cont node="./P1" ref="./../../Data/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../And/Capsule/Inp"/>
-              <cont node="./P2" ref="./../../OR1/Capsule/Out"/>
-            </node>
-          </node>
-          <node id="1768674620" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../IsHeld/Capsule/Out"/>
-            <cont node="./P1" ref="./../../IsHeld/Capsule/Self"/>
-            <cont node="./P2" ref="./../../Capsule/BtnPressEvent/Int/PinData"/>
-          </node>
-          <cont node="./PullingS/1782655257/P2" ref="./../../IsHeld/Capsule/Out"/>
-          <node id="391987223" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../IsHeld/Capsule/Pressed"/>
-            <cont node="./P1" ref="./../../Pressed/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Capsule/BtnPressEvent/Int/PinData"/>
-          </node>
-          <rm node="./(Des:)PullingS/(Edge:)415184991"/>
-          <node id="1068726953" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../IsHeld/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Pressed/Capsule/Ack"/>
-            <cont node="./P2" ref="./../../Pressed/Capsule/Out"/>
-          </node>
-          <rm node="./(Des:)PullingS/(Edge:)1585168001"/>
-          <rm node="./(Des:)PullingS/(Edge:)580704208"/>
-          <rm node="./(Des:)PullingS/(Edge:)1505732152"/>
-          <rm node="./(Des:)PullingS/(Edge:)1238117189"/>
-          <rm node="./(Des:)PullingS/(Edge:)932870035"/>
-          <rm node="./(Des:)PullingS/(Edge:)500515581"/>
-          <rm node="./(Des:)PullingS/(Press_Sharpened:)Release_Sharpened"/>
-          <rm node="./(Des:)PullingS/(StateVarC:)Press_Sharpened"/>
-          <node id="Released" parent="/Root/Modules/DesComps/StateVarC" node="./PullingS">
-            <cont node="./Data/Confirmed/Value" val="SB false"/>
-            <cont node="./Data/Prepared/Value" val="SB false"/>
-            <node id="And" parent="/Root/Modules/FuncComps/TFMplVar"/>
-            <node id="1233289240" parent="Edge">
-              <cont node="./P2" ref="./../../Data/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../And/Capsule/Out"/>
-            </node>
-            <node id="EQ" parent="/Root/Modules/FuncComps/TFEQVar"/>
-            <node id="1026713945" parent="Edge">
-              <cont node="./P2" ref="./../../And/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../EQ/Capsule/Out"/>
-            </node>
-            <node id="Get_Event" parent="/Root/Modules/FuncComps/TFAtVarI">
-              <cont node="./Index/Value" val="SS Type"/>
-            </node>
-            <node id="173171765" parent="Edge">
-              <cont node="./P2" ref="./../../EQ/Capsule/Inp1"/>
-              <cont node="./P1" ref="./../../Get_Event/Capsule/Out"/>
-            </node>
-            <node id="430072842" parent="Edge">
-              <cont node="./P2" ref="./../../Get_Event/Capsule/Inp"/>
-              <cont node="./P1" ref="./../../Capsule/Inp/Int/PinData"/>
-            </node>
-            <node id="Event" parent="/Root/Modules/VisComps/Widget_common/Btn_event_Release"/>
-            <node id="2059192766" parent="Edge">
-              <cont node="./P2" ref="./../../EQ/Capsule/Inp2"/>
-              <cont node="./P1" ref="./../../Event/Capsule/Out"/>
-            </node>
-            <node id="Ack" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-            <node id="1397850849" parent="Edge">
-              <cont node="./P2" ref="./../../Capsule/Ack/Int/PinData"/>
-              <cont node="./P1" ref="./../../And/Capsule/Inp"/>
-            </node>
-          </node>
-          <node id="454114900" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../Released/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/BtnReleaseEvent/Int"/>
-          </node>
-          <node id="2107538506" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../IsHeld/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Released/Capsule/Ack"/>
-          </node>
-          <node id="2082661157" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../IsHeld/Capsule/Released"/>
-            <cont node="./P1" ref="./../../Released/Capsule/Out"/>
-          </node>
-          <node id="Held1" parent="./PullingS/Held" node="./PullingS">
-            <node id="Inp_XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="Inp_WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="Get_X" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SI 0"/>
-            </node>
-            <node id="1291595120" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_X/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
-            </node>
-            <node id="Get_Y" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./Index/Value" val="SI 1"/>
-            </node>
-            <node id="Get_W" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./Index/Value" val="SI 0"/>
-            </node>
-            <node id="Get_H" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./Index/Value" val="SI 1"/>
-            </node>
-            <node id="2076206253" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Y/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_XY/Int/PinData"/>
-            </node>
-            <node id="1084365925" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_W/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_WH/Int/PinData"/>
-            </node>
-            <node id="1053873852" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_H/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_WH/Int/PinData"/>
-            </node>
-            <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar"/>
-            <node id="Add1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar"/>
-            <node id="167992513" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_X/Capsule/Out"/>
-            </node>
-            <node id="1393612811" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_W/Capsule/Out"/>
-            </node>
-            <node id="GE" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFGEVar"/>
-            <node id="1545159782" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp1"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_X/Capsule/Out"/>
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp2"/>
-            </node>
-            <node id="Get_Event_X" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS Type"/>
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS X"/>
-            </node>
-            <node id="1802209564" parent="Edge">
-              <cont node="./(Prop:)P2" val=""/>
-              <cont node="./(Prop:)P1" val=""/>
-              <cont node="./(Prop:)P1" val=""/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp2"/>
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_X/Capsule/Inp"/>
-            </node>
-            <node id="917338267" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Inp1"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_Event_X/Capsule/Out"/>
-            </node>
-            <node id="And" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar"/>
-            <node id="1026125340" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And/Capsule/Inp"/>
-            </node>
-            <node id="And1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar"/>
-            <node id="992855183" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../EQ/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And1/Capsule/Inp"/>
-            </node>
-            <cont node="./(Edge:)79834089/(Prop:)P2" ref="./../../Add1/Capsule/Out"/>
-            <cont node="./(Edge:)79834089/(Prop:)P2" ref="./../../And1/Capsule/Out"/>
-            <node id="1040240114" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../And1/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../And/Capsule/Out"/>
-            </node>
-            <node id="LT" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFLTVar"/>
-            <node id="1896125264" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And/Capsule/Inp"/>
-            </node>
-            <node id="1418800433" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_X/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../LT/Capsule/Inp1"/>
-            </node>
-            <node id="2079026544" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT/Capsule/Inp2"/>
-              <cont node="./(Prop:)P1" ref="./../../Add/Capsule/Out"/>
-            </node>
-            <node id="1391234383" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Y/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../Add1/Capsule/Inp"/>
-            </node>
-            <node id="1394132603" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_H/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../Add1/Capsule/Inp"/>
-            </node>
-            <node id="And2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar"/>
-            <node id="287458213" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../And2/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And1/Capsule/Inp"/>
-            </node>
-            <node id="GE1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFGEVar"/>
-            <node id="1923795691" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE1/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And2/Capsule/Inp"/>
-            </node>
-            <node id="Get_Event_Y" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS Y"/>
-            </node>
-            <node id="443162702" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_Y/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../GE1/Capsule/Inp1"/>
-            </node>
-            <node id="679014495" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_Y/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
-            </node>
-            <node id="1608439170" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../GE1/Capsule/Inp2"/>
-              <cont node="./(Prop:)P1" ref="./../../Get_Y/Capsule/Out"/>
-            </node>
-            <node id="LT1" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFLTVar"/>
-            <node id="298817527" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT1/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../And2/Capsule/Inp"/>
-            </node>
-            <node id="910739925" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT1/Capsule/Inp1"/>
-              <cont node="./(Prop:)P1" val=""/>
-              <cont node="./(Prop:)P1" ref="./../../Get_Event_Y/Capsule/Out"/>
-            </node>
-            <node id="337232896" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../LT1/Capsule/Inp2"/>
-              <cont node="./(Prop:)P1" ref="./../../Add1/Capsule/Out"/>
-            </node>
-            <node id="Self" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="BtnReleaseEvent" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/StVarInp" node="./Capsule"/>
-            <node id="Get_Event_2" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVarC:)TFAtVarI">
-              <cont node="./(DataSCVar:)Index/(Prop:)Value" val="SS Type"/>
-            </node>
-            <node id="1967096214" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_2/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/BtnReleaseEvent/Int/PinData"/>
-              <cont node="./P1" ref="./../../Capsule/Inp/Int/PinData"/>
-            </node>
-            <node id="Is_Release_Evt" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFEQVar"/>
-            <node id="1211685360" parent="Edge">
-              <cont node="./(Prop:)P1" ref="./../../Is_Release_Evt/Capsule/Inp1"/>
-              <cont node="./(Prop:)P2" ref="./../../Get_Event_2/Capsule/Out"/>
-            </node>
-            <node id="Evt_Release" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCVar:)Btn_event_Release"/>
-            <node id="769691404" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Evt_Release/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../Is_Release_Evt/Capsule/Inp2"/>
-            </node>
-            <node id="OR" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar"/>
-            <node id="261773345" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../OR/Capsule/Out"/>
-            </node>
-            <cont node="./(Edge:)79834089/(Prop:)P1" ref="./../../OR/Capsule/Inp"/>
-            <node id="Self_n_notreleased" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFMplVar"/>
-            <node id="1751460599" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Self_n_notreleased/Capsule/Out"/>
-              <cont node="./(Prop:)P1" ref="./../../OR/Capsule/Inp"/>
-            </node>
-            <node id="1279357281" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Self_n_notreleased/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Self/Int/PinData"/>
-            </node>
-            <node id="Neg" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFNegVar"/>
-            <node id="1708479246" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Self_n_notreleased/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Neg/Capsule/Out"/>
-            </node>
-            <node id="230708065" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Neg/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Is_Release_Evt/Capsule/Out"/>
-            </node>
-            <node id="Self_Neg" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFNegVar"/>
-            <node id="1885891396" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../And1/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Self_Neg/Capsule/Out"/>
-            </node>
-            <node id="1804823084" parent="Edge">
-              <cont node="./(Prop:)P2" ref="./../../Self_Neg/Capsule/Inp"/>
-              <cont node="./(Prop:)P1" ref="./../../Capsule/Self/Int/PinData"/>
-            </node>
-          </node>
-          <node id="2061893481" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Held/Capsule/Inp_WH"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_WH/Int"/>
-            <cont node="./P2" ref="./../../Pressed/Capsule/Inp_WH"/>
-            <cont node="./P2" ref="./../../Held1/Capsule/Inp_WH"/>
-          </node>
-          <node id="895536559" parent="Edge" node="./PullingS">
-            <cont node="./(Prop:)P2" ref="./../../Held/Capsule/Inp_XY"/>
-            <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_XY/Int"/>
-            <cont node="./P2" ref="./../../Pressed/Capsule/Inp_XY"/>
-            <cont node="./P2" ref="./../../Held1/Capsule/Inp_XY"/>
-          </node>
-          <node id="1996904854" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../Pressed/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/BtnPressEvent/Int"/>
-            <cont node="./P2" ref="./../../Held1/Capsule/Inp"/>
-          </node>
-          <cont node="./PullingS/1782655257/P2" ref="./../../Held1/Capsule/Out"/>
-          <node id="853418236" parent="Edge" node="./PullingS">
-            <cont node="./P2" ref="./../../Held1/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Held1/Capsule/Self"/>
-          </node>
-          <rm node="./(Des:)PullingS/(StateVarC:)IsHeld"/>
-          <rm node="./(Des:)PullingS/(Held:)Pressed"/>
-          <rm node="./(Des:)PullingS/(StateVarC:)Released"/>
-          <rm node="./(Des:)PullingS/Capsule/(StVarInp:)BtnReleaseEvent"/>
-          <rm node="./(Des:)PullingS/(Edge:)2107538506"/>
-          <rm node="./(Des:)PullingS/(Edge:)2082661157"/>
-          <rm node="./(Des:)PullingS/(Edge:)454114900"/>
-          <rm node="./(Des:)PullingS/(Edge:)1068726953"/>
-          <rm node="./(Des:)PullingS/(Edge:)391987223"/>
-          <rm node="./(Des:)PullingS/(Edge:)1768674620"/>
-          <rm node="./(Edge:)931739968"/>
-          <node id="MotionEvent" parent="/Root/Modules/DesComps/StVarOut" node="./Capsule"/>
-          <node id="1220503185" parent="Edge">
-            <cont node="./P2" ref="./../../Capsule/MotionEvent/Int"/>
-            <cont node="./P1" ref="./../../Drawer/Capsule/MotionEvent"/>
-          </node>
-          <node id="Allocation" parent="/Root/Modules/DesComps/StVarOut" node="./Capsule"/>
-          <node id="2026039691" parent="Edge">
-            <cont node="./P2" ref="./../../Capsule/Allocation/Int"/>
-            <cont node="./P1" ref="./../../Drawer/Capsule/Allocation"/>
-          </node>
-          <node id="Parent_WH_NU" parent="/Root/Modules/DesComps/StVarOut" node="./Capsule"/>
-          <node id="167355020" parent="Edge">
-            <cont node="./P2" ref="./../../Drawer/Capsule/Prov_PWH"/>
-            <cont node="./P1" ref="./../../Capsule/Parent_WH_NU/Int"/>
-          </node>
-        </node>
-        <node id="Coord_NU_to_LU" parent="Syst">
-          <node id="Coord_NU" parent="/Root/Modules/FuncComps/Inp_TFEVar"/>
-          <node id="Parent_WH_NU" parent="/Root/Modules/FuncComps/Inp_TFEVar"/>
-          <node id="Parent_WH_LU" parent="/Root/Modules/FuncComps/Inp_TFEVar"/>
-          <node id="Scale_MD" parent="/Root/Modules/FuncComps/Inp_TFEVar"/>
-          <node id="Coord_LU" parent="/Root/Modules/FuncComps/Out_TFEVar"/>
-          <node id="MD_1_m1" parent="/Root/Modules/DataComps/DataSCVar">
-            <cont node="./Value" val="MI,D,2 1 -1"/>
-          </node>
-        </node>
-        <node id="Coord_Nu_to_Lu" parent="/Root/Modules/IncapsComps/Incaps">
-          <node id="Parent_WH_LU" parent="/Root/Modules/FuncComps/Inp_TFEVar" node="./Capsule"/>
-          <node id="Parent_WH_NU" parent="/Root/Modules/FuncComps/Inp_TFEVar" node="./Capsule"/>
-          <node id="Scale" parent="/Root/Modules/FuncComps/Inp_TFEVar" node="./Capsule"/>
-          <node id="Coord_NU" parent="/Root/Modules/FuncComps/Inp_TFEVar" node="./Capsule"/>
-          <node id="Coord_LU" parent="/Root/Modules/FuncComps/Out_TFEVar" node="./Capsule"/>
-          <node id="MD_1_m1" parent="/Root/Modules/DataComps/DataSCVar">
-            <cont node="./Value" val="MI,D,2 1 -1"/>
-          </node>
-          <node id="MD_0_1" parent="/Root/Modules/DataComps/DataSCVar"/>
-          <node id="Mplnc1" parent="/Root/Modules/FuncComps/TFMplncVar"/>
-          <node id="881590896" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc1/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Capsule/Coord_LU/Int"/>
-          </node>
-          <node id="Mplnc2" parent="/Root/Modules/FuncComps/TFMplncVar"/>
-          <node id="967741156" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc1/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../Mplnc2/Capsule/Out"/>
-          </node>
-          <node id="Mplnc3" parent="/Root/Modules/FuncComps/TFMplncVar"/>
-          <node id="202279379" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc2/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../Mplnc3/Capsule/Out"/>
-          </node>
-          <node id="Inv1" parent="/Root/Modules/FuncComps/TFMplinvVar"/>
-          <node id="2137406657" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc1/Capsule/Inp1"/>
-            <cont node="./P1" ref="./../../Inv1/Capsule/Out"/>
-          </node>
-          <node id="1062404282" parent="Edge">
-            <cont node="./P2" ref="./../../Inv1/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/Scale/Int"/>
-          </node>
-          <node id="Vect_To_MtrD_1" parent="/Root/Modules/FuncComps/TFCpsMtrdVar"/>
-          <node id="Inv2" parent="/Root/Modules/FuncComps/TFMplinvVar"/>
-          <node id="128817573" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc2/Capsule/Inp1"/>
-            <cont node="./P1" ref="./../../Inv2/Capsule/Out"/>
-          </node>
-          <node id="1013948847" parent="Edge">
-            <cont node="./P2" ref="./../../Inv2/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Vect_To_MtrD_1/Capsule/Out"/>
-          </node>
-          <node id="Vect_I_to_F_1" parent="/Root/Modules/FuncComps/TFCastVar"/>
-          <node id="1388714056" parent="Edge">
-            <cont node="./P2" ref="./../../Vect_I_to_F_1/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/Parent_WH_LU/Int"/>
-            <cont node="./P1" ref="./../../Capsule/Parent_WH_NU/Int"/>
-          </node>
-          <node id="Vect_to_MtrD_2" parent="/Root/Modules/FuncComps/TFCpsMtrdVar"/>
-          <node id="117373648" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc3/Capsule/Inp1"/>
-            <cont node="./P1" ref="./../../Vect_to_MtrD_2/Capsule/Out"/>
-          </node>
-          <node id="1129421847" parent="Edge">
-            <cont node="./P2" ref="./../../Vect_to_MtrD_2/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/Parent_WH_LU/Int"/>
-          </node>
-          <node id="Sub1" parent="/Root/Modules/FuncComps/TFAddNVar"/>
-          <node id="Mplnc4" parent="/Root/Modules/FuncComps/TFMplncVar"/>
-          <node id="1748682276" parent="Edge">
-            <cont node="./P2" val=""/>
-            <cont node="./P2" ref="./../../Mplnc4/Capsule/Inp1"/>
-            <cont node="./P1" ref="./../../MD_1_m1/Capsule/Out"/>
-          </node>
-          <node id="1705536272" parent="Edge">
-            <cont node="./P2" ref="./../../Sub1/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/Coord_NU/Int"/>
-          </node>
-          <node id="Mplnc5" parent="/Root/Modules/FuncComps/TFMplncVar"/>
-          <node id="754732401" parent="Edge">
-            <cont node="./P2" ref="./../../Sub1/Capsule/InpN"/>
-            <cont node="./P1" ref="./../../Mplnc5/Capsule/Out"/>
-          </node>
-          <node id="1460717551" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc5/Capsule/Inp1"/>
-            <cont node="./P1" ref="./../../MD_0_1/Capsule/Out"/>
-          </node>
-          <node id="1205049030" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc5/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../Capsule/Parent_WH_NU/Int"/>
-          </node>
-          <node id="VI_to_VF_1" parent="/Root/Modules/FuncComps/TFCastVar"/>
-          <node id="394415947" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc4/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../Sub1/Capsule/Out"/>
-            <cont node="./P1" ref="./../../VI_to_VF_1/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Mplnc3/Capsule/Inp2"/>
-          </node>
-          <node id="792361244" parent="Edge">
-            <cont node="./P2" ref="./../../VI_to_VF_1/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Sub1/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Mplnc4/Capsule/Inp2"/>
-          </node>
-          <change node="./(TFCastVar:)VI_to_VF_1" attr="id" val="Vect_I_to_F_2"/>
-          <node id="169686950" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc3/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../MD_1_m1/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Mplnc4/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Vect_to_MtrD_2/Capsule/Inp"/>
-            <cont node="./P2" ref="./../../Vect_I_to_F_2/Capsule/Inp"/>
-          </node>
-          <node id="Add_Par_N_delta" parent="/Root/Modules/FuncComps/TFAddVar"/>
-          <node id="2083695183" parent="Edge">
-            <cont node="./P2" ref="./../../Vect_To_MtrD_1/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Vect_I_to_F_1/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Add_Par_N_delta/Capsule/Inp"/>
-          </node>
-          <node id="1302815283" parent="Edge">
-            <cont node="./P2" ref="./../../Inv2/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Add_Par_N_delta/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Vect_To_MtrD_1/Capsule/Inp"/>
-          </node>
-          <node id="Delta" parent="/Root/Modules/DataComps/DataSCVar">
-            <cont node="./Value" val="MF,V,2 0.001 0.001"/>
-          </node>
-          <node id="1500525749" parent="Edge">
-            <cont node="./P2" ref="./../../Add_Par_N_delta/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Delta/Capsule/Out"/>
-          </node>
-        </node>
-      </node>
+    <node id="Modules" parent="AImports">
+	<import id="/IncapsComps/Incaps"/>
+	<import id="/DataComps/DataSCVar"/>
+	<import id="/FuncComps/TFCastVar"/>
+	<import id="/FuncComps/TFCpsMtrdVar"/>
+	<import id="/FuncComps/TFMplncVar"/>
+	<import id="/FuncComps/TFAddVar"/>
+	<import id="/FuncComps/TFAddNVar"/>
+	<import id="/DesComps/StateVarC"/>
+	<import id="/DesComps/StVarInp"/>
+	<import id="/DesComps/StVarOut"/>
+	<import id="/DesComps/Des"/>
+	<import id="/DesComps/DesTicker"/>
+	<import id="/VisComps/DrawingV"/>
+	<import id="/VisComps/Fixed"/>
+	<import id="/VisComps/Window"/>
+	<import id="/Simple_vis/Components/Pic"/>
+	<import id="/Simple_vis/Components/PicDe"/>
+	<import id="/Simple_vis/Components/Coord_NU_to_LU"/>
+	<import id="/Simple_vis/Components/Coord_Nu_to_Lu"/>
     </node>
-  </node>
-  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
-    <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
-    <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
-      <node id="Solid_vis" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(Incaps:)Des">
-        <node id="Child" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Extender:)Child" node="./Capsule"/>
-        <node id="Picture" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)Simple_vis/(Vert:)Components/(Des:)Pic">
-          <cont node="./631507917/P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
-          <rm node="./(Edge:)592434651"/>
-        </node>
-        <node id="1347304952" parent="Edge">
-          <cont node="./P2" ref="./../../Capsule/Child/Int"/>
-          <cont node="./P1" ref="./../../Picture/Capsule/Vis_Child"/>
-        </node>
-        <node id="Coords" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-          <cont node="./Data/Prepared/Value" val="MF,V,2 30 30"/>
-          <cont node="./Data/Confirmed/Value" val="MF,V,2 30 30"/>
-        </node>
-        <node id="1464334493" parent="Edge">
-          <cont node="./P2" ref="./../../Coords/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Picture/Capsule/Inp_coords_XY"/>
-        </node>
-        <node id="Size" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-          <cont node="./Data/Prepared/Value" val="MF,V,2 50 50"/>
-          <cont node="./Data/Confirmed/Value" val="MF,V,2 50 50"/>
-        </node>
-        <node id="640970826" parent="Edge">
-          <cont node="./P2" ref="./../../Size/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Picture/Capsule/Inp_Size_WH"/>
-        </node>
-        <node id="Scale" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-          <cont node="./Data/Prepared/Value" val="MF,V,2 1 1"/>
-          <cont node="./Data/Confirmed/Value" val="MF,V,2 1 1"/>
-          <cont node="./Data/Prepared/Value" val="MF,D,2 1 1"/>
-          <cont node="./Data/Confirmed/Value" val="MF,D,2 1 1"/>
-        </node>
-        <node id="403207991" parent="Edge">
-          <cont node="./P2" ref="./../../Scale/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Picture/Capsule/Inp_Scale_WH"/>
-        </node>
-        <node id="Parent_size" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-          <cont node="./Data/Prepared/Value" val="MF,V,2 800 600"/>
-          <cont node="./Data/Confirmed/Value" val="MF,V,2 800 600"/>
-        </node>
-        <node id="560765644" parent="Edge">
-          <cont node="./P2" ref="./../../Parent_size/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Picture/Capsule/Inp_Par_Size_WH"/>
-        </node>
-      </node>
-      <node id="Wdw" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Window"/>
-      <node id="Fixed" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Fixed"/>
-      <node id="Solid_vis_De" parent="./(Des:)Solid_vis">
-        <node id="Picture_De" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)Simple_vis/(Vert:)Components/(Pic:)PicDe">
-          <cont node="./631507917/P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
-          <rm node="./(Edge:)592434651"/>
-          <cont node="./PullingS/Held/Get_X/Index/Value" val="SI 0"/>
-          <cont node="./PullingS/Held/Get_Y/Index/Value" val="SI 1"/>
-          <cont node="./PullingS/Held/Get_W/Index/Value" val="SI 0"/>
-          <cont node="./PullingS/Held/Get_H/Index/Value" val="SI 1"/>
-        </node>
-        <cont node="./1464334493/P1" ref="./../../Picture_De/Capsule/Inp_coords_XY"/>
-        <cont node="./1347304952/P1" ref="./../../Picture/Capsule/Vis_Child"/>
-        <cont node="./1347304952/P1" ref="./../../Picture_De/Capsule/Vis_Child"/>
-        <cont node="./560765644/P1" ref="./../../Picture_De/Capsule/Inp_Par_Size_WH"/>
-        <cont node="./640970826/P1" ref="./../../Picture_De/Capsule/Inp_Size_WH"/>
-        <cont node="./403207991/P1" ref="./../../Picture_De/Capsule/Inp_Scale_WH"/>
-        <rm node="./(Pic:)Picture"/>
-        <node id="DrawingElem" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Extender:)DrawingElemExt" node="./Capsule"/>
-        <node id="889861583" parent="Edge">
-          <cont node="./P2" ref="./../../Capsule/DrawingElem/Int"/>
-          <cont node="./P1" ref="./../../Picture_De/Capsule/DrawingElem"/>
-        </node>
-        <node id="Add" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" node="./Coords"/>
-        <node id="Delta" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" node="./Coords">
-          <cont node="./(Prop:)Value" val="MF,V,2 1 1"/>
-          <cont node="./(Prop:)Value" val="MF,V,2 0 0"/>
-          <cont node="./(Prop:)Value" val="MF,V,2 1 1"/>
-          <cont node="./Value" val="MF,V,2 0 0"/>
-          <cont node="./Value" val="MF,V,2 1 1"/>
-          <cont node="./Value" val="MF,V,2 0 0"/>
-          <cont node="./Value" val="MF,V,2 1 1"/>
-          <cont node="./Value" val="MF,V,2 0 0"/>
-          <cont node="./Value" val="MF,V,2 1 1"/>
-          <cont node="./Value" val="MF,V,2 0 0"/>
-        </node>
-        <node id="574157369" parent="Edge" node="./Coords">
-          <cont node="./(Prop:)P2" ref="./../../Delta/Capsule/Out"/>
-          <cont node="./(Prop:)P1" ref="./../../Add/Capsule/Inp"/>
-        </node>
-        <node id="1822100664" parent="Edge" node="./Coords">
-          <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
-          <cont node="./(Prop:)P1" ref="./../../Add/Capsule/Out"/>
-        </node>
-        <node id="1171599008" parent="Edge" node="./Coords">
-          <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
-          <cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
-        </node>
-        <node id="1441167613" parent="Edge">
-          <cont node="./P2" ref="./../../Coords/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Coords/Capsule/Inp"/>
-        </node>
-        <node id="Velocity" parent="/Root/Modules/DesComps/StateVarC">
-          <node id="HookMotion" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-          <node id="Coord" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-          <node id="Pulling" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-          <cont node="./Data/Confirmed/Value" val="MF,V,2 0 0"/>
-          <cont node="./Data/Prepared/Value" val="MF,V,2 0 0"/>
-          <node id="Mass" parent="/Root/Modules/DataComps/DataSCVar">
-            <cont node="./Value" val="SF 1"/>
-          </node>
-          <node id="Self" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-          <node id="Add1" parent="/Root/Modules/FuncComps/TFAddVar"/>
-          <node id="MInv" parent="/Root/Modules/FuncComps/TFMplinvVar"/>
-          <node id="1561495627" parent="Edge">
-            <cont node="./P1" ref="./../../Mass/Capsule/Upd"/>
-            <cont node="./P2" val=""/>
-            <cont node="./P2" val=""/>
-            <cont node="./P1" ref="./../../Mass/Capsule/Out"/>
-            <cont node="./P2" ref="./../../MInv/Capsule/Inp"/>
-          </node>
-          <node id="Mpl1" parent="/Root/Modules/FuncComps/TFMplVar"/>
-          <node id="Hook_X" parent="/Root/Modules/FuncComps/TFAtVarI">
-            <cont node="./Index/Value" val="SS X"/>
-          </node>
-          <node id="Hook_Y" parent="/Root/Modules/FuncComps/TFAtVarI">
-            <cont node="./Index/Value" val="SS Y"/>
-          </node>
-          <node id="1140249195" parent="Edge">
-            <cont node="./P2" ref="./../../Hook_Y/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/HookMotion/Int/PinData"/>
-          </node>
-          <node id="186410303" parent="Edge">
-            <cont node="./P2" ref="./../../Hook_X/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/HookMotion/Int/PinData"/>
-          </node>
-          <node id="Hook_XY" parent="/Root/Modules/FuncComps/TFCpsVectVar"/>
-          <node id="2134940048" parent="Edge">
-            <cont node="./P2" ref="./../../Hook_XY/Capsule/Inp1"/>
-            <cont node="./P1" ref="./../../Hook_X/Capsule/Out"/>
-          </node>
-          <node id="408739059" parent="Edge">
-            <cont node="./P2" ref="./../../Hook_XY/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../Hook_Y/Capsule/Out"/>
-          </node>
-          <node id="Addn1" parent="/Root/Modules/FuncComps/TFAddNVar"/>
-          <node id="ElasticCoeff" parent="/Root/Modules/DataComps/DataSCVar">
-            <cont node="./Value" val="SF 10"/>
-          </node>
-          <node id="Mpl2" parent="/Root/Modules/FuncComps/TFMplVar"/>
-          <node id="374962618" parent="Edge">
-            <cont node="./P2" ref="./../../Addn1/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Hook_XY/Capsule/Out"/>
-          </node>
-          <node id="Switch" parent="/Root/Modules/FuncComps/TFSwitchVar"/>
-          <node id="246593182" parent="Edge">
-            <cont node="./P2" ref="./../../Data/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Add1/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Switch/Capsule/Inp1"/>
-            <cont node="./P2" ref="./../../Data/Capsule/Inp"/>
-          </node>
-          <node id="1674959668" parent="Edge">
-            <cont node="./P2" ref="./../../Switch/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Data/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Add1/Capsule/Inp"/>
-          </node>
-          <node id="2070507717" parent="Edge">
-            <cont node="./P2" ref="./../../Capsule/Pulling/Int/PinData"/>
-            <cont node="./P1" val=""/>
-            <cont node="./P1" ref="./../../Switch/Capsule/Sel"/>
-          </node>
-          <node id="28568629" parent="Edge">
-            <cont node="./P2" ref="./../../Capsule/Self/Int/PinData"/>
-            <cont node="./P1" ref="./../../Add1/Capsule/Inp"/>
-          </node>
-          <node id="Null" parent="/Root/Modules/DataComps/DataSCVar">
-            <cont node="./Value" val="MF,V,2 0 0"/>
-          </node>
-          <node id="58865148" parent="Edge">
-            <cont node="./P2" ref="./../../Null/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Switch/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../Switch/Capsule/Inp1"/>
-          </node>
-          <node id="Mplnc1" parent="/Root/Modules/FuncComps/TFMplncVar"/>
-          <node id="483524632" parent="Edge">
-            <cont node="./P2" ref="./../../MInv/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Mpl1/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Mplnc1/Capsule/Inp1"/>
-          </node>
-          <node id="448726636" parent="Edge">
-            <cont node="./P2" ref="./../../MInv/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Add1/Capsule/Inp"/>
-            <cont node="./P2" ref="./../../Mpl1/Capsule/Out"/>
-            <cont node="./P2" ref="./../../MInv/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Mpl1/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Switch/Capsule/Inp1"/>
-            <cont node="./P2" ref="./../../Mplnc1/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Switch/Capsule/Inp2"/>
-          </node>
-          <node id="Mplnc2" parent="/Root/Modules/FuncComps/TFMplncVar"/>
-          <node id="307762001" parent="Edge">
-            <cont node="./P2" ref="./../../Mpl2/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../ElasticCoeff/Capsule/Out"/>
-            <cont node="./P2" ref="./../../Mplnc2/Capsule/Inp1"/>
-          </node>
-          <node id="2014477366" parent="Edge">
-            <cont node="./P2" ref="./../../Mpl2/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Mpl1/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Mplnc1/Capsule/Inp2"/>
-            <cont node="./P2" ref="./../../Mplnc2/Capsule/Out"/>
-          </node>
-          <node id="I_to_F" parent="/Root/Modules/FuncComps/TFCastVar"/>
-          <node id="1952190356" parent="Edge">
-            <cont node="./P2" ref="./../../Addn1/Capsule/Out"/>
-            <cont node="./P1" ref="./../../Mpl2/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Mplnc2/Capsule/Inp2"/>
-            <cont node="./P2" ref="./../../I_to_F/Capsule/Out"/>
-          </node>
-          <node id="1599435805" parent="Edge">
-            <cont node="./P2" ref="./../../I_to_F/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Addn1/Capsule/Out"/>
-          </node>
-          <node id="Alloc_XY" parent="/Root/Modules/FuncComps/TFAtVarI">
-            <cont node="./Index/Value" val="SS X"/>
-          </node>
-          <change node="./(TFAtVarI:)Alloc_XY" attr="id" val="Coord_X"/>
-          <node id="Coord_XY" parent="/Root/Modules/FuncComps/TFCpsVectVar"/>
-          <node id="1179684538" parent="Edge">
-            <cont node="./P2" ref="./../../Coord_XY/Capsule/Inp1"/>
-            <cont node="./P1" ref="./../../Coord_X/Capsule/Out"/>
-          </node>
-          <node id="835430885" parent="Edge">
-            <cont node="./P2" ref="./../../Addn1/Capsule/InpN"/>
-            <cont node="./P1" ref="./../../Capsule/Coord/Int/PinData"/>
-            <cont node="./P1" ref="./../../Coord_XY/Capsule/Out"/>
-          </node>
-          <node id="Coord_Y" parent="/Root/Modules/FuncComps/TFAtVarI">
-            <cont node="./Index/Value" val="SS Y"/>
-          </node>
-          <node id="1614168486" parent="Edge">
-            <cont node="./P2" ref="./../../Coord_XY/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../Coord_Y/Capsule/Out"/>
-          </node>
-          <node id="1671331846" parent="Edge">
-            <cont node="./P2" ref="./../../Coord_X/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/Coord/Int/PinData"/>
-          </node>
-          <node id="567932204" parent="Edge">
-            <cont node="./P2" ref="./../../Coord_Y/Capsule/Inp"/>
-            <cont node="./P1" ref="./../../Capsule/Coord/Int/PinData"/>
-          </node>
-          <node id="Hook_Coord_NU_to_LU" parent="/Root/Modules/Simple_vis/Components/Coord_NU_to_LU"/>
-        </node>
-        <node id="Velocity" parent="/Root/Modules/DesComps/StVarInp" node="./Coords/Capsule"/>
-        <node id="345655862" parent="Edge">
-          <cont node="./P2" ref="./../../Coords/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Velocity/Capsule/Coord"/>
-          <cont node="./P2" ref="./../../Picture_De/Capsule/Allocation"/>
-        </node>
-        <node id="176110783" parent="Edge">
-          <cont node="./P2" ref="./../../Picture_De/Capsule/MotionEvent"/>
-          <cont node="./P1" ref="./../../Velocity/Capsule/HookMotion"/>
-        </node>
-        <node id="485145453" parent="Edge">
-          <cont node="./P2" ref="./../../Picture_De/Capsule/Pulling"/>
-          <cont node="./P1" ref="./../../Velocity/Capsule/Pulling"/>
-        </node>
-        <node id="662350889" parent="Edge">
-          <cont node="./P2" ref="./../../Velocity/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Velocity/Capsule/Self"/>
-        </node>
-        <node id="Velocity_L" parent="./Velocity">
-          <cont node="./374962618/P2" ref="./../../Hook_Coord_NU_to_LU/Coord_NU"/>
-          <cont node="./1952190356/P2" ref="./../../Hook_Coord_NU_to_LU/Coord_LU"/>
-          <node id="Parent_WH" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-          <change node="./Capsule/(StVarInp:)Parent_WH" attr="id" val="Parent_WH_LU"/>
-          <node id="Parent_WH_NU" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-          <node id="Scale" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
-          <rm node="./(TFMplVar:)Mpl1"/>
-          <rm node="./(TFMplVar:)Mpl2"/>
-          <cont node="./1599435805/P2" ref="./../../Mplnc2/Capsule/Inp2"/>
-          <cont node="./1952190356/P1" ref="./../../Addn1/Capsule/Inp"/>
-          <node id="Hook_Coord_Lu_to_Nu" parent="/Root/Modules/Simple_vis/Components/Coord_Nu_to_Lu">
-            <cont node="./169686950/P2" ref="./../../Vect_I_to_F_2/Capsule/Inp"/>
-            <cont node="./MD_0_1/Value" val="MI,D,2 0 1"/>
-          </node>
-          <node id="1925212644" parent="Edge">
-            <cont node="./P2" ref="./../../Hook_Coord_NU_to_LU/Scale_MD"/>
-            <cont node="./P1" ref="./../../Capsule/Scale/Int/PinData"/>
-            <cont node="./P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Scale"/>
-          </node>
-          <node id="217058161" parent="Edge">
-            <cont node="./P2" ref="./../../Hook_Coord_NU_to_LU/Parent_WH_LU"/>
-            <cont node="./P1" ref="./../../Capsule/Parent_WH_LU/Int/PinData"/>
-            <cont node="./P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Parent_WH_LU"/>
-          </node>
-          <node id="59749384" parent="Edge">
-            <cont node="./P2" ref="./../../Hook_Coord_NU_to_LU/Parent_WH_NU"/>
-            <cont node="./P1" ref="./../../Capsule/Parent_WH_NU/Int/PinData"/>
-            <cont node="./P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Parent_WH_NU"/>
-          </node>
-          <cont node="./1952190356/P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Coord_LU"/>
-          <cont node="./374962618/P2" ref="./../../Hook_Coord_NU_to_LU/Coord_NU"/>
-          <cont node="./374962618/P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Coord_NU"/>
-          <rm node="./(Coord_NU_to_LU:)Hook_Coord_NU_to_LU"/>
-          <node id="Test_pulling" parent="/Root/Modules/DataComps/DataSCVar">
-            <cont node="./Value" val="SB true"/>
-          </node>
-          <cont node="./2070507717/P2" ref="./../../Test_pulling/Capsule/Out"/>
-          <cont node="./835430885/P1" ref="./../../Capsule/Coord/Int/PinData"/>
-          <cont node="./2070507717/P2" val=""/>
-          <cont node="./2070507717/P2" ref="./../../Capsule/Pulling/Int/PinData"/>
-          <cont node="./Mass/Value" val="SF 10000"/>
-          <node id="Sub_F_KfV" parent="/Root/Modules/FuncComps/TFAddNVar"/>
-          <node id="1998397019" parent="Edge">
-            <cont node="./P2" ref="./../../Mplnc1/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../Sub_F_KfV/Capsule/Out"/>
-          </node>
-          <cont node="./2014477366/P1" ref="./../../Sub_F_KfV/Capsule/Inp"/>
-          <node id="Mpl_Kf_V" parent="/Root/Modules/FuncComps/TFMplncVar"/>
-          <node id="1333610761" parent="Edge">
-            <cont node="./P2" ref="./../../Sub_F_KfV/Capsule/InpN"/>
-            <cont node="./P1" ref="./../../Mpl_Kf_V/Capsule/Out"/>
-          </node>
-          <node id="234102352" parent="Edge">
-            <cont node="./P2" ref="./../../Mpl_Kf_V/Capsule/Inp2"/>
-            <cont node="./P1" ref="./../../Capsule/Self/Int/PinData"/>
-          </node>
-          <node id="Coef_Kf" parent="/Root/Modules/DataComps/DataSCVar">
-            <cont node="./Value" val="SF 100"/>
-            <cont node="./Value" val="SF 200"/>
-          </node>
-          <node id="1160044052" parent="Edge">
-            <cont node="./P2" ref="./../../Mpl_Kf_V/Capsule/Inp1"/>
-            <cont node="./P1" ref="./../../Coef_Kf/Capsule/Out"/>
-          </node>
-          <cont node="./Mass/Value" val="SF 5000"/>
-          <cont node="./Mass/Value" val="SF 1000"/>
-        </node>
-        <node id="1071624840" parent="Edge">
-          <cont node="./P2" ref="./../../Coords/Capsule/Velocity"/>
-          <cont node="./P1" ref="./../../Velocity/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Velocity_L/Capsule/Out"/>
-        </node>
-        <node id="335178709" parent="Edge">
-          <cont node="./P2" ref="./../../Picture_De/Capsule/MotionEvent"/>
-          <cont node="./P1" ref="./../../Velocity_L/Capsule/HookMotion"/>
-        </node>
-        <node id="1605285300" parent="Edge">
-          <cont node="./P2" ref="./../../Coords/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Velocity_L/Capsule/Coord"/>
-        </node>
-        <node id="590388874" parent="Edge">
-          <cont node="./P2" ref="./../../Picture_De/Capsule/Pulling"/>
-          <cont node="./P1" ref="./../../Velocity_L/Capsule/Pulling"/>
-        </node>
-        <node id="91851763" parent="Edge">
-          <cont node="./P2" ref="./../../Velocity_L/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Velocity_L/Capsule/Self"/>
-        </node>
-        <node id="2018768774" parent="Edge">
-          <cont node="./P2" ref="./../../Scale/Capsule/Out"/>
-          <cont node="./P1" ref="./../../Velocity_L/Capsule/Scale"/>
-        </node>
-        <node id="1565979179" parent="Edge">
-          <cont node="./P2" ref="./../../Velocity_L/Capsule/Parent_WH_LU"/>
-          <cont node="./P1" ref="./../../Parent_size/Capsule/Out"/>
-        </node>
-        <node id="1908046121" parent="Edge">
-          <cont node="./P2" ref="./../../Picture_De/Capsule/Parent_WH_NU"/>
-          <cont node="./P1" ref="./../../Velocity_L/Capsule/Parent_WH_NU"/>
-        </node>
-        <node id="1486457189" parent="Edge" node="./Coords">
-          <cont node="./P2" ref="./../../Add/Capsule/Inp"/>
-          <cont node="./P1" ref="./../../Capsule/Velocity/Int/PinData"/>
-        </node>
-      </node>
-      <node id="DrawingArea" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(WidgetV:)DrawingV"/>
-      <node id="1315267126" parent="Edge">
-        <cont node="./P2" ref="./../../Fixed/Parent"/>
-        <cont node="./P1" ref="./../../Solid_vis/Capsule/Child"/>
-        <cont node="./P2" val=""/>
-        <cont node="./P1" ref="./../../Solid_vis_De/Capsule/DrawingElem"/>
-        <cont node="./P2" ref="./../../DrawingArea/DrawingArea"/>
-      </node>
-      <node id="1107234204" parent="Edge">
-        <cont node="./P2" ref="./../../Wdw/Parent"/>
-        <cont node="./P1" ref="./../../Fixed/Child"/>
-        <cont node="./P1" ref="./../../DrawingArea/Child"/>
-      </node>
-      <rm node="./(Fixed:)Fixed"/>
+
+    <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+	<node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
+	<node id="DesRoot" parent="/Root/Modules/DesComps/Des">
+	    <node id="Solid_vis" parent="/(Elem:)Root/Modules/(Elem:)DesComps/(Incaps:)Des">
+		<node id="Child" parent="/(Elem:)Root/Modules/(Elem:)VisComps/ChildE" node="./Capsule"/>
+		<node id="Picture" parent="/(Elem:)Root/Modules/(Elem:)Simple_vis/(Vert:)Components/(Des:)Pic">
+		    <cont node="./631507917/P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
+		    <rm node="./(Edge:)592434651"/>
+		</node>
+		<node id="1347304952" parent="Edge">
+		    <cont node="./P2" ref="./../../Capsule/Child/Int"/>
+		    <cont node="./P1" ref="./../../Picture/Capsule/Vis_Child"/>
+		</node>
+		<node id="Coords" parent="/(Elem:)Root/Modules/(Elem:)DesComps/(State:)StateVarC">
+		    <cont node="./Data/Prepared/Value" val="MF,V,2 30 30"/>
+		    <cont node="./Data/Confirmed/Value" val="MF,V,2 30 30"/>
+		</node>
+		<node id="1464334493" parent="Edge">
+		    <cont node="./P2" ref="./../../Coords/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Picture/Capsule/Inp_coords_XY"/>
+		</node>
+		<node id="Size" parent="/(Elem:)Root/Modules/(Elem:)DesComps/(State:)StateVarC">
+		    <cont node="./Data/Prepared/Value" val="MF,V,2 50 50"/>
+		    <cont node="./Data/Confirmed/Value" val="MF,V,2 50 50"/>
+		</node>
+		<node id="640970826" parent="Edge">
+		    <cont node="./P2" ref="./../../Size/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Picture/Capsule/Inp_Size_WH"/>
+		</node>
+		<node id="Scale" parent="/(Elem:)Root/Modules/(Elem:)DesComps/(State:)StateVarC">
+		    <cont node="./Data/Prepared/Value" val="MF,V,2 1 1"/>
+		    <cont node="./Data/Confirmed/Value" val="MF,V,2 1 1"/>
+		    <cont node="./Data/Prepared/Value" val="MF,D,2 1 1"/>
+		    <cont node="./Data/Confirmed/Value" val="MF,D,2 1 1"/>
+		</node>
+		<node id="403207991" parent="Edge">
+		    <cont node="./P2" ref="./../../Scale/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Picture/Capsule/Inp_Scale_WH"/>
+		</node>
+		<node id="Parent_size" parent="/(Elem:)Root/Modules/(Elem:)DesComps/(State:)StateVarC">
+		    <cont node="./Data/Prepared/Value" val="MF,V,2 800 600"/>
+		    <cont node="./Data/Confirmed/Value" val="MF,V,2 800 600"/>
+		</node>
+		<node id="560765644" parent="Edge">
+		    <cont node="./P2" ref="./../../Parent_size/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Picture/Capsule/Inp_Par_Size_WH"/>
+		</node>
+	    </node>
+	    <node id="Wdw" parent="/(Elem:)Root/Modules/(Elem:)VisComps/(Syst:)Window"/>
+	    <node id="Fixed" parent="/(Elem:)Root/Modules/(Elem:)VisComps/(Syst:)Fixed"/>
+	    <node id="Solid_vis_De" parent="./(Des:)Solid_vis">
+		<node id="Picture_De" parent="/(Elem:)Root/Modules/(Elem:)Simple_vis/(Vert:)Components/(Pic:)PicDe">
+		    <cont node="./631507917/P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
+		    <rm node="./(Edge:)592434651"/>
+		    <cont node="./PullingS/Held/Get_X/Index/Value" val="SI 0"/>
+		    <cont node="./PullingS/Held/Get_Y/Index/Value" val="SI 1"/>
+		    <cont node="./PullingS/Held/Get_W/Index/Value" val="SI 0"/>
+		    <cont node="./PullingS/Held/Get_H/Index/Value" val="SI 1"/>
+		</node>
+		<cont node="./1464334493/P1" ref="./../../Picture_De/Capsule/Inp_coords_XY"/>
+		<cont node="./1347304952/P1" ref="./../../Picture/Capsule/Vis_Child"/>
+		<cont node="./1347304952/P1" ref="./../../Picture_De/Capsule/Vis_Child"/>
+		<cont node="./560765644/P1" ref="./../../Picture_De/Capsule/Inp_Par_Size_WH"/>
+		<cont node="./640970826/P1" ref="./../../Picture_De/Capsule/Inp_Size_WH"/>
+		<cont node="./403207991/P1" ref="./../../Picture_De/Capsule/Inp_Scale_WH"/>
+		<rm node="./(Pic:)Picture"/>
+		<node id="DrawingElem" parent="/(Elem:)Root/Modules/(Elem:)VisComps/(Extender:)DrawingElemExt" node="./Capsule"/>
+		<node id="889861583" parent="Edge">
+		    <cont node="./P2" ref="./../../Capsule/DrawingElem/Int"/>
+		    <cont node="./P1" ref="./../../Picture_De/Capsule/DrawingElem"/>
+		</node>
+		<node id="Add" parent="/(Elem:)Root/Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" node="./Coords"/>
+		<node id="Delta" parent="/(Elem:)Root/Modules/(Elem:)DataComps/(DataSC:)DataSCVar" node="./Coords">
+		    <cont node="./(Prop:)Value" val="MF,V,2 1 1"/>
+		    <cont node="./(Prop:)Value" val="MF,V,2 0 0"/>
+		    <cont node="./(Prop:)Value" val="MF,V,2 1 1"/>
+		    <cont node="./Value" val="MF,V,2 0 0"/>
+		    <cont node="./Value" val="MF,V,2 1 1"/>
+		    <cont node="./Value" val="MF,V,2 0 0"/>
+		    <cont node="./Value" val="MF,V,2 1 1"/>
+		    <cont node="./Value" val="MF,V,2 0 0"/>
+		    <cont node="./Value" val="MF,V,2 1 1"/>
+		    <cont node="./Value" val="MF,V,2 0 0"/>
+		</node>
+		<node id="574157369" parent="Edge" node="./Coords">
+		    <cont node="./(Prop:)P2" ref="./../../Delta/Capsule/Out"/>
+		    <cont node="./(Prop:)P1" ref="./../../Add/Capsule/Inp"/>
+		</node>
+		<node id="1822100664" parent="Edge" node="./Coords">
+		    <cont node="./(Prop:)P2" ref="./../../Data/Capsule/Inp"/>
+		    <cont node="./(Prop:)P1" ref="./../../Add/Capsule/Out"/>
+		</node>
+		<node id="1171599008" parent="Edge" node="./Coords">
+		    <cont node="./(Prop:)P2" ref="./../../Add/Capsule/Inp"/>
+		    <cont node="./(Prop:)P1" ref="./../../Capsule/Inp/Int/PinData"/>
+		</node>
+		<node id="1441167613" parent="Edge">
+		    <cont node="./P2" ref="./../../Coords/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Coords/Capsule/Inp"/>
+		</node>
+		<node id="Velocity" parent="/Root/Modules/DesComps/StateVarC">
+		    <node id="HookMotion" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
+		    <node id="Coord" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
+		    <node id="Pulling" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
+		    <cont node="./Data/Confirmed/Value" val="MF,V,2 0 0"/>
+		    <cont node="./Data/Prepared/Value" val="MF,V,2 0 0"/>
+		    <node id="Mass" parent="/Root/Modules/DataComps/DataSCVar">
+			<cont node="./Value" val="SF 1"/>
+		    </node>
+		    <node id="Self" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
+		    <node id="Add1" parent="/Root/Modules/FuncComps/TFAddVar"/>
+		    <node id="MInv" parent="/Root/Modules/FuncComps/TFMplinvVar"/>
+		    <node id="1561495627" parent="Edge">
+			<cont node="./P1" ref="./../../Mass/Capsule/Upd"/>
+			<cont node="./P2" val=""/>
+			<cont node="./P2" val=""/>
+			<cont node="./P1" ref="./../../Mass/Capsule/Out"/>
+			<cont node="./P2" ref="./../../MInv/Capsule/Inp"/>
+		    </node>
+		    <node id="Mpl1" parent="/Root/Modules/FuncComps/TFMplVar"/>
+		    <node id="Hook_X" parent="/Root/Modules/FuncComps/TFAtVarI">
+			<cont node="./Index/Value" val="SS X"/>
+		    </node>
+		    <node id="Hook_Y" parent="/Root/Modules/FuncComps/TFAtVarI">
+			<cont node="./Index/Value" val="SS Y"/>
+		    </node>
+		    <node id="1140249195" parent="Edge">
+			<cont node="./P2" ref="./../../Hook_Y/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Capsule/HookMotion/Int/PinData"/>
+		    </node>
+		    <node id="186410303" parent="Edge">
+			<cont node="./P2" ref="./../../Hook_X/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Capsule/HookMotion/Int/PinData"/>
+		    </node>
+		    <node id="Hook_XY" parent="/Root/Modules/FuncComps/TFCpsVectVar"/>
+		    <node id="2134940048" parent="Edge">
+			<cont node="./P2" ref="./../../Hook_XY/Capsule/Inp1"/>
+			<cont node="./P1" ref="./../../Hook_X/Capsule/Out"/>
+		    </node>
+		    <node id="408739059" parent="Edge">
+			<cont node="./P2" ref="./../../Hook_XY/Capsule/Inp2"/>
+			<cont node="./P1" ref="./../../Hook_Y/Capsule/Out"/>
+		    </node>
+		    <node id="Addn1" parent="/Root/Modules/FuncComps/TFAddNVar"/>
+		    <node id="ElasticCoeff" parent="/Root/Modules/DataComps/DataSCVar">
+			<cont node="./Value" val="SF 10"/>
+		    </node>
+		    <node id="Mpl2" parent="/Root/Modules/FuncComps/TFMplVar"/>
+		    <node id="374962618" parent="Edge">
+			<cont node="./P2" ref="./../../Addn1/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Hook_XY/Capsule/Out"/>
+		    </node>
+		    <node id="Switch" parent="/Root/Modules/FuncComps/TFSwitchVar"/>
+		    <node id="246593182" parent="Edge">
+			<cont node="./P2" ref="./../../Data/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Add1/Capsule/Out"/>
+			<cont node="./P2" ref="./../../Switch/Capsule/Inp1"/>
+			<cont node="./P2" ref="./../../Data/Capsule/Inp"/>
+		    </node>
+		    <node id="1674959668" parent="Edge">
+			<cont node="./P2" ref="./../../Switch/Capsule/Out"/>
+			<cont node="./P1" ref="./../../Data/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Add1/Capsule/Inp"/>
+		    </node>
+		    <node id="2070507717" parent="Edge">
+			<cont node="./P2" ref="./../../Capsule/Pulling/Int/PinData"/>
+			<cont node="./P1" val=""/>
+			<cont node="./P1" ref="./../../Switch/Capsule/Sel"/>
+		    </node>
+		    <node id="28568629" parent="Edge">
+			<cont node="./P2" ref="./../../Capsule/Self/Int/PinData"/>
+			<cont node="./P1" ref="./../../Add1/Capsule/Inp"/>
+		    </node>
+		    <node id="Null" parent="/Root/Modules/DataComps/DataSCVar">
+			<cont node="./Value" val="MF,V,2 0 0"/>
+		    </node>
+		    <node id="58865148" parent="Edge">
+			<cont node="./P2" ref="./../../Null/Capsule/Out"/>
+			<cont node="./P1" ref="./../../Switch/Capsule/Inp2"/>
+			<cont node="./P1" ref="./../../Switch/Capsule/Inp1"/>
+		    </node>
+		    <node id="Mplnc1" parent="/Root/Modules/FuncComps/TFMplncVar"/>
+		    <node id="483524632" parent="Edge">
+			<cont node="./P2" ref="./../../MInv/Capsule/Out"/>
+			<cont node="./P1" ref="./../../Mpl1/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Mplnc1/Capsule/Inp1"/>
+		    </node>
+		    <node id="448726636" parent="Edge">
+			<cont node="./P2" ref="./../../MInv/Capsule/Out"/>
+			<cont node="./P1" ref="./../../Add1/Capsule/Inp"/>
+			<cont node="./P2" ref="./../../Mpl1/Capsule/Out"/>
+			<cont node="./P2" ref="./../../MInv/Capsule/Out"/>
+			<cont node="./P2" ref="./../../Mpl1/Capsule/Out"/>
+			<cont node="./P1" ref="./../../Switch/Capsule/Inp1"/>
+			<cont node="./P2" ref="./../../Mplnc1/Capsule/Out"/>
+			<cont node="./P1" ref="./../../Switch/Capsule/Inp2"/>
+		    </node>
+		    <node id="Mplnc2" parent="/Root/Modules/FuncComps/TFMplncVar"/>
+		    <node id="307762001" parent="Edge">
+			<cont node="./P2" ref="./../../Mpl2/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../ElasticCoeff/Capsule/Out"/>
+			<cont node="./P2" ref="./../../Mplnc2/Capsule/Inp1"/>
+		    </node>
+		    <node id="2014477366" parent="Edge">
+			<cont node="./P2" ref="./../../Mpl2/Capsule/Out"/>
+			<cont node="./P1" ref="./../../Mpl1/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Mplnc1/Capsule/Inp2"/>
+			<cont node="./P2" ref="./../../Mplnc2/Capsule/Out"/>
+		    </node>
+		    <node id="I_to_F" parent="/Root/Modules/FuncComps/TFCastVar"/>
+		    <node id="1952190356" parent="Edge">
+			<cont node="./P2" ref="./../../Addn1/Capsule/Out"/>
+			<cont node="./P1" ref="./../../Mpl2/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Mplnc2/Capsule/Inp2"/>
+			<cont node="./P2" ref="./../../I_to_F/Capsule/Out"/>
+		    </node>
+		    <node id="1599435805" parent="Edge">
+			<cont node="./P2" ref="./../../I_to_F/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Addn1/Capsule/Out"/>
+		    </node>
+		    <node id="Alloc_XY" parent="/Root/Modules/FuncComps/TFAtVarI">
+			<cont node="./Index/Value" val="SS X"/>
+		    </node>
+		    <change node="./(TFAtVarI:)Alloc_XY" attr="id" val="Coord_X"/>
+		    <node id="Coord_XY" parent="/Root/Modules/FuncComps/TFCpsVectVar"/>
+		    <node id="1179684538" parent="Edge">
+			<cont node="./P2" ref="./../../Coord_XY/Capsule/Inp1"/>
+			<cont node="./P1" ref="./../../Coord_X/Capsule/Out"/>
+		    </node>
+		    <node id="835430885" parent="Edge">
+			<cont node="./P2" ref="./../../Addn1/Capsule/InpN"/>
+			<cont node="./P1" ref="./../../Capsule/Coord/Int/PinData"/>
+			<cont node="./P1" ref="./../../Coord_XY/Capsule/Out"/>
+		    </node>
+		    <node id="Coord_Y" parent="/Root/Modules/FuncComps/TFAtVarI">
+			<cont node="./Index/Value" val="SS Y"/>
+		    </node>
+		    <node id="1614168486" parent="Edge">
+			<cont node="./P2" ref="./../../Coord_XY/Capsule/Inp2"/>
+			<cont node="./P1" ref="./../../Coord_Y/Capsule/Out"/>
+		    </node>
+		    <node id="1671331846" parent="Edge">
+			<cont node="./P2" ref="./../../Coord_X/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Capsule/Coord/Int/PinData"/>
+		    </node>
+		    <node id="567932204" parent="Edge">
+			<cont node="./P2" ref="./../../Coord_Y/Capsule/Inp"/>
+			<cont node="./P1" ref="./../../Capsule/Coord/Int/PinData"/>
+		    </node>
+		    <node id="Hook_Coord_NU_to_LU" parent="/Root/Modules/Simple_vis/Components/Coord_NU_to_LU"/>
+		</node>
+		<node id="Velocity" parent="/Root/Modules/DesComps/StVarInp" node="./Coords/Capsule"/>
+		<node id="345655862" parent="Edge">
+		    <cont node="./P2" ref="./../../Coords/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Velocity/Capsule/Coord"/>
+		    <cont node="./P2" ref="./../../Picture_De/Capsule/Allocation"/>
+		</node>
+		<node id="176110783" parent="Edge">
+		    <cont node="./P2" ref="./../../Picture_De/Capsule/MotionEvent"/>
+		    <cont node="./P1" ref="./../../Velocity/Capsule/HookMotion"/>
+		</node>
+		<node id="485145453" parent="Edge">
+		    <cont node="./P2" ref="./../../Picture_De/Capsule/Pulling"/>
+		    <cont node="./P1" ref="./../../Velocity/Capsule/Pulling"/>
+		</node>
+		<node id="662350889" parent="Edge">
+		    <cont node="./P2" ref="./../../Velocity/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Velocity/Capsule/Self"/>
+		</node>
+		<node id="Velocity_L" parent="./Velocity">
+		    <cont node="./374962618/P2" ref="./../../Hook_Coord_NU_to_LU/Coord_NU"/>
+		    <cont node="./1952190356/P2" ref="./../../Hook_Coord_NU_to_LU/Coord_LU"/>
+		    <node id="Parent_WH" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
+		    <change node="./Capsule/(StVarInp:)Parent_WH" attr="id" val="Parent_WH_LU"/>
+		    <node id="Parent_WH_NU" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
+		    <node id="Scale" parent="/Root/Modules/DesComps/StVarInp" node="./Capsule"/>
+		    <rm node="./(TFMplVar:)Mpl1"/>
+		    <rm node="./(TFMplVar:)Mpl2"/>
+		    <cont node="./1599435805/P2" ref="./../../Mplnc2/Capsule/Inp2"/>
+		    <cont node="./1952190356/P1" ref="./../../Addn1/Capsule/Inp"/>
+		    <node id="Hook_Coord_Lu_to_Nu" parent="/Root/Modules/Simple_vis/Components/Coord_Nu_to_Lu">
+			<cont node="./169686950/P2" ref="./../../Vect_I_to_F_2/Capsule/Inp"/>
+			<cont node="./MD_0_1/Value" val="MI,D,2 0 1"/>
+		    </node>
+		    <node id="1925212644" parent="Edge">
+			<cont node="./P2" ref="./../../Hook_Coord_NU_to_LU/Scale_MD"/>
+			<cont node="./P1" ref="./../../Capsule/Scale/Int/PinData"/>
+			<cont node="./P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Scale"/>
+		    </node>
+		    <node id="217058161" parent="Edge">
+			<cont node="./P2" ref="./../../Hook_Coord_NU_to_LU/Parent_WH_LU"/>
+			<cont node="./P1" ref="./../../Capsule/Parent_WH_LU/Int/PinData"/>
+			<cont node="./P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Parent_WH_LU"/>
+		    </node>
+		    <node id="59749384" parent="Edge">
+			<cont node="./P2" ref="./../../Hook_Coord_NU_to_LU/Parent_WH_NU"/>
+			<cont node="./P1" ref="./../../Capsule/Parent_WH_NU/Int/PinData"/>
+			<cont node="./P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Parent_WH_NU"/>
+		    </node>
+		    <cont node="./1952190356/P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Coord_LU"/>
+		    <cont node="./374962618/P2" ref="./../../Hook_Coord_NU_to_LU/Coord_NU"/>
+		    <cont node="./374962618/P2" ref="./../../Hook_Coord_Lu_to_Nu/Capsule/Coord_NU"/>
+		    <rm node="./(Coord_NU_to_LU:)Hook_Coord_NU_to_LU"/>
+		    <node id="Test_pulling" parent="/Root/Modules/DataComps/DataSCVar">
+			<cont node="./Value" val="SB true"/>
+		    </node>
+		    <cont node="./2070507717/P2" ref="./../../Test_pulling/Capsule/Out"/>
+		    <cont node="./835430885/P1" ref="./../../Capsule/Coord/Int/PinData"/>
+		    <cont node="./2070507717/P2" val=""/>
+		    <cont node="./2070507717/P2" ref="./../../Capsule/Pulling/Int/PinData"/>
+		    <cont node="./Mass/Value" val="SF 10000"/>
+		    <node id="Sub_F_KfV" parent="/Root/Modules/FuncComps/TFAddNVar"/>
+		    <node id="1998397019" parent="Edge">
+			<cont node="./P2" ref="./../../Mplnc1/Capsule/Inp2"/>
+			<cont node="./P1" ref="./../../Sub_F_KfV/Capsule/Out"/>
+		    </node>
+		    <cont node="./2014477366/P1" ref="./../../Sub_F_KfV/Capsule/Inp"/>
+		    <node id="Mpl_Kf_V" parent="/Root/Modules/FuncComps/TFMplncVar"/>
+		    <node id="1333610761" parent="Edge">
+			<cont node="./P2" ref="./../../Sub_F_KfV/Capsule/InpN"/>
+			<cont node="./P1" ref="./../../Mpl_Kf_V/Capsule/Out"/>
+		    </node>
+		    <node id="234102352" parent="Edge">
+			<cont node="./P2" ref="./../../Mpl_Kf_V/Capsule/Inp2"/>
+			<cont node="./P1" ref="./../../Capsule/Self/Int/PinData"/>
+		    </node>
+		    <node id="Coef_Kf" parent="/Root/Modules/DataComps/DataSCVar">
+			<cont node="./Value" val="SF 100"/>
+			<cont node="./Value" val="SF 200"/>
+		    </node>
+		    <node id="1160044052" parent="Edge">
+			<cont node="./P2" ref="./../../Mpl_Kf_V/Capsule/Inp1"/>
+			<cont node="./P1" ref="./../../Coef_Kf/Capsule/Out"/>
+		    </node>
+		    <cont node="./Mass/Value" val="SF 5000"/>
+		    <cont node="./Mass/Value" val="SF 1000"/>
+		</node>
+		<node id="1071624840" parent="Edge">
+		    <cont node="./P2" ref="./../../Coords/Capsule/Velocity"/>
+		    <cont node="./P1" ref="./../../Velocity/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Velocity_L/Capsule/Out"/>
+		</node>
+		<node id="335178709" parent="Edge">
+		    <cont node="./P2" ref="./../../Picture_De/Capsule/MotionEvent"/>
+		    <cont node="./P1" ref="./../../Velocity_L/Capsule/HookMotion"/>
+		</node>
+		<node id="1605285300" parent="Edge">
+		    <cont node="./P2" ref="./../../Coords/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Velocity_L/Capsule/Coord"/>
+		</node>
+		<node id="590388874" parent="Edge">
+		    <cont node="./P2" ref="./../../Picture_De/Capsule/Pulling"/>
+		    <cont node="./P1" ref="./../../Velocity_L/Capsule/Pulling"/>
+		</node>
+		<node id="91851763" parent="Edge">
+		    <cont node="./P2" ref="./../../Velocity_L/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Velocity_L/Capsule/Self"/>
+		</node>
+		<node id="2018768774" parent="Edge">
+		    <cont node="./P2" ref="./../../Scale/Capsule/Out"/>
+		    <cont node="./P1" ref="./../../Velocity_L/Capsule/Scale"/>
+		</node>
+		<node id="1565979179" parent="Edge">
+		    <cont node="./P2" ref="./../../Velocity_L/Capsule/Parent_WH_LU"/>
+		    <cont node="./P1" ref="./../../Parent_size/Capsule/Out"/>
+		</node>
+		<node id="1908046121" parent="Edge">
+		    <cont node="./P2" ref="./../../Picture_De/Capsule/Parent_WH_NU"/>
+		    <cont node="./P1" ref="./../../Velocity_L/Capsule/Parent_WH_NU"/>
+		</node>
+		<node id="1486457189" parent="Edge" node="./Coords">
+		    <cont node="./P2" ref="./../../Add/Capsule/Inp"/>
+		    <cont node="./P1" ref="./../../Capsule/Velocity/Int/PinData"/>
+		</node>
+	    </node>
+	    <node id="DrawingArea" parent="/(Elem:)Root/Modules/(Elem:)VisComps/(WidgetV:)DrawingV"/>
+	    <node id="1315267126" parent="Edge">
+		<cont node="./P2" ref="./../../Fixed/Parent"/>
+		<cont node="./P1" ref="./../../Solid_vis/Capsule/Child"/>
+		<cont node="./P2" val=""/>
+		<cont node="./P1" ref="./../../Solid_vis_De/Capsule/DrawingElem"/>
+		<cont node="./P2" ref="./../../DrawingArea/DrawingArea"/>
+	    </node>
+	    <node id="1107234204" parent="Edge">
+		<cont node="./P2" ref="./../../Wdw/Parent"/>
+		<cont node="./P1" ref="./../../Fixed/Child"/>
+		<cont node="./P1" ref="./../../DrawingArea/Child"/>
+	    </node>
+	    <rm node="./(Fixed:)Fixed"/>
+	</node>
+	<node id="Ticker_edge" parent="Edge">
+	    <cont node="./P2" val="./../../DesRoot/Capsule/Sync"/>
+	    <cont node="./P1" val="./../../Ticker/Capsule/Out"/>
+	</node>
     </node>
-    <node id="Ticker_edge" parent="Edge">
-      <cont node="./P2" val="./../../DesRoot/Capsule/Sync"/>
-      <cont node="./P1" val="./../../Ticker/Capsule/Out"/>
-    </node>
-  </node>
 </node>

@@ -6,34 +6,40 @@
 <!DOCTYPE node SYSTEM "/usr/share/grayb/conf/objspec.dtd"> 
 
 <node id="testroot" parent="Elem">
-    <!-- Module containing components of system layer -->
-    <move id="file:/usr/share/grayb/modules/syst.xml#SysComps" />
-    <!-- Module containing components of incaps layer -->
-    <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" />
-    <!-- Module containing components of data -->
-    <move id="file:/usr/share/grayb/modules/data.xml#DataComps" />
-    <!-- Module containing components of func -->
-    <move id="file:/usr/share/grayb/modules/func.xml#FuncComps" />
 
-    <node id="test" parent="./IncapsComps/Incaps">
+    <node id="About" parent="Description">
+	<cont node="" val="This is simple example of using of function agents.
+	    Fixed type (integer) data and functions are combined to implement double increment."/>
+    </node>
 
-	<node node="./Capsule" id="Inp" parent="./../SysComps/ConnPointInp">
+    <node id="Modules" parent="AImports">
+	<import id="/SysComps/ConnPointInp"/>
+	<import id="/SysComps/ConnPointOut"/>
+	<import id="/IncapsComps/Incaps"/>
+	<import id="/DataComps/DataSInt"/>
+	<import id="/FuncComps/FuncIncInt"/>
+	<import id="/FuncComps/FuncIntRes"/>
+    </node>
+
+    <node id="test" parent="./Modules/IncapsComps/Incaps">
+
+	<node node="./Capsule" id="Inp" parent="./../Modules/SysComps/ConnPointInp">
 	</node>
 
-	<node node="./Capsule" id="Out" parent="./../SysComps/ConnPointOut">
+	<node node="./Capsule" id="Out" parent="./../Modules/SysComps/ConnPointOut">
 	</node>
 
-	<node id="DataS_Int_1" parent="./../DataComps/DataSInt">
+	<node id="DataS_Int_1" parent="./../Modules/DataComps/DataSInt">
 	    <cont node="./Value" val="34"/> 
 	</node>
 
-	<node id="Incr" parent="./../FuncComps/FuncIncInt"/>
+	<node id="Incr" parent="./../Modules/FuncComps/FuncIncInt"/>
 
-	<node id="Incr2" parent="./../FuncComps/FuncIncInt"/>
+	<node id="Incr2" parent="./../Modules/FuncComps/FuncIncInt"/>
 
-	<node id="Result" parent="./../FuncComps/FuncIntRes"/>
+	<node id="Result" parent="./../Modules/FuncComps/FuncIntRes"/>
 
-	<node id="ResData" parent="./../DataComps/DataSInt"/>
+	<node id="ResData" parent="./../Modules/DataComps/DataSInt"/>
 
 	<node id="E1" parent="Edge"> 
 	    <cont node="./P1" ref="./../../DataS_Int_1/Capsule/out"/> 

@@ -295,6 +295,324 @@ void NaviNatN::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context, G
 
 const ModulesTreeClrec NaviModules::iColRec;
 
+// Modules tree model
+
+const ModulesTreeClrec ModulesTreeMdl::iColRec;
+
+ModulesTreeMdl::ModulesTreeMdl(MEnv* aDesEnv): Glib::ObjectBase(typeid(ModulesTreeMdl)), Glib::Object(), Gtk::TreeModel(), iDesEnv(aDesEnv),
+    iStamp(55)
+{
+}
+
+ModulesTreeMdl::~ModulesTreeMdl()
+{
+}
+
+Glib::RefPtr<ModulesTreeMdl> ModulesTreeMdl::create(MEnv* aDesEnv)
+{
+    ModulesTreeMdl* nmdl = new ModulesTreeMdl(aDesEnv);
+    Gtk::TreeModel* mdl = reinterpret_cast<Gtk::TreeModel*> (nmdl);
+    GtkTreeModel* treemdl = mdl->gobj();
+    bool ist = GTK_IS_TREE_MODEL(treemdl);
+    return Glib::RefPtr<ModulesTreeMdl>(nmdl);
+}
+
+void ModulesTreeMdl::UpdateStamp()
+{
+    iStamp++;
+}
+
+Gtk::TreeModelFlags ModulesTreeMdl::get_flags_vfunc() const
+{
+    return Gtk::TreeModelFlags(0);
+}
+
+int ModulesTreeMdl::get_n_columns_vfunc() const
+{
+    return iColRec.size();
+}
+
+GType ModulesTreeMdl::get_column_type_vfunc(int index) const
+{
+    return iColRec.types()[index];
+}
+
+int ModulesTreeMdl::iter_n_root_children_vfunc() const
+{
+    vector<string> modules;
+    iDesEnv->ImpsMgr()->GetModulesNames(modules);
+    return modules.size();
+}
+
+bool ModulesTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
+{
+    bool res = false;
+    unsigned depth = path.size();
+    vector<int> indcv = path.get_indices();
+    int ind0 = indcv.at(0);
+    // Get modules root first
+    iterator iter_root;
+    res =  iter_nth_root_child_vfunc(ind0, iter_root);
+    ChromoNode node = create_node_from_iter(iter_root);
+    for (int dc = 1; dc < depth; dc++) {
+	int ind = indcv.at(dc);
+	if (ind >= node.Count(ENt_Node)) {
+	    return false;
+	}
+	node = node.At(ind, ENt_Node);
+    }
+    if (node.Handle() != NULL) {
+	set_iter(iter, node, iter_root);
+	res = true;
+    }
+    return res;
+}
+
+Gtk::TreeModel::Path ModulesTreeMdl::get_path_vfunc(const iterator& iter) const
+{
+    __ASSERT(false);
+    Path path;
+    ChromoNode node = create_node_from_iter(iter);
+    Rank rank;
+    node.GetRank(rank);
+    for (Rank::const_iterator it = rank.begin(); it != rank.end(); it++) {
+	path.push_back(*it);
+    }
+    return path;
+}
+
+bool ModulesTreeMdl::IsIterValid(const iterator& iter) const
+{
+    bool res = (iStamp == iter.get_stamp());
+    return res;
+}
+
+bool ModulesTreeMdl::iter_is_valid(const iterator& iter) const
+{
+  // Anything that modifies the model's structure should change the model's stamp, so that old iters are ignored.
+  return IsIterValid(iter) && Gtk::TreeModel::iter_is_valid(iter);
+}
+
+void ModulesTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column, Glib::ValueBase& value) const
+{
+    if (IsIterValid(iter)) {
+	if (column < iColRec.size()) {
+	    GType coltype = get_column_type_vfunc(column);
+	    if (column == ModulesTreeClrec::KCol_Name) {
+		Glib::Value<Glib::ustring> sval;
+		sval.init(coltype);
+		ChromoNode node = create_node_from_iter(iter);
+		string data = node.Name();
+		sval.set(data.c_str());
+		value.init(coltype);
+		value = sval;
+	    }
+	    else if (column == ModulesTreeClrec::KCol_Uri) {
+		Glib::Value<Glib::ustring> sval;
+		sval.init(coltype);
+		ChromoNode node = create_node_from_iter(iter);
+		GUri uri;
+		node.GetUri(uri);
+		string data = uri.GetUri(true);
+		sval.set(data);
+		value.init(coltype);
+		value = sval;
+	    }
+	}
+    }
+}
+
+Chromo* ModulesTreeMdl::create_modules_chromo(const string& aModName) const
+{
+    string modpath = iDesEnv->ImpsMgr()->GetModulePath(aModName);
+    Chromo* chromo = iDesEnv->Provider()->CreateChromo();
+    bool res = chromo->Set(modpath);
+    if (!res) {
+	delete chromo;
+	chromo = NULL;
+    }
+    return chromo; 
+}
+
+bool ModulesTreeMdl::iter_next_vfunc(const iterator& iter, iterator& iter_next) const
+{
+    bool res = false;
+    Chromo* chromo = get_chromo_from_iter(iter);
+    iter_next = iterator();
+    if (IsIterValid(iter)) {
+	if (!is_root_iter(iter)) {
+	    ChromoNode node = create_node_from_iter(iter);
+	    if (node.Parent() == node.End()) {
+		// Module root
+		int next_ind = get_next_module_ind(node.Name());
+		if (next_ind != -1) {
+		    res = iter_nth_root_child_vfunc(next_ind, iter_next);
+		}
+	    } else {
+		// Modules node
+		ChromoNode::TIter nit(node);
+		nit++;
+		if (nit != node.End()) {
+		    set_iter(iter_next, *nit, chromo);
+		    res = true;
+		}
+	    }
+	}
+    }
+    if (!res) {
+	res = false;
+    }
+    return res;
+}
+
+int ModulesTreeMdl::iter_n_children_vfunc(const iterator& iter) const
+{
+    int res = 0;
+    if (IsIterValid(iter)) {
+	ChromoNode node = create_node_from_iter(iter);
+	res = node.Count(ENt_Node);
+    }
+    return res;
+}
+
+bool ModulesTreeMdl::iter_children_vfunc(const iterator& parent, iterator& iter) const
+{
+    return iter_nth_child_vfunc(parent, 0, iter);
+}
+
+bool ModulesTreeMdl::iter_has_child_vfunc(const iterator& iter) const
+{
+    bool res = false;
+    if (IsIterValid(iter)) {
+	ChromoNode node = create_node_from_iter(iter);
+	res = (node.Count(ENt_Node) > 0);
+    }
+    return res;
+}
+
+ChromoNode ModulesTreeMdl::create_node_from_iter(const iterator& iter) const 
+{
+    void* handle = (void*) iter.gobj()->user_data;
+    ChromoMdl& model = ((Chromo*) iter.gobj()->user_data2)->GetModel();
+    return  ChromoNode(model, handle);
+}
+
+void ModulesTreeMdl::set_iter(iterator& iter, const ChromoNode& node, const Chromo* chromo) const
+{
+    iter.set_stamp(iStamp);
+    iter.gobj()->user_data = (void*) node.Handle();
+    iter.gobj()->user_data2 = (void*) chromo;
+}
+
+void ModulesTreeMdl::set_iter(iterator& iter, const ChromoNode& node, const iterator& chromo_src) const
+{
+    iter.set_stamp(iStamp);
+    iter.gobj()->user_data = (void*) node.Handle();
+    iter.gobj()->user_data2 = chromo_src.gobj()->user_data2;
+}
+
+Chromo* ModulesTreeMdl::get_chromo_from_iter(const iterator& iter) const
+{
+    return ((Chromo*) iter.gobj()->user_data2);
+}
+
+int ModulesTreeMdl::get_next_module_ind(const string& aModName) const
+{
+    int res = -1;
+    vector<string> modules;
+    iDesEnv->ImpsMgr()->GetModulesNames(modules);
+    bool found = false;
+    int ind = 0;
+    for (; ind < modules.size() && !found; ind++) {
+	found = (aModName == modules.at(ind));
+    }
+    if (found && ind < modules.size()) {
+	res = ind;
+    }
+    return res;
+}
+
+bool ModulesTreeMdl::is_root_iter(const iterator& iter) const
+{
+    return (iter.gobj()->user_data2 == NULL);
+}
+
+bool ModulesTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterator& iter) const
+{
+    bool res = false;
+    if (IsIterValid(parent)) {
+	ChromoNode node = create_node_from_iter(parent);
+	if (n < node.Count(ENt_Node)) {
+	    set_iter(iter, node.At(n, ENt_Node), parent);
+	    res = true;
+	}
+    }
+    return res;
+}
+
+bool ModulesTreeMdl::iter_nth_root_child_vfunc(int n, iterator& iter) const
+{
+    bool res = false;
+    vector<string> modules;
+    iDesEnv->ImpsMgr()->GetModulesNames(modules);
+    if (n < modules.size()) {
+	Chromo* chromo = create_modules_chromo(modules.at(n));
+	set_iter(iter, chromo->Root(), chromo);
+	res = true;
+    }
+    return res;
+}
+
+bool ModulesTreeMdl::iter_parent_vfunc(const iterator& child, iterator& iter) const
+{
+    bool res = false;
+    bool valid = IsIterValid(child);
+    if (valid) {
+	if (child.gobj()->user_data2 != NULL) {
+	    ChromoNode node = create_node_from_iter(child);
+	    if (node.Parent() != node.End()) {
+		set_iter(iter, *(node.Parent()), child);
+	    } else {
+		// Root comp
+		iter.set_stamp(iStamp);
+		iter.gobj()->user_data = (void*) NULL;
+		iter.gobj()->user_data2 = (void*) NULL;
+	    }
+	    res = true;
+	}
+    }
+    return res;
+}
+
+bool ModulesTreeMdl::row_draggable_vfunc(const TreeModel::Path& path) const
+{
+    return true;
+}
+
+bool ModulesTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const
+{
+    bool res = false;
+    // Set selection. This will evolve DnD process 
+    iterator iter((TreeModel*)this);
+    bool ires = get_iter_vfunc(path, iter);
+    string uris = (*iter).get_value(ColRec().uri);
+    selection_data.set(KDnDTarg_Import, uris);
+    res = true;
+    return res;
+}
+
+bool ModulesTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
+{
+    return true;
+}
+
+static GtkTargetEntry sNaviModulesDnDTarg[] =
+{
+    { (gchar*) KDnDTarg_Import, 0, 4 },
+};
+
+
+
 // Modules navigation widget
 NaviModules::NaviModules(MSEnv& aStEnv, MMdlObserver* aDesObs): iStEnv(aStEnv), iDesObs(aDesObs)
 {
@@ -309,41 +627,19 @@ NaviModules::~NaviModules()
 
 void NaviModules::SetDesEnv(MEnv* aDesEnv)
 {
+    assert(aDesEnv == NULL || aDesEnv != NULL && iDesEnv == NULL);
     if (aDesEnv != iDesEnv) {
 	unset_model();
 	remove_all_columns();
-	Glib::RefPtr<TreeModel> curmdl = get_model();
-	curmdl.reset();
 	iDesEnv = aDesEnv;
-	if (iDesEnv != NULL) {
-	    Glib::RefPtr<Gtk::ListStore> mdl = Gtk::ListStore::create(iColRec);
-	    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
-	    set_model(mdl);
-	    append_column( "one", iColRec.name);
-	    enable_model_drag_source();
-	    drag_source_set (Gtk::ArrayHandle_TargetEntry(KModListTargets, 1, Glib::OWNERSHIP_NONE), Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
-	    // Fill out the model
-	    // Fill out the model: Engine modules directory
-	    struct dirent **entlist;
-	    Glib::ustring modpath = iDesEnv->Provider()->ModulesPath();
-	    int n = scandir (modpath.c_str(), &entlist, FilterModulesDirEntries, alphasort);
-	    for (int cnt = 0; cnt < n; ++cnt) {
-		Gtk::TreeIter it = mdl->append();
-		Glib::ustring data = entlist[cnt]->d_name;
-		(*it).set_value(iColRec.name, data);
-		(*it).set_value(iColRec.path, modpath);
-	    }
-	    // Fill out the model: Studio modules directory
-	    MStSetting<Glib::ustring>& st_modules_path = iStEnv.Settings().GetSetting(MStSettings::ESts_ModulesPath, st_modules_path);
-	    const Glib::ustring& st_modules_path_s = st_modules_path.Get(st_modules_path_s);
-	    n = scandir (st_modules_path_s.c_str(), &entlist, FilterModulesDirEntries, alphasort);
-	    for (int cnt = 0; cnt < n; ++cnt) {
-		Gtk::TreeIter it = mdl->append();
-		Glib::ustring data = entlist[cnt]->d_name;
-		(*it).set_value(iColRec.name, data);
-		(*it).set_value(iColRec.path, st_modules_path_s);
-	    }
-	}
+    }
+    if (iDesEnv != NULL) {
+	Glib::RefPtr<ModulesTreeMdl> mdl = ModulesTreeMdl::create(iDesEnv);
+	set_model(mdl);
+	append_column( "one", mdl->ColRec().name);
+	enable_model_drag_source();
+	drag_source_set (Gtk::ArrayHandle_TargetEntry(sNaviModulesDnDTarg, 1, Glib::OWNERSHIP_NONE), 
+		Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
     }
 }
 
@@ -390,22 +686,12 @@ void NaviModules::set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, 
     if (ref) {
 	res =  gtk_tree_row_reference_get_path (ref);
     }
- 
+
 }
 
 void NaviModules::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context, Gtk::SelectionData& selection_data, guint info, guint time)
 {
-    // Combining full path to module
-    GtkTreeRowReference* grr = (GtkTreeRowReference*) context->get_data(Glib::Quark("gtk-tree-view-source-row"));
-    Gtk::TreeRowReference rr = Glib::wrap(grr);
-    Gtk::TreePath path = rr.get_path();
-    Glib::RefPtr<Gtk::TreeModel> mdl = get_model();
-    Gtk::TreeIter it = mdl->get_iter(path);
-    string modname = (*it).get_value(iColRec.name);
-    string modpath = (*it).get_value(iColRec.path);
-    //string modpath = iDesEnv->Provider()->ModulesPath();
-    string data = "file:" + modpath + modname + "#";
-    selection_data.set_text(data);
+    TreeView::on_drag_data_get(context, selection_data, info, time);
 }
 
 void NaviModules::on_des_env_changed()
@@ -518,8 +804,8 @@ bool HierTreeMdl::IsIterValid(const iterator& iter) const
 
 bool HierTreeMdl::iter_is_valid(const iterator& iter) const
 {
-  // Anything that modifies the model's structure should change the model's stamp, so that old iters are ignored.
-  return IsIterValid(iter) && Gtk::TreeModel::iter_is_valid(iter);
+    // Anything that modifies the model's structure should change the model's stamp, so that old iters are ignored.
+    return IsIterValid(iter) && Gtk::TreeModel::iter_is_valid(iter);
 }
 
 void HierTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column, Glib::ValueBase& value) const
@@ -595,7 +881,7 @@ int HierTreeMdl::iter_n_children_vfunc(const iterator& iter) const
 
 bool HierTreeMdl::iter_children_vfunc(const iterator& parent, iterator& iter) const
 {
-  return iter_nth_child_vfunc(parent, 0, iter);
+    return iter_nth_child_vfunc(parent, 0, iter);
 }
 
 bool HierTreeMdl::iter_has_child_vfunc(const iterator& iter) const
@@ -667,11 +953,11 @@ bool HierTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::Selectio
 
     //
     /*
-    int row_index = path[0];
-    Elem* node = iRoot->Comps().at(row_index);
-    string data = node->Name();
-    selection_data.set_text(data);
-    */
+       int row_index = path[0];
+       Elem* node = iRoot->Comps().at(row_index);
+       string data = node->Name();
+       selection_data.set_text(data);
+       */
     res = true;
     return res;
 }
@@ -789,21 +1075,21 @@ void NaviHier::SetDesEnv(MEnv* aDesEnv)
 	iRootAdded = false;
 	iDesEnv = aDesEnv;
 	/*
-	if (iDesEnv != NULL) {
-	    Glib::RefPtr<HierTreeMdl> mdl = HierTreeMdl::create(iDesEnv);
-	    HierTreeMdl* hmdl = mdl.operator ->();
-	    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
-	    bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
-	    set_model(mdl);
-	    append_column( "one", mdl->ColRec().name);
-	    enable_model_drag_source();
-	    drag_source_set (Gtk::ArrayHandle_TargetEntry(sNaviHierDnDTarg, 1, Glib::OWNERSHIP_NONE), 
-		    Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
-	    iDesObs->SignalCompDeleted().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_deleting));
-	    iDesObs->SignalCompAdded().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_adding));
-	    iDesObs->SignalCompChanged().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_changed));
-	}
-	*/
+	   if (iDesEnv != NULL) {
+	   Glib::RefPtr<HierTreeMdl> mdl = HierTreeMdl::create(iDesEnv);
+	   HierTreeMdl* hmdl = mdl.operator ->();
+	   GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
+	   bool isds = GTK_IS_TREE_DRAG_SOURCE(model);
+	   set_model(mdl);
+	   append_column( "one", mdl->ColRec().name);
+	   enable_model_drag_source();
+	   drag_source_set (Gtk::ArrayHandle_TargetEntry(sNaviHierDnDTarg, 1, Glib::OWNERSHIP_NONE), 
+	   Gdk::MODIFIER_MASK, Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
+	   iDesObs->SignalCompDeleted().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_deleting));
+	   iDesObs->SignalCompAdded().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_adding));
+	   iDesObs->SignalCompChanged().connect(sigc::mem_fun(*hmdl, &HierTreeMdl::on_comp_changed));
+	   }
+	   */
     }
 }
 
@@ -841,7 +1127,7 @@ void NaviHier::set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Gli
     if (ref) {
 	res =  gtk_tree_row_reference_get_path (ref);
     }
- 
+
 }
 
 void NaviHier::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context, Gtk::SelectionData& selection_data, guint info, guint time)
@@ -880,7 +1166,9 @@ Navi::Navi(MSEnv& aStEnv, MMdlObserver* aDesObs): iStEnv(aStEnv), iNatn(NULL), i
     // Modules
     iNatMod = new NaviModules(iStEnv, iDesObs);
     iNatMod->show();
-    append_page(*iNatMod, "Modules");
+    iNatModSw.add(*iNatMod);
+    iNatModSw.show();
+    append_page(iNatModSw, "Modules");
     // Current hier
     iNatHier = new NaviHier(iDesObs);
     iNatHier->show();

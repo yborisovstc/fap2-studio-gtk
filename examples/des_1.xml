@@ -1,36 +1,42 @@
 <?xml version="1.0"?>
-<node id="testroot" parent="Elem" tord="24">
-  <move id="file:/usr/share/grayb/modules/syst.xml#SysComps" ord="1"/>
-  <move id="file:/usr/share/grayb/modules/capsula.xml#IncapsComps" ord="2"/>
-  <move id="file:/usr/share/grayb/modules/data.xml#DataComps" ord="3"/>
-  <move id="file:/usr/share/grayb/modules/func.xml#FuncComps" ord="4"/>
-  <move id="file:/usr/share/grayb/modules/des.xml#DesComps" ord="5"/>
-  <node id="test" parent="./IncapsComps/Incaps" ord="6">
-    <node id="State1" parent="./../DesComps/StateInt" ord="7">
-      <node id="Logspec" parent="Elem" ord="8">
-        <node id="Creation" parent="Elem" ord="9"/>
+<node id="testroot" parent="Elem" tord="26">
+  <node id="Modules" parent="AImports">
+    <import id="/IncapsComps/Incaps"/>
+    <import id="/DesComps/DesTicker"/>
+    <import id="/DesComps/Des"/>
+    <import id="/DesComps/StateInt"/>
+    <import id="/DesComps/TrIncInt"/>
+    <import id="/DataComps/DataLogevent"/>
+  </node>
+  <node id="test" parent="./Modules/IncapsComps/Incaps">
+    <node id="State1" parent="./../Modules/DesComps/StateInt">
+      <node id="Logspec" parent="Elem">
+        <node id="Creation" parent="Elem"/>
       </node>
-      <node node="./Confirmed" id="Logspec" parent="Elem" ord="10">
-        <node id="Update" parent="./../../../../DataComps/DataLogevent"/>
+      <node id="Logspec" parent="Elem" node="./Confirmed">
+        <node id="Update" parent="./../../../../Modules/DataComps/DataLogevent"/>
       </node>
-      <node id="Trans" parent="./../../DesComps/TrIncInt" ord="11"/>
-      <node id="1219987303" parent="Edge" ord="12">
-        <cont node="./P1" ref="./../../Trans/Inp" ord="13"/>
-        <cont node="./P2" ref="./../../Capsule/Inp/Int/PinData" ord="14"/>
+      <node id="Trans" parent="./../../Modules/DesComps/TrIncInt"/>
+      <node id="1219987303" parent="Edge">
+        <cont node="./P1" ref="./../../Trans/Inp"/>
+        <cont node="./P2" ref="./../../Capsule/Inp/Int/PinData"/>
       </node>
-      <node id="188350694" parent="Edge" ord="15">
-        <cont node="./P1" ref="./../../Trans/Out" ord="16"/>
-        <cont node="./P2" ref="./../../Prepared/Capsule/Inp" ord="17"/>
+      <node id="188350694" parent="Edge">
+        <cont node="./P1" ref="./../../Trans/Out"/>
+        <cont node="./P2" ref="./../../Prepared/Capsule/Inp"/>
       </node>
     </node>
-    <node id="1712574952" parent="Edge" ord="18">
-      <cont node="./P1" ref="./../../State1/Capsule/Out" ord="19"/>
-      <cont node="./P2" ref="./../../State1/Capsule/Inp" ord="20"/>
+    <node id="1712574952" parent="Edge">
+      <cont node="./P1" ref="./../../State1/Capsule/Out"/>
+      <cont node="./P2" ref="./../../State1/Capsule/Inp"/>
     </node>
-    <node id="Ticker" parent=".//testroot/DesComps/DesTicker" ord="21"/>
-    <node id="ee" parent="Edge" ord="22">
-      <cont node="./(Prop:)P2" ref="./../../Ticker/Capsule/Out" ord="23"/>
-      <cont node="./(Prop:)P1" ref="./../../State1/Capsule/Sync" ord="24"/>
+    <node id="Ticker" parent="/testroot/Modules/DesComps/DesTicker"/>
+    <node id="ee" parent="Edge">
+      <cont node="./(Prop:)P2" ref="./../../Ticker/Capsule/Out"/>
+      <cont node="./(Prop:)P1" ref="./../../State1/Capsule/Sync"/>
     </node>
+  </node>
+  <node id="About" parent="Description">
+    <cont node="" val="This is example of simple DES using integer arithmetic"/>
   </node>
 </node>

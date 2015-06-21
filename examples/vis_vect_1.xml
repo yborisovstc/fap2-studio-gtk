@@ -1,64 +1,76 @@
 <?xml version="1.0"?>
 <node id="Root" parent="Elem">
-  <node id="Modules" parent="Elem">
-    <move id="file:/usr/share/grayb/modules/syst.xml#"/>
-    <move id="file:/usr/share/grayb/modules/capsula.xml#"/>
-    <move id="file:/usr/share/grayb/modules/data.xml#"/>
-    <move id="file:/usr/share/grayb/modules/func.xml#"/>
-    <move id="file:/usr/share/grayb/modules/des.xml#"/>
-    <move id="file:/usr/share/grayb/modules/vis.xml#"/>
+  <node id="Note" parent="Description">
+      <cont val="Test of visualization module: created single drawing widget in fixed layout, 
+	  then the widget gets moved from left top to right bottom. 
+	  Open Visialization tab and use DES ticker control on toolbar to run the model. "/>
+  </node>
+  <node id="Modules" parent="AImports">
+      <import id="/IncapsComps/Incaps"/>
+      <import id="/DataComps/DataSVar"/>
+      <import id="/FuncComps/TFAddVar"/>
+      <import id="/DesComps/Des"/>
+      <import id="/DesComps/DesTicker"/>
+      <import id="/DesComps/StateVarC"/>
+      <import id="/VisComps"/>
+      <import id="/VisComps/DrawingVc"/>
+      <import id="/VisComps/Window"/>
+      <import id="/VisComps/Fixed"/>
   </node>
   <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
     <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker"/>
-    <node id="Ticker_edge" parent="Edge"/>
     <node id="DesRoot" parent="/Root/Modules/DesComps/Des">
-      <node id="Drw" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Des:)DrawingVc"/>
-      <node id="XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-        <cont node="Data/Confirmed/Value" val="MI,V,2 30 50"/>
-        <cont node="Data/Prepared/Value" val="MI,V,2 30 50"/>
+      <node id="Drw" parent="/Root/Modules/(Elem:)VisComps/(Des:)DrawingVc"/>
+      <node id="XY" parent="/Root/Modules/(Elem:)DesComps/(State:)StateVarC">
+	  <cont node="./Data/Confirmed/Value" val="MI,V,2 30 50"/>
+	  <cont node="./Data/Prepared/Value" val="MI,V,2 30 50"/>
+	  <node parent="/Root/Modules/(Elem:)DataComps/(DataSC:)DataSCVar" id="Delta">
+	      <cont node="./Value" val="MI,V,2 20 5"/>
+	  </node>
+	  <node parent="/Root/Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" id="Add"/>
+	  <node parent="Edge" id="1390761783">
+	      <cont node="./P2" ref="./../../Delta/Capsule/Out"/>
+	      <cont node="./P1" ref="./../../Add/Capsule/Inp"/>
+	  </node>
+	  <node parent="Edge" id="514784026">
+	      <cont node="./P2" ref="./../../Add/Capsule/Out"/>
+	      <cont node="./P1" ref="./../../Data/Capsule/Inp"/>
+	  </node>
+	  <node parent="Edge" id="405290551">
+	      <cont node="./P2" ref="./../../Add/Capsule/Inp"/>
+	      <cont node="./P1" ref="./../../Capsule/Inp/Int/PinData"/>
+	  </node>
       </node>
-      <node id="WH" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DesComps/(State:)StateVarC">
-        <cont node="Data/Confirmed/Value" val="MI,V,2 80 80"/>
-        <cont node="Data/Prepared/Value" val="MI,V,2 80 80"/>
-        <cont node="Data/Confirmed/Value" val="MI,V,2 40 40"/>
-        <cont node="Data/Prepared/Value" val="MI,V,2 40 40"/>
+      <node id="WH" parent="/Root/Modules/(Elem:)DesComps/(State:)StateVarC">
+	  <cont node="./Data/Confirmed/Value" val="MI,V,2 40 40"/>
+	  <cont node="./Data/Prepared/Value" val="MI,V,2 40 40"/>
       </node>
-      <node id="469340352" parent="Edge"/>
-      <cont node="469340352/P2" ref="../../XY/Capsule/Out"/>
-      <cont node="469340352/P1" ref="../../Drw/Capsule/Inp_XY"/>
-      <node id="2137246159" parent="Edge"/>
-      <cont node="2137246159/P2" ref="../../WH/Capsule/Out"/>
-      <cont node="2137246159/P1" ref="../../Drw/Capsule/Inp_WH"/>
-      <node id="Top_window" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Window"/>
-      <node id="Fixed_layout" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)VisComps/(Syst:)Fixed"/>
-      <node id="1587655123" parent="Edge"/>
-      <cont node="1587655123/P2" ref="../../Fixed_layout/Child"/>
-      <cont node="1587655123/P1" ref="../../Top_window/Parent"/>
-      <node id="1312564857" parent="Edge"/>
-      <cont node="1312564857/P2" ref="../../Drw/Capsule/Child"/>
-      <cont node="1312564857/P1" ref="../../Fixed_layout/Parent"/>
-      <node node="(StateVarC:)XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)DataComps/(DataSC:)DataSCVar" id="Delta"/>
-      <cont node="XY/Delta/Value" val="MI,V,2 20 20"/>
-      <node node="(StateVarC:)XY" parent="/(Elem:)Root/(Elem:)Modules/(Elem:)FuncComps/(TFuncVar:)TFAddVar" id="Add"/>
-      <node node="(StateVarC:)XY" parent="Edge" id="1390761783"/>
-      <cont node="XY/1390761783/P2" ref="../../Delta/Capsule/Out"/>
-      <cont node="XY/1390761783/P1" ref="../../Add/Capsule/Inp"/>
-      <node node="(StateVarC:)XY" parent="Edge" id="514784026"/>
-      <cont node="XY/514784026/P2" ref="../../Add/Capsule/Out"/>
-      <cont node="XY/514784026/P1" ref="../../Data/Capsule/Inp"/>
-      <node node="(StateVarC:)XY" parent="Edge" id="405290551"/>
-      <cont node="XY/405290551/P2" ref="../../Add/Capsule/Inp"/>
-      <cont node="XY/405290551/P1" ref="../../Capsule/Inp/Int/PinData"/>
-      <node node="(StateVarC:)XY" parent="Edge" id="102233597"/>
-      <cont node="XY/102233597/P2" ref="../../Delta/Capsule/Inp"/>
-      <rm node="(StateVarC:)XY/(Edge:)102233597"/>
-      <node id="293360680" parent="Edge"/>
-      <cont node="293360680/P2" ref="../../XY/Capsule/Out"/>
-      <cont node="293360680/P1" ref="../../XY/Capsule/Inp"/>
-      <cont node="XY/Delta/Value" val="MI,V,2 20 10"/>
-      <cont node="XY/Delta/Value" val="MI,V,2 20 5"/>
+      <node id="469340352" parent="Edge">
+	  <cont node="./P2" ref="./../../XY/Capsule/Out"/>
+	  <cont node="./P1" ref="./../../Drw/Capsule/Inp_XY"/>
+      </node>
+      <node id="2137246159" parent="Edge">
+	  <cont node="./P2" ref="./../../WH/Capsule/Out"/>
+	  <cont node="./P1" ref="./../../Drw/Capsule/Inp_WH"/>
+      </node>
+      <node id="Top_window" parent="/Root/Modules/(Elem:)VisComps/(Syst:)Window"/>
+      <node id="Fixed_layout" parent="/Root/Modules/(Elem:)VisComps/(Syst:)Fixed"/>
+      <node id="1587655123" parent="Edge">
+	  <cont node="./P2" ref="./../../Fixed_layout/Child"/>
+	  <cont node="./P1" ref="./../../Top_window/Parent"/>
+      </node>
+      <node id="1312564857" parent="Edge">
+	  <cont node="./P2" ref="./../../Drw/Capsule/Child"/>
+	  <cont node="./P1" ref="./../../Fixed_layout/Parent"/>
+      </node>
+      <node id="293360680" parent="Edge">
+	  <cont node="./P2" ref="./../../XY/Capsule/Out"/>
+	  <cont node="./P1" ref="./../../XY/Capsule/Inp"/>
+      </node>
     </node>
-    <cont node="Ticker_edge/P2" val="../../DesRoot/Capsule/Sync"/>
-    <cont node="Ticker_edge/P1" val="../../Ticker/Capsule/Out"/>
+    <node id="Ticker_edge" parent="Edge">
+	<cont node="./P2" val="./../../DesRoot/Capsule/Sync"/>
+	<cont node="./P1" val="./../../Ticker/Capsule/Out"/>
+    </node>
   </node>
 </node>

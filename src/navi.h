@@ -213,10 +213,63 @@ class NaviHier: public Gtk::TreeView
 class ModulesTreeClrec: public Gtk::TreeModelColumnRecord
 {
     public:
-	Gtk::TreeModelColumn<Glib::ustring> name;
-	Gtk::TreeModelColumn<Glib::ustring> path;
+	enum ColumnIndex {
+	    KCol_Name = 0,
+	    KCol_Uri = 1,
+	};
     public:
-	ModulesTreeClrec() { add(name);add(path);};
+	Gtk::TreeModelColumn<Glib::ustring> name;
+	Gtk::TreeModelColumn<Glib::ustring> uri;
+    public:
+	ModulesTreeClrec() { add(name);add(uri);};
+};
+
+// Modules tree model
+class ModulesTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource
+{
+    public:
+	static Glib::RefPtr<ModulesTreeMdl> create(MEnv* aDesEnv);
+	ModulesTreeMdl(MEnv* aDesEnv);
+	virtual ~ModulesTreeMdl();
+	static const ModulesTreeClrec& ColRec() {return iColRec;};
+    protected:
+	// From Gtk::TreeModel
+	virtual Gtk::TreeModelFlags get_flags_vfunc() const;
+	virtual int get_n_columns_vfunc() const;
+	virtual GType get_column_type_vfunc(int index) const;
+	virtual int iter_n_root_children_vfunc() const;
+	virtual int iter_n_children_vfunc(const iterator& iter) const;
+	virtual bool iter_children_vfunc(const iterator& parent, iterator& iter) const;
+	virtual bool iter_has_child_vfunc(const iterator& iter) const;
+	virtual bool iter_nth_child_vfunc(const iterator& parent, int n, iterator& iter) const;
+	virtual bool iter_nth_root_child_vfunc(int n, iterator& iter) const;
+	virtual bool iter_parent_vfunc(const iterator& child, iterator& iter) const;
+	virtual Path get_path_vfunc(const iterator& iter) const;
+	virtual bool get_iter_vfunc(const Path& path, iterator& iter) const;
+	virtual bool iter_is_valid(const iterator& iter) const;
+	virtual void get_value_vfunc(const TreeModel::iterator& iter, int column, Glib::ValueBase& value) const;
+	bool iter_next_vfunc(const iterator& iter, iterator& iter_next) const;
+	// From Gtk::TreeDragSource
+	virtual bool row_draggable_vfunc(const TreeModel::Path& path) const;
+	virtual bool drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const;
+	virtual bool drag_data_delete_vfunc(const TreeModel::Path& path);
+    private:
+	bool IsIterValid(const iterator& iter) const;
+	void UpdateStamp();
+	Chromo* create_modules_chromo(const string& aModName) const;
+	ChromoNode create_node_from_iter(const iterator& iter) const;
+	Chromo* get_chromo_from_iter(const iterator& iter) const;
+	void set_iter(iterator& iter, const ChromoNode& node, const Chromo* chromo) const;
+	void set_iter(iterator& iter, const ChromoNode& node, const iterator& chromo_src) const;
+	int get_next_module_ind(const string& aModName) const;
+	bool is_root_iter(const iterator& iter) const;
+    private:
+	// Provider provider
+	MEnv* iDesEnv;
+	// Column record, contains info of column types
+	static const ModulesTreeClrec iColRec;
+	// Stamp, is used for securing iterator's associating to model
+	int iStamp;
 };
 
 // Modules navigation widget
@@ -265,6 +318,7 @@ class Navi: public Gtk::Notebook
 	ScrolledWindow iNatnSw;
 	// Navigation tree of modules
 	NaviModules* iNatMod;
+	ScrolledWindow iNatModSw;
 	// Navigation tree of current hier
 	NaviHier* iNatHier;
 	ScrolledWindow iNatHierSw;
