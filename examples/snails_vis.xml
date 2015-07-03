@@ -28,6 +28,7 @@
       <import id="/VisComps/Drawing"/>
       <import id="/VisComps/Window"/>
       <import id="/VisComps/Fixed"/>
+      <import id="/VisComps/ChildE"/>
   </node>
 
   <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
