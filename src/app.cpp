@@ -154,7 +154,7 @@ MMdlObserver::tSigLogAdded DesObserver::SignalLogAdded()
     return iSigLogAdded;
 }
 
-void DesObserver::OnCompDeleting(Elem& aComp)
+void DesObserver::OnCompDeleting(Elem& aComp, TBool aSoft)
 {
     iSigCompDeleted.emit(&aComp);
     SetModelChanged();
@@ -245,6 +245,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Reload")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
     iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Compact_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_compactas));
+    iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Undo_Compact")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_undo_compact));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Undo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_undo));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Redo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_redo));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Repair")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_repair));
@@ -447,6 +448,17 @@ void App::on_action_compactas()
     }
 }
 
+void App::on_action_undo_compact()
+{
+    Gtk::MessageDialog dialog("Revert compacting of chromo\nare you OK to proceed ?", false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_YES_NO);
+    dialog.set_transient_for(*iMainWnd);
+
+    int result = dialog.run();
+    if (result == Gtk::RESPONSE_YES) {
+	UndoCompact();
+    }
+}
+
 string App::GetDefaultLogFileName() const
 {
     const gchar* home = g_getenv("HOME");
@@ -555,5 +567,14 @@ void App::CompactAndSaveFile(const string& aFileName)
 {
     iEnv->Root()->CompactChromo();
     iEnv->Root()->Chromos().Save(aFileName);
+}
+
+void App::UndoCompact()
+{
+    string cursor = iHDetView->GetCursor();
+    iEnv->Root()->UndoCompactChromo();
+    on_action_save();
+    OpenFile(iSpecFileName, false);
+    iHDetView->SetCursor(cursor);
 }
 

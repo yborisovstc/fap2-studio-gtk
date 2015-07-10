@@ -33,6 +33,7 @@ class MainWnd : public Gtk::Window
 	void on_action_save();
 	void on_action_saveas();
 	void on_action_compactas();
+	void on_action_undo_compact();
     private:
 	// Generic vertical layout: menu, toolbar, client
 	Gtk::VBox iVboxMain;

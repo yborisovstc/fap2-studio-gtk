@@ -156,7 +156,7 @@ class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeD
 	virtual bool drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const;
 	virtual bool drag_data_delete_vfunc(const TreeModel::Path& path);
 	// From MCompsObserver
-	virtual void OnCompDeleting(Elem& aComp);
+	virtual void OnCompDeleting(Elem& aComp, TBool aSoft = true);
 	virtual void OnCompAdding(Elem& aComp);
 	virtual TBool OnCompChanged(Elem& aComp);
     private:

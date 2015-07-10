@@ -37,7 +37,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	virtual tSigSystemCreated SignalSystemCreated();
 	virtual MEnv* DesEnv();
 	// From MCompsObserver
-	virtual void OnCompDeleting(Elem& aComp);
+	virtual void OnCompDeleting(Elem& aComp, TBool aSoft = true);
 	virtual void OnCompAdding(Elem& aComp);
 	virtual TBool OnCompChanged(Elem& aComp);
 	virtual TBool OnCompRenamed(Elem& aComp, const string& aOldName);
@@ -80,6 +80,7 @@ class App
 	void on_action_save();
 	void on_action_saveas();
 	void on_action_compactas();
+	void on_action_undo_compact();
 	void on_action_recreate();
 	void on_action_undo();
 	void on_action_redo();
@@ -90,6 +91,7 @@ class App
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
 	void SaveFile(const string& aFileName, bool aUnorder = true);
 	void CompactAndSaveFile(const string& aFileName);
+	void UndoCompact();
 	string FormTitle(const string& aFilePath);
 	void UpdataUndoRedo();
 	bool IsSystemChanged() const;

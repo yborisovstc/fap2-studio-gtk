@@ -967,7 +967,7 @@ bool HierTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
     return true;
 }
 
-void HierTreeMdl::OnCompDeleting(Elem& aComp)
+void HierTreeMdl::OnCompDeleting(Elem& aComp, TBool aSoft)
 {
     //std::cout << "HierTreeMdl::OnCompDeleting: [" << aComp.Name() << "]" << std::endl;
     //UpdateStamp();

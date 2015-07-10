@@ -12,6 +12,7 @@ Glib::ustring sUiInfo =
 "      <menuitem action='Save_as'/>"
 "      <menuitem action='Reload'/>"
 "      <menuitem action='Compact_as'/>"
+"      <menuitem action='Undo_Compact'/>"
 "    </menu>"
 "  </menubar>"
 "  <toolbar  name='ToolBar'>"
@@ -39,6 +40,7 @@ MainWnd::MainWnd()
     irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS), sigc::mem_fun(*this, &MainWnd::on_action_saveas));
     irActionGroup->add(Gtk::Action::create("Reload", Gtk::Stock::REFRESH), sigc::mem_fun(*this, &MainWnd::on_action_open));
     irActionGroup->add(Gtk::Action::create("Compact_as", "Compact&Save"), sigc::mem_fun(*this, &MainWnd::on_action_compactas));
+    irActionGroup->add(Gtk::Action::create("Undo_Compact", "Undo Compact"), sigc::mem_fun(*this, &MainWnd::on_action_undo_compact));
     irActionGroup->add(Gtk::Action::create("Undo", Gtk::Stock::UNDO, "Undo"));
     irActionGroup->add(Gtk::Action::create("Redo", Gtk::Stock::REDO, "Redo"));
     irActionGroup->add(Gtk::Action::create("Repair", Gtk::Stock::CONVERT, "Repair"));
@@ -108,6 +110,10 @@ void MainWnd::on_action_saveas()
 }
 
 void MainWnd::on_action_compactas()
+{
+}
+
+void MainWnd::on_action_undo_compact()
 {
 }
 
