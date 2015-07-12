@@ -232,6 +232,7 @@ void IncapsDrp::Construct()
     assert(caps != NULL);
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
+	if (comp->IsRemoved()) continue;
 	assert(comp != NULL);
 	if (comp != caps) {
 	    MCrp* rp = iCrpProv.CreateRp(*comp, this);
@@ -245,8 +246,10 @@ void IncapsDrp::Construct()
 	}
     }
     // Adding CRPs from Capsule
+    // TODO Using Comps is not legal because it doesnt mask removed comps. To consider hide Comps and use uri based iterator here.
     for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
 	Elem* comp = *it;
+	if (comp->IsRemoved()) continue;
 	assert(comp != NULL);
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	Gtk::Widget& rpw = rp->Widget();
@@ -275,6 +278,7 @@ void IncapsDrp::PreLayoutRps()
     Elem* caps = iElem->GetNode("./Capsule");
     for (vector<Elem*>::const_iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
 	Elem* comp = *it;
+	if (comp->IsRemoved()) continue;
 	MCrp* crp = iCompRps.at(comp);
 	MEdgeCrp* ecrp = crp->GetObj(ecrp);
 	if (ecrp == NULL) {
@@ -365,6 +369,7 @@ Elem* IncapsDrp::GetCompOwning(Elem* aElem)
     Elem* caps = iElem->GetNode(KCapsUri);
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
 	Elem* comp = *it;
+	if (comp->IsRemoved()) continue;
 	if (aElem == comp || comp != caps && comp->IsComp(aElem)) {
 	    res = comp;
 	}
@@ -372,6 +377,7 @@ Elem* IncapsDrp::GetCompOwning(Elem* aElem)
     if (res == NULL) {
 	for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end() && res == NULL; it++) {
 	    Elem* comp = *it;
+	    if (comp->IsRemoved()) continue;
 	    if (aElem == comp || comp->IsComp(aElem)) {
 		res = comp;
 	    }

@@ -262,7 +262,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 
 		Gtk::Requisition p1coord = medgecrp->Cp1Coord();
 		Gtk::Requisition p2coord = medgecrp->Cp2Coord();
-		if (p1 != NULL) {
+		if (p1 != NULL && !p1->IsRemoved()) {
 		    __ASSERT(iCompRps.count(op1) > 0);
 		    MCrp* pcrp = iCompRps.at(op1);
 		    MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);
@@ -276,7 +276,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		    medgecrp->SetCp1Coord(p1coord);
 		}
 
-		if (p2 != NULL) {
+		if (p2 != NULL && !p2->IsRemoved()) {
 		    __ASSERT(iCompRps.count(op2) > 0);
 		    MCrp* pcrp = iCompRps.at(op2);
 		    MCrpConnectable* pcrpcbl = pcrp->GetObj(pcrpcbl);

@@ -117,6 +117,7 @@ void ElemDetRp::Construct()
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	Elem* comp = *it;
 	assert(comp != NULL);
+	if (comp->IsRemoved()) continue;
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	if (rp == NULL) {
 	    rp = iCrpProv.CreateRp(*comp, this);
@@ -197,6 +198,7 @@ void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
     // Allocate components
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+	if ((*it)->IsRemoved()) continue;
 	MCrp* crp = iCompRps.at(*it);
 	Gtk::Widget* comp = &(crp->Widget());
 	Gtk::Requisition req = comp->size_request();

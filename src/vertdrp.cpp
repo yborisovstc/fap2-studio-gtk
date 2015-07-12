@@ -96,6 +96,7 @@ Elem* VertDrpw_v1::GetCompOwning(Elem* aElem)
     Elem* res = NULL;
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
 	Elem* comp = *it;
+	if (comp->IsRemoved()) continue;
 	if (aElem == comp || comp->IsComp(aElem)) {
 	    res = comp;
 	}
@@ -155,7 +156,9 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
     int comps_w_max = 0;
     for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	MCrp* crp = iCompRps.at(*it);
+	Elem* comp = *it;
+	if (comp->IsRemoved()) continue;
+	MCrp* crp = iCompRps.at(comp);
 	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
 	if (medgecrp == NULL) {
 	    Gtk::Widget* comp = &(crp->Widget());
