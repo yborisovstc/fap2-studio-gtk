@@ -80,20 +80,24 @@ class App
 	void on_action_save();
 	void on_action_saveas();
 	void on_action_compactas();
-	void on_action_undo_compact();
+	void on_action_optimize();
 	void on_action_recreate();
 	void on_action_undo();
 	void on_action_redo();
 	void on_action_repair();
+	void on_action_disable_opt();
 	void on_system_changed();
 	void on_setting_changed_pheno_enable();
+	void on_setting_changed_disable_opt();
 	void on_comp_selected(Elem* aComp);
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
 	void SaveFile(const string& aFileName, bool aUnorder = true);
 	void CompactAndSaveFile(const string& aFileName);
-	void UndoCompact();
+	// Optimizes models chromo
+	void Optimize();
 	string FormTitle(const string& aFilePath);
 	void UpdataUndoRedo();
+	void InitialUpdate();
 	bool IsSystemChanged() const;
 	bool CheckCurrentModelSaving();
     private:

@@ -233,8 +233,12 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     // Enable mutation even if broken critical deps are detected
     MStSetting<bool>& ena_mut_critdeps = iStEnv->Settings().GetSetting(MStSettings::ESts_EnableMutWithCritDep, ena_mut_critdeps);
     ena_mut_critdeps.Set(false);
+    // Settings: enable process optimization
+    MStSetting<bool>& disbl_opt = iStEnv->Settings().GetSetting(MStSettings::ESts_DisableOpt, disbl_opt);
+    disbl_opt.SigChanged().connect(sigc::mem_fun(*this, &App::on_setting_changed_disable_opt));
+    disbl_opt.Set(false);
     // Create main window
-    iMainWnd = new MainWnd();
+    iMainWnd = new MainWnd(iStEnv);
     iMainWnd->maximize();
     iMainWnd->SetLogView(*iLogView);
     //iMainWnd->SetEnvLog(iLogFileName);
@@ -245,10 +249,12 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Reload")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
     iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Compact_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_compactas));
-    iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Undo_Compact")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_undo_compact));
+    iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Optimize")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_optimize));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Undo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_undo));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Redo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_redo));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Repair")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_repair));
+    iMainWnd->UIManager()->get_action("ui/ToolBar/Disable_opt")->signal_activate().connect(sigc::mem_fun(*this, 
+		&App::on_action_disable_opt));
     Gtk::ToolItem* repair_ti = dynamic_cast<Gtk::ToolItem*>(iMainWnd->UIManager()->get_widget("ui/ToolBar/Repair"));
     repair_ti->set_tooltip_text(KToolTip_Repair);
     // Create studio DES environment
@@ -272,6 +278,8 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iLogView->SignalLogRecActivated().connect(sigc::mem_fun(iNaviPane->ChromoTreeView(), &ChromoTree::on_logrec_activated));
     // Parse resource file
     gtk_rc_parse(KRcFileName);
+    // Update menu and toolbar
+    InitialUpdate();
 }
 
 App::~App() {
@@ -286,6 +294,10 @@ App::~App() {
 }
 
 void App::on_setting_changed_pheno_enable()
+{
+}
+
+void App::on_setting_changed_disable_opt()
 {
 }
 
@@ -313,6 +325,15 @@ void App::UpdataUndoRedo()
     Gtk::ToolItem* redo = dynamic_cast<Gtk::ToolItem*>(iMainWnd->UIManager()->get_widget("ui/ToolBar/Redo"));
     undo->set_sensitive(iChromoLim < (iMaxOrder - iInitMaxOrder));
     redo->set_sensitive(iChromoLim > 0);
+}
+
+void App::InitialUpdate()
+{
+    // File/Compact
+    // Isn't supported at the moment, dim
+    Gtk::MenuItem* compact = dynamic_cast<Gtk::MenuItem*>(iMainWnd->UIManager()->
+	    get_widget("ui/MenuBar/MenuFile/Compact_as"));
+    compact->set_sensitive(false);
 }
 
 void App::on_action_undo()
@@ -448,15 +469,18 @@ void App::on_action_compactas()
     }
 }
 
-void App::on_action_undo_compact()
+void App::on_action_optimize()
 {
-    Gtk::MessageDialog dialog("Revert compacting of chromo\nare you OK to proceed ?", false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_YES_NO);
-    dialog.set_transient_for(*iMainWnd);
+    Optimize();
+}
 
-    int result = dialog.run();
-    if (result == Gtk::RESPONSE_YES) {
-	UndoCompact();
-    }
+void App::on_action_disable_opt()
+{
+    Glib::RefPtr<Gtk::Action> action = iMainWnd->ActionGroup()->get_action("Disable_opt");
+    Gtk::ToggleAction* taction = dynamic_cast<Gtk::ToggleAction*>(action.operator->());
+    MStSetting<bool>& disable_opt = iStEnv->Settings().GetSetting(MStSettings::ESts_DisableOpt, disable_opt);
+    bool active = taction->get_active();
+    disable_opt.Set(active);
 }
 
 string App::GetDefaultLogFileName() const
@@ -525,6 +549,10 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv->ChMgr()->SetEnablePhenoModif(ena_pheno_val);
     // Enable by default support of chromo invariance with respect to muts position
     iEnv->ChMgr()->SetEnableReposMuts(true);
+    // Disable processing of optimization
+    MStSetting<bool>& disable_opt_s = iStEnv->Settings().GetSetting(MStSettings::ESts_DisableOpt, disable_opt_s);
+    bool disable_opt = disable_opt_s.Get(disable_opt);
+    iEnv->ChMgr()->SetEnableOptimization(!disable_opt);
     iRepair = false;
     iDesObserver->SetDes(iEnv);
     try {
@@ -569,10 +597,11 @@ void App::CompactAndSaveFile(const string& aFileName)
     iEnv->Root()->Chromos().Save(aFileName);
 }
 
-void App::UndoCompact()
+// TODO [YB] To implement automatic optimization
+void App::Optimize()
 {
     string cursor = iHDetView->GetCursor();
-    iEnv->Root()->UndoCompactChromo();
+    iEnv->Root()->CompactChromo();
     on_action_save();
     OpenFile(iSpecFileName, false);
     iHDetView->SetCursor(cursor);

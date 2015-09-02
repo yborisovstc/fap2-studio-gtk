@@ -33,6 +33,7 @@ void* StSettings::DoGetSetting(TStSett aSettId)
 	case ESts_ModulesPath: return  &mStModulesPath; 
 	case ESts_ChromoLim: return  &mChromoLim;
 	case ESts_EnableMutWithCritDep: return  &mEnableMutWithCritDep;
+	case ESts_DisableOpt: return  &mDisableOpt;
 	default: return NULL;
     }
 }

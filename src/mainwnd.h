@@ -11,6 +11,7 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/notebook.h>
 #include "logview.h"
+#include "msenv.h"
 
 using namespace std;
 using namespace Gtk;
@@ -18,23 +19,18 @@ using namespace Gtk;
 class MainWnd : public Gtk::Window
 {
     public:
-	MainWnd();
+	MainWnd(MSEnv* aStEnv);
 	virtual ~MainWnd();
 	Glib::RefPtr<Gtk::UIManager> UIManager() const;
+	Glib::RefPtr<Gtk::ActionGroup> ActionGroup() const;
 	Container& VisWindow();
 	Gtk::ScrolledWindow& ClientWnd();
 	void SetNaviPane(Gtk::Widget& aWidget);
 	void SetLogView(Gtk::Widget& aWidget);
 	void SetEnvLog(const string& aLogFileName);
-    protected:
-	// Signal handlers:
-	void on_action_new();
-	void on_action_open();
-	void on_action_save();
-	void on_action_saveas();
-	void on_action_compactas();
-	void on_action_undo_compact();
     private:
+	// Studio environment
+	MSEnv* iStEnv;
 	// Generic vertical layout: menu, toolbar, client
 	Gtk::VBox iVboxMain;
 	// Base vertical layour: iHPanG top and logview bottom

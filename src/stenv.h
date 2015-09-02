@@ -41,6 +41,8 @@ class StSettings: public MStSettings
 	 StSetting<Glib::ustring> mPinnedMutNode;
 	 StSetting<int> mChromoLim;
 	 StSetting<Glib::ustring> mStModulesPath;
+	 // Disable processing of optimization data
+	 StSetting<bool> mDisableOpt;
 };
 
 class StEnv: public MSEnv

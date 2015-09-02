@@ -23,6 +23,7 @@ class MStSettings
 	    ESts_EnableMutWithCritDep,
 	    ESts_PinnedMutNode,
 	    ESts_ModulesPath,
+	    ESts_DisableOpt, // Disable processing of optimization data
 	    ESts_ChromoLim // Order of the final mut in chromo to be loaded
 	};
     public:

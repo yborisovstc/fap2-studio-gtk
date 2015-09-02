@@ -37,6 +37,12 @@ Glib::ustring sUiPinMutBtn =
 
 // Note: To change tooltip bg/fg color just edit gtk color scheme: /usr/share/themes/Ambiance/gtk-2.0/gtkrc
 
+const string KToolTip_Insert = "Insert external chromo";
+const string KToolTip_GoUp = "Go to owner";
+const string KToolTip_GoBack = "Navigate history back";
+const string KToolTip_GoForward = "Navigate history forward";
+const string KToolTip_GoParent = "Navigate to parent";
+const string KToolTip_EnablePhenoModif = "Enable phenotypic modifications";
 const string KToolTip_PinMutNode = "Pin node for mutation";
 const string KToolTip_PinMutNodeA = "Pinned node for mutation: ";
 const string KToolTip_PinMutNode_Deatt = "Pin node for mutation - Disabled because the current node is deattached";
@@ -47,19 +53,23 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
 {
     // Addig toolbar
     irActionGroup = Gtk::ActionGroup::create("ElemDrpActGroup");
-    irActionGroup->add(Gtk::Action::create("Insert", Gtk::Stock::ADD, "Insert"), sigc::mem_fun(*this, &HierDetailView::on_action_insert));
-    irActionGroup->add(Gtk::Action::create("GoUp", Gtk::Stock::GOTO_TOP, "Go Up"), sigc::mem_fun(*this, &HierDetailView::on_action_up));
-    irActionGroup->add(Gtk::Action::create("Back", Stock::GO_BACK, "Back"), sigc::mem_fun(*this, &HierDetailView::on_action_goback));
-    irActionGroup->add(Gtk::Action::create("Forward", Stock::GO_FORWARD, "Forward"), sigc::mem_fun(*this, &HierDetailView::on_action_goforward));
-    irActionGroup->add(Gtk::Action::create("GoToParent", Stock::GO_FORWARD, "Parent", "Parent"), 
+    irActionGroup->add(Gtk::Action::create("Insert", Gtk::Stock::ADD, "Insert", KToolTip_Insert),
+	    sigc::mem_fun(*this, &HierDetailView::on_action_insert));
+    irActionGroup->add(Gtk::Action::create("GoUp", Gtk::Stock::GOTO_TOP, "Go Up", KToolTip_GoUp),
+	    sigc::mem_fun(*this, &HierDetailView::on_action_up));
+    irActionGroup->add(Gtk::Action::create("Back", Stock::GO_BACK, "Back", KToolTip_GoBack),
+	    sigc::mem_fun(*this, &HierDetailView::on_action_goback));
+    irActionGroup->add(Gtk::Action::create("Forward", Stock::GO_FORWARD, "Forward", KToolTip_GoForward),
+	    sigc::mem_fun(*this, &HierDetailView::on_action_goforward));
+    irActionGroup->add(Gtk::Action::create("GoToParent", Stock::GO_FORWARD, "Parent", KToolTip_GoParent), 
 	    sigc::mem_fun(*this, &HierDetailView::on_action_goparent));
     irActionGroup->add(Gtk::Action::create("Attention", Stock::DIALOG_WARNING, "Attention"), 
 	    sigc::mem_fun(*this, &HierDetailView::on_action_attention));
     // Use mut node
     MStSetting<bool>& ena_pheno_s = iStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
-    irActionGroup->add(Gtk::ToggleAction::create("SpecifyMutNode", Stock::JUMP_TO, "SpecifyMutNode", "SpecifyMutNode", ena_pheno), 
-	    sigc::mem_fun(*this, &HierDetailView::on_action_spec_mut_node));
+    irActionGroup->add(Gtk::ToggleAction::create("SpecifyMutNode", Stock::JUMP_TO, "Enable pheno modifications",
+		KToolTip_EnablePhenoModif, ena_pheno), sigc::mem_fun(*this, &HierDetailView::on_action_spec_mut_node));
     iUiMgr->add_ui_from_string(sUiHierDview);
 
     if (ena_pheno) {

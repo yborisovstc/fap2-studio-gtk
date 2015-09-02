@@ -1,6 +1,8 @@
+#include "msset.h"
 #include "mainwnd.h"
 #include <iostream>
 #include <gtkmm/stock.h>
+#include <gtkmm/toggleaction.h>
 
 Glib::ustring sUiInfo = 
 "<ui>"
@@ -12,7 +14,7 @@ Glib::ustring sUiInfo =
 "      <menuitem action='Save_as'/>"
 "      <menuitem action='Reload'/>"
 "      <menuitem action='Compact_as'/>"
-"      <menuitem action='Undo_Compact'/>"
+"      <menuitem action='Optimize'/>"
 "    </menu>"
 "  </menubar>"
 "  <toolbar  name='ToolBar'>"
@@ -24,26 +26,42 @@ Glib::ustring sUiInfo =
 "    <toolitem action='Undo'/>"
 "    <toolitem action='Redo'/>"
 "    <toolitem action='Repair'/>"
+"    <toolitem action='Disable_opt'/>"
 "  </toolbar>"
 "</ui>";
 
+const string KToolTip_New = "Create new model";
+const string KToolTip_Open = "Open a model";
+const string KToolTip_Save = "Save the model";
+const string KToolTip_SaveAs = "Save as the model";
+const string KToolTip_Reload = "Reload the model";
+const string KToolTip_Compact = "Compact and save as the model";
+const string KToolTip_Optimize = "Optimize and save the model";
+const string KToolTip_Undo = "Undo last mutation";
+const string KToolTip_Redo = "Redo last removed mutation";
+const string KToolTip_Repair = "Repair the chromo";
+const string KToolTip_DisableOpt = "Disable optimization processing";
 
-MainWnd::MainWnd()
+MainWnd::MainWnd(MSEnv* aStEnv): iStEnv(aStEnv)
 {
     set_border_width(0);
 
     irActionGroup = Gtk::ActionGroup::create("ActionGroup");
     irActionGroup->add(Gtk::Action::create("MenuFile", "_File"));
-    irActionGroup->add(Gtk::Action::create("New", Gtk::Stock::NEW), sigc::mem_fun(*this, &MainWnd::on_action_new));
-    irActionGroup->add(Gtk::Action::create("Open", Gtk::Stock::OPEN), sigc::mem_fun(*this, &MainWnd::on_action_open));
-    irActionGroup->add(Gtk::Action::create("Save", Gtk::Stock::SAVE), sigc::mem_fun(*this, &MainWnd::on_action_save));
-    irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS), sigc::mem_fun(*this, &MainWnd::on_action_saveas));
-    irActionGroup->add(Gtk::Action::create("Reload", Gtk::Stock::REFRESH), sigc::mem_fun(*this, &MainWnd::on_action_open));
-    irActionGroup->add(Gtk::Action::create("Compact_as", "Compact&Save"), sigc::mem_fun(*this, &MainWnd::on_action_compactas));
-    irActionGroup->add(Gtk::Action::create("Undo_Compact", "Undo Compact"), sigc::mem_fun(*this, &MainWnd::on_action_undo_compact));
-    irActionGroup->add(Gtk::Action::create("Undo", Gtk::Stock::UNDO, "Undo"));
-    irActionGroup->add(Gtk::Action::create("Redo", Gtk::Stock::REDO, "Redo"));
-    irActionGroup->add(Gtk::Action::create("Repair", Gtk::Stock::CONVERT, "Repair"));
+    irActionGroup->add(Gtk::Action::create("New", Gtk::Stock::NEW, "New", KToolTip_New));
+    irActionGroup->add(Gtk::Action::create("Open", Gtk::Stock::OPEN, "Open", KToolTip_Open));
+    irActionGroup->add(Gtk::Action::create("Save", Gtk::Stock::SAVE, "Save", KToolTip_Save));
+    irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS, "Save as", KToolTip_SaveAs));
+    irActionGroup->add(Gtk::Action::create("Reload", Gtk::Stock::REFRESH, "Reload", KToolTip_Reload));
+    irActionGroup->add(Gtk::Action::create("Compact_as", "Compact&Save", KToolTip_Compact));
+    irActionGroup->add(Gtk::Action::create("Optimize", "Optimize", KToolTip_Optimize));
+    irActionGroup->add(Gtk::Action::create("Undo", Gtk::Stock::UNDO, "Undo", KToolTip_Undo));
+    irActionGroup->add(Gtk::Action::create("Redo", Gtk::Stock::REDO, "Redo", KToolTip_Redo));
+    irActionGroup->add(Gtk::Action::create("Repair", Gtk::Stock::CONVERT, "Repair", KToolTip_Repair));
+    MStSetting<bool>& disable_opt_s = iStEnv->Settings().GetSetting(MStSettings::ESts_DisableOpt, disable_opt_s);
+    bool disable_opt = disable_opt_s.Get(disable_opt);
+    irActionGroup->add(Gtk::ToggleAction::create("Disable_opt", Gtk::Stock::REMOVE, "DisableOpt", KToolTip_DisableOpt,
+		disable_opt));
     irUiMgr = Gtk::UIManager::create();
     irUiMgr->insert_action_group(irActionGroup);
     irUiMgr->add_ui_from_string(sUiInfo);
@@ -92,34 +110,14 @@ MainWnd::~MainWnd()
 {
 }
 
-void MainWnd::on_action_new()
-{
-}
-
-void MainWnd::on_action_open()
-{
-    std::cout << "Action Open triggered" << std::endl;
-}
-
-void MainWnd::on_action_save()
-{
-}
-
-void MainWnd::on_action_saveas()
-{
-}
-
-void MainWnd::on_action_compactas()
-{
-}
-
-void MainWnd::on_action_undo_compact()
-{
-}
-
 Glib::RefPtr<Gtk::UIManager> MainWnd::UIManager() const
 {
     return irUiMgr;
+}
+
+Glib::RefPtr<Gtk::ActionGroup> MainWnd::ActionGroup() const
+{
+    return irActionGroup;
 }
 
 Gtk::ScrolledWindow& MainWnd::ClientWnd()
