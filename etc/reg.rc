@@ -85,13 +85,7 @@ style "visdrawing_style"
     GtkLayout::draw-border = {5, 5, 5, 5}
 }
 
-style "custom-tooltip"
-{
-    fg[NORMAL] = {1.0, 1.0, 1.0}
-    bg[NORMAL] = {0.0, 0.0, 0.0}
-}
-
-class "GtkLabel" style "def_label_style"
+#class "GtkLabel" style "def_label_style"
 
 widget "*.*.ElemDrp" style "elem_drp_style"
 widget "*.*.ElemDrp~err" style "elem_drp_att_style"
@@ -103,7 +97,4 @@ widget "*.*.Edge~da" style "edge_style_da"
 widget "*.*.CapsCrp" style "capscrp_style"
 
 widget "*.*.AVisDrawing" style "visdrawing_style"
-
-# to fix the problem with black tool-tips font on black bg
-widget "gtk-tooltip" style "custom-tooltip"
 
