@@ -88,7 +88,7 @@ style "visdrawing_style"
 style "custom-tooltip"
 {
     fg[NORMAL] = {1.0, 1.0, 1.0}
-    bg[NORMAL] = {0.0, 0.o, 0.0}
+    bg[NORMAL] = {0.0, 0.0, 0.0}
 }
 
 class "GtkLabel" style "def_label_style"
