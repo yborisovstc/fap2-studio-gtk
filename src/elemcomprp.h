@@ -46,7 +46,7 @@ class ElemCompRp: public Gtk::Layout
 	void DoSetDnDTargSupported(int aTarg);
 	bool DoIsDnDTargSupported(TDnDTarg aTarg) const;
 	bool DoIsIntersected(int aX, int aY) const;
-	void GetModelDebugInfo(string& aData) const;
+	virtual void GetModelDebugInfo(int x, int y, string& aData) const;
 	virtual bool DoIsActionSupported(MCrp::Action aAction);
 	virtual void on_realize();
 	virtual bool on_expose_event(GdkEventExpose* event);

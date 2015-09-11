@@ -26,6 +26,7 @@ IncapsCrp::~IncapsCrp()
 
 void IncapsCrp::Construct()
 {
+    ElemCompRp::Construct();
     // Add CPs
     Elem* caps = iElem->GetNode(KCapsUri);
     assert(caps != NULL);
@@ -37,7 +38,7 @@ void IncapsCrp::Construct()
 	iCpRps[comp] = rp;
     }
     set_has_tooltip();
-    set_tooltip_text("IncapsCrp Tooltip test");
+    //set_tooltip_text("IncapsCrp Tooltip test");
     // Add Data Crp
     AddDataRp();
 }

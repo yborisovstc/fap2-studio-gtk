@@ -275,3 +275,16 @@ bool VertCompRp::IsIntersected(int aX, int aY) const
     return DoIsIntersected(aX, aY);
 }
 
+void VertCompRp::GetModelDebugInfo(int x, int y, string& aData) const
+{
+    Elem* agents = iElem->GetNode("./Agents");
+    vector<Elem*>::iterator it;
+    for (it = agents->Comps().begin(); it != agents->Comps().end(); it++) {
+	Elem* agent = *it;
+	for (int cnt = 0; cnt < agent->GetContCount(); cnt++) {
+	    string name, value;
+	    agent->GetCont(cnt, name, value);
+	    aData += name + ": " + value + "\n";
+	}
+    }
+}

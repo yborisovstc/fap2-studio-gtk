@@ -133,7 +133,7 @@ void ADesSync::DoStep() {
 		out->Confirm();
 	    }
 	} catch (const std::exception& e) {
-	    cout << "ADesSync DoStep expection: " << e.what() << '\n';
+	    Logger()->Write(MLogRec::EErr, this, "Unspecified error on update");
 	}
     }
 }

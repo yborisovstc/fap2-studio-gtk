@@ -153,14 +153,14 @@ bool ElemCompRp::on_name_button_press(GdkEventButton* event)
 
 bool ElemCompRp::on_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Tooltip>& tooltip)
 {
-    //std::cout << "ElemCompRp on_query_tooltip" << std::endl;
+//    std::cout << "ElemCompRp on_query_tooltip" << std::endl;
     string info;
-    GetModelDebugInfo(info);
+    GetModelDebugInfo(x, y, info);
     tooltip->set_text(info);
     return true;
 }
 
-void ElemCompRp::GetModelDebugInfo(string& aData) const
+void ElemCompRp::GetModelDebugInfo(int x, int y, string& aData) const
 {
     for (int cnt = 0; cnt < iElem->GetContCount(); cnt++) {
 	string name, value;
