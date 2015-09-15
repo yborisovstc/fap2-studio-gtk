@@ -17,6 +17,9 @@ const string KMsgUnsaved = "The model has been modified. Do you want to save it?
 const string KBtnTxtDiscard = "Discard";
 const string KToolTip_Repair = "Repair";
 
+const string KDlg_Opt1 = "The pass of optimization is done. Some not optimized mutations are remaining. Do the next pass?";
+const string KDlg_Opt2 = "The optimization is completed successfully.";
+
 /* Time slice of FAP environment, in milliseconds */
 const gint KFapeTimeSlice = 50;
 
@@ -532,6 +535,12 @@ void App::SaveTmp()
 
 void App::OpenFile(const string& aFileName, bool aAsTmp)
 {
+    /*
+    iMainWnd->ShowSpinner();
+    for (int c = 0; c < 1000; c++) {
+    Gtk::Main::instance()->iteration(false);
+    }
+    */
     if (iEnv != NULL) {
 	iDesObserver->SetDes(NULL);
 	iEnv->RemoveProvider(iMdlProv);
@@ -579,6 +588,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     UpdataUndoRedo();
     // Start tracking the model changes in order to update undo/redo
     iDesObserver->SignalSystemChanged().connect(sigc::mem_fun(*this, &App::on_system_changed));
+    //iMainWnd->HideSpinner();
 }
 
 void App::SaveFile(const string& aFileName, bool aUnorder)
@@ -600,10 +610,19 @@ void App::CompactAndSaveFile(const string& aFileName)
 // TODO [YB] To implement automatic optimization
 void App::Optimize()
 {
-    string cursor = iHDetView->GetCursor();
-    iEnv->Root()->CompactChromo();
-    on_action_save();
-    OpenFile(iSpecFileName, false);
-    iHDetView->SetCursor(cursor);
-}
+    bool changed = false;
+    int result = Gtk::RESPONSE_CANCEL;
+    do {
+	string cursor = iHDetView->GetCursor();
+	changed = iEnv->Root()->CompactChromo();
+	on_action_save();
+	OpenFile(iSpecFileName, false);
+	iHDetView->SetCursor(cursor);
 
+	Gtk::MessageDialog dialog(changed ? KDlg_Opt1:KDlg_Opt2, false, MESSAGE_INFO, 
+		changed?BUTTONS_OK_CANCEL:BUTTONS_OK, true);
+	dialog.set_default_response(Gtk::RESPONSE_OK);
+	dialog.set_transient_for(*iMainWnd);
+	result = dialog.run();
+    } while (changed && result == Gtk::RESPONSE_OK);
+}

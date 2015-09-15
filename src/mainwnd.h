@@ -10,6 +10,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/paned.h>
 #include <gtkmm/notebook.h>
+#include <gtkmm/spinner.h>
 #include "logview.h"
 #include "msenv.h"
 
@@ -28,6 +29,8 @@ class MainWnd : public Gtk::Window
 	void SetNaviPane(Gtk::Widget& aWidget);
 	void SetLogView(Gtk::Widget& aWidget);
 	void SetEnvLog(const string& aLogFileName);
+	void ShowSpinner();
+	void HideSpinner();
     private:
 	// Studio environment
 	MSEnv* iStEnv;
@@ -47,6 +50,7 @@ class MainWnd : public Gtk::Window
 	Gtk::ScrolledWindow* irMainClientWnd;
 	Gtk::ScrolledWindow* iLogWnd;
 	LogView* iLogView;
+	Spinner mSpinner;
 };
 
 #endif 

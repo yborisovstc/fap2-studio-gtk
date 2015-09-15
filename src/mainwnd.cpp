@@ -146,3 +146,20 @@ Container& MainWnd::VisWindow()
     return iVis;
 }
 
+void MainWnd::ShowSpinner()
+{
+    mSpinner.show();
+    mSpinner.start();
+    remove();
+    set_border_width(100);
+    add(mSpinner);
+    queue_draw();
+}
+
+
+void MainWnd::HideSpinner()
+{
+    remove();
+    set_border_width(0);
+    add(iVboxMain);
+}
