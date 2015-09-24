@@ -90,9 +90,11 @@ class App
 	void on_setting_changed_pheno_enable();
 	void on_setting_changed_disable_opt();
 	void on_comp_selected(Elem* aComp);
+	void on_model_created();
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
 	void SaveFile(const string& aFileName, bool aUnorder = true);
 	void CompactAndSaveFile(const string& aFileName);
+	void CreateModel();
 	// Optimizes models chromo
 	void Optimize();
 	string FormTitle(const string& aFilePath);
@@ -128,6 +130,9 @@ class App
 	bool iChanged;
 	bool iRepair;
 	LogViewL* iLogView;
+	Glib::Dispatcher mSigMdlCreated;
+	string mCurrentCursor;
+	Glib::Threads::Thread* mWrkThread;
 };
 
 

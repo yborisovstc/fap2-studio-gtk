@@ -215,7 +215,7 @@ void DesObserver::RemoveObservable(MLogRec* aObservable)
 
 
 App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoLim(0), iChanged(false), 
-    iRepair(false)
+    iRepair(false), mWrkThread(NULL)
 {
     // Create model observer
     iDesObserver = new DesObserver();
@@ -283,6 +283,8 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     gtk_rc_parse(KRcFileName);
     // Update menu and toolbar
     InitialUpdate();
+    // Connect handler of model created (model creation is doing in worker thread)
+    mSigMdlCreated.connect(sigc::mem_fun(*this, &App::on_model_created));
 }
 
 App::~App() {
@@ -294,6 +296,8 @@ App::~App() {
     delete iStDesEnv;
     // iMdlProv is owned by iEnv, so no need to delete it
     delete iDesObserver;
+    // It is an error if the thread is still running at this point.
+    __ASSERT(mWrkThread == NULL);
 }
 
 void App::on_setting_changed_pheno_enable()
@@ -375,6 +379,7 @@ void App::on_action_new()
 	if (result == Gtk::RESPONSE_OK) {
 	    std::string filename = dialog.get_filename();
 	    iSpecFileName.clear();
+	    mCurrentCursor.clear();
 	    iChromoLim = 0;
 	    OpenFile(filename, true);
 	    iInitMaxOrder = iEnv->ChMgr()->GetMaxOrder();
@@ -395,6 +400,7 @@ void App::on_action_open()
 	int result = dialog.run();
 	if (result == Gtk::RESPONSE_OK) {
 	    string filename = dialog.get_filename();
+	    mCurrentCursor.clear();
 	    iChromoLim = 0;
 	    OpenFile(filename, false);
 	    iInitMaxOrder = iEnv->ChMgr()->GetMaxOrder();
@@ -405,7 +411,7 @@ void App::on_action_open()
 
 void App::on_action_recreate()
 {
-    string cursor = iHDetView->GetCursor();
+    mCurrentCursor = iHDetView->GetCursor();
     if (iDesObserver->IsModelChanged()) {
 	SaveTmp();
 	OpenFile(GetDefaultTmpFileName(), true);
@@ -413,7 +419,6 @@ void App::on_action_recreate()
     else {
 	OpenFile(IsSystemChanged() ? GetDefaultTmpFileName() : iSpecFileName, true);
     }
-    iHDetView->SetCursor(cursor);
 }
 
 void App::on_action_save()
@@ -533,6 +538,40 @@ void App::SaveTmp()
     SaveFile(GetDefaultTmpFileName(), false);
 }
 
+void App::CreateModel()
+{
+    try {
+	iEnv->ConstructSystem();
+    } catch (std::exception e) {
+	std::cerr << "exception caught: " << e.what() << '\n';
+    }
+    mSigMdlCreated.emit();
+}
+
+void App::on_model_created()
+{
+    mWrkThread->join();
+    mWrkThread = NULL;
+    iDesObserver->UpdateDesRootObserver();
+    iHDetView->SetRoot(iEnv->Root());
+    iHDetView->SetCursor(mCurrentCursor);
+    if (mCurrentCursor.empty()) {
+	iHDetView->SetCursor(iEnv->Root());
+    } else {
+	iHDetView->SetCursor(mCurrentCursor);
+    }
+    // Mark model as unchanged, initially
+    iDesObserver->SetModelChanged(iEnv->ChMgr()->EnableFixErrors());
+    iChanged = false;
+    iEnv->ChMgr()->SetEnableFixErrors(false);
+    // Init max order from spec, to be able to do redo
+    iMaxOrder = iEnv->ChMgr()->GetSpecMaxOrder();
+    UpdataUndoRedo();
+    // Start tracking the model changes in order to update undo/redo
+    iDesObserver->SignalSystemChanged().connect(sigc::mem_fun(*this, &App::on_system_changed));
+    //iMainWnd->HideSpinner();
+}
+
 void App::OpenFile(const string& aFileName, bool aAsTmp)
 {
     /*
@@ -564,11 +603,22 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iEnv->ChMgr()->SetEnableOptimization(!disable_opt);
     iRepair = false;
     iDesObserver->SetDes(iEnv);
+    if (!aAsTmp) {
+	iSpecFileName = aFileName;
+	iMainWnd->set_title(FormTitle(aFileName));
+    }
+    else {
+	iMainWnd->set_title(FormTitle(iSpecFileName.empty() ? KTitleUnsaved : iSpecFileName));
+    }
+    mWrkThread = Glib::Threads::Thread::create(sigc::mem_fun(*this, &App::CreateModel));
+    /*
     try {
 	iEnv->ConstructSystem();
     } catch (std::exception e) {
 	std::cerr << "exception caught: " << e.what() << '\n';
     }
+    */
+    /*
     iDesObserver->UpdateDesRootObserver();
     iHDetView->SetRoot(iEnv->Root());
     iHDetView->SetCursor(iEnv->Root());
@@ -589,6 +639,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     // Start tracking the model changes in order to update undo/redo
     iDesObserver->SignalSystemChanged().connect(sigc::mem_fun(*this, &App::on_system_changed));
     //iMainWnd->HideSpinner();
+    */
 }
 
 void App::SaveFile(const string& aFileName, bool aUnorder)

@@ -94,7 +94,7 @@ LogViewL::LogViewL(MMdlObserver* aDesObs): iDesObs(aDesObs)
     sel->set_mode(SELECTION_MULTIPLE);
     SetDesEnv(iDesObs->DesEnv());
     iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &LogViewL::on_des_env_changed));
-    iDesObs->SignalLogAdded().connect(sigc::mem_fun(*this, &LogViewL::on_log_added));
+    // YB potential deadlocks iDesObs->SignalLogAdded().connect(sigc::mem_fun(*this, &LogViewL::on_log_added));
 }
 
 LogViewL::~LogViewL()
