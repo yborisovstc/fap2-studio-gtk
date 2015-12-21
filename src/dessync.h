@@ -18,7 +18,7 @@ class ADesSync: public Elem
 	virtual ~ADesSync();
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
+	virtual void *DoGetObj(const char *aName);
 	// Signal handlers:
 	void on_action_run();
 	void on_action_stop();

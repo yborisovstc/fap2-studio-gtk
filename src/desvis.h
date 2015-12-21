@@ -49,7 +49,7 @@ class AWindow: public Elem, public MVisContainer
 	virtual void OnChildChanged(Widget* aChild, MVisChild::TPar aPar);
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
+	virtual void *DoGetObj(const char *aName);
     protected:
 	MSDesEnv* iSDesEnv;
 };
@@ -147,9 +147,9 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	void GetMotionEvent(NTuple& aData) { aData = mMotionEvt;};
 	void ActivateDeps(const string& aUri);
 	// From Base
-	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
+	virtual void *DoGetObj(const char *aName);
 	// Ifaces cache
-	virtual void UpdateIfi(const string& aName, const RqContext* aCtx = NULL);
+	virtual void UpdateIfi(const string& aName, const RqContext* aCtx);
 	// Widget events handling
 	bool OnButtonPress(GdkEventButton* aEvent);
 	bool OnButtonRelease(GdkEventButton* aEvent);
@@ -203,7 +203,7 @@ class AVisFixed: public AVisWidget, public MVisContainer
 	virtual void OnChildChanged(Widget* aChild, MVisChild::TPar aPar);
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
+	virtual void *DoGetObj(const char *aName);
 };
 
 class VisDrwArea: public DrawingArea
@@ -262,7 +262,7 @@ class AVisDrawing: public AVisWidget, public MVisDrawingArea
 	virtual bool HandleMotion(GdkEventMotion* aEvent);
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
+	virtual void *DoGetObj(const char *aName);
 	// From MVisDrawingArea
 	virtual void GetAllocation(Rectangle& aRect);
 	virtual Glib::RefPtr<Gdk::Window> GetWindow();
@@ -290,7 +290,7 @@ class AVisDrawingElem: public AVisWidget, public MVisDrawingElem
 	virtual bool OnAreaMotion(GdkEventMotion* aEvent);
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName, TBool aIncUpHier = ETrue, const RqContext* aCtx = NULL);
+	virtual void *DoGetObj(const char *aName);
 	// From MACompsObserver
 	//virtual TBool HandleCompChanged(Elem& aContext, Elem& aComp);
 	// From AVisWidget

@@ -62,14 +62,14 @@ ADesSync::~ADesSync()
     iActionGroup.reset();
 }
 
-void *ADesSync::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
+void *ADesSync::DoGetObj(const char *aName)
 {
     void* res = NULL;
     if (strcmp(aName, Type()) == 0) {
 	res = this;
     }
     else {
-	res = Elem::DoGetObj(aName, aIncUpHier);
+	res = Elem::DoGetObj(aName);
     }
     return res;
 }
@@ -122,7 +122,7 @@ void ADesSync::on_action_next()
 
 void ADesSync::DoStep() {
     Elem* eout = GetNode("./../../Capsule/Out");
-    MDesSyncable* out = eout->GetObj(out);
+    MDesSyncable* out = (MDesSyncable*) eout->GetSIfiC(MDesSyncable::Type(), this);
     if (eout != NULL) {
 	Logger()->Write(MLogRec::EDbg, this, "Step %d", iCount++);
 	try {

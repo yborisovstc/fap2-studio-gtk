@@ -27,7 +27,7 @@ AWindow::AWindow(Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv):
     SetParent(Elem::PEType());
 }
 
-void *AWindow::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
+void *AWindow::DoGetObj(const char *aName)
 {
     void* res = NULL;
     if (strcmp(aName, Type()) == 0) {
@@ -37,7 +37,7 @@ void *AWindow::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aC
 	res = (MVisContainer*) this;
     } 
     else {
-	res = Elem::DoGetObj(aName, aIncUpHier);
+	res = Elem::DoGetObj(aName);
     }
     return res;
 }
@@ -223,7 +223,7 @@ void AVisWidget::Construct()
     }
 }
 
-void *AVisWidget::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
+void *AVisWidget::DoGetObj(const char *aName)
 {
     void* res = NULL;
     if (strcmp(aName, Type()) == 0) {
@@ -239,7 +239,7 @@ void *AVisWidget::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext*
 	res = (MDesObserver*) this;
     } 
     else {
-	res = Elem::DoGetObj(aName, aIncUpHier);
+	res = Elem::DoGetObj(aName);
     }
     return res;
 }
@@ -309,7 +309,7 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	}
     }
     else {
-	res = DoGetObj(aName.c_str(), EFalse, aCtx);
+	res = DoGetObj(aName.c_str());
     }
     if (res != NULL) {
 	InsertIfCache(aName, aCtx, this, res);
@@ -660,7 +660,7 @@ AVisFixed::AVisFixed(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
     iWidget->show();
 }
 
-void *AVisFixed::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
+void *AVisFixed::DoGetObj(const char *aName)
 {
     void* res = NULL;
     if (strcmp(aName, Type()) == 0) {
@@ -670,7 +670,7 @@ void *AVisFixed::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* 
 	res = (MVisContainer*) this;
     } 
     else {
-	res = AVisWidget::DoGetObj(aName, aIncUpHier);
+	res = AVisWidget::DoGetObj(aName);
     }
     return res;
 }
@@ -755,7 +755,7 @@ AVisDrawing::AVisDrawing(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
     iWidget->show();
 }
 
-void *AVisDrawing::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
+void *AVisDrawing::DoGetObj(const char *aName)
 {
     void* res = NULL;
     if (strcmp(aName, Type()) == 0) {
@@ -765,7 +765,7 @@ void *AVisDrawing::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext
 	res = (MVisDrawingArea*) this;
     } 
     else {
-	res = AVisWidget::DoGetObj(aName, aIncUpHier);
+	res = AVisWidget::DoGetObj(aName);
     }
     return res;
 }
@@ -908,7 +908,7 @@ AVisDrawingElem::AVisDrawingElem(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMa
     SetParent(AVisWidget::PEType());
 }
 
-void *AVisDrawingElem::DoGetObj(const char *aName, TBool aIncUpHier, const RqContext* aCtx)
+void *AVisDrawingElem::DoGetObj(const char *aName)
 {
     void* res = NULL;
     if (strcmp(aName, Type()) == 0) {
@@ -916,7 +916,7 @@ void *AVisDrawingElem::DoGetObj(const char *aName, TBool aIncUpHier, const RqCon
     } else if (strcmp(aName, MVisDrawingElem::Type()) == 0){
 	res = (MVisDrawingElem*) this;
     } else {
-	res = AVisWidget::DoGetObj(aName, aIncUpHier);
+	res = AVisWidget::DoGetObj(aName);
     }
     return res;
 }
