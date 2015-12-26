@@ -42,7 +42,7 @@ class SysDrp: public VertDrpw_v1
     public:
 	static std::string Type() { return string("SysDrp");};
 	static string EType();
-	SysDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
+	SysDrp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~SysDrp();
     protected:
 	virtual void Construct();
@@ -50,7 +50,7 @@ class SysDrp: public VertDrpw_v1
 	void BodyPreLayoutAut();
 	bool HasRelToArea(MCrp* aCrp, int aAreaId); 
 	bool AreUnallocRpsRelToArea(int aAreaId);
-	virtual bool AreCpsCompatible(Elem* aCp1, Elem* aCp2);
+	virtual bool AreCpsCompatible(MElem* aCp1, MElem* aCp2);
 	TEvtInfo GetEvtInfo(Requisition aCoord);
 	static int GetEvtMinWidth();
 	static int GetAvzMinGapWidth();

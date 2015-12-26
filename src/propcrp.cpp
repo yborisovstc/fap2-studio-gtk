@@ -16,7 +16,7 @@ string PropCrp::EType()
     return Prop::PEType();
 }
 
-PropCrp::PropCrp(Elem* aElem): ElemCompRp(aElem)
+PropCrp::PropCrp(MElem* aElem): ElemCompRp(aElem)
 {
 
     MProp* prop = iElem->GetObj(prop);
@@ -83,7 +83,7 @@ void PropCrp::SetErroneous(bool aSet)
     DoSetErroneous(aSet);
 }
 
-Elem* PropCrp::Model()
+MElem* PropCrp::Model()
 {
     return iElem;
 }

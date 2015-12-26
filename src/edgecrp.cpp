@@ -38,7 +38,7 @@ string EdgeCrp::EType()
     return Edge::PEType();
 }
 
-EdgeCrp::EdgeCrp(Elem* aElem): iElem(aElem), iDraggedPart(EDp_None), iDragging(false), iHighlighted(false), 
+EdgeCrp::EdgeCrp(MElem* aElem): iElem(aElem), iDraggedPart(EDp_None), iDragging(false), iHighlighted(false), 
     iDnDSupp(EDT_None)
 {
     // set no_window mode
@@ -123,7 +123,7 @@ void EdgeCrp::SetErroneous(bool aSet)
     }
 }
 
-Elem* EdgeCrp::Model()
+MElem* EdgeCrp::Model()
 {
     return iElem;
 }
@@ -156,9 +156,9 @@ const Gtk::Requisition& EdgeCrp::Cp2Coord()
     return iCp2;
 }
 
-Elem* EdgeCrp::Point1()
+MElem* EdgeCrp::Point1()
 {
-    Elem* res = NULL;
+    MElem* res = NULL;
     MEdge* medge = iElem->GetObj(medge);
     MVert* p1 = medge->Point1();
     if (p1 != NULL) {
@@ -167,9 +167,9 @@ Elem* EdgeCrp::Point1()
     return res;
 }
 
-Elem* EdgeCrp::Point2()
+MElem* EdgeCrp::Point2()
 {
-    Elem* res = NULL;
+    MElem* res = NULL;
     MEdge* medge = iElem->GetObj(medge);
     MVert* p1 = medge->Point2();
     if (p1 != NULL) {
@@ -339,7 +339,7 @@ void EdgeCrp::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Selec
     //std::cout << "EdgeCrp on_drag_data_get, info: " << info << std::endl;
     if (info == KTei_EdgeCp && iDragging && iDraggedPart != EDp_None) {
 	GUri uri;
-	Elem* pte = NULL;
+	MElem* pte = NULL;
 	if (iDraggedPart == EDp_Cp1) {
 	    pte = iElem->GetNode("./P1");
 	}

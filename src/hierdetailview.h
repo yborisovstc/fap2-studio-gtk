@@ -21,19 +21,19 @@ class HierDetailView
     public:
 	typedef std::vector<void*> TNavHist;
 	typedef sigc::signal<void> tSigRecreateRequested;
-	typedef sigc::signal<void, Elem*> tSigCompSelected;
+	typedef sigc::signal<void, MElem*> tSigCompSelected;
     public:
 	HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const Glib::RefPtr<Gtk::UIManager>& aUiMgr);
 	virtual ~HierDetailView();
-	void SetRoot(Elem* aRoot);
-	void SetCursor(Elem* aRoot, bool FromHist = false);
+	void SetRoot(MElem* aRoot);
+	void SetCursor(MElem* aRoot, bool FromHist = false);
 	void SetCursor(const string& aUri);
 	string GetCursor() const;
 	tSigRecreateRequested SignalRecreateRequested() {return mSigRecreateRequested;};
 	tSigCompSelected SignalCompSelected() { return mSigCompSelected;};
 	// Signal handlers:
-	void on_comp_selected(Elem* aComp);
-	void on_comp_activated(Elem* aComp);
+	void on_comp_selected(MElem* aComp);
+	void on_comp_activated(MElem* aComp);
 	void on_logrec_activated(const string& aNodeUri, int aMutId);
     protected:
 	// Signal handlers:
@@ -64,7 +64,7 @@ class HierDetailView
 	Gtk::ScrolledWindow& iContWnd;
 	Gtk::Alignment* iAlignent;
 	Glib::RefPtr<Gtk::UIManager> iUiMgr;
-	Elem* iRoot;
+	MElem* iRoot;
 	string iCursor;
 	// Node detail representation
 	MDrp* iDetRp;

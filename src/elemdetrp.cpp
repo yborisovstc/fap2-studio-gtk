@@ -70,7 +70,7 @@ static const Glib::ustring K_Att_RefToBiggestRank =
    };
    */
 
-ElemDetRp::ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv),
+ElemDetRp::ElemDetRp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): Gtk::Layout(), iElem(aElem), iCrpProv(aCrpProv),
     mStEnv(aStEnv), iDnDTarg(EDT_Unknown), iDropBaseCandidate(NULL), iReloadRequired(false)
 {
     // Set dest with avoiding DestDefaults flags. These flags are only for some trivial DnD 
@@ -114,8 +114,8 @@ ElemDetRp::~ElemDetRp()
 void ElemDetRp::Construct()
 {
     // Add components
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	Elem* comp = *it;
+    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+	MElem* comp = *it;
 	assert(comp != NULL);
 	if (comp->IsRemoved()) continue;
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
@@ -126,10 +126,10 @@ void ElemDetRp::Construct()
 	    rp->SetErroneous(true);
 	}
 	Gtk::Widget& rpw = rp->Widget();
-	//rpw.signal_button_press_event().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
+	//rpw.signal_button_press_event().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
 	// Using specific signal for button press instead of standard because some Crps can have complex layout
-	rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
-	rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
+	rp->SignalButtonPress().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
+	rp->SignalButtonPressName().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
 	add(rpw);
 	iCompRps[comp] = rp;
 	rpw.show();
@@ -141,7 +141,7 @@ bool ElemDetRp::IsCrpLogged(MCrp* aCrp, MLogRec::TLogRecCtg aCtg) const
     return  mStEnv.DesLog().IsNodeLogged(aCrp->Model(), aCtg);
 }
 
-Elem* ElemDetRp::GetElem()
+MElem* ElemDetRp::GetElem()
 {
     return iElem;
 }
@@ -197,7 +197,7 @@ void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
 
     // Allocate components
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
 	if ((*it)->IsRemoved()) continue;
 	MCrp* crp = iCompRps.at(*it);
 	Gtk::Widget* comp = &(crp->Widget());
@@ -213,7 +213,7 @@ void ElemDetRp::on_size_request(Gtk::Requisition* aReq)
 {
     // Calculate size of comps
     int comp_w = 0, comp_h = KViewCompGapHight;
-    for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+    for (std::map<MElem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	Gtk::Widget* cpw = &(it->second->Widget());
 	Gtk::Requisition req = cpw->size_request();
 	comp_w = max(comp_w, req.width);
@@ -224,7 +224,7 @@ void ElemDetRp::on_size_request(Gtk::Requisition* aReq)
     aReq->height = comp_h + KViewCompGapHight;
 }
 
-bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
+bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, MElem* aComp)
 {
     std::cout << "ElemDetRp::on_comp_button_press_ext, comp [" << aComp->Name() << "]" << std::endl;
     if (event->type == GDK_BUTTON_PRESS) {
@@ -243,13 +243,13 @@ bool ElemDetRp::on_comp_button_press_ext(GdkEventButton* event, Elem* aComp)
     return false;
 }
 
-void ElemDetRp::on_comp_button_press(GdkEventButton* event, Elem* aComp)
+void ElemDetRp::on_comp_button_press(GdkEventButton* event, MElem* aComp)
 {
     std::cout << "ElemDetRp::on_comp_button_press, comp [" << aComp->Name() << "]" << std::endl;
     on_comp_button_press_ext(event, aComp);
 }
 
-void ElemDetRp::on_comp_button_press_name(GdkEventButton* event, Elem* aComp)
+void ElemDetRp::on_comp_button_press_name(GdkEventButton* event, MElem* aComp)
 {
 }
 
@@ -400,18 +400,18 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 {
     // Get major dependency
     /*
-       Elem* dnode = iElem->GetNode(aNodeUri);
-       Elem::TMDep mdep = dnode->GetMajorDep();
-       Elem* mnode = mdep.first.first;
+       MElem* dnode = iElem->GetNode(aNodeUri);
+       MElem::TMDep mdep = dnode->GetMajorDep();
+       MElem* mnode = mdep.first.first;
        if (mnode == NULL) {
        mnode = iElem;
        }
-       Elem* mutelem = mnode->GetAttachingMgr();
+       MElem* mutelem = mnode->GetAttachingMgr();
        */
 
-    Elem* dnode = iElem->GetNode(aNodeUri);
+    MElem* dnode = iElem->GetNode(aNodeUri);
     bool unsafe = false;
-    Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Change, unsafe);
+    MElem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Change, unsafe);
     if (mutelem != NULL) {
 	ChromoNode smutr = mutelem->Mutation().Root();
 	GUri nuri;
@@ -427,7 +427,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 
 void ElemDetRp::import(const std::string& aUri)
 {
-    Elem* mutelem = iElem;
+    MElem* mutelem = iElem;
     ChromoNode mut = mutelem->Mutation().Root();
     ChromoNode rmut = mut.AddChild(ENt_Import);
     rmut.SetAttr(ENa_Id, aUri);
@@ -463,10 +463,10 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aTarg
     }
 }
 
-Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType, bool& aUnsafe) 
+MElem* ElemDetRp::GetObjForSafeMut(MElem* aMnode, MElem* aNode, TNodeType aMutType, bool& aUnsafe) 
 {
     aMnode = iElem;
-    Elem* res = aNode;
+    MElem* res = aNode;
     string att;
     aUnsafe = false;
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
@@ -477,7 +477,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 	MStSetting<Glib::ustring>& pinned_mut_node_s = mStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node_s);
 	const Glib::ustring& pinned_mut_node = pinned_mut_node_s.Get(pinned_mut_node);
 	if (!pinned_mut_node.empty()) {
-	    Elem* pnode = iElem->GetNode(pinned_mut_node);
+	    MElem* pnode = iElem->GetNode(pinned_mut_node);
 	    if (pnode == NULL || !pnode->IsComp(aMnode)) {
 		res = NULL;
 		att = K_Att_WrongPinnedMnode;
@@ -500,7 +500,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 	Rank rank = noderank;
 	// Checking critical deps
 	TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
-	//Elem::TMDep dep = aNode->GetMajorDep();
+	//MElem::TMDep dep = aNode->GetMajorDep();
 	if (dep.first.first != NULL) {
 	    Rank deprank;
 	    Elem::GetDepRank(dep, deprank);
@@ -539,7 +539,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 	// Checking affecting deps
 	if (res != NULL) {
 	    bool isaffdep = false;
-	    Elem* affdep = NULL;
+	    MElem* affdep = NULL;
 	    dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Affecting);
 	    if (dep.first.first != NULL) {
 		Rank deprank;
@@ -617,7 +617,7 @@ Elem* ElemDetRp::GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType,
 	    */
 	    // The only owner or node itself is allowed to apply mutation
 	    // Also take into account if the mut is owner based
-	    Elem* pnode = IsMutOwnerBased(aMutType) ? aNode->GetMan() : aNode;
+	    MElem* pnode = IsMutOwnerBased(aMutType) ? aNode->GetMan() : aNode;
 	    res = res->GetCommonOwner(pnode);
 	    if (!res->IsChromoAttached()) {
 		res = res->GetAttachingMgr(); 
@@ -633,12 +633,12 @@ bool ElemDetRp::IsMutOwnerBased(TNodeType aMut) const
     return aMut == ENt_Move || aMut == ENt_Rm || aMut == ENt_Change;
 }
 
-bool ElemDetRp::IsParentSafe(Elem* aTarg, const string& aParentUri)
+bool ElemDetRp::IsParentSafe(MElem* aTarg, const string& aParentUri)
 {
     bool res = true;
     __ASSERT(!aParentUri.empty());
     // Checking if parent rank is correct
-    Elem* parent = aTarg->GetNode(aParentUri);
+    MElem* parent = aTarg->GetNode(aParentUri);
     __ASSERT(parent != NULL);
     Rank targrank;
     Rank prntrank;
@@ -654,9 +654,9 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 {
     bool err = false;
     // Mutate appending
-    Elem* targ = iElem->GetNode(aTargetUri);
+    MElem* targ = iElem->GetNode(aTargetUri);
     bool unsafe = false;
-    Elem* mutelem = GetObjForSafeMut(iElem, targ, ENt_Node, unsafe);
+    MElem* mutelem = GetObjForSafeMut(iElem, targ, ENt_Node, unsafe);
     if (mutelem != NULL) {
 	ChromoNode mut = mutelem->Mutation().Root();
 	ChromoNode rmut = mut.AddChild(ENt_Node);
@@ -667,7 +667,7 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	    rmut.SetAttr(ENa_MutNode, snodeuri);
 	}
 	__ASSERT(!aParentUri.empty());
-	Elem* parent = iElem->GetNode(aParentUri);
+	MElem* parent = iElem->GetNode(aParentUri);
 	GUri prnturi;
 	parent->GetUri(prnturi, mutelem);
 	string prnturis = prnturi.GetUri(true);
@@ -716,10 +716,10 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
     bool ena_pheno = ena_pheno_s.Get(ena_pheno);
     // Node to be deleted
-    Elem* dnode = iElem->GetNode(aNodeUri);
+    MElem* dnode = iElem->GetNode(aNodeUri);
     __ASSERT(dnode != NULL);
     bool unsafe = false;
-    Elem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Rm, unsafe);
+    MElem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Rm, unsafe);
     if (mutelem != NULL) {
 	GUri nuri;
 	dnode->GetUri(nuri, mutelem);
@@ -732,9 +732,9 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
 {
-    Elem* node = iElem->GetNode(aNodeUri);
+    MElem* node = iElem->GetNode(aNodeUri);
     bool unsafe = false;
-    Elem* mutelem = GetObjForSafeMut(iElem, node, ENt_Cont, unsafe);
+    MElem* mutelem = GetObjForSafeMut(iElem, node, ENt_Cont, unsafe);
     if (mutelem != NULL) {
 	GUri nuri;
 	node->GetUri(nuri, mutelem);
@@ -748,15 +748,15 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 
 void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestUri)
 {
-    Elem* snode = iElem->GetNode(aNodeUri);
-    Elem* dnode = iElem->GetNode(aDestUri);
+    MElem* snode = iElem->GetNode(aNodeUri);
+    MElem* dnode = iElem->GetNode(aDestUri);
     //if (snode != NULL && snode->GetMan() == iElem) {
     if (false) {
 	// Src is comp = changing comps order
     }
     else {
 	if (snode != NULL) {
-	    Elem* cowner = iElem->GetCommonOwner(snode);
+	    MElem* cowner = iElem->GetCommonOwner(snode);
 	    if (cowner != NULL) {
 		ChromoNode rmut = cowner->Mutation().Root();
 		ChromoNode change = rmut.AddChild(ENt_Move);
@@ -779,7 +779,7 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
     }
 }
 
-TBool ElemDetRp::DoIsActionSupported(Elem* aComp, const MCrp::Action& aAction)
+TBool ElemDetRp::DoIsActionSupported(MElem* aComp, const MCrp::Action& aAction)
 {
     TBool res = ETrue;
     if (aAction == MCrp::EA_TransToMut) {
@@ -790,7 +790,7 @@ TBool ElemDetRp::DoIsActionSupported(Elem* aComp, const MCrp::Action& aAction)
     return res;
 }
 
-void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp)
+void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, MElem* aComp)
 {
     iCompSelected = aComp;
     MCrp* crp = iCompRps.at(aComp);
@@ -853,7 +853,7 @@ void ElemDetRp::on_comp_menu_edit_content()
     GUri uri_cont;
     crp->GetContentUri(uri_cont);
     uri += uri_cont;
-    Elem* cnode = iElem->GetNode(uri);
+    MElem* cnode = iElem->GetNode(uri);
     cnode->GetCont(sCont);
     TextEditDlg* dlg = new TextEditDlg("Edit content", sCont);
     int res = dlg->run();
@@ -899,7 +899,7 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     // Temp name is required to avoid conflict with the current pheno modif
     ChromoNode mut = iElem->Mutation().Root();
     ChromoNode rmut = mut.AddChild(ENt_Node);
-    Elem* parent = iCompSelected->GetParent();
+    MElem* parent = iCompSelected->GetParent();
     GUri puri;
     parent->GetUri(puri, iElem);
     rmut.SetAttr(ENa_Parent, puri.GetUri(true));
@@ -908,7 +908,7 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     // Remove node originated by pheno modif
     TMDep dep;
     iCompSelected->GetDep(dep, ENa_Id, ETrue);
-    Elem* depnode = dep.first.first;
+    MElem* depnode = dep.first.first;
     ChromoNode mutr = depnode->Mutation().Root();
     ChromoNode rmutr = mutr.AddChild(ENt_Rm);
     GUri nuri;
@@ -917,7 +917,7 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     depnode->Mutate(false, true, true);
     // Squeeze chromo for mutations made to depnode: rm and rename
     ChromoNode lastmut = *(depnode->Chromos().Root().Rbegin());
-    Elem* root = iElem->GetRoot();
+    MElem* root = iElem->GetRoot();
     root->CompactChromo(lastmut);
     // Rename tmp name to correct
     ChromoNode rmutrn = mutr.AddChild(ENt_Change);
@@ -938,7 +938,7 @@ void ElemDetRp::on_comp_menu_get_parents_modif()
 
 // Shifting of component to the latest rank
 // Just moving mutation, it doesn't affect model at all, but required model refresh
-void ElemDetRp::ShiftCompToEnd(Elem* aOwner, Elem* aComp) 
+void ElemDetRp::ShiftCompToEnd(MElem* aOwner, MElem* aComp) 
 {
     ChromoNode oroot = aOwner->Chromos().Root();
     ChromoNode croot = aComp->Chromos().Root();
@@ -986,7 +986,7 @@ string ElemDrp::EType()
     return Elem::PEType();
 }
 
-ElemDrp::ElemDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv)
+ElemDrp::ElemDrp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv)
 {
     iRp = new ElemDetRp(aElem, aCrpProv, aStEnv);
 }
@@ -1023,7 +1023,7 @@ ElemDrp::tSigCompActivated ElemDrp::SignalCompActivated()
     return iRp->iSigCompActivated;
 }
 
-Elem* ElemDrp::Model()
+MElem* ElemDrp::Model()
 {
     return iRp->iElem;
 }

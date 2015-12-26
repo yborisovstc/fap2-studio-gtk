@@ -3,7 +3,7 @@
 #include "common.h"
 #include "vertcrp.h"
 
-VertCompHead::VertCompHead(const Elem& aElem): iElem(aElem)
+VertCompHead::VertCompHead(const MElem& aElem): iElem(aElem)
 {
     // Create Name
     iName = new Gtk::Label();
@@ -49,7 +49,7 @@ string VertCompRp::EType()
     return Vert::PEType();
 }
 
-VertCompRp::VertCompRp(Elem* aElem): ElemCompRp(aElem)
+VertCompRp::VertCompRp(MElem* aElem): ElemCompRp(aElem)
 {
 }
 
@@ -105,7 +105,7 @@ void VertCompRp::on_size_request(Gtk::Requisition* aRequisition)
     aRequisition->height = head_req.height + body_h;
 }
 
-Gtk::Requisition VertCompRp::GetCpCoord(Elem* aCp)
+Gtk::Requisition VertCompRp::GetCpCoord(MElem* aCp)
 {
     Gtk::Allocation alc = get_allocation();
     Gtk::Requisition head_req = iHead->size_request();
@@ -138,7 +138,7 @@ static int dist(int x, int y)
     return sqrt(x*x + y*y);
 }
 
-int VertCompRp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
+int VertCompRp::GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp)
 {
     int res = -1;
     Gtk::Requisition cpcoord = GetCpCoord(NULL);
@@ -151,7 +151,7 @@ int VertCompRp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
     return res;
 }
 
-void VertCompRp::HighlightCp(Elem* aCp, bool aSet)
+void VertCompRp::HighlightCp(MElem* aCp, bool aSet)
 {
     SetHighlighted(aSet);
 }
@@ -188,7 +188,7 @@ void VertCompRp::SetErroneous(bool aSet)
     DoSetErroneous(aSet);
 }
 
-Elem* VertCompRp::Model()
+MElem* VertCompRp::Model()
 {
     return iElem;
 }
@@ -212,7 +212,7 @@ string VertCrp::EType()
     return Vert::PEType();
 }
 
-VertCrp::VertCrp(Elem* aElem)
+VertCrp::VertCrp(MElem* aElem)
 {
     iRp = new VertCompRp(aElem);
 }
@@ -239,7 +239,7 @@ Gtk::Widget& VertCrp::Widget()
     return *iRp;
 }
 
-Gtk::Requisition VertCrp::GetCpCoord(Elem* aCp)
+Gtk::Requisition VertCrp::GetCpCoord(MElem* aCp)
 {
     return iRp->GetCpCoord(aCp);
 }
@@ -277,10 +277,10 @@ bool VertCompRp::IsIntersected(int aX, int aY) const
 
 void VertCompRp::GetModelDebugInfo(int x, int y, string& aData) const
 {
-    Elem* agents = iElem->GetNode("./Agents");
-    vector<Elem*>::iterator it;
+    MElem* agents = iElem->GetNode("./Agents");
+    vector<MElem*>::iterator it;
     for (it = agents->Comps().begin(); it != agents->Comps().end(); it++) {
-	Elem* agent = *it;
+	MElem* agent = *it;
 	for (int cnt = 0; cnt < agent->GetContCount(); cnt++) {
 	    string name, value;
 	    agent->GetCont(cnt, name, value);

@@ -37,13 +37,13 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	virtual tSigSystemCreated SignalSystemCreated();
 	virtual MEnv* DesEnv();
 	// From MCompsObserver
-	virtual void OnCompDeleting(Elem& aComp, TBool aSoft = true);
-	virtual void OnCompAdding(Elem& aComp);
-	virtual TBool OnCompChanged(Elem& aComp);
-	virtual TBool OnCompRenamed(Elem& aComp, const string& aOldName);
-	virtual TBool OnContentChanged(Elem& aComp);
+	virtual void OnCompDeleting(MElem& aComp, TBool aSoft = true);
+	virtual void OnCompAdding(MElem& aComp);
+	virtual TBool OnCompChanged(MElem& aComp);
+	virtual TBool OnCompRenamed(MElem& aComp, const string& aOldName);
+	virtual TBool OnContentChanged(MElem& aComp);
 	// From MLogObserver
-	virtual void OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent, int aMutId = 0);
+	virtual void OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, const std::string& aContent, int aMutId = 0);
 	virtual void OnLogRecDeleting(MLogRec* aLogRec);
 	virtual void AddObservable(MLogRec* aObservable);
 	virtual void RemoveObservable(MLogRec* aObservable);
@@ -89,7 +89,7 @@ class App
 	void on_system_changed();
 	void on_setting_changed_pheno_enable();
 	void on_setting_changed_disable_opt();
-	void on_comp_selected(Elem* aComp);
+	void on_comp_selected(MElem* aComp);
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
 	void SaveFile(const string& aFileName, bool aUnorder = true);
 	void CompactAndSaveFile(const string& aFileName);

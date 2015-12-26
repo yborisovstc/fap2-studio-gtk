@@ -28,7 +28,7 @@ VertDrpw_v1::ConnInfo::ConnInfo(int aOrder): iCompOrder(aOrder) { }
 VertDrpw_v1::ConnInfo::ConnInfo(const ConnInfo& aCInfo): iCompOrder(aCInfo.iCompOrder) { }
 
 
-VertDrpw_v1::VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): ElemDetRp(aElem, aCrpProv, aStEnv), iEdgeDropCandidate(NULL),
+VertDrpw_v1::VertDrpw_v1(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): ElemDetRp(aElem, aCrpProv, aStEnv), iEdgeDropCandidate(NULL),
     iEdgeDropCpCandidate(NULL)
 {
     // Set dest with avoiding DestDefaults flags. These flags are only for some trivial DnD 
@@ -67,7 +67,7 @@ Gtk::Widget& VertDrpw_v1::Widget()
     return *(static_cast<Gtk::Widget*>(this));
 }
 
-Elem* VertDrpw_v1::Model()
+MElem* VertDrpw_v1::Model()
 {
     return iElem;
 }
@@ -91,11 +91,11 @@ bool VertDrpw_v1::IsTypeAllowed(const std::string& aType) const
     return res;
 }
 
-Elem* VertDrpw_v1::GetCompOwning(Elem* aElem)
+MElem* VertDrpw_v1::GetCompOwning(MElem* aElem)
 {
-    Elem* res = NULL;
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
-	Elem* comp = *it;
+    MElem* res = NULL;
+    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
+	MElem* comp = *it;
 	if (comp->IsRemoved()) continue;
 	if (aElem == comp || comp->IsComp(aElem)) {
 	    res = comp;
@@ -104,7 +104,7 @@ Elem* VertDrpw_v1::GetCompOwning(Elem* aElem)
     return res;
 }
 
-void VertDrpw_v1::on_comp_updated(Elem* aElem)
+void VertDrpw_v1::on_comp_updated(MElem* aElem)
 {
     std::cout << "on_comp_updated" << std::endl;
 }
@@ -155,8 +155,8 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
     // Keeping components order, so using elems register of comps
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
     int comps_w_max = 0;
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	Elem* comp = *it;
+    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+	MElem* comp = *it;
 	if (comp->IsRemoved()) continue;
 	MCrp* crp = iCompRps.at(comp);
 	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
@@ -180,7 +180,7 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
     // Calculate size of regular comps and edges
     int comp_w = 0, comp_h = KViewCompGapHight;
     int edge_w = 0, edge_h = 0;
-    for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+    for (std::map<MElem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	MCrp* crp = it->second;
 	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
 	if (medgecrp == NULL) {
@@ -207,7 +207,7 @@ void VertDrpw_v1::on_size_request(Gtk::Requisition* aReq)
     aReq->height = comp_h;
 }
 
-bool VertDrpw_v1::AreCpsCompatible(Elem* aCp1, Elem* aCp2)
+bool VertDrpw_v1::AreCpsCompatible(MElem* aCp1, MElem* aCp2)
 {
     MVert* v1 = aCp1->GetObj(v1);
     MVert* v2 = aCp2->GetObj(v2);
@@ -235,9 +235,9 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 	if (iDnDTarg == EDT_EdgeCp) {
 	    // Stretch Edge to dragging CP
 	    Gtk::Requisition coord = {x,y};
-	    Elem* cp = iElem->GetNode(iDndReceivedData);
+	    MElem* cp = iElem->GetNode(iDndReceivedData);
 	    //std::cout << "VertDrpw_v1 on_drag_motion, edge CP:" << cp->Name() << std::endl;
-	    Elem* edge = cp->GetMan();
+	    MElem* edge = cp->GetMan();
 	    MEdge* medge = edge->GetObj(medge);
 	    assert(medge != NULL);
 	    MCrp* crp = iCompRps.at(edge);
@@ -251,17 +251,17 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		medgecrp->SetCp2Coord(coord);
 		pair = medge->Point1();
 	    }
-	    Elem* epair = pair != NULL ? pair->EBase()->GetObj(epair) : NULL;
+	    MElem* epair = pair != NULL ? pair->EBase()->GetObj(epair) : NULL;
 	    MCompatChecker* mpaircc = pair != NULL ? pair->EBase()->GetObj(mpaircc) : NULL;
 	    // Find the nearest CP and highligh it
 	    int dist = KDistThresholdEdge ;
 	    MCrp* cand = NULL;
-	    Elem* candcp = NULL;
+	    MElem* candcp = NULL;
 	    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 		MCrp* crp = it->second;
 		MCrpConnectable* conn = crp->GetObj(conn);
 		if (conn != NULL) {
-		    Elem* curcp = NULL;
+		    MElem* curcp = NULL;
 		    int dd = conn->GetNearestCp(coord, curcp);
 		    if (dd < dist) {
 			dist = dd;
@@ -344,8 +344,8 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    MCrpConnectable* conn = iEdgeDropCandidate->GetObj(conn);
 	    // Reset highlighting of drop candidate
 	    conn->HighlightCp(iEdgeDropCpCandidate, false);
-	    Elem* targ = iEdgeDropCpCandidate;
-	    Elem* node = iElem->GetNode(iDndReceivedData);
+	    MElem* targ = iEdgeDropCpCandidate;
+	    MElem* node = iElem->GetNode(iDndReceivedData);
 	    GUri uri;
 	    targ->GetRUri(uri, node);
 	    res = true;
@@ -357,7 +357,7 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    // Disconnect edge if it is connected
 	    res = true;
 	    context->drag_finish(res, false, time);
-	    Elem* cp = iElem->GetNode(iDndReceivedData);
+	    MElem* cp = iElem->GetNode(iDndReceivedData);
 	    MProp* prop = cp->GetObj(prop);
 	    //std::cout << "VertDrpw_v1 on_drag_motion, disconnecting CP:" << prop->Value() << std::endl;
 	    change_content(iDndReceivedData, std::string());
@@ -497,7 +497,7 @@ string VertDrp::EType()
     return ":Elem:Vert";
 }
 
-VertDrp::VertDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv)
+VertDrp::VertDrp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv)
 {
     iRp = new VertDrpw_v1(aElem, aCrpProv, aStEnv);
 }
@@ -529,7 +529,7 @@ MDrp::tSigCompSelected VertDrp::SignalCompSelected()
     return iRp->iSigCompSelected;
 }
 
-Elem* VertDrp::Model()
+MElem* VertDrp::Model()
 {
     return iRp->iElem;
 }

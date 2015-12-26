@@ -19,11 +19,11 @@ string ExtdCrp::EType()
     return "Elem:Vert:Extender";
 }
 
-ExtdCrp::ExtdCrp(Elem* aElem, MErpProvider& aErpProv): VertCompRp(aElem), iErpProv(aErpProv), iInt(NULL),
+ExtdCrp::ExtdCrp(MElem* aElem, MErpProvider& aErpProv): VertCompRp(aElem), iErpProv(aErpProv), iInt(NULL),
     iExtPos(MErp::EPos_Left)
 {
     // Prepare data of "Internal"
-    Elem* intr = iElem->GetNode(KIntUri);
+    MElem* intr = iElem->GetNode(KIntUri);
     assert(intr != NULL);
     string pval = intr->Name();
     iInt = iErpProv.CreateRp(*intr, this);
@@ -134,11 +134,11 @@ void ExtdCrp::on_size_request(Gtk::Requisition* aReq)
     aReq->width = max(aReq->width, labe_size.width + 2*KViewElemCrpInnerBorder);
 }
 
-Gtk::Requisition ExtdCrp::GetCpCoord(Elem* aCp)
+Gtk::Requisition ExtdCrp::GetCpCoord(MElem* aCp)
 {
     Gtk::Allocation alc = get_allocation();
     Gtk::Requisition res;
-    Elem* intcp = iElem->GetNode(KIntUri);
+    MElem* intcp = iElem->GetNode(KIntUri);
     assert(intcp != NULL);
     assert(aCp == iElem || aCp == intcp || intcp->IsComp(aCp));
     if (aCp == iElem) {
@@ -157,10 +157,10 @@ Gtk::Requisition ExtdCrp::GetCpCoord(Elem* aCp)
     return res;
 }
 
-int ExtdCrp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
+int ExtdCrp::GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp)
 {
     int res = -1;
-    Elem* ncp = NULL; // Nearest CP
+    MElem* ncp = NULL; // Nearest CP
     Gtk::Requisition cpcoord = GetCpCoord(iElem);
     std::complex<int> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
     int dist = std::abs(sub);
@@ -168,7 +168,7 @@ int ExtdCrp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
 	res = dist;
 	ncp = iElem;
     }
-    Elem* cpcand = NULL;
+    MElem* cpcand = NULL;
     MErpConnectable* erpc = iInt->GetObj(erpc);
     if (erpc != NULL) {
 	// We cannot just pass aCoord to ERp because aCoord is upper window relative, i.e. window of Drp
@@ -189,9 +189,9 @@ int ExtdCrp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
     return res;
 }
 
-void ExtdCrp::HighlightCp(Elem* aCp, bool aSet)
+void ExtdCrp::HighlightCp(MElem* aCp, bool aSet)
 {
-    Elem* intcp = iElem->GetNode(KIntUri);
+    MElem* intcp = iElem->GetNode(KIntUri);
     if (aCp == iElem) {
 	iLabExt->set_state(aSet ? STATE_PRELIGHT: STATE_NORMAL);
     }

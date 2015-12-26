@@ -9,7 +9,7 @@
 #include "mdrp.h"
 #include "merp.h"
 
-class Elem;
+class MElem;
 
 class MRpProvider 
 {
@@ -17,7 +17,7 @@ class MRpProvider
 	// Set studio environment
 	virtual void SetSenv(MSEnv& aEnv) = 0;
 	// Returns confidence level: 0-9
-	virtual int GetConfidence(const Elem& aElem) const = 0;
+	virtual int GetConfidence(const MElem& aElem) const = 0;
 };
 
 // Detail representation provider
@@ -25,7 +25,7 @@ class MDrpProvider: public MRpProvider
 {
     public:
 	// Creates representation
-	virtual MDrp* CreateRp(Elem& aElem) const = 0;
+	virtual MDrp* CreateRp(MElem& aElem) const = 0;
 };
 
 // Manager of CRp
@@ -41,7 +41,7 @@ class MCrpProvider: public MRpProvider
 {
     public:
 	// Creates representation
-	virtual MCrp* CreateRp(Elem& aElem, const MCrpMgr* aMgr) const = 0;
+	virtual MCrp* CreateRp(MElem& aElem, const MCrpMgr* aMgr) const = 0;
 };
 
 // Manager of ERp
@@ -58,7 +58,7 @@ class MErpProvider: public MRpProvider
 {
     public:
 	// Creates representation
-	virtual MErp* CreateRp(Elem& aElem, const MErpMgr* aMgr) const = 0;
+	virtual MErp* CreateRp(MElem& aElem, const MErpMgr* aMgr) const = 0;
 };
 
 #endif

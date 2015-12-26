@@ -10,7 +10,7 @@ class CpCrp: public VertCompRp
 	static const string& Type();
 	static string EType();
     public:
-	CpCrp(Elem* aElem);
+	CpCrp(MElem* aElem);
 	virtual ~CpCrp();
     protected:
 	// From VertCompRp

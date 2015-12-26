@@ -17,7 +17,7 @@ ElemCrpCtxMenu::ElemCrpCtxMenu(): Gtk::Menu()
 
 
 	
-ElemCompHead::ElemCompHead(const Elem& aElem): iElem(aElem)
+ElemCompHead::ElemCompHead(const MElem& aElem): iElem(aElem)
 {
     // Create Name
     iName = new Gtk::Label();
@@ -51,7 +51,7 @@ bool ElemCompHead::on_expose_event(GdkEventExpose* aEvent)
 }
 
 
-ElemCompRp::ElemCompRp(Elem* aElem): iElem(aElem), iHead(NULL), iHighlighted(false), iLArea(MCrp::EUnknown), 
+ElemCompRp::ElemCompRp(MElem* aElem): iElem(aElem), iHead(NULL), iHighlighted(false), iLArea(MCrp::EUnknown), 
     iErr(false), iDnDSupp(EDT_None)
 {
     bool isatt = iElem->IsChromoAttached();
@@ -174,7 +174,7 @@ void ElemCompRp::DoSetHighlighted(bool aSet)
     if (aSet != iHighlighted) {
 	iHighlighted = aSet;
 	if (iHighlighted) {
-	    //std::cout << "Elem [" << iElem->Name() << "]: higligted" << std::endl;
+	    //std::cout << "MElem [" << iElem->Name() << "]: higligted" << std::endl;
 	    set_state(Gtk::STATE_PRELIGHT);
 	    //set_state(Gtk::STATE_SELECTED);
 	}
@@ -250,7 +250,7 @@ string ElemCrp::EType()
     return ":Elem";
 }
 
-ElemCrp::ElemCrp(Elem* aElem)
+ElemCrp::ElemCrp(MElem* aElem)
 {
     iRp = new ElemCompRp(aElem);
 }
@@ -309,7 +309,7 @@ void ElemCrp::SetErroneous(bool aSet)
     iRp->DoSetErroneous(aSet);
 }
 
-Elem* ElemCrp::Model()
+MElem* ElemCrp::Model()
 {
     return iRp->iElem;
 }

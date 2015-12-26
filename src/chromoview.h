@@ -35,8 +35,8 @@ class ChromoTreeClrec: public Gtk::TreeModelColumnRecord
 class ChromoTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource
 {
     public:
-	static Glib::RefPtr<ChromoTreeMdl> create(Elem* aRoot, MEnv* aDesEnv);
-	ChromoTreeMdl(Elem* aRoot, MEnv* aDesEnv);
+	static Glib::RefPtr<ChromoTreeMdl> create(MElem* aRoot, MEnv* aDesEnv);
+	ChromoTreeMdl(MElem* aRoot, MEnv* aDesEnv);
 	virtual ~ChromoTreeMdl();
 	static const ChromoTreeClrec& ColRec() {return iColRec;};
 	// Model events handlers
@@ -73,7 +73,7 @@ class ChromoTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tre
 	// Column record, contains info of column types
 	static const ChromoTreeClrec iColRec;
 	// Root of hier
-	Elem* iRoot;
+	MElem* iRoot;
 	ChromoNode iRnode;
 	// Stamp, is used for securing iterator's associating to model
 	int iStamp;
@@ -83,7 +83,7 @@ class ChromoTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tre
 class ChromoTree: public Gtk::TreeView
 {
     public:
-	typedef sigc::signal<void, Elem*> tSigCompSelected;
+	typedef sigc::signal<void, MElem*> tSigCompSelected;
     public:
 	ChromoTree(MMdlObserver* aDesObs);
 	virtual ~ChromoTree();
@@ -102,8 +102,8 @@ class ChromoTree: public Gtk::TreeView
 	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
 	void on_des_env_changed();
 	void on_des_root_added();
-	void on_comp_changed(Elem* aComp);
-	void on_comp_renamed(Elem*, const std::string&);
+	void on_comp_changed(MElem* aComp);
+	void on_comp_renamed(MElem*, const std::string&);
 	void on_refresh_model();
 	bool on_check_mutid(const TreeModel::iterator& it);
     private:

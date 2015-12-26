@@ -131,9 +131,9 @@ class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeD
 	virtual ~HierTreeMdl();
 	static const HierTreeClrec& ColRec() {return iColRec;};
 	// Model events handlers
-	void on_comp_deleting(Elem* aComp);
-	void on_comp_adding(Elem* aComp);
-	void on_comp_changed(Elem* aComp);
+	void on_comp_deleting(MElem* aComp);
+	void on_comp_adding(MElem* aComp);
+	void on_comp_changed(MElem* aComp);
     protected:
 	// From Gtk::TreeModel
 	virtual Gtk::TreeModelFlags get_flags_vfunc() const;
@@ -156,20 +156,20 @@ class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeD
 	virtual bool drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const;
 	virtual bool drag_data_delete_vfunc(const TreeModel::Path& path);
 	// From MCompsObserver
-	virtual void OnCompDeleting(Elem& aComp, TBool aSoft = true);
-	virtual void OnCompAdding(Elem& aComp);
-	virtual TBool OnCompChanged(Elem& aComp);
+	virtual void OnCompDeleting(MElem& aComp, TBool aSoft = true);
+	virtual void OnCompAdding(MElem& aComp);
+	virtual TBool OnCompChanged(MElem& aComp);
     private:
 	bool IsIterValid(const iterator& iter) const;
 	void UpdateStamp();
-	Elem* get_next_comp(Elem* aComp);
+	MElem* get_next_comp(MElem* aComp);
     private:
 	// Provider provider
 	MEnv* iDesEnv;
 	// Column record, contains info of column types
 	static const HierTreeClrec iColRec;
 	// Root of hier
-	Elem* iRoot;
+	MElem* iRoot;
 	// Stamp, is used for securing iterator's associating to model
 	int iStamp;
 };
@@ -178,8 +178,8 @@ class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeD
 class NaviHier: public Gtk::TreeView
 {
     public:
-	typedef sigc::signal<void, Elem*> tSigCompSelected;
-	typedef sigc::signal<void, Elem*> tSigCompActivated;
+	typedef sigc::signal<void, MElem*> tSigCompSelected;
+	typedef sigc::signal<void, MElem*> tSigCompActivated;
     public:
 	NaviHier(MMdlObserver* aDesObs);
 	virtual ~NaviHier();

@@ -28,7 +28,7 @@ Elem* MdlProv::CreateNode(const string& aType, const string& aName, Elem* aMan, 
 	res = new AVisDrawingElem(aName, aMan, aEnv);
     }
     if (res != NULL) {
-	Elem* parent = GetNode(aType);
+	MElem* parent = GetNode(aType);
 	if (parent != NULL) {
 	    parent->AppendChild(res);
 	}

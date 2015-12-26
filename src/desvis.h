@@ -42,8 +42,8 @@ class AWindow: public Elem, public MVisContainer
     public:
 	static const char* Type() { return "AWindow";};
 	static string PEType();
-	AWindow(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
-	AWindow(Elem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
+	AWindow(const string& aName = string(), MElem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
+	AWindow(MElem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
 	// From MVisContainer
 	virtual Container& GetContainer();
 	virtual void OnChildChanged(Widget* aChild, MVisChild::TPar aPar);
@@ -129,14 +129,14 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
     public:
 	static const char* Type() { return "AVisWidget";};
 	static string PEType();
-	AVisWidget(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL);
-	AVisWidget(Elem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisWidget(const string& aName = string(), MElem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisWidget(MElem* aMan = NULL, MEnv* aEnv = NULL);
 	void Construct();
 	// From MVisChild
 	virtual Widget& GetChild();
 	virtual int GetParInt(TPar);
 	// From MACompsObserver
-	virtual TBool HandleCompChanged(Elem& aContext, Elem& aComp);
+	virtual TBool HandleCompChanged(MElem& aContext, MElem& aComp);
 	// From MDesObserver
 	virtual void OnUpdated();
 	virtual void OnActivated();
@@ -163,7 +163,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	virtual bool HandleButtonRelease(GdkEventButton* aEvent);
 	virtual bool HandleMotion(GdkEventMotion* aEvent);
     private:
-	Elem* Host();
+	MElem* Host();
 	bool GetDataInt(const string& aInpUri, int& aData);
 	bool GetInpState(const string& aInpUri, Gtk::StateType& aData);
 	MVisContainer* GetVisContainer();
@@ -195,8 +195,8 @@ class AVisFixed: public AVisWidget, public MVisContainer
     public:
 	static const char* Type() { return "AVisFixed";};
 	static string PEType();
-	AVisFixed(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL);
-	AVisFixed(Elem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisFixed(const string& aName = string(), MElem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisFixed(MElem* aMan = NULL, MEnv* aEnv = NULL);
 	Fixed* GetFixed();
 	// From MVisContainer
 	virtual Container& GetContainer();
@@ -246,11 +246,11 @@ class AVisDrawing: public AVisWidget, public MVisDrawingArea
     public:
 	static const char* Type() { return "AVisDrawing";};
 	static string PEType();
-	AVisDrawing(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL);
-	AVisDrawing(Elem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisDrawing(const string& aName = string(), MElem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisDrawing(MElem* aMan = NULL, MEnv* aEnv = NULL);
 	VisDrwArea* GetDrawing();
     protected:
-	Elem::TIfRange GetDrawingElems();
+	MElem::TIfRange GetDrawingElems();
     protected:
 	// From AVisWidget
 	virtual void OnUpdated_X(int aOldData);
@@ -276,8 +276,8 @@ class AVisDrawingElem: public AVisWidget, public MVisDrawingElem
     public:
 	static const char* Type() { return "AVisDrawingElem";};
 	static string PEType();
-	AVisDrawingElem(const string& aName = string(), Elem* aMan = NULL, MEnv* aEnv = NULL);
-	AVisDrawingElem(Elem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisDrawingElem(const string& aName = string(), MElem* aMan = NULL, MEnv* aEnv = NULL);
+	AVisDrawingElem(MElem* aMan = NULL, MEnv* aEnv = NULL);
     protected:
 	void OnAllocUpdated(const Rectangle& aOldAlloc);
 	MVisDrawingArea* GetDrawingArea();
@@ -292,7 +292,7 @@ class AVisDrawingElem: public AVisWidget, public MVisDrawingElem
 	// From Base
 	virtual void *DoGetObj(const char *aName);
 	// From MACompsObserver
-	//virtual TBool HandleCompChanged(Elem& aContext, Elem& aComp);
+	//virtual TBool HandleCompChanged(MElem& aContext, MElem& aComp);
 	// From AVisWidget
 	virtual void OnUpdated_X(int aOldData);
 	virtual void OnUpdated_Y(int aOldData);

@@ -22,12 +22,12 @@ class ElemCrpCtxMenu: public Gtk::Menu
 class ElemCompHead: public Gtk::HBox
 {
     public:
-	ElemCompHead(const Elem& aElem);
+	ElemCompHead(const MElem& aElem);
 	virtual ~ElemCompHead();
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
     public:
-	const Elem& iElem;
+	const MElem& iElem;
 	Gtk::Label* iName;
 	Gtk::Label* iParent;
 };
@@ -36,7 +36,7 @@ class ElemCompRp: public Gtk::Layout
 {
     friend class ElemCrp;
     public:
-	ElemCompRp(Elem* aElem);
+	ElemCompRp(MElem* aElem);
 	virtual ~ElemCompRp();
     protected:
 	void DoSetHighlighted(bool aSet);
@@ -58,7 +58,7 @@ class ElemCompRp: public Gtk::Layout
 	bool on_name_button_press(GdkEventButton* event);
 	bool on_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Tooltip>& tooltip);
     protected:
-	Elem* iElem;
+	MElem* iElem;
 	ElemCompHead* iHead;
 	Gtk::Allocation iBodyAlc;
 	MCrp::tSigButtonPressName iSigButtonPressName;
@@ -78,7 +78,7 @@ class ElemCrp: public MCrp
 	static const string& Type();
 	static string EType();
     public:
-	ElemCrp(Elem* aElem);
+	ElemCrp(MElem* aElem);
 	virtual ~ElemCrp();
 	// From MCrp
 	virtual Gtk::Widget& Widget();
@@ -91,7 +91,7 @@ class ElemCrp: public MCrp
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
 	virtual void SetErroneous(bool aSet);
-	virtual Elem* Model();
+	virtual MElem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;
 	virtual void SetDnDTargSupported(int aTarg);

@@ -16,7 +16,7 @@ string IncapsCrp::EType()
     return Syst::PEType() + ":Incaps";
 }
 
-IncapsCrp::IncapsCrp(Elem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): SysCrp(aElem, aMdlObs, aDataUri)
+IncapsCrp::IncapsCrp(MElem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): SysCrp(aElem, aMdlObs, aDataUri)
 {
 }
 
@@ -28,10 +28,10 @@ void IncapsCrp::Construct()
 {
     ElemCompRp::Construct();
     // Add CPs
-    Elem* caps = iElem->GetNode(KCapsUri);
+    MElem* caps = iElem->GetNode(KCapsUri);
     assert(caps != NULL);
-    for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
-	Elem* comp = *it;
+    for (std::vector<MElem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
+	MElem* comp = *it;
 	CpRp* rp = new CpRp(comp);
 	add(*rp);
 	rp->show();

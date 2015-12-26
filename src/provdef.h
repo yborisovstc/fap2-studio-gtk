@@ -14,8 +14,8 @@ class DefDrpProv: public MDrpProvider
 	virtual ~DefDrpProv();
 	//  From MDrpProvider
 	virtual void SetSenv(MSEnv& aEnv);
-	virtual MDrp* CreateRp(Elem& aElem) const;
-	virtual int GetConfidence(const Elem& aElem) const;
+	virtual MDrp* CreateRp(MElem& aElem) const;
+	virtual int GetConfidence(const MElem& aElem) const;
     private:
 	MSEnv* iSenv;
 };
@@ -28,8 +28,8 @@ class DefCrpProv: public MCrpProvider
 	virtual ~DefCrpProv();
 	//  From MCrpProvider
 	virtual void SetSenv(MSEnv& aEnv);
-	virtual MCrp* CreateRp(Elem& aElem, const MCrpMgr* aMgr) const;
-	virtual int GetConfidence(const Elem& aElem) const;
+	virtual MCrp* CreateRp(MElem& aElem, const MCrpMgr* aMgr) const;
+	virtual int GetConfidence(const MElem& aElem) const;
     private:
 	MMdlObserver* iMdlObs;
 	MSEnv* iSenv;
@@ -42,8 +42,8 @@ class DefErpProv: public MErpProvider
 	virtual ~DefErpProv();
 	//  From MErpProvider
 	virtual void SetSenv(MSEnv& aEnv);
-	virtual MErp* CreateRp(Elem& aElem, const MErpMgr* aMgr) const;
-	virtual int GetConfidence(const Elem& aElem) const;
+	virtual MErp* CreateRp(MElem& aElem, const MErpMgr* aMgr) const;
+	virtual int GetConfidence(const MElem& aElem) const;
     private:
 	MMdlObserver* iMdlObs;
 	MSEnv* iSenv;

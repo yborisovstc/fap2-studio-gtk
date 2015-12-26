@@ -22,7 +22,7 @@ class MErp: public MBase
     public:
 	virtual Gtk::Widget& Widget() = 0;
 	virtual void SetHighlighted(bool aSet) = 0;
-	virtual Elem* Model() = 0;
+	virtual MElem* Model() = 0;
 	virtual void SetPos(TPos aPos) = 0;
 	virtual TPos GetPos() const = 0;
 	virtual MCompatChecker::TDir GetMdlDir() const = 0;
@@ -34,11 +34,11 @@ class MErpConnectable
     public:
 	static std::string Type() { return "ECrpConnectable";};
     public:
-	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL) = 0;
+	virtual Gtk::Requisition GetCpCoord(MElem* aCp = NULL) = 0;
 	// Get nearest CP, returns distance to checking positon
-	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp) = 0;
+	virtual int GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp) = 0;
 	// Highlight CP
-	virtual void HighlightCp(Elem* aCp, bool aSet) = 0;
+	virtual void HighlightCp(MElem* aCp, bool aSet) = 0;
 };
 
 

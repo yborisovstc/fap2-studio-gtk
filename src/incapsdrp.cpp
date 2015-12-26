@@ -27,7 +27,7 @@ string CapsCrp::EType()
     return Elem::PEType();
 }
 
-CapsCrp::CapsCrp(Elem* aElem): iElem(aElem)
+CapsCrp::CapsCrp(MElem* aElem): iElem(aElem)
 {
     // set no_window mode
     set_has_window(false);
@@ -103,7 +103,7 @@ void CapsCrp::SetErroneous(bool aSet)
 {
 }
 
-Elem* CapsCrp::Model()
+MElem* CapsCrp::Model()
 {
     return iElem;
 }
@@ -207,7 +207,7 @@ string IncapsDrp::EType()
     return ":Elem:Vert:Syst:Incaps";
 }
 
-IncapsDrp::IncapsDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): SysDrp(aElem, aCrpProv, aStEnv)
+IncapsDrp::IncapsDrp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): SysDrp(aElem, aCrpProv, aStEnv)
 {
 }
 
@@ -217,12 +217,12 @@ IncapsDrp::~IncapsDrp()
 
 void IncapsDrp::Construct()
 {
-    Elem* caps = Model()->GetNode(KCapsUri);
+    MElem* caps = Model()->GetNode(KCapsUri);
     // Add Caps CRP
     mCapsLCrp = new CapsCrp(caps);
     mCapsLCrp->SetLArea(MCrp::EOverlay);
     mCapsLCrp->SetDnDTargSupported(EDT_Node);
-    mCapsLCrp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), mCapsLCrp->Model()));
+    mCapsLCrp->SignalButtonPress().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), mCapsLCrp->Model()));
     Gtk::Widget& capscrpw = mCapsLCrp->Widget();
     add(capscrpw);
     iCompRps[caps] = mCapsLCrp;
@@ -230,16 +230,16 @@ void IncapsDrp::Construct()
     capscrpw.show();
     // Add CRPs from body
     assert(caps != NULL);
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	Elem* comp = *it;
+    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+	MElem* comp = *it;
 	if (comp->IsRemoved()) continue;
 	assert(comp != NULL);
 	if (comp != caps) {
 	    MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	    Gtk::Widget& rpw = rp->Widget();
 	    // Using specific signal for button press instead of standard because some Crps can have complex layout
-	    rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
-	    rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
+	    rp->SignalButtonPress().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
+	    rp->SignalButtonPressName().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
 	    add(rpw);
 	    iCompRps[comp] = rp;
 	    rpw.show();
@@ -247,14 +247,14 @@ void IncapsDrp::Construct()
     }
     // Adding CRPs from Capsule
     // TODO Using Comps is not legal because it doesnt mask removed comps. To consider hide Comps and use uri based iterator here.
-    for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
-	Elem* comp = *it;
+    for (std::vector<MElem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
+	MElem* comp = *it;
 	if (comp->IsRemoved()) continue;
 	assert(comp != NULL);
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	Gtk::Widget& rpw = rp->Widget();
-	rp->SignalButtonPress().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
-	rp->SignalButtonPressName().connect(sigc::bind<Elem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
+	rp->SignalButtonPress().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
+	rp->SignalButtonPressName().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
 	add(rpw);
 	iCompRps[comp] = rp;
 	rpw.show();
@@ -275,16 +275,17 @@ void IncapsDrp::PreLayoutRps()
     }
     // Phase 1: allocating RPs to areas
     // Inputs and outputs - only from Capsule
-    Elem* caps = iElem->GetNode("./Capsule");
-    for (vector<Elem*>::const_iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
-	Elem* comp = *it;
+    MElem* caps = iElem->GetNode("./Capsule");
+    for (vector<MElem*>::const_iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
+	MElem* comp = *it;
 	if (comp->IsRemoved()) continue;
 	MCrp* crp = iCompRps.at(comp);
 	MEdgeCrp* ecrp = crp->GetObj(ecrp);
 	if (ecrp == NULL) {
-	    Elem* mdl = crp->Model();
+	    MElem* mdl = crp->Model();
 	    MCrp::TLArea larea = MCrp::EMain;
-	    MCompatChecker* cc = mdl->GetObj(cc);
+	    //MCompatChecker* cc = mdl->GetObj(cc);
+	    MCompatChecker* cc = (MCompatChecker*) mdl->GetSIfiC(MCompatChecker::Type());
 	    if (cc != NULL) {
 		MCompatChecker::TDir dir =  cc->GetDir();
 		larea = dir == MCompatChecker::EInp ? MCrp::ELeft : MCrp::ERight;
@@ -363,20 +364,20 @@ void IncapsDrp::on_size_request(Gtk::Requisition* aRequisition)
     SysDrp::on_size_request(aRequisition);
 }
 
-Elem* IncapsDrp::GetCompOwning(Elem* aElem)
+MElem* IncapsDrp::GetCompOwning(MElem* aElem)
 {
-    Elem* res = NULL;
-    Elem* caps = iElem->GetNode(KCapsUri);
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
-	Elem* comp = *it;
+    MElem* res = NULL;
+    MElem* caps = iElem->GetNode(KCapsUri);
+    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
+	MElem* comp = *it;
 	if (comp->IsRemoved()) continue;
 	if (aElem == comp || comp != caps && comp->IsComp(aElem)) {
 	    res = comp;
 	}
     }
     if (res == NULL) {
-	for (std::vector<Elem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end() && res == NULL; it++) {
-	    Elem* comp = *it;
+	for (std::vector<MElem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end() && res == NULL; it++) {
+	    MElem* comp = *it;
 	    if (comp->IsRemoved()) continue;
 	    if (aElem == comp || comp->IsComp(aElem)) {
 		res = comp;

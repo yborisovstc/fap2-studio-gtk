@@ -13,17 +13,15 @@ string AWindow::PEType()
     return Elem::PEType() + GUri::KParentSep + Type();
 }
 
-AWindow::AWindow(const string& aName, Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
+AWindow::AWindow(const string& aName, MElem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
     Elem(aName, aMan, aEnv), iSDesEnv(aSDesEnv)
 {
-    SetEType(Type(), Elem::PEType());
     SetParent(Type());
 }
 
-AWindow::AWindow(Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
+AWindow::AWindow(MElem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
     Elem(Type(), aMan, aEnv), iSDesEnv(aSDesEnv)
 {
-    SetEType(Elem::PEType());
     SetParent(Elem::PEType());
 }
 
@@ -165,10 +163,9 @@ string AVisWidget::PEType()
 bool AVisWidget::mInit = false;
 AVisWidget::tStatesMap  AVisWidget::mStatesMap;
 
-AVisWidget::AVisWidget(const string& aName, Elem* aMan, MEnv* aEnv): Elem(aName, aMan, aEnv),
+AVisWidget::AVisWidget(const string& aName, MElem* aMan, MEnv* aEnv): Elem(aName, aMan, aEnv),
     iWidget(NULL), iX(0), iY(0), iH(10), iW(10)
 {
-    SetEType(Type(), Elem::PEType());
     SetParent(Type());
     iParProvW.SetData(ParentSizeProv::ED_W, this);
     iParProvH.SetData(ParentSizeProv::ED_H, this);
@@ -194,10 +191,9 @@ AVisWidget::AVisWidget(const string& aName, Elem* aMan, MEnv* aEnv): Elem(aName,
     }
 }
 
-AVisWidget::AVisWidget(Elem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
+AVisWidget::AVisWidget(MElem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
     iWidget(NULL), iX(0), iY(0), iH(10), iW(10)
 {
-    SetEType(Elem::PEType());
     SetParent(Elem::PEType());
     iParProvW.SetData(ParentSizeProv::ED_W, this);
     iParProvH.SetData(ParentSizeProv::ED_H, this);
@@ -254,8 +250,8 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	res = this;
     }
     else if (strcmp(aName.c_str(), MDIntGet::Type()) == 0) {
-	Elem* cpw = GetNode("./../../Prov_PW");
-	Elem* cph = GetNode("./../../Prov_PH");
+	MElem* cpw = GetNode("./../../Prov_PW");
+	MElem* cph = GetNode("./../../Prov_PH");
 	if (aCtx->IsInContext(cpw)) {
 	    res = (MDIntGet*) &iParProvW;
 	}
@@ -265,12 +261,12 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
     }
     else if (strcmp(aName.c_str(), MDVarGet::Type()) == 0 || strcmp(aName.c_str(), MDtGet<Sdata<int> >::Type()) == 0) {
 	bool isdvar = strcmp(aName.c_str(), MDVarGet::Type()) == 0;
-	Elem* cpw = GetNode("./../../Prov_PW");
-	Elem* cph = GetNode("./../../Prov_PH");
-	Elem* bpe = GetNode("./../../BtnPressEvent");
-	Elem* bre = GetNode("./../../BtnReleaseEvent");
-	Elem* mte = GetNode("./../../MotionEvent");
-	Elem* alc = GetNode("./../../Allocation");
+	MElem* cpw = GetNode("./../../Prov_PW");
+	MElem* cph = GetNode("./../../Prov_PH");
+	MElem* bpe = GetNode("./../../BtnPressEvent");
+	MElem* bre = GetNode("./../../BtnReleaseEvent");
+	MElem* mte = GetNode("./../../MotionEvent");
+	MElem* alc = GetNode("./../../Allocation");
 	if (aCtx->IsInContext(cpw)) {
 	    if (isdvar) {
 		res = (MDVarGet*) &iParProvVarW;
@@ -329,7 +325,7 @@ TInt AVisWidget::GetParData(ParentSize::TData aData)
     // info of local connection change, but not the whole connection chain change. Ref grayb uc_010
     Container* parent = iWidget != NULL ? iWidget->get_parent() : NULL;
     if (parent == NULL) {
-	Elem* eprntcp = GetNode("./../../Child");
+	MElem* eprntcp = GetNode("./../../Child");
 	if (eprntcp != NULL) {
 	    MVisContainer* mcont = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
 	    if (mcont != NULL) {
@@ -360,7 +356,7 @@ int AVisWidget::GetParInt(TPar aPar)
 MVisContainer* AVisWidget::GetVisContainer()
 {
     MVisContainer* res = NULL;
-    Elem* eprntcp = Host()->GetNode("./Child");
+    MElem* eprntcp = Host()->GetNode("./Child");
     if (eprntcp != NULL) {
 	res = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
     }
@@ -370,10 +366,10 @@ MVisContainer* AVisWidget::GetVisContainer()
     return res;
 }
 
-TBool AVisWidget::HandleCompChanged(Elem& aContext, Elem& aComp)
+TBool AVisWidget::HandleCompChanged(MElem& aContext, MElem& aComp)
 {
     TBool res = ETrue;
-    Elem* eprntcp = aContext.GetNode("./Child");
+    MElem* eprntcp = aContext.GetNode("./Child");
     if (eprntcp != NULL) {
 	if (eprntcp == &aComp || eprntcp->IsComp(&aComp)) {
 	    MVisContainer* mcont = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
@@ -401,7 +397,7 @@ TBool AVisWidget::HandleCompChanged(Elem& aContext, Elem& aComp)
     return res;
 }
 
-Elem* AVisWidget::Host() 
+MElem* AVisWidget::Host() 
 {
     return iMan->GetMan();
 }
@@ -410,7 +406,7 @@ Elem* AVisWidget::Host()
 bool AVisWidget::GetDataInt(const string& aInpUri, int& aData) 
 {
     bool res = false;
-    Elem* einp = Host()->GetNode(aInpUri);
+    MElem* einp = Host()->GetNode(aInpUri);
     if (einp != NULL) {
 	MDIntGet* mdata = (MDIntGet*) einp->GetSIfiC(MDIntGet::Type(), this);
 	if (mdata != NULL) {
@@ -442,7 +438,7 @@ bool AVisWidget::GetDataInt(const string& aInpUri, int& aData)
 bool AVisWidget::GetInpState(const string& aInpUri, Gtk::StateType& aData)
 {
     bool res = false;
-    Elem* einp = Host()->GetNode(aInpUri);
+    MElem* einp = Host()->GetNode(aInpUri);
     if (einp != NULL) {
 	// Trying variable data
 	MDVarGet* mvget = (MDVarGet*) einp->GetSIfiC(MDVarGet::Type(), this);
@@ -600,11 +596,11 @@ bool AVisWidget::HandleButtonRelease(GdkEventButton* aEvent)
 }
 
 void AVisWidget::ActivateDeps(const string& aUri) {
-    Elem* eobs = GetNode(aUri);
+    MElem* eobs = GetNode(aUri);
     __ASSERT(eobs != NULL);
     RqContext ctx(this);
     TIfRange range = eobs->GetIfi(MDesObserver::Type());
-    for (IfIter it = range.first; it != range.second; it++) {
+    for (TIfIter it = range.first; it != range.second; it++) {
 	MDesObserver* mobs = (MDesObserver*) (*it);
 	if (mobs != NULL) {
 	    mobs->OnUpdated();
@@ -640,9 +636,8 @@ string AVisFixed::PEType()
     return AVisWidget::PEType() + GUri::KParentSep + Type();
 }
 
-AVisFixed::AVisFixed(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidget(aName, aMan, aEnv)
+AVisFixed::AVisFixed(const string& aName, MElem* aMan, MEnv* aEnv): AVisWidget(aName, aMan, aEnv)
 {
-    SetEType(Type(), AVisWidget::PEType());
     SetParent(Type());
     Fixed* fx = new Fixed(); 
     fx->set_reallocate_redraws(true);
@@ -650,9 +645,8 @@ AVisFixed::AVisFixed(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidget(aN
     iWidget->show();
 }
 
-AVisFixed::AVisFixed(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
+AVisFixed::AVisFixed(MElem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
 {
-    SetEType(AVisWidget::PEType());
     SetParent(AVisWidget::PEType());
     Fixed* fx = new Fixed(); 
     fx->set_reallocate_redraws(true);
@@ -706,10 +700,10 @@ bool VisDrwArea::on_expose_event(GdkEventExpose* aEvent)
     drw->draw_rectangle(gc, true, 0, 0, alc.get_width() - 1, alc.get_height() - 1);
     */
     //mHost->Logger()->Write(MLogRec::EInfo, mHost, "on_expose_event");
-    Elem* eobs = mHost->GetNode("./../../DrawingArea");
+    MElem* eobs = mHost->GetNode("./../../DrawingArea");
     __ASSERT(eobs != NULL);
-    Elem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
-    for (Elem::IfIter it = range.first; it != range.second; it++) {
+    MElem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
+    for (MIfProv::TIfIter it = range.first; it != range.second; it++) {
 	MVisDrawingElem* mobs = (MVisDrawingElem*) (*it);
 	if (mobs != NULL) {
 	    mobs->OnExpose(aEvent);
@@ -735,9 +729,8 @@ string AVisDrawing::PEType()
     return AVisWidget::PEType() + GUri::KParentSep + Type();
 }
 
-AVisDrawing::AVisDrawing(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidget(aName, aMan, aEnv)
+AVisDrawing::AVisDrawing(const string& aName, MElem* aMan, MEnv* aEnv): AVisWidget(aName, aMan, aEnv)
 {
-    SetEType(Type(), AVisWidget::PEType());
     SetParent(Type());
     iWidget = new VisDrwArea(this); 
     iWidget->set_size_request(iW, iH);
@@ -746,9 +739,8 @@ AVisDrawing::AVisDrawing(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidge
     Construct();
 }
 
-AVisDrawing::AVisDrawing(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
+AVisDrawing::AVisDrawing(MElem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
 {
-    SetEType(AVisWidget::PEType());
     SetParent(AVisWidget::PEType());
     iWidget = new VisDrwArea(this); 
     iWidget->set_size_request(iW, iH);
@@ -770,11 +762,11 @@ void *AVisDrawing::DoGetObj(const char *aName)
     return res;
 }
 
-Elem::TIfRange AVisDrawing::GetDrawingElems()
+MElem::TIfRange AVisDrawing::GetDrawingElems()
 {
-    Elem* eobs = GetNode("./../../DrawingArea");
+    MElem* eobs = GetNode("./../../DrawingArea");
     __ASSERT(eobs != NULL);
-    Elem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
+    MElem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
     return range;
 }
 
@@ -847,8 +839,8 @@ bool AVisDrawing::HandleButtonPress(GdkEventButton* aEvent)
 {
     bool res = AVisWidget::HandleButtonPress(aEvent);
     if (!res) {
-	Elem::TIfRange range = GetDrawingElems();
-	for (Elem::IfIter it = range.first; it != range.second; it++) {
+	MElem::TIfRange range = GetDrawingElems();
+	for (MElem::TIfIter it = range.first; it != range.second; it++) {
 	    MVisDrawingElem* mobs = (MVisDrawingElem*) (*it);
 	    if (mobs != NULL) {
 		mobs->OnAreaButtonPress(aEvent);
@@ -862,8 +854,8 @@ bool AVisDrawing::HandleButtonRelease(GdkEventButton* aEvent)
 {
     bool res = AVisWidget::HandleButtonRelease(aEvent);
     if (!res) {
-	Elem::TIfRange range = GetDrawingElems();
-	for (Elem::IfIter it = range.first; it != range.second; it++) {
+	MElem::TIfRange range = GetDrawingElems();
+	for (MElem::TIfIter it = range.first; it != range.second; it++) {
 	    MVisDrawingElem* mobs = (MVisDrawingElem*) (*it);
 	    if (mobs != NULL) {
 		mobs->OnAreaButtonRelease(aEvent);
@@ -877,8 +869,8 @@ bool AVisDrawing::HandleMotion(GdkEventMotion* aEvent)
 {
     bool res = AVisWidget::HandleMotion(aEvent);
     if (!res) {
-	Elem::TIfRange range = GetDrawingElems();
-	for (Elem::IfIter it = range.first; it != range.second; it++) {
+	MElem::TIfRange range = GetDrawingElems();
+	for (MElem::TIfIter it = range.first; it != range.second; it++) {
 	    MVisDrawingElem* mobs = (MVisDrawingElem*) (*it);
 	    if (mobs != NULL) {
 		mobs->OnAreaMotion(aEvent);
@@ -896,15 +888,13 @@ string AVisDrawingElem::PEType()
     return AVisWidget::PEType() + GUri::KParentSep + Type();
 }
 
-AVisDrawingElem::AVisDrawingElem(const string& aName, Elem* aMan, MEnv* aEnv): AVisWidget(aName, aMan, aEnv)
+AVisDrawingElem::AVisDrawingElem(const string& aName, MElem* aMan, MEnv* aEnv): AVisWidget(aName, aMan, aEnv)
 {
-    SetEType(Type(), AVisWidget::PEType());
     SetParent(Type());
 }
 
-AVisDrawingElem::AVisDrawingElem(Elem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
+AVisDrawingElem::AVisDrawingElem(MElem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
 {
-    SetEType(AVisWidget::PEType());
     SetParent(AVisWidget::PEType());
 }
 
@@ -958,7 +948,7 @@ void AVisDrawingElem::OnUpdated_H(int aOldData)
 MVisDrawingArea* AVisDrawingElem::GetDrawingArea()
 {
     MVisDrawingArea* res = NULL;
-    Elem* edacp = GetNode("./../../DrawingElem");
+    MElem* edacp = GetNode("./../../DrawingElem");
     if (edacp != NULL) {
 	res = (MVisDrawingArea*) edacp->GetSIfiC(MVisDrawingArea::Type(), this);
     }
@@ -1004,11 +994,11 @@ bool AVisDrawingElem::OnAreaMotion(GdkEventMotion* aEvent)
 }
 
 /*
-TBool AVisDrawingElem::HandleCompChanged(Elem& aContext, Elem& aComp)
+TBool AVisDrawingElem::HandleCompChanged(MElem& aContext, MElem& aComp)
 {
     TBool res = AVisWidget::HandleCompChanged(aContext, aComp);
     if (res) {
-	Elem* edecp = aContext.GetNode("./DrawingElem");
+	MElem* edecp = aContext.GetNode("./DrawingElem");
 	if (edecp != NULL) {
 	    if (edecp == &aComp || edecp->IsComp(&aComp)) {
 		MVisDrawingArea* mde = (MVisDrawingArea*) edecp->GetSIfiC(MVisDrawingArea::Type(), this);

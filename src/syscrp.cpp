@@ -7,7 +7,7 @@
 #include <gtkmm/toolitem.h>
 
 //  Connection point representation
-CpRp::CpRp(Elem* aCp): iElem(aCp)
+CpRp::CpRp(MElem* aCp): iElem(aCp)
 {
     // Set text from CP name
     set_text(iElem->Name());
@@ -35,7 +35,8 @@ void CpRp::on_size_request(Gtk::Requisition* aRequisition)
 MCompatChecker::TDir CpRp::GetDir() const
 {
     MCompatChecker::TDir res = MCompatChecker::ERegular;
-    MCompatChecker* cc = iElem->GetObj(cc);
+    //MCompatChecker* cc = iElem->GetObj(cc);
+    MCompatChecker* cc = (MCompatChecker*) iElem->GetSIfiC(MCompatChecker::Type());
     if (cc != NULL) {
 	res = cc->GetDir();
     }
@@ -43,7 +44,7 @@ MCompatChecker::TDir CpRp::GetDir() const
 }
 
 //  Data (property) representation
-DataRp::DataRp(Elem* aModel, const string& aDataName, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs),
+DataRp::DataRp(MElem* aModel, const string& aDataName, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs),
     iDataName(aDataName)
 {
     // Set text from Value
@@ -59,7 +60,7 @@ DataRp::DataRp(Elem* aModel, const string& aDataName, MMdlObserver* aMdlObs): iE
     iMdlObs->SignalContentChanged().connect(sigc::mem_fun(*this, &DataRp::on_comp_changed));
 }
 
-void DataRp::on_comp_changed(Elem* aComp)
+void DataRp::on_comp_changed(MElem* aComp)
 {
     if (aComp == iElem) {
 	//std::cout << "DataRp::on_comp_changed" << std::endl;
@@ -90,7 +91,7 @@ string SysCrp::EType()
     return Syst::PEType();
 }
 
-SysCrp::SysCrp(Elem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): VertCompRp(aElem), iDataUri(aDataUri),
+SysCrp::SysCrp(MElem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): VertCompRp(aElem), iDataUri(aDataUri),
     iMdlObs(aMdlObs)
 {
 }
@@ -98,8 +99,8 @@ SysCrp::SysCrp(Elem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): Vert
 void SysCrp::Construct()
 {
     // Add CPs
-    for (std::vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	Elem* comp = *it;
+    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+	MElem* comp = *it;
 	CpRp* rp = new CpRp(comp);
 	add(*rp);
 	rp->show();
@@ -118,7 +119,7 @@ SysCrp::~SysCrp()
 void SysCrp::AddDataRp()
 {
     if (!iDataUri.empty()) {
-	Elem* data = iElem->GetNode(iDataUri);
+	MElem* data = iElem->GetNode(iDataUri);
 	if (data != NULL) {
 	    DataRp* rp = new DataRp(data, "Data", iMdlObs);
 	    add(*rp);
@@ -126,13 +127,13 @@ void SysCrp::AddDataRp()
 	    iDataRps[data] = rp;
 	}    
     }
-    Elem* vdata = iElem->GetNode("./ViewData");
+    MElem* vdata = iElem->GetNode("./ViewData");
     if (vdata != NULL) {
-	for (vector<Elem*>::iterator it = vdata->Comps().begin(); it != vdata->Comps().end(); it++) {
-	    Elem* comp = *it;
+	for (vector<MElem*>::iterator it = vdata->Comps().begin(); it != vdata->Comps().end(); it++) {
+	    MElem* comp = *it;
 	    MProp* pcomp = comp->GetObj(pcomp);
 	    if (pcomp != NULL) {
-		Elem* data = comp->GetNode(pcomp->Value());
+		MElem* data = comp->GetNode(pcomp->Value());
 		if (data != NULL) {
 		    DataRp* rp = new DataRp(data, comp->Name(), iMdlObs);
 		    add(*rp);
@@ -162,7 +163,7 @@ Gtk::Widget& SysCrp::Widget()
     return *this;
 }
 
-Gtk::Requisition SysCrp::GetCpCoord(Elem* aCp)
+Gtk::Requisition SysCrp::GetCpCoord(MElem* aCp)
 {
     Gtk::Allocation alc = get_allocation();
     Gtk::Requisition res;
@@ -183,12 +184,12 @@ Gtk::Requisition SysCrp::GetCpCoord(Elem* aCp)
     return res;
 }
 
-int SysCrp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
+int SysCrp::GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp)
 {
     int res = -1;
-    Elem* ncp = NULL; // Nearest CP
+    MElem* ncp = NULL; // Nearest CP
     for (tCpRps::iterator it = iCpRps.begin(); it != iCpRps.end(); it++) {
-	Elem* cp = it->first;
+	MElem* cp = it->first;
 	Gtk::Requisition cpcoord = GetCpCoord(cp);
 	std::complex<float> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
 	int dist = std::abs(sub);
@@ -203,9 +204,9 @@ int SysCrp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
     return res;
 }
 
-void SysCrp::HighlightCp(Elem* aCp, bool aSet)
+void SysCrp::HighlightCp(MElem* aCp, bool aSet)
 {
-    Elem* cp = aCp;
+    MElem* cp = aCp;
     assert(cp != NULL && iCpRps.count(cp) > 0);
     Gtk::Widget* cprp = iCpRps.at(cp);
     if (aSet) {

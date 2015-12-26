@@ -48,7 +48,7 @@ void DesObserver::SetDes(MEnv* aDesEnv)
     if (aDesEnv == NULL) {
 	if (iDesEnv != NULL) {
 	    iDesEnv->Logger()->RemoveLogObserver(this);
-	    Elem* root = iDesEnv->Root();
+	    MElem* root = iDesEnv->Root();
 	    root->SetObserver(NULL);
 	    iDesEnv = NULL;
 	}
@@ -56,7 +56,7 @@ void DesObserver::SetDes(MEnv* aDesEnv)
     else {
 	iDesEnv = aDesEnv;
 	iDesEnv->Logger()->AddLogObserver(this);
-	Elem* root = iDesEnv->Root();
+	MElem* root = iDesEnv->Root();
 	if (root != NULL) {
 	    root->SetObserver(this);
 	}
@@ -70,7 +70,7 @@ void DesObserver::SetDes(MEnv* aDesEnv)
 void DesObserver::UpdateDesRootObserver()
 {
     if (iDesEnv != NULL) {
-	Elem* root = iDesEnv->Root();
+	MElem* root = iDesEnv->Root();
 	if (root != NULL) {
 	    root->SetObserver(this);
 	    iSigSystemCreated.emit();
@@ -157,38 +157,38 @@ MMdlObserver::tSigLogAdded DesObserver::SignalLogAdded()
     return iSigLogAdded;
 }
 
-void DesObserver::OnCompDeleting(Elem& aComp, TBool aSoft)
+void DesObserver::OnCompDeleting(MElem& aComp, TBool aSoft)
 {
     iSigCompDeleted.emit(&aComp);
     SetModelChanged();
 }
 
-void DesObserver::OnCompAdding(Elem& aComp)
+void DesObserver::OnCompAdding(MElem& aComp)
 {
     iSigCompAdded.emit(&aComp);
     SetModelChanged();
 }
 
-TBool DesObserver::OnCompChanged(Elem& aComp)
+TBool DesObserver::OnCompChanged(MElem& aComp)
 {
     iSigCompChanged.emit(&aComp);
     SetModelChanged();
     return true;
 }
 
-TBool DesObserver::OnCompRenamed(Elem& aComp, const string& aOldName)
+TBool DesObserver::OnCompRenamed(MElem& aComp, const string& aOldName)
 {
     iSigCompRenamed.emit(&aComp, aOldName);
     SetModelChanged();
 }
 
-TBool DesObserver::OnContentChanged(Elem& aComp)
+TBool DesObserver::OnContentChanged(MElem& aComp)
 {
     iSigContentChanged.emit(&aComp);
     return true;
 }
 
-void DesObserver::OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, Elem* aNode, const std::string& aContent, int aMutId)
+void DesObserver::OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, const std::string& aContent, int aMutId)
 {
     iSigLogAdded.emit(aTimestamp, aCtg, aNode, aMutId,  aContent);
 }
@@ -304,7 +304,7 @@ void App::on_setting_changed_disable_opt()
 {
 }
 
-void App::on_comp_selected(Elem* aComp)
+void App::on_comp_selected(MElem* aComp)
 {
     iLogView->Select(aComp, MLogRec::EErr);
 }
@@ -547,7 +547,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
 	delete iEnv;
 	iEnv = NULL;
     }
-    iEnv = new Env("DesEnv", aFileName, iLogFileName);
+    iEnv = new Env(aFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
     iEnv->ImpsMgr()->AddImportsPaths(KModulesPath);
     iEnv->ChMgr()->SetLim(iChromoLim);

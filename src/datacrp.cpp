@@ -6,7 +6,7 @@
 using namespace Gtk;
 
 //  Connection point representation
-ValueRp::ValueRp(Elem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs)
+ValueRp::ValueRp(MElem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs)
 {
     // Set text from Value
     MProp* prop = iElem->GetObj(prop);
@@ -16,7 +16,7 @@ ValueRp::ValueRp(Elem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aM
     iMdlObs->SignalContentChanged().connect(sigc::mem_fun(*this, &ValueRp::on_comp_changed));
 }
 
-void ValueRp::on_comp_changed(Elem* aComp)
+void ValueRp::on_comp_changed(MElem* aComp)
 {
     if (aComp == iElem) {
 	//std::cout << "DataRp::on_comp_changed" << std::endl;
@@ -43,7 +43,7 @@ string DataCrp::EType()
     return IncapsCrp::EType() + GUri::KParentSep + KModelName;
 }
 
-DataCrp::DataCrp(Elem* aElem, MMdlObserver* aMdlObs): IncapsCrp(aElem, aMdlObs), iValue(NULL)
+DataCrp::DataCrp(MElem* aElem, MMdlObserver* aMdlObs): IncapsCrp(aElem, aMdlObs), iValue(NULL)
 {
 }
 
@@ -57,7 +57,7 @@ void DataCrp::Construct()
     // Base construction
     IncapsCrp::Construct();
     // Add CPs
-    Elem* val = iElem->GetNode(KValueUri);
+    MElem* val = iElem->GetNode(KValueUri);
     assert(val != NULL);
     iValue = new ValueRp(val, iMdlObs);
     add(*iValue);

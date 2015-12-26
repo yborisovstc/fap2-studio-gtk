@@ -752,8 +752,8 @@ int HierTreeMdl::iter_n_root_children_vfunc() const
 bool HierTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
 {
     bool res = false;
-    Elem* comp = NULL;
-    Elem* mgr = iRoot;
+    MElem* comp = NULL;
+    MElem* mgr = iRoot;
     unsigned depth = path.size();
     //Glib::ArrayHandle<int> indc = path.get_indices(); 
     vector<int> indcv = path.get_indices();
@@ -776,8 +776,8 @@ bool HierTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
 Gtk::TreeModel::Path HierTreeMdl::get_path_vfunc(const iterator& iter) const
 {
     Path path;
-    Elem* mgr = NULL;
-    Elem* comp = (Elem*) iter.gobj()->user_data;
+    MElem* mgr = NULL;
+    MElem* comp = (MElem*) iter.gobj()->user_data;
     // By depth
     do {
 	mgr = comp->GetMan();
@@ -816,7 +816,7 @@ void HierTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column, G
 	    if (column == HierTreeClrec::KCol_Name) {
 		Glib::Value<Glib::ustring> sval;
 		sval.init(coltype);
-		Elem* node = (Elem*) iter.gobj()->user_data;
+		MElem* node = (MElem*) iter.gobj()->user_data;
 		//string data = node->EType() + ":" + node->Name();
 		string data = node->Name();
 		sval.set(data.c_str());
@@ -824,9 +824,9 @@ void HierTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column, G
 		value = sval;
 	    }
 	    else if (column == HierTreeClrec::KCol_Elem) {
-		Glib::Value<Elem*> sval;
+		Glib::Value<MElem*> sval;
 		sval.init(coltype);
-		Elem* data = (Elem*) iter.gobj()->user_data;
+		MElem* data = (MElem*) iter.gobj()->user_data;
 		sval.set(data);
 		value.init(coltype);
 		value = sval;
@@ -835,10 +835,10 @@ void HierTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column, G
     }
 }
 
-Elem* HierTreeMdl::get_next_comp(Elem* aComp) 
+MElem* HierTreeMdl::get_next_comp(MElem* aComp) 
 {
-    Elem* res = NULL;
-    Elem* mgr = aComp->GetMan();
+    MElem* res = NULL;
+    MElem* mgr = aComp->GetMan();
     if (mgr != NULL) {
 	int ct = 0;
 	for (; ct < mgr->Comps().size(); ct++) {
@@ -858,8 +858,8 @@ bool HierTreeMdl::iter_next_vfunc(const iterator& iter, iterator& iter_next) con
     bool res = false;
     iter_next = iterator();
     if (IsIterValid(iter)) {
-	Elem* node = (Elem*) iter.gobj()->user_data;
-	Elem* next = ((HierTreeMdl*) this)->get_next_comp(node);
+	MElem* node = (MElem*) iter.gobj()->user_data;
+	MElem* next = ((HierTreeMdl*) this)->get_next_comp(node);
 	if (next != NULL) {
 	    iter_next.set_stamp(iStamp);
 	    iter_next.gobj()->user_data = next;
@@ -873,7 +873,7 @@ int HierTreeMdl::iter_n_children_vfunc(const iterator& iter) const
 {
     int res = 0;
     if (IsIterValid(iter)) {
-	Elem* node = (Elem*) iter.gobj()->user_data;
+	MElem* node = (MElem*) iter.gobj()->user_data;
 	res = node->Comps().size();
     }
     return res;
@@ -888,7 +888,7 @@ bool HierTreeMdl::iter_has_child_vfunc(const iterator& iter) const
 {
     bool res = false;
     if (IsIterValid(iter)) {
-	Elem* node = (Elem*) iter.gobj()->user_data;
+	MElem* node = (MElem*) iter.gobj()->user_data;
 	res = (node->Comps().size() > 0);
     }
     return res;
@@ -898,7 +898,7 @@ bool HierTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterator& 
 {
     bool res = false;
     if (IsIterValid(parent)) {
-	Elem* node = (Elem*) parent.gobj()->user_data;
+	MElem* node = (MElem*) parent.gobj()->user_data;
 	if (n < node->Comps().size()) {
 	    iter.set_stamp(iStamp);
 	    iter.gobj()->user_data = node->Comps().at(n);
@@ -924,7 +924,7 @@ bool HierTreeMdl::iter_parent_vfunc(const iterator& child, iterator& iter) const
     bool res = false;
     bool valid = IsIterValid(child);
     if (valid) {
-	Elem* comp = (Elem*) child.gobj()->user_data;
+	MElem* comp = (MElem*) child.gobj()->user_data;
 	if (comp->GetMan() != NULL) {
 	    iter.set_stamp(iStamp);
 	    iter.gobj()->user_data = comp->GetMan();
@@ -945,7 +945,7 @@ bool HierTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::Selectio
     // Set selection. This will evolve DnD process 
     iterator iter((TreeModel*)this);
     bool ires = get_iter_vfunc(path, iter);
-    Elem* node = (Elem*) (*iter).get_value(ColRec().elem);
+    MElem* node = (MElem*) (*iter).get_value(ColRec().elem);
     GUri uri;
     node->GetUri(uri);
     //selection_data.set_text(uri.GetUri());
@@ -954,7 +954,7 @@ bool HierTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::Selectio
     //
     /*
        int row_index = path[0];
-       Elem* node = iRoot->Comps().at(row_index);
+       MElem* node = iRoot->Comps().at(row_index);
        string data = node->Name();
        selection_data.set_text(data);
        */
@@ -967,7 +967,7 @@ bool HierTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
     return true;
 }
 
-void HierTreeMdl::OnCompDeleting(Elem& aComp, TBool aSoft)
+void HierTreeMdl::OnCompDeleting(MElem& aComp, TBool aSoft)
 {
     //std::cout << "HierTreeMdl::OnCompDeleting: [" << aComp.Name() << "]" << std::endl;
     //UpdateStamp();
@@ -978,7 +978,7 @@ void HierTreeMdl::OnCompDeleting(Elem& aComp, TBool aSoft)
     row_deleted(path);
 }
 
-void HierTreeMdl::OnCompAdding(Elem& aComp)
+void HierTreeMdl::OnCompAdding(MElem& aComp)
 {
     //std::cout << "HierTreeMdl::OnCompAdding: [" << aComp.Name() << "]" << std::endl;
     //UpdateStamp();
@@ -989,29 +989,29 @@ void HierTreeMdl::OnCompAdding(Elem& aComp)
     iter.gobj()->user_data = &aComp;
     Path path = get_path_vfunc(iter);
     row_inserted(path, iter);
-    for (vector<Elem*>::iterator it = aComp.Comps().begin(); it != aComp.Comps().end(); it++) {
+    for (vector<MElem*>::iterator it = aComp.Comps().begin(); it != aComp.Comps().end(); it++) {
 	OnCompAdding(*(*it));
     }
 }
 
-TBool HierTreeMdl::OnCompChanged(Elem& aComp)
+TBool HierTreeMdl::OnCompChanged(MElem& aComp)
 {
     //std::cout << "HierTreeMdl::OnCompChanged" << std::endl;
     UpdateStamp();
     return true;
 }
 
-void HierTreeMdl::on_comp_deleting(Elem* aComp)
+void HierTreeMdl::on_comp_deleting(MElem* aComp)
 {
     OnCompDeleting(*aComp);
 }
 
-void HierTreeMdl::on_comp_adding(Elem* aComp)
+void HierTreeMdl::on_comp_adding(MElem* aComp)
 {
     OnCompAdding(*aComp);
 }
 
-void HierTreeMdl::on_comp_changed(Elem* aComp)
+void HierTreeMdl::on_comp_changed(MElem* aComp)
 {
     OnCompChanged(*aComp);
 }
@@ -1138,7 +1138,7 @@ void NaviHier::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>& context, G
 void NaviHier::on_row_activated(const TreeModel::Path& path, TreeViewColumn* column)
 {
     TreeModel::iterator iter = get_model()->get_iter(path);
-    Elem* node = (Elem*) (*iter).get_value(HierTreeMdl::ColRec().elem);
+    MElem* node = (MElem*) (*iter).get_value(HierTreeMdl::ColRec().elem);
     iSigCompActivated.emit(node);
 }
 

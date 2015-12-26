@@ -9,7 +9,7 @@
 
 const ChromoTreeClrec ChromoTreeMdl::iColRec;
 
-ChromoTreeMdl::ChromoTreeMdl(Elem* aRoot, MEnv* aDesEnv): Glib::ObjectBase(typeid(ChromoTreeMdl)), Glib::Object(), Gtk::TreeModel(), 
+ChromoTreeMdl::ChromoTreeMdl(MElem* aRoot, MEnv* aDesEnv): Glib::ObjectBase(typeid(ChromoTreeMdl)), Glib::Object(), Gtk::TreeModel(), 
     iDesEnv(aDesEnv), iStamp(55), iRoot(aRoot), iRnode(iRoot->Chromos().Root())
 {
 }
@@ -18,7 +18,7 @@ ChromoTreeMdl::~ChromoTreeMdl()
 {
 }
 
-Glib::RefPtr<ChromoTreeMdl> ChromoTreeMdl::create(Elem* aRoot, MEnv* aDesEnv)
+Glib::RefPtr<ChromoTreeMdl> ChromoTreeMdl::create(MElem* aRoot, MEnv* aDesEnv)
 {
     ChromoTreeMdl* nmdl = new ChromoTreeMdl(aRoot, aDesEnv);
     Gtk::TreeModel* mdl = reinterpret_cast<Gtk::TreeModel*> (nmdl);
@@ -301,7 +301,7 @@ bool ChromoTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::Select
     iterator iter((TreeModel*)this);
     bool ires = get_iter_vfunc(path, iter);
     /*
-    Elem* node = (Elem*) (*iter).get_value(ColRec().elem);
+    MElem* node = (MElem*) (*iter).get_value(ColRec().elem);
     GUri uri;
     node->GetUri(uri);
     //selection_data.set_text(uri.GetUri());
@@ -346,12 +346,12 @@ ChromoTree::~ChromoTree()
 }
 
 // Generic handler of comp change notification
-void ChromoTree::on_comp_changed(Elem* aComp)
+void ChromoTree::on_comp_changed(MElem* aComp)
 {
     Glib::signal_idle().connect_once(sigc::mem_fun(*this, &ChromoTree::on_refresh_model));
 }
 
-void ChromoTree::on_comp_renamed(Elem*, const std::string&)
+void ChromoTree::on_comp_renamed(MElem*, const std::string&)
 {
     // Use idle one shot because of the mut caused the change is not in chromo yet and
     // will be added shortly

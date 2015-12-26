@@ -15,7 +15,7 @@ string CpErp::EType()
     return "Elem:Vert:ConnPointBase:ConnPoint";
 }
 
-CpErp::CpErp(Elem* aElem): Label(), iElem(aElem), iPos(EPos_Right), iHighlighted(false)
+CpErp::CpErp(MElem* aElem): Label(), iElem(aElem), iPos(EPos_Right), iHighlighted(false)
 {
     set_label(iElem->Name());
     AlignmentEnum xalign = ALIGN_LEFT;
@@ -51,7 +51,7 @@ void CpErp::SetHighlighted(bool aSet)
     DoSetHighlighted(aSet);
 }
 
-Elem* CpErp::Model()
+MElem* CpErp::Model()
 {
     return iElem;
 }
@@ -90,7 +90,7 @@ MCompatChecker::TDir CpErp::GetMdlDir() const
     return res;
 }
 
-Requisition CpErp::GetCpCoord(Elem* aCp) 
+Requisition CpErp::GetCpCoord(MElem* aCp) 
 {
     Gtk::Allocation alc = get_allocation();
     Gtk::Requisition res;
@@ -100,7 +100,7 @@ Requisition CpErp::GetCpCoord(Elem* aCp)
     return res;
 }
 
-int CpErp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
+int CpErp::GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp)
 {
     int res = 0;
     Gtk::Requisition cpcoord = GetCpCoord(iElem);
@@ -110,7 +110,7 @@ int CpErp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
     return res;
 }
 
-void CpErp::HighlightCp(Elem* aCp, bool aSet)
+void CpErp::HighlightCp(MElem* aCp, bool aSet)
 {
     assert(aCp == iElem);
     set_state(aSet ? STATE_PRELIGHT : STATE_NORMAL);
@@ -135,10 +135,10 @@ const string& SockErp::Type()
 
 string SockErp::EType()
 {
-    return "Elem:Vert:Socket";
+    return sSockEType;
 }
 
-SockErp::SockErp(Elem* aElem, const MErpProvider& aErpProv): VBox(), iElem(aElem), iPos(EPos_Left), iHighlighted(false),
+SockErp::SockErp(MElem* aElem, const MErpProvider& aErpProv): VBox(), iElem(aElem), iPos(EPos_Left), iHighlighted(false),
     iErpProv(aErpProv)
 {
     iName = new Label(iElem->Name());
@@ -150,8 +150,8 @@ SockErp::SockErp(Elem* aElem, const MErpProvider& aErpProv): VBox(), iElem(aElem
     }
     iName->set_alignment(xalign);
     // Pins
-    for (vector<Elem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	Elem* comp = *it;
+    for (vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
+	MElem* comp = *it;
 	if (comp->IsHeirOf(sCpEType) || comp->IsHeirOf(sSockEType)) {
 	    MErp* pinrp = iErpProv.CreateRp(*comp, this);
 	    if (pinrp != NULL) {
@@ -194,7 +194,7 @@ void SockErp::SetHighlighted(bool aSet)
     DoSetHighlighted(aSet);
 }
 
-Elem* SockErp::Model()
+MElem* SockErp::Model()
 {
     return iElem;
 }
@@ -243,7 +243,7 @@ bool SockErp::IsTypeAllowed(const std::string& aType) const
     return true;
 }
 
-Requisition SockErp::GetCpCoord(Elem* aCp) 
+Requisition SockErp::GetCpCoord(MElem* aCp) 
 {
     Gtk::Allocation alc = get_allocation();
     Gtk::Requisition res;
@@ -276,10 +276,10 @@ Requisition SockErp::GetCpCoord(Elem* aCp)
     return res;
 }
 
-int SockErp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
+int SockErp::GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp)
 {
     int res = -1;
-    Elem* ncp = NULL; // Nearest CP
+    MElem* ncp = NULL; // Nearest CP
     Gtk::Requisition cpcoord = GetCpCoord(iElem);
     std::complex<float> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
     int dist = std::abs(sub);
@@ -288,7 +288,7 @@ int SockErp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
 	ncp = iElem;
     }
     for (tPinRps::iterator it = iPinRps.begin(); it != iPinRps.end(); it++) {
-	Elem* cp = it->first;
+	MElem* cp = it->first;
 	Gtk::Requisition cpcoord = GetCpCoord(cp);
 	std::complex<float> sub(cpcoord.width - aCoord.width, cpcoord.height - aCoord.height);
 	int dist = std::abs(sub);
@@ -303,7 +303,7 @@ int SockErp::GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp)
     return res;
 }
 
-void SockErp::HighlightCp(Elem* aCp, bool aSet)
+void SockErp::HighlightCp(MElem* aCp, bool aSet)
 {
     assert(aCp != NULL);
     if (aCp == iElem) {

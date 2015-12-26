@@ -68,7 +68,7 @@ class SDesLog: public MDesLog
 	virtual ~SDesLog();
 	// From MDesLog
 	virtual const TLog& LogData() const;
-	virtual bool IsNodeLogged(Elem* aNode, MLogRec::TLogRecCtg aCtg) const;
+	virtual bool IsNodeLogged(MElem* aNode, MLogRec::TLogRecCtg aCtg) const;
     protected:
 	TLog mLog;
 };
@@ -83,10 +83,10 @@ class LogViewL: public TreeView
 	virtual ~LogViewL();
 	void SetDesEnv(MEnv* aDesEnv);
 	MDesLog* GetDesLog() {return &mDesLog;};
-	void Select(Elem* aNode, MLogRec::TLogRecCtg aCtg);
+	void Select(MElem* aNode, MLogRec::TLogRecCtg aCtg);
 	tSigLogRecActivated SignalLogRecActivated() {return mSigLogRecActivated;};
     protected:
-	void on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, Elem* aNode, int aMutId, const std::string& aContent);
+	void on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, int aMutId, const std::string& aContent);
 	void on_des_env_changed();
 	static const string& CtgName(MLogRec::TLogRecCtg aCtg); 
 	virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);

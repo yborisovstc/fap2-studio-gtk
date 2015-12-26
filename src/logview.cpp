@@ -81,7 +81,7 @@ const MDesLog::TLog& SDesLog::LogData() const
     return mLog;
 }
 
-bool SDesLog::IsNodeLogged(Elem* aNode, MLogRec::TLogRecCtg aCtg) const
+bool SDesLog::IsNodeLogged(MElem* aNode, MLogRec::TLogRecCtg aCtg) const
 {
     return mLog.count(MDesLog::TLogKey(aNode, aCtg));
 }
@@ -140,7 +140,7 @@ const string& LogViewL::CtgName(MLogRec::TLogRecCtg aCtg)
     else __ASSERT(false);
 }
 
-void LogViewL::on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, Elem* aNode, int aMutId, const std::string& aContent)
+void LogViewL::on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, int aMutId, const std::string& aContent)
 {
     Glib::RefPtr<TreeModel> mdl = get_model();
     //ListStore* lmdl = (ListStore*) mdl.operator->();
@@ -149,14 +149,16 @@ void LogViewL::on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, Elem* aNo
     it->set_value(iColRec.timestamp, Glib::ustring::compose("%1", aTimeStamp));
     it->set_value(iColRec.ctg, Glib::ustring(CtgName(aCtg).c_str()));
     GUri fullpath;
-    aNode->GetUri(fullpath);
+    if (aNode != NULL) {
+	aNode->GetUri(fullpath);
+    }
     it->set_value(iColRec.mnode, Glib::ustring(fullpath.GetUri(ETrue).c_str()));
     it->set_value(iColRec.mutid, aMutId);
     it->set_value(iColRec.content, Glib::ustring(aContent.c_str()));
     mDesLog.mLog.insert(MDesLog::TLogVal(MDesLog::TLogKey(aNode, aCtg), MDesLog::TLogData(aContent)));
 }
 
-void LogViewL::Select(Elem* aNode, MLogRec::TLogRecCtg aCtg)
+void LogViewL::Select(MElem* aNode, MLogRec::TLogRecCtg aCtg)
 {
     get_selection()->unselect_all();
     GUri upath;

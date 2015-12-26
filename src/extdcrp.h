@@ -16,7 +16,7 @@ class ExtdCrp: public VertCompRp, public MErpMgr
 	static const string& Type();
 	static string EType();
     public:
-	ExtdCrp(Elem* aElem, MErpProvider& aErpProv);
+	ExtdCrp(MElem* aElem, MErpProvider& aErpProv);
 	virtual ~ExtdCrp();
     protected:
 	// From VertCompRp
@@ -26,9 +26,9 @@ class ExtdCrp: public VertCompRp, public MErpMgr
 	virtual void *DoGetObj(const string& aName);
 	virtual void SetLArea(int aArea);
 	// From MCrpConnectable
-	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
-	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp);
-	virtual void HighlightCp(Elem* aCp, bool aSet);
+	virtual Gtk::Requisition GetCpCoord(MElem* aCp = NULL);
+	virtual int GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp);
+	virtual void HighlightCp(MElem* aCp, bool aSet);
 	// From MErpMgr
 	virtual bool IsTypeAllowed(const std::string& aType) const;
     protected:

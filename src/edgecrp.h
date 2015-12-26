@@ -21,8 +21,8 @@ class MEdgeCrp
 	virtual void SetCp2Coord(const Gtk::Requisition& aReq) = 0;
 	virtual const Gtk::Requisition& Cp1Coord() = 0;
 	virtual const Gtk::Requisition& Cp2Coord() = 0;
-	virtual Elem* Point1() = 0;
-	virtual Elem* Point2() = 0;
+	virtual MElem* Point1() = 0;
+	virtual MElem* Point2() = 0;
 	virtual TVectEn& VectEn() = 0;
 };
 
@@ -36,7 +36,7 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	static const string& Type();
 	static string EType();
     public:
-	EdgeCrp(Elem* aElem);
+	EdgeCrp(MElem* aElem);
 	virtual ~EdgeCrp();
 	// From MCrp
 	virtual Gtk::Widget& Widget();
@@ -49,7 +49,7 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
 	virtual void SetErroneous(bool aSet);
-	virtual Elem* Model();
+	virtual MElem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;
 	virtual void SetDnDTargSupported(int aTarg);
@@ -60,8 +60,8 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	virtual void SetCp2Coord(const Gtk::Requisition& aReq);
 	virtual const Gtk::Requisition& Cp1Coord();
 	virtual const Gtk::Requisition& Cp2Coord();
-	virtual Elem* Point1();
-	virtual Elem* Point2();
+	virtual MElem* Point1();
+	virtual MElem* Point2();
 	virtual TVectEn& VectEn();
     protected:
 	bool IsPointIn(int aX, int aY) const;
@@ -75,7 +75,7 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& data, guint info, guint time);
 	virtual void on_drag_end(const Glib::RefPtr<Gdk::DragContext>& context);
     private:
-	Elem* iElem;
+	MElem* iElem;
 	TVectEn iNodes;
 	Requisition iCp1;
 	Requisition iCp2;

@@ -2,6 +2,7 @@
 #define __FAPSTU_GTK_MDLPROV_H
 
 #include <prov.h>
+#include <melem.h>
 #include <msdesenv.h>
 
 // Default provider for model

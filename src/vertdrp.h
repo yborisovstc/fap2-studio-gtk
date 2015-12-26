@@ -31,7 +31,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
     public:
 	static string EType();
     public:
-	VertDrpw_v1(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
+	VertDrpw_v1(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~VertDrpw_v1();
     public:
 	// From MCrpMgr
@@ -40,7 +40,7 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	// From MDrp
 	virtual void *DoGetObj(const string& aName);
 	virtual Gtk::Widget& Widget();
-	virtual Elem* Model();
+	virtual MElem* Model();
 	virtual tSigCompSelected SignalCompSelected();
 	virtual tSigCompActivated SignalCompActivated();
 	virtual tSigDragMotion SignalDragMotion();
@@ -59,14 +59,14 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	virtual bool on_motion_notify_event(GdkEventMotion* aEvent);
 	virtual bool on_leave_notify_event(GdkEventCrossing* event);
 	// Signal handlers
-	void on_comp_updated(Elem* aElem);
+	void on_comp_updated(MElem* aElem);
     protected:
-	virtual Elem* GetCompOwning(Elem* aElem);
+	virtual MElem* GetCompOwning(MElem* aElem);
 	// TODO This is workaround for missing of model APIs of mutation trying, ref #uc_014. To implement API
-	virtual bool AreCpsCompatible(Elem* aCp1, Elem* aCp2);
+	virtual bool AreCpsCompatible(MElem* aCp1, MElem* aCp2);
     protected:
 	MCrp* iEdgeDropCandidate;
-	Elem* iEdgeDropCpCandidate;
+	MElem* iEdgeDropCpCandidate;
 
 	friend class VertDrp;
 };
@@ -79,12 +79,12 @@ class VertDrp: public MDrp
 	static const string& Type();
 	static string EType();
     public:
-	VertDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
+	VertDrp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~VertDrp();
 	// From MDrp
 	virtual void *DoGetObj(const string& aName);
 	virtual Gtk::Widget& Widget();
-	virtual Elem* Model();
+	virtual MElem* Model();
 	virtual tSigCompSelected SignalCompSelected();
 	virtual tSigDragMotion SignalDragMotion();
     private:

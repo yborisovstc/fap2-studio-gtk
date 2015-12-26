@@ -12,12 +12,12 @@
 class VertCompHead: public Gtk::HBox
 {
     public:
-	VertCompHead(const Elem& aElem);
+	VertCompHead(const MElem& aElem);
 	virtual ~VertCompHead();
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
     private:
-	const Elem& iElem;
+	const MElem& iElem;
 	Gtk::Label* iName;
 	Gtk::Label* iParent;
 };
@@ -28,7 +28,7 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	static const string& Type();
 	static string EType();
     public:
-	VertCompRp(Elem* aElem);
+	VertCompRp(MElem* aElem);
 	virtual ~VertCompRp();
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
@@ -45,7 +45,7 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
 	virtual void SetErroneous(bool aSet);
-	virtual Elem* Model();
+	virtual MElem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;
 	virtual void SetDnDTargSupported(int aTarg);
@@ -53,10 +53,10 @@ class VertCompRp: public ElemCompRp, public MCrp, public MCrpConnectable
 	virtual bool IsIntersected(int aX, int aY) const;
 	virtual void GetModelDebugInfo(int x, int y, string& aData) const;
 	// From MCrpConnectable
-	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL);
+	virtual Gtk::Requisition GetCpCoord(MElem* aCp = NULL);
 	virtual MCompatChecker::TDir GetCpDir() const;
-	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp);
-	virtual void HighlightCp(Elem* aCp, bool aSet);
+	virtual int GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp);
+	virtual void HighlightCp(MElem* aCp, bool aSet);
 };
 
 

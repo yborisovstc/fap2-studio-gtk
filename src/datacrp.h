@@ -9,12 +9,12 @@
 class ValueRp: public Gtk::Label
 {
     public:
-	ValueRp(Elem* aModel, MMdlObserver* aMdlObs);
+	ValueRp(MElem* aModel, MMdlObserver* aMdlObs);
     protected:
 	// Model events handlers
-	void on_comp_changed(Elem* aComp);
+	void on_comp_changed(MElem* aComp);
     protected:
-	Elem* iElem;
+	MElem* iElem;
 	MMdlObserver* iMdlObs;
 };
 
@@ -26,7 +26,7 @@ class DataCrp: public IncapsCrp
 	static const string& Type();
 	static string EType();
     public:
-	DataCrp(Elem* aElem, MMdlObserver* aMdlObs);
+	DataCrp(MElem* aElem, MMdlObserver* aMdlObs);
 	virtual ~DataCrp();
     protected:
 	virtual void Construct();

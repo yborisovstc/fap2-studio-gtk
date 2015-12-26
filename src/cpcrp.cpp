@@ -18,10 +18,10 @@ string CpCrp::EType()
     return "Elem:Vert:ConnPointBase:ConnPoint";
 }
 
-CpCrp::CpCrp(Elem* aElem): VertCompRp(aElem)
+CpCrp::CpCrp(MElem* aElem): VertCompRp(aElem)
 {
     // Prepare data of "provided"
-    Elem* prov = iElem->GetNode(KProvUri);
+    MElem* prov = iElem->GetNode(KProvUri);
     assert(prov != NULL);
     MProp* mprop = prov->GetObj(mprop);
     assert(mprop != NULL);
@@ -31,7 +31,7 @@ CpCrp::CpCrp(Elem* aElem): VertCompRp(aElem)
     add(*iLabProv);
     iLabProv->show();
     // Prepare data of "required"
-    Elem* req = iElem->GetNode(KReqUri);
+    MElem* req = iElem->GetNode(KReqUri);
     assert(req != NULL);
     mprop = req->GetObj(mprop);
     assert(mprop != NULL);

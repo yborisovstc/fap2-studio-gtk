@@ -130,16 +130,16 @@ HierDetailView::HierDetailView(MSEnv& aStEnv, Gtk::ScrolledWindow& aCont, const 
 void HierDetailView::UpdateBtnUp()
 {
     Gtk::ToolItem* item = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/GoUp"));
-    Elem* cursor = iRoot->GetNode(iCursor);
+    MElem* cursor = iRoot->GetNode(iCursor);
     item->set_sensitive(cursor != NULL && cursor->GetMan() != NULL);
 }
 
 void HierDetailView::UpdateBtnGoParent()
 {
     Gtk::ToolItem* item = dynamic_cast<Gtk::ToolItem*>(iUiMgr->get_widget("/ToolBar/GoToParent"));
-    Elem* cursor = iDetRp == NULL ? NULL : iDetRp->Model();
-    Elem* parent = cursor->GetParent();
-    //Elem* cursor = iRoot->GetNode(iCursor);
+    MElem* cursor = iDetRp == NULL ? NULL : iDetRp->Model();
+    MElem* parent = cursor->GetParent();
+    //MElem* cursor = iRoot->GetNode(iCursor);
     item->set_sensitive(cursor != NULL && parent != NULL);
 }
 
@@ -154,7 +154,7 @@ void HierDetailView::on_action_pin_mut_node()
     const Glib::ustring& pinned_mn = pinned_mn_s.Get(pinned_mn);
     Gtk::ToggleToolButton* button = dynamic_cast<Gtk::ToggleToolButton*>(iUiMgr->get_widget("/ToolBar/PinMutNode"));
     if (iDetRp != NULL) {
-	Elem* cursor = iDetRp->Model();
+	MElem* cursor = iDetRp->Model();
 	string uris = cursor->GetUri(NULL);
 	pinned_mn_s.Set(button->get_active() ? uris: ""); 
 	Gtk::ToolItem* item = dynamic_cast<Gtk::ToolItem*>(button);
@@ -171,8 +171,8 @@ void HierDetailView::on_action_spec_mut_node()
 
 void HierDetailView::on_action_goparent()
 {
-    Elem* cursor = iDetRp->Model();
-    Elem* parent = cursor->GetParent();
+    MElem* cursor = iDetRp->Model();
+    MElem* parent = cursor->GetParent();
     if (parent != NULL) {
 	SetCursor(cursor->GetParent());
     }
@@ -184,7 +184,7 @@ void HierDetailView::UpdatePinMutNode()
     if (item != NULL) {
 	Gtk::ToggleToolButton* button = dynamic_cast<Gtk::ToggleToolButton*>(item);
 	if (!button->get_active() && iDetRp != NULL) {
-	    Elem* cursor = iDetRp->Model();
+	    MElem* cursor = iDetRp->Model();
 	    if (cursor->IsChromoAttached()) {
 		item->set_sensitive(true);
 		item->set_tooltip_text(KToolTip_PinMutNode);
@@ -199,7 +199,7 @@ void HierDetailView::UpdatePinMutNode()
 
 bool HierDetailView::on_parent_press_event(GdkEventKey* aEvent)
 {
-    Elem* cursor = iDetRp->Model();
+    MElem* cursor = iDetRp->Model();
     if (cursor->GetParent() != NULL) {
 	SetCursor(cursor->GetParent());
     }
@@ -236,7 +236,7 @@ HierDetailView::~HierDetailView()
     delete iAlignent;
 }
 
-void HierDetailView::SetRoot(Elem* aRoot)
+void HierDetailView::SetRoot(MElem* aRoot)
 {
     assert(aRoot != NULL);
     iRoot = aRoot;
@@ -254,7 +254,7 @@ string HierDetailView::GetCursor() const
 
 void HierDetailView::SetCursor(const string& aUri)
 {
-    Elem* node = iRoot->GetNode(aUri);
+    MElem* node = iRoot->GetNode(aUri);
     assert(node != NULL);
     SetCursor(node);
 }
@@ -267,7 +267,7 @@ void HierDetailView::UpdataHistNavUI()
     frwd->set_sensitive(iNavHistIter != (iNavHist.end() - 1));
 }
 
-void HierDetailView::SetCursor(Elem* aElem, bool FromHist)
+void HierDetailView::SetCursor(MElem* aElem, bool FromHist)
 {
     assert(aElem != NULL);
     // Adding to nav history
@@ -341,7 +341,7 @@ void HierDetailView::on_action_attention()
 
 void HierDetailView::on_action_up()
 {
-    Elem* cursor = iDetRp->Model();
+    MElem* cursor = iDetRp->Model();
     if (cursor != iRoot) {
 	SetCursor(cursor->GetMan());
     }
@@ -358,13 +358,13 @@ void HierDetailView::on_action_redo()
 {
 }
 
-void HierDetailView::on_comp_selected(Elem* aComp)
+void HierDetailView::on_comp_selected(MElem* aComp)
 {
     std::cout << "on_comp_selected, comp [" << aComp->Name() << "]" << std::endl;
     mSigCompSelected.emit(aComp);
 }
 
-void HierDetailView::on_comp_activated(Elem* aComp)
+void HierDetailView::on_comp_activated(MElem* aComp)
 {
     std::cout << "on_comp_activated, comp [" << aComp->Name() << "]" << std::endl;
     SetCursor(aComp);
@@ -372,18 +372,18 @@ void HierDetailView::on_comp_activated(Elem* aComp)
 
 void HierDetailView::on_action_goback()
 {
-    Elem* cursor = iDetRp->Model();
+    MElem* cursor = iDetRp->Model();
     if (iNavHistIter != iNavHist.begin()) {
-	Elem* comp = (Elem*) *(--iNavHistIter);
+	MElem* comp = (MElem*) *(--iNavHistIter);
 	SetCursor(comp, true);
     }
 }
 
 void HierDetailView::on_action_goforward()
 {
-    Elem* cursor = iDetRp->Model();
+    MElem* cursor = iDetRp->Model();
     if (iNavHistIter != iNavHist.end() - 1) {
-	Elem* comp = (Elem*) *(++iNavHistIter);
+	MElem* comp = (MElem*) *(++iNavHistIter);
 	SetCursor(comp, true);
     }
 
@@ -392,7 +392,7 @@ void HierDetailView::on_action_goforward()
 void HierDetailView::on_logrec_activated(const string& aNodeUri, int aMutId)
 {
     // Check if node exists, if so move to it
-    Elem* node = iRoot->GetNode(aNodeUri);
+    MElem* node = iRoot->GetNode(aNodeUri);
     if (node != NULL) {
 	SetCursor(aNodeUri);
     }

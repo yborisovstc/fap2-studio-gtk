@@ -25,7 +25,7 @@ class CapsCrp: public Widget, public MCrp, public MCapsCrp
 	static const string& Type();
 	static string EType();
     public:
-	CapsCrp(Elem* aElem);
+	CapsCrp(MElem* aElem);
 	virtual ~CapsCrp();
 	// From MCrp
 	virtual Gtk::Widget& Widget();
@@ -38,7 +38,7 @@ class CapsCrp: public Widget, public MCrp, public MCapsCrp
 	virtual bool Dragging();
 	virtual void SetHighlighted(bool aSet);
 	virtual void SetErroneous(bool aSet);
-	virtual Elem* Model();
+	virtual MElem* Model();
 	virtual void SetLArea(int aArea);
 	virtual int GetLArea() const;
 	virtual void SetDnDTargSupported(int aTarg);
@@ -55,7 +55,7 @@ class CapsCrp: public Widget, public MCrp, public MCapsCrp
 	bool IsPointIn(int aX, int aY) const;
 	static bool IsInRect(int aX, int aY, const Allocation& aAllc);
     private:
-	Elem* iElem;
+	MElem* iElem;
 	MCrp::tSigUpdated iSigUpdated;
 	MCrp::tSigButtonPress iSigButtonPress;
 	MCrp::tSigButtonPressName iSigButtonPressName;
@@ -71,13 +71,13 @@ class IncapsDrp: public SysDrp
     public:
 	static string EType();
     public:
-	IncapsDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
+	IncapsDrp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~IncapsDrp();
     protected:
 	virtual void Construct();
 	void PreLayoutRps();
 	TBool IsTypeOf(const string& aType, const string& aParent) const;
-	virtual Elem* GetCompOwning(Elem* aElem);
+	virtual MElem* GetCompOwning(MElem* aElem);
 	// From MCrpMgr
 	virtual bool IsTypeAllowed(const std::string& aType) const;
 	// From MDrp

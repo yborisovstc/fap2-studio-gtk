@@ -18,16 +18,16 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 {
     friend class ElemDrp;
     public:
-    typedef std::map<Elem*, MCrp*> tCrps;
+    typedef std::map<MElem*, MCrp*> tCrps;
     public:
-	ElemDetRp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
+	ElemDetRp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~ElemDetRp();
-	Elem* GetElem();
+	MElem* GetElem();
     public:
 	// Signal handlers
-	bool on_comp_button_press_ext(GdkEventButton* event, Elem* aComp);
-	void on_comp_button_press_name(GdkEventButton* event, Elem* aComp);
-	void on_comp_button_press(GdkEventButton* event, Elem* aComp);
+	bool on_comp_button_press_ext(GdkEventButton* event, MElem* aComp);
+	void on_comp_button_press_name(GdkEventButton* event, MElem* aComp);
+	void on_comp_button_press(GdkEventButton* event, MElem* aComp);
     protected:
 	virtual void on_realize();
 	virtual void on_size_allocate(Gtk::Allocation& aAlloc);
@@ -46,7 +46,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	virtual void DoUdno();
 	void Erase();
 	void Refresh();
-	Elem* GetObjForSafeMut(Elem* aMnode, Elem* aNode, TNodeType aMutType, bool& aUnsafe);
+	MElem* GetObjForSafeMut(MElem* aMnode, MElem* aNode, TNodeType aMutType, bool& aUnsafe);
 	void do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aNeighborUri);
 	void add_node(const std::string& aParentUri, const std::string& aNeighborUri = string());
 	void rename_node(const std::string& aNodeUri, const std::string& aNewName);
@@ -54,7 +54,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef = false);
 	void move_node(const std::string& aNodeUri, const std::string& aDestUri);
 	void import(const std::string& aUri);
-	void ShowCrpCtxDlg(GdkEventButton* event, Elem* aComp);
+	void ShowCrpCtxDlg(GdkEventButton* event, MElem* aComp);
 	void on_comp_menu_rename();
 	void on_comp_menu_remove();
 	void on_comp_menu_edit_content();
@@ -62,22 +62,22 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void on_comp_menu_trans_to_mut();
 	void on_comp_menu_get_parents_modif();
 	bool IsCrpLogged(MCrp* aCrp, MLogRec::TLogRecCtg aCtg) const;
-	bool DoIsActionSupported(Elem* aComp, const MCrp::Action& aAction);
+	bool DoIsActionSupported(MElem* aComp, const MCrp::Action& aAction);
 	void DoOnActionInsert();
-	void ShiftCompToEnd(Elem* aOwner, Elem* aComp);
-	bool IsParentSafe(Elem* aTarg, const string& aParentUri);
+	void ShiftCompToEnd(MElem* aOwner, MElem* aComp);
+	bool IsParentSafe(MElem* aTarg, const string& aParentUri);
 	bool IsMutOwnerBased(TNodeType aMut) const;
     protected:
 	MSEnv& mStEnv;
 	// Compact representations  provider
 	const MCrpProvider& iCrpProv;
-	Elem* iElem;
+	MElem* iElem;
 	tCrps iCompRps; // Components representations
 	MDrp::tSigCompSelected iSigCompSelected;
 	MDrp::tSigCompActivated iSigCompActivated;
 	MDrp::tSigDragMotion iSigDragMotion;
 	Gtk::Menu iCrpContextMenu;
-	Elem* iCompSelected;
+	MElem* iCompSelected;
 	std::map<MCrp::Action, Gtk::Menu_Helpers::MenuElem> iCompMenuElems;
 	TDnDTarg iDnDTarg;
 	MCrp* iDropBaseCandidate;
@@ -94,18 +94,18 @@ class ElemDrp: public MDrp
 	static const string& Type();
 	static string EType();
     public:
-	ElemDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
+	ElemDrp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv);
 	virtual ~ElemDrp();
 	// From MDrp
 	virtual void *DoGetObj(const string& aName);
 	virtual Gtk::Widget& Widget();
-	virtual Elem* Model();
+	virtual MElem* Model();
 	virtual tSigCompSelected SignalCompSelected();
 	virtual tSigCompSelected SignalCompActivated();
 	virtual tSigDragMotion SignalDragMotion();
 	virtual tSigAttention SignalAttention();
 	virtual tSigReloadRequired SignalReloadRequired() {return iRp->mSigReloadRequired;};
-	virtual bool IsActionSupported(Elem* aComp, const MCrp::Action& aAction) {return iRp->DoIsActionSupported(aComp, aAction);};
+	virtual bool IsActionSupported(MElem* aComp, const MCrp::Action& aAction) {return iRp->DoIsActionSupported(aComp, aAction);};
 	virtual void Udno();
 	virtual void OnActionInsert();
     private:

@@ -29,7 +29,7 @@ void DefDrpProv::SetSenv(MSEnv& aEnv)
     iSenv = &aEnv;
 }
 
-int DefDrpProv::GetConfidence(const Elem& aElem) const
+int DefDrpProv::GetConfidence(const MElem& aElem) const
 {
     int res = 0;
     bool fit = false;
@@ -38,7 +38,7 @@ int DefDrpProv::GetConfidence(const Elem& aElem) const
     return res;
 }
 
-MDrp* DefDrpProv::CreateRp(Elem& aElem) const
+MDrp* DefDrpProv::CreateRp(MElem& aElem) const
 {
     MDrp* res = NULL;
     if (aElem.IsHeirOf(IncapsDrp::EType())) {
@@ -77,7 +77,7 @@ void DefCrpProv::SetSenv(MSEnv& aEnv)
     iSenv = &aEnv;
 }
 
-int DefCrpProv::GetConfidence(const Elem& aElem) const
+int DefCrpProv::GetConfidence(const MElem& aElem) const
 {
     int res = 0;
     bool fit = false;
@@ -86,7 +86,7 @@ int DefCrpProv::GetConfidence(const Elem& aElem) const
     return res;
 }
 
-MCrp* DefCrpProv::CreateRp(Elem& aElem, const MCrpMgr* aMgr) const
+MCrp* DefCrpProv::CreateRp(MElem& aElem, const MCrpMgr* aMgr) const
 {
     MCrp* res = NULL;
     if (aElem.IsHeirOf(DataCrp::EType()) && aMgr->IsTypeAllowed(DataCrp::EType())) {
@@ -145,13 +145,13 @@ void DefErpProv::SetSenv(MSEnv& aEnv)
     iSenv = &aEnv;
 }
 
-int DefErpProv::GetConfidence(const Elem& aElem) const
+int DefErpProv::GetConfidence(const MElem& aElem) const
 {
     int res = 0;
     return res;
 }
 
-MErp* DefErpProv::CreateRp(Elem& aElem, const MErpMgr* aMgr) const
+MErp* DefErpProv::CreateRp(MElem& aElem, const MErpMgr* aMgr) const
 {
     MErp* res = NULL;
     if (aElem.IsHeirOf(CpErp::EType()) && aMgr->IsTypeAllowed(CpErp::EType())) {

@@ -34,7 +34,7 @@ class MCrp: public MBase
     public:
 	typedef sigc::signal<void, GdkEventButton*> tSigButtonPressName;
 	typedef sigc::signal<void, GdkEventButton*> tSigButtonPress;
-	typedef sigc::signal<void, Elem*> tSigUpdated;
+	typedef sigc::signal<void, MElem*> tSigUpdated;
     public:
 	virtual Gtk::Widget& Widget() = 0;
 	virtual tSigButtonPressName SignalButtonPressName() = 0;
@@ -45,7 +45,7 @@ class MCrp: public MBase
 	virtual bool Dragging() = 0;
 	virtual void SetHighlighted(bool aSet) = 0;
 	virtual void SetErroneous(bool aSet) = 0;
-	virtual Elem* Model() = 0;
+	virtual MElem* Model() = 0;
 	virtual void SetLArea(int aArea) = 0;
 	virtual int GetLArea() const = 0;
 	virtual void SetDnDTargSupported(int aTarg) = 0;
@@ -58,13 +58,13 @@ class MCrpConnectable
     public:
 	static std::string Type() { return "MCrpConnectable";};
     public:
-	virtual Gtk::Requisition GetCpCoord(Elem* aCp = NULL) = 0;
+	virtual Gtk::Requisition GetCpCoord(MElem* aCp = NULL) = 0;
 	// Get Cp type
 	virtual MCompatChecker::TDir GetCpDir() const = 0;
 	// Get nearest CP, returns distance to checking positon
-	virtual int GetNearestCp(Gtk::Requisition aCoord, Elem*& aCp) = 0;
+	virtual int GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp) = 0;
 	// Highlight CP
-	virtual void HighlightCp(Elem* aCp, bool aSet) = 0;
+	virtual void HighlightCp(MElem* aCp, bool aSet) = 0;
 };
 
 #endif

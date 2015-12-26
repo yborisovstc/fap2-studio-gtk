@@ -25,10 +25,9 @@ string ADesSync::PEType()
     return Elem::PEType() + GUri::KParentSep + Type();
 }
 
-ADesSync::ADesSync(const string& aName, Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
+ADesSync::ADesSync(const string& aName, MElem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
     Elem(aName, aMan, aEnv), iSDesEnv(aSDesEnv), iCount(0), iRunning(false), iStopped(true)
 {
-    SetEType(Type(), Elem::PEType());
     SetParent(Type());
     // Addig toolbar
     iActionGroup = ActionGroup::create("DesSyncActGroup");
@@ -40,10 +39,9 @@ ADesSync::ADesSync(const string& aName, Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesE
     iUiId = iSDesEnv->UiMgr()->add_ui_from_string(sUi);
 }
 
-ADesSync::ADesSync(Elem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
+ADesSync::ADesSync(MElem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv): 
     Elem(Type(), aMan, aEnv), iSDesEnv(aSDesEnv), iCount(0), iRunning(false), iStopped(true)
 {
-    SetEType(Elem::PEType());
     SetParent(Elem::PEType());
     // Addig toolbar
     iActionGroup = ActionGroup::create("DesSyncActGroup");
@@ -121,7 +119,7 @@ void ADesSync::on_action_next()
 }
 
 void ADesSync::DoStep() {
-    Elem* eout = GetNode("./../../Capsule/Out");
+    MElem* eout = GetNode("./../../Capsule/Out");
     MDesSyncable* out = (MDesSyncable*) eout->GetSIfiC(MDesSyncable::Type(), this);
     if (eout != NULL) {
 	Logger()->Write(MLogRec::EDbg, this, "Step %d", iCount++);

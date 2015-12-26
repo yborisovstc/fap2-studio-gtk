@@ -32,7 +32,7 @@ string SysDrp::EType()
     return ":Elem:Vert:Syst";
 }
 
-SysDrp::SysDrp(Elem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): VertDrpw_v1(aElem, aCrpProv, aStEnv)
+SysDrp::SysDrp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv): VertDrpw_v1(aElem, aCrpProv, aStEnv)
 {
     iLaNum = 2;
 }
@@ -62,7 +62,7 @@ void SysDrp::PreLayoutRps()
 	MCrp* crp = it->second;
 	MEdgeCrp* ecrp = crp->GetObj(ecrp);
 	if (ecrp == NULL) {
-	    Elem* mdl = crp->Model();
+	    MElem* mdl = crp->Model();
 	    MCompatChecker* cc = mdl->GetObj(cc);
 	    MCrp::TLArea larea = MCrp::EMain;
 	    if (cc != NULL) {
@@ -171,8 +171,8 @@ void SysDrp::UpdateRpsRelatios()
 	MCrp* crp = it->second;
 	MEdgeCrp* ecrp = crp->GetObj(ecrp);
 	if (ecrp != NULL) {
-	    Elem* p1 = ecrp->Point1();
-	    Elem* p2 = ecrp->Point2();
+	    MElem* p1 = ecrp->Point1();
+	    MElem* p2 = ecrp->Point2();
 	    p1 = p1 != NULL ? GetCompOwning(p1): NULL;
 	    p2 = p2 != NULL ? GetCompOwning(p2): NULL;
 	    if (p1 != NULL && p2 != NULL) {
@@ -245,7 +245,7 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 	int edge_park_x = avz0_alc.get_x() + avz0_alc.get_width();
 	int edge_park_ex = edge_park_x + KEvtGap;
 	int edge_park_y = KViewCompGapHight/2;
-	for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	for (std::map<MElem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	    MCrp* crp = it->second;
 	    Gtk::Widget* comp = &(crp->Widget());
 	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
@@ -255,10 +255,10 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		MEdgeCrp* medgecrp1 = crp->GetObj(medgecrp1);
 		Gtk::Widget* comp = &(crp->Widget());
 		Gtk::Requisition req = comp->size_request();
-		Elem* p1 = medgecrp->Point1();
-		Elem* p2 = medgecrp->Point2();
-		Elem* op1 = p1 != NULL ? GetCompOwning(p1): NULL;
-		Elem* op2 = p2 != NULL ? GetCompOwning(p2): NULL;
+		MElem* p1 = medgecrp->Point1();
+		MElem* p2 = medgecrp->Point2();
+		MElem* op1 = p1 != NULL ? GetCompOwning(p1): NULL;
+		MElem* op2 = p2 != NULL ? GetCompOwning(p2): NULL;
 
 		Gtk::Requisition p1coord = medgecrp->Cp1Coord();
 		Gtk::Requisition p2coord = medgecrp->Cp2Coord();
@@ -455,7 +455,7 @@ int SysDrp::GetEvtLineX(MCrp* aEdge, int aTunnel, int aP1, int aP2, bool aFromRi
 	Requisition top = {lx, ptop};
 	Requisition bottom = {lx, pbottom};
 	isec = false;
-	for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end() && !isec; it++) {
+	for (std::map<MElem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end() && !isec; it++) {
 	    MCrp* crp = it->second;
 	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
 	    if (medgecrp != NULL && crp != aEdge) {
@@ -519,7 +519,7 @@ int SysDrp::GetEhtLine(MCrp* aEdge, int aEvt, int aY, bool aUp)
 	int tnlcap = tnlw / KEdgeGridCell - 1;
 	for (int lid = 0; lid < tnlcap; lid++) {
 	    isec = false;
-	    for (std::map<Elem*, MCrp*>::const_iterator it = iCompRps.begin(); it != iCompRps.end() && !isec; it++) {
+	    for (std::map<MElem*, MCrp*>::const_iterator it = iCompRps.begin(); it != iCompRps.end() && !isec; it++) {
 		MCrp* crp = it->second;
 		MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
 		if (medgecrp != NULL && crp != aEdge) {
@@ -591,7 +591,7 @@ void SysDrp::on_size_request(Gtk::Requisition* aRequisition)
 	// one variant is to do pre-allocation including edges (this will do correction in comp areas height)
 	// in Construct and then calculate size basing on allocation data
 	int edges_h = 0;
-	for (std::map<Elem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
+	for (std::map<MElem*, MCrp*>::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	    MCrp* crp = it->second;
 	    Gtk::Widget* comp = &(crp->Widget());
 	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
@@ -604,7 +604,7 @@ void SysDrp::on_size_request(Gtk::Requisition* aRequisition)
     }
 }
 
-bool SysDrp::AreCpsCompatible(Elem* aCp1, Elem* aCp2)
+bool SysDrp::AreCpsCompatible(MElem* aCp1, MElem* aCp2)
 {
     bool res = false;
     MVert* v1 = aCp1->GetObj(v1);
