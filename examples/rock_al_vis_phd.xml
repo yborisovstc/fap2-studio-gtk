@@ -180,22 +180,15 @@
                 <cont node="" val="Scaled_size_WH (WH_NU) is Rock size WH in Native Utits (integer Vector)&#10;     Inp_Par_NU is parent size WH width-hieght in Native Units (integer Vector). Width of parent does not influence Rock size.&#10;&#10;WH_NU = ([Const_Mtx] * [Inp_Par_NU]) * (Inp_Scale) * (1/Inp_Par_LU)" ord="112"/>
               </node>
             </node>
-            <node id="Drw" parent="/Root/Modules/(Elem:)VisComps/(Widget:)Drawing" ord="215"/>
             <node node="./Capsule" parent="/Root/Modules/(Elem:)DesComps/StVarInp" id="Inp_coords_XY" ord="114"/>
             <node node="./Capsule" parent="/Root/Modules/(Elem:)DesComps/StVarInp" id="Inp_Par_Size_WH" ord="115"/>
             <node node="./Capsule" parent="/Root/Modules/(Elem:)DesComps/StVarInp" id="Inp_Size_WH" ord="116"/>
             <node node="./Capsule" parent="/Root/Modules/(Elem:)DesComps/StVarInp" id="Inp_Scale_WH" ord="117"/>
-            <node node="./Capsule" parent="/Root/Modules/(Elem:)VisComps/(Extender:)ChildE" id="Vis_Child" ord="118"/>
-            <node id="788740786" parent="Edge" ord="216">
-              <cont node="./(Prop:)P2" ref="./../../Capsule/Vis_Child/(Parent:)Int" ord="120"/>
-              <cont node="./(Prop:)P1" ref="./../../(Drawing:)Drw/Child" ord="121"/>
-            </node>
+            <node node="./Capsule" parent="/Root/Modules/(Elem:)VisComps/(ExtenderBase:)ChildE" id="Vis_Child" ord="118"/>
             <node id="271557264" parent="Edge" ord="217">
               <cont node="./(Prop:)P2" ref="./../../Capsule/(StVarInp:)Inp_Scale_WH/(StInpSocket:)Int" ord="123"/>
               <cont node="./(Prop:)P1" ref="./../../(Scaled_coord_2d:)Scaled_size_WH/Capsule/(StVarInp:)Inp_Scale" ord="124"/>
             </node>
-            <node id="Scale_XY" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataSVar" ord="218"/>
-            <rm node="./(DataSVar:)Scale_XY" ord="126"/>
             <node id="Scale_XY" parent="/Root/Modules/(Elem:)DataComps/(DataSC:)DataSCVar" ord="219">
               <cont node="./Value" val="MDF 1.0 1.0" ord="128"/>
             </node>
@@ -222,18 +215,14 @@
               <cont node="./P1" ref="./../../Capsule/Inp_coords_XY/Int" ord="145"/>
               <cont node="./P2" ref="./../../Scaled_coord_XY/Capsule/Inp" ord="146"/>
             </node>
-            <node id="Contr_Par_Size_NU" parent="/Root/Modules/(Elem:)DesComps/(TrVar:)TrCpsVectVar" ord="225"/>
             <node id="86540114" parent="Edge" ord="226">
               <cont node="./P2" val="" ord="148"/>
               <cont node="./P2" val="" ord="149"/>
               <cont node="./P2" val="" ord="150"/>
-              <cont node="./(Prop:)P1" ref="./../../Contr_Par_Size_NU/Inp0" ord="152"/>
               <cont node="./(Prop:)P2" val="" ord="153"/>
               <cont node="./(Prop:)P2" val="" ord="154"/>
             </node>
             <rm node="./(Edge:)86540114" ord="155"/>
-            <rm node="./(Edge:)788740786" ord="159"/>
-            <rm node="./(Drawing:)Drw" ord="160"/>
             <node id="Drw" parent="/Root/Modules/(Elem:)VisComps/(Des:)DrawingVc" ord="227"/>
             <node id="443585534" parent="Edge" ord="228">
               <cont node="./(Prop:)P1" ref="./../../Drw/Capsule/Child" ord="163"/>
@@ -264,15 +253,12 @@
               <cont node="./(Prop:)P1" ref="./../../Capsule/Inp_Par_Size_WH/Int" ord="192"/>
               <cont node="./(Prop:)P2" ref="./../../Inp_Par_Size_HH/Capsule/Inp" ord="193"/>
             </node>
-            <rm node="./(TrCpsVectVar:)Contr_Par_Size_NU" ord="195"/>
           </node>
           <node id="Rock_Picture" parent="/Root/Modules/(Elem:)DesComps/(Incaps:)Des" ord="236">
-            <node node="./Capsule" parent="/Root/Modules/(Elem:)VisComps/(Extender:)ChildE" id="Vis_Child" ord="197"/>
+            <node node="./Capsule" parent="/Root/Modules/(Elem:)VisComps/(ExtenderBase:)ChildE" id="Vis_Child" ord="197"/>
             <node node="./Capsule" parent="/Root/Modules/(Elem:)DesComps/StVarInp" id="Inp_Coords_XY" ord="198"/>
             <node node="./Capsule" parent="/Root/Modules/(Elem:)DesComps/StVarInp" id="Inp_Size_WH" ord="199"/>
             <node id="Picture" parent="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock_vis/(Vert:)Components/(Des:)Pic" ord="237"/>
-            <node id="Scale_WH" parent="/Root/Modules/(Elem:)DesComps/StVarInp" ord="238"/>
-            <rm node="./(StVarInp:)Scale_WH" ord="202"/>
             <node id="Scale_WH" parent="/Root/Modules/(Elem:)DesComps/(State:)StateVarC" ord="239">
               <cont node="./Data/Prepared/Value" val="MF,V,2 1 1" ord="204"/>
               <cont node="./Data/Confirmed/Value" val="MF,V,2 1 1" ord="205"/>
@@ -308,7 +294,7 @@
             </node>
           </node>
           <node id="Rock" parent="/Root/Modules/(Elem:)DesComps/(Incaps:)Des" ord="247">
-            <node node="./Capsule" parent="/Root/Modules/(Elem:)VisComps/(Extender:)ChildE" id="Vis_Child" ord="229"/>
+            <node node="./Capsule" parent="/Root/Modules/(Elem:)VisComps/(ExtenderBase:)ChildE" id="Vis_Child" ord="229"/>
             <node node="./Capsule" parent="/Root/Modules/(Elem:)DesComps/StVarOut" id="Out_Coords_XY" ord="230"/>
             <node id="Coords_XY" parent="/Root/Modules/(Elem:)DesComps/(State:)StateVarC" ord="248"/>
             <rm node="./Capsule/(StVarOut:)Out_Coords_XY" ord="232"/>
@@ -364,7 +350,6 @@
             </node>
             <node id="Picture" parent="/Root/(Incaps:)IncapsRoot/(Des:)DesRoot/(Des:)rock_vis/(Vert:)Components/(Des:)Rock_Picture" ord="271">
               <cont node="./Picture/631507917/P1" ref="./../../Capsule/Inp_Par_Size_WH/Int" ord="272"/>
-              <rm node="./(Pic:)Picture/(TrCpsVectVar:)Contr_Par_Size_NU" ord="273"/>
               <rm node="./(Pic:)Picture/(Edge:)592434651" ord="274"/>
             </node>
             <node id="1316434729" parent="Edge" ord="275">

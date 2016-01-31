@@ -57,12 +57,10 @@
           <node id="MinMass" parent="/Root/IncapsRoot/DesRoot/Components/OutPin"/>
           <node id="MaxMass" parent="/Root/IncapsRoot/DesRoot/Components/OutPin"/>
         </node>
-        <node id="SysConstInp" parent="/Root/Modules/SysComps/ExtenderInp">
-	    <rm node="./Int"/>
+        <node id="SysConstInp" parent="/Root/Modules/SysComps/ExtenderInpBase">
 	    <node id="Int" parent="/Root/IncapsRoot/DesRoot/Components/SysConstInpSocket"/>
         </node>
-        <node id="SysConstOut" parent="/Root/Modules/SysComps/ExtenderOut">
-	    <rm node="./Int"/>
+        <node id="SysConstOut" parent="/Root/Modules/SysComps/ExtenderOutBase">
 	    <node id="Int" parent="/Root/IncapsRoot/DesRoot/Components/SysConstOutSocket"/>
         </node>
         <node id="Pic" parent="/Root/Modules/DesComps/Des">
@@ -106,7 +104,7 @@
 	      <cont node="./P1" ref="./../../Scaled_coord/Capsule/Inp"/>
 	  </node>
           <node id="Drw" parent="/Root/Modules/VisComps/Drawing"/>
-	  <node node="./Capsule" parent="/Root/Modules/VisComps/(Extender:)ChildE" id="Vis_Child"/>
+	  <node node="./Capsule" parent="/Root/Modules/VisComps/(ExtenderBase:)ChildE" id="Vis_Child"/>
           <node id="1807927956" parent="Edge">
 	      <cont node="./P2" ref="./../../Capsule/Vis_Child/Int"/>
 	      <cont node="./P1" ref="./../../Drw/Child"/>
@@ -165,7 +163,6 @@
 	  <change node="./Capsule/&#x428;&#x442;&#x437;_&#x426;" attr="id" val="Inp_W"/>
 	  <node node="./Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_H"/>
 	  <rm node="./Capsule/Inp_Size"/>
-	  <node node="./Capsule" parent="/Root/Modules/DesComps/TrIntInp" id="Scale_WH"/>
 	  <node id="Scaled_W" parent="./Scaled_coord">
 	      <node node="./Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Scale"/>
 	      <node id="457550627" parent="Edge">
@@ -177,7 +174,6 @@
 	      <cont node="./P1" ref="./../../Drw/Inp_W"/>
 	      <cont node="./P2" ref="./../../Scaled_W/Capsule/Out"/>
 	  </node>
-	  <rm node="./Capsule/Scale_WH"/>
 	  <node node="./Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Scale_WH"/>
           <node id="313104659" parent="Edge">
 	      <cont node="./P2" ref="./../../Capsule/Scale_WH/Int"/>
@@ -225,7 +221,7 @@
         <node id="Snail_Picture" parent="/Root/Modules/DesComps/Des">
           <node id="Picture" parent="/Root/IncapsRoot/DesRoot/Components/Pic"/>
 	  <node node="./Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_X"/>
-	  <node node="./Capsule" parent="/Root/Modules/VisComps/(Extender:)ChildE" id="Vis_Child"/>
+	  <node node="./Capsule" parent="/Root/Modules/VisComps/(ExtenderBase:)ChildE" id="Vis_Child"/>
 	  <node node="./Capsule" parent="/Root/Modules/DesComps/StIntInp" id="Inp_Y"/>
           <node id="1881392624" parent="Edge">
 	      <cont node="./P2" ref="./../../Capsule/Vis_Child/Int"/>
@@ -437,7 +433,7 @@
 		<cont val="Coord/Confirmed/Value"/>
 	    </node>
           </node>
-	  <node node="./Capsule" parent="/Root/Modules/VisComps/(Extender:)ChildE" id="Vis_Child"/>
+	  <node node="./Capsule" parent="/Root/Modules/VisComps/(ExtenderBase:)ChildE" id="Vis_Child"/>
           <node id="1022218378" parent="Edge">
 	      <cont node="./P2" ref="./../../Picture/Capsule/Vis_Child"/>
 	      <cont node="./P1" ref="./../../Capsule/Vis_Child/Int"/>

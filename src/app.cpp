@@ -545,8 +545,11 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
 	iDesObserver->SetDes(NULL);
 	iEnv->RemoveProvider(iMdlProv);
 	delete iEnv;
+	delete iMdlProv;
 	iEnv = NULL;
+	iMdlProv = NULL;
     }
+    iMdlProv = new MdlProv("MdlProv", iStDesEnv, NULL);
     iEnv = new Env(aFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
     iEnv->ImpsMgr()->AddImportsPaths(KModulesPath);

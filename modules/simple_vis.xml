@@ -209,7 +209,7 @@
         <cont node="./(Prop:)P2" ref="./../../Inp_Par_Size_HH/Capsule/Inp" ord="179"/>
       </node>
       <node id="Pulling" parent="/*/Modules/(Elem:)DesComps/(State:)StateVarC" ord="180">
-        <change node="./Capsule/(ExtenderInp:)Inp" attr="id" val="BtnPressEvent" ord="181"/>
+        <change node="./Capsule/(ExtenderInpBase:)Inp" attr="id" val="BtnPressEvent" ord="181"/>
         <cont node="./Data/Prepared/Value" val="MF,V,2 0 0" ord="182"/>
         <cont node="./Data/Confirmed/Value" val="MF,V,2 0 0" ord="183"/>
       </node>
@@ -229,8 +229,6 @@
           </node>
           <cont node="./Data/Prepared/Value" val="SI 0" ord="196"/>
           <cont node="./Data/Confirmed/Value" val="SI 0" ord="197"/>
-          <node id="EQ" parent="/*/Modules/(Elem:)FuncComps/(FuncVar:)FEQVar" ord="198"/>
-          <rm node="./(FEQVar:)EQ" ord="199"/>
           <node id="EQ" parent="/*/Modules/(Elem:)FuncComps/(TFuncVar:)TFEQVar" ord="200"/>
           <node id="643244487" parent="Edge" ord="201">
             <cont node="./P2" ref="./../../Get_Event/Capsule/Out" ord="202"/>
@@ -274,11 +272,9 @@
       <node id="Color_when_pulling" parent="/*/Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCVar:)Color" ord="231"/>
       <rm node="./(StateVarC:)Pulling" ord="232"/>
       <node id="Widget_State" parent="/*/Modules/(Elem:)VisComps/(Vert:)Widget_common/(StateVarC:)WidgetState_State" ord="233">
-        <change node="./Capsule/(ExtenderInp:)Inp" attr="id" val="Inp_Self" ord="234"/>
+        <change node="./Capsule/(ExtenderInpBase:)Inp" attr="id" val="Inp_Self" ord="234"/>
         <node id="Inp_Pulling" parent="/*/Modules/(Elem:)DesComps/StVarInp" node="./Capsule" ord="235"/>
-        <node id="St_Active" parent="/*/Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSTVar:)WidgetState_Data" ord="236"/>
         <node id="Switch" parent="/*/Modules/(Elem:)FuncComps/(TFuncVar:)TFSwitchVar" ord="237"/>
-        <rm node="./(WidgetState_Data:)St_Active" ord="238"/>
         <node id="St_Active" parent="/*/Modules/(Elem:)VisComps/(Vert:)Widget_common/(DataSCTVar:)WidgetState_DataSCT" ord="239">
           <cont node="./Value" val="Active" ord="240"/>
         </node>
@@ -866,7 +862,7 @@
       <node id="IsHeld" parent="/*/Modules/DesComps/StateVarC" node="./PullingS" ord="702">
         <cont node="./Data/Prepared/Value" val="SB false" ord="703"/>
         <cont node="./Data/Confirmed/Value" val="SB false" ord="704"/>
-        <change node="./Capsule/(ExtenderInp:)Inp" attr="id" val="Pressed" ord="705"/>
+        <change node="./Capsule/(ExtenderInpBase:)Inp" attr="id" val="Pressed" ord="705"/>
         <node id="Self" parent="/*/Modules/DesComps/StVarInp" node="./Capsule" ord="706"/>
         <node id="OR" parent="/*/Modules/FuncComps/TFMplVar" ord="707"/>
         <node id="Released" parent="/*/Modules/DesComps/StVarInp" node="./Capsule" ord="708"/>
@@ -884,8 +880,6 @@
           <cont node="./P2" ref="./../../Not/Capsule/Inp" ord="718"/>
           <cont node="./P1" ref="./../../Capsule/Released/Int/PinData" ord="719"/>
         </node>
-        <node id="OR" parent="/*/Modules/FuncComps/TFAddVar" ord="720"/>
-        <rm node="./(TFAddVar:)OR" ord="721"/>
         <node id="OR1" parent="/*/Modules/FuncComps/TFAddVar" ord="722"/>
         <node id="1047351570" parent="Edge" ord="723">
           <cont node="./P2" ref="./../../OR/Capsule/Inp" ord="724"/>
