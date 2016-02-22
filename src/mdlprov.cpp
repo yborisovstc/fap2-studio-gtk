@@ -9,7 +9,7 @@ MdlProv::MdlProv(const string &aName, MSDesEnv* aSDesEnv, MEnv* aEnv): GProvider
 {
 }
 
-Elem* MdlProv::CreateNode(const string& aType, const string& aName, Elem* aMan, MEnv* aEnv)
+Elem* MdlProv::CreateNode(const string& aType, const string& aName, MElem* aMan, MEnv* aEnv)
 {
     Elem* res = NULL;
     if (aType.compare(ADesSync::Type()) == 0) {

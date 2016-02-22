@@ -255,7 +255,9 @@ string HierDetailView::GetCursor() const
 void HierDetailView::SetCursor(const string& aUri)
 {
     MElem* node = iRoot->GetNode(aUri);
-    assert(node != NULL);
+    if (node == NULL) {
+	node = iRoot;
+    }
     SetCursor(node);
 }
 

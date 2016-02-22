@@ -398,20 +398,8 @@ void ElemDetRp::on_node_dropped(const std::string& aUri)
 
 void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNewName)
 {
-    // Get major dependency
-    /*
-       MElem* dnode = iElem->GetNode(aNodeUri);
-       MElem::TMDep mdep = dnode->GetMajorDep();
-       MElem* mnode = mdep.first.first;
-       if (mnode == NULL) {
-       mnode = iElem;
-       }
-       MElem* mutelem = mnode->GetAttachingMgr();
-       */
-
     MElem* dnode = iElem->GetNode(aNodeUri);
-    bool unsafe = false;
-    MElem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Change, unsafe);
+    MElem* mutelem = dnode->GetMan();
     if (mutelem != NULL) {
 	ChromoNode smutr = mutelem->Mutation().Root();
 	GUri nuri;
@@ -420,7 +408,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 	change.SetAttr(ENa_MutNode, nuri.GetUri());
 	change.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
 	change.SetAttr(ENa_MutVal, aNewName);
-	mutelem->Mutate(false, !unsafe, true);
+	mutelem->Mutate(false, false, true);
 	Refresh();
     }
 }
@@ -463,191 +451,9 @@ void ElemDetRp::add_node(const std::string& aParentUri, const std::string& aTarg
     }
 }
 
-MElem* ElemDetRp::GetObjForSafeMut(MElem* aMnode, MElem* aNode, TNodeType aMutType, bool& aUnsafe) 
-{
-    aMnode = iElem;
-    MElem* res = aNode;
-    string att;
-    aUnsafe = false;
-    MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
-    bool ena_pheno = ena_pheno_s.Get(ena_pheno);
-    MStSetting<bool>& ena_mut_critdeps_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_mut_critdeps_s);
-    bool ena_mut_critdeps= ena_pheno_s.Get(ena_mut_critdeps);
-    if (ena_pheno) {
-	MStSetting<Glib::ustring>& pinned_mut_node_s = mStEnv.Settings().GetSetting(MStSettings::ESts_PinnedMutNode, pinned_mut_node_s);
-	const Glib::ustring& pinned_mut_node = pinned_mut_node_s.Get(pinned_mut_node);
-	if (!pinned_mut_node.empty()) {
-	    MElem* pnode = iElem->GetNode(pinned_mut_node);
-	    if (pnode == NULL || !pnode->IsComp(aMnode)) {
-		res = NULL;
-		att = K_Att_WrongPinnedMnode;
-	    }
-	    else {
-		aMnode = pnode;
-	    }
-	}
-    }
-    if (res != NULL && ena_pheno && !aMnode->IsChromoAttached()) {
-	// Request that when pheno is enabled that mutated node to be specified explicitly
-	res = NULL;
-	att = K_Att_DeattachedNode;
-    }
-    if (res != NULL) {
-	Rank noderank;
-	Rank mnoderank;
-	res->GetRank(noderank, res->Chromos().Root());
-	aMnode->GetRank(mnoderank, aMnode->Chromos().Root());
-	Rank rank = noderank;
-	// Checking critical deps
-	TMDep dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Critical);
-	//MElem::TMDep dep = aNode->GetMajorDep();
-	if (dep.first.first != NULL) {
-	    Rank deprank;
-	    Elem::GetDepRank(dep, deprank);
-	    if (deprank > rank && !deprank.IsRankOf(rank)) {
-		res = dep.first.first;
-		rank = deprank;
-	    }
-	}
-	// Block mut if crit dep and such mutation is not enabled. 
-	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank)) {
-	    if (ena_mut_critdeps) {
-		att = Glib::ustring::compose(K_Att_CritDep_1, res->GetUri());
-		res = aMnode;
-		aUnsafe = true;
-	    }
-	    else {
-		att = Glib::ustring::compose(K_Att_CritDep, res->GetUri());
-		res = NULL;
-	    }
-	}
-#if 0
-	// [YB] Verbose handling of error is disabled at the moment, commented out
-	if (res != aMnode && rank > mnoderank && !rank.IsRankOf(mnoderank) && !ena_pheno) {
-	    // Safe mut point is out of scope, but pheno modif is not enabled, need to say to user
-	    int dres = RESPONSE_OK;
-	    MessageDialog* dlg = new MessageDialog(Glib::ustring::compose(KDlgMsg_CritDep, res->GetUri()), 
-		    false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
-	    dres = dlg->run();
-	    delete dlg;
-	    if (dres == RESPONSE_CANCEL) {
-		// User reject pheno mutation proposed, just cancel operation
-		res = NULL;
-	    }
-	}
-#endif
-	// Checking affecting deps
-	if (res != NULL) {
-	    bool isaffdep = false;
-	    MElem* affdep = NULL;
-	    dep = aNode->GetMajorDep(aMutType, MChromo::EDl_Affecting);
-	    if (dep.first.first != NULL) {
-		Rank deprank;
-		Elem::GetDepRank(dep, deprank);
-		if (deprank > rank && !deprank.IsRankOf(rank)) {
-		    affdep = dep.first.first;
-		    rank = deprank;
-		    isaffdep = true;
-		}
-		else if (deprank > noderank && !deprank.IsRankOf(noderank)) {
-		    isaffdep = true;
-		}
-	    }
-	    if (isaffdep && affdep != NULL && affdep != aMnode && !aMnode->IsComp(affdep)) {
-		// There is affecting dep
-		if (!ena_pheno) {
-		    att = K_Att_Rld;
-		    //iReloadRequired = true;
-		    /*
-		    // Pheno modif are disabled, notify the user of nececcity of reload
-		    res = aNode;
-		    MessageDialog* dlg = new MessageDialog(K_Att_Rld, false, MESSAGE_INFO, BUTTONS_OK, true);
-		    dlg->run();
-		    delete dlg;
-		    */
-		}
-		else {
-		    // Pheno modif are enabled, asking the user for the choice: mut or modif
-		    int dres = RESPONSE_YES;
-		    MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
-			    false, MESSAGE_INFO, BUTTONS_YES_NO, true);
-		    dres = dlg->run();
-		    delete dlg;
-		    if (dres == RESPONSE_YES) {
-			res = aNode;
-		    }
-		    else {
-			res = res->GetCommonOwner(aNode);
-		    }
-		}
-	    }
-	}
-	if (res != NULL) {
-	    if (!res->IsChromoAttached()) {
-		res = res->GetAttachingMgr();
-	    }
-#if 0
-	    if (!ena_pheno && res != aNode && deptype == ENa_Parent) {
-		// Taking into account options of change: geno or pheno, ref fap2 uc_038
-		MessageDialog* dlg = new MessageDialog(Glib::ustring(KDlgMsg_Mut_F2), 
-			false, MESSAGE_INFO, BUTTONS_YES_NO, true);
-		int dres = dlg->run();
-		delete dlg;
-		if (dres == RESPONSE_YES) {
-		    res = iElem;
-		}
-		else {
-		    res = res->GetCommonOwner(aNode);
-		}
-	    } 
-	    else {
-		res = res->GetCommonOwner(aNode);
-	    }
-#endif
-	    // Taking into account preferrend mutated node if pheno is enabled
-	    if (ena_pheno) {
-		res = res->GetCommonOwner(aMnode);
-	    }
-	    // Set mutated node as owner of changed node if mutation type is owner based and 
-	    // the node selected for mutation is changed node itself
-	    /*
-	    if (res == aNode && IsMutOwnerBased(aMutType)) {
-		res = aNode->GetMan();
-	    }
-	    */
-	    // The only owner or node itself is allowed to apply mutation
-	    // Also take into account if the mut is owner based
-	    MElem* pnode = IsMutOwnerBased(aMutType) ? aNode->GetMan() : aNode;
-	    res = res->GetCommonOwner(pnode);
-	    if (!res->IsChromoAttached()) {
-		res = res->GetAttachingMgr(); 
-	    }
-	}
-    }
-    mSignalAttention.emit(att);
-    return res;
-}
-
 bool ElemDetRp::IsMutOwnerBased(TNodeType aMut) const 
 {
     return aMut == ENt_Move || aMut == ENt_Rm || aMut == ENt_Change;
-}
-
-bool ElemDetRp::IsParentSafe(MElem* aTarg, const string& aParentUri)
-{
-    bool res = true;
-    __ASSERT(!aParentUri.empty());
-    // Checking if parent rank is correct
-    MElem* parent = aTarg->GetNode(aParentUri);
-    __ASSERT(parent != NULL);
-    Rank targrank;
-    Rank prntrank;
-    aTarg->GetRank(prntrank, parent->Chromos().Root());
-    aTarg->GetLRank(targrank);
-    if (prntrank > targrank && !prntrank.IsRankOf(targrank)) {
-	res = false;
-    }
-    return res;
 }
 
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aTargetUri)
@@ -656,7 +462,7 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
     // Mutate appending
     MElem* targ = iElem->GetNode(aTargetUri);
     bool unsafe = false;
-    MElem* mutelem = GetObjForSafeMut(iElem, targ, ENt_Node, unsafe);
+    MElem* mutelem = targ;
     if (mutelem != NULL) {
 	ChromoNode mut = mutelem->Mutation().Root();
 	ChromoNode rmut = mut.AddChild(ENt_Node);
@@ -671,8 +477,6 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 	GUri prnturi;
 	parent->GetUri(prnturi, mutelem);
 	string prnturis = prnturi.GetUri(true);
-	// Checking if parent rank is correct
-	bool prntissafe = IsParentSafe(mutelem, prnturis);
 	if (!prnturis.empty()) {
 	    rmut.SetAttr(ENa_Parent, prnturis);
 	}
@@ -684,48 +488,22 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 		sname = ss.str();
 	    }
 	    rmut.SetAttr(ENa_Id, sname);
-	    // TODO [YB] To replace comps order with another mechanism
-	    /*
-	       if (!aNeighborUri.empty() && !aName.empty()) {
-	    // Mutate moving
-	    GUri duri;
-	    iElem->GetUri(duri, mutelem);
-	    GUri puri(aParentUri);
-	    GUri suri = duri;
-	    suri.AppendElem(puri.GetName(), GUri::KParentSep, aName);
-	    GUri nuri = duri + GUri(aNeighborUri);
-	    ChromoNode rmut = mutelem->Mutation().Root();
-	    ChromoNode change = rmut.AddChild(ENt_Move);
-	    change.SetAttr(ENa_Id, suri.GetUri());
-	    change.SetAttr(ENa_MutNode, nuri.GetUri());
-	    }
-	    */
-	    mutelem->Mutate(false, true, true);
-	    /*
-	       if (iReloadRequired) {
-	       iReloadRequired = false;
-	       mSigReloadRequired.emit();
-	       };
-	       */
+	    mutelem->Mutate(false, false, true);
 	}
     }
 }
 
 void ElemDetRp::remove_node(const std::string& aNodeUri)
 {
-    MStSetting<bool>& ena_pheno_s = mStEnv.Settings().GetSetting(MStSettings::ESts_EnablePhenoModif, ena_pheno_s);
-    bool ena_pheno = ena_pheno_s.Get(ena_pheno);
-    // Node to be deleted
     MElem* dnode = iElem->GetNode(aNodeUri);
     __ASSERT(dnode != NULL);
-    bool unsafe = false;
-    MElem* mutelem = GetObjForSafeMut(iElem, dnode, ENt_Rm, unsafe);
+    MElem* mutelem = dnode->GetMan();
     if (mutelem != NULL) {
 	GUri nuri;
 	dnode->GetUri(nuri, mutelem);
 	ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
 	mutn.SetAttr(ENa_MutNode, nuri.GetUri());
-	mutelem->Mutate(false, !unsafe, true);
+	mutelem->Mutate(false, false, true);
 	Refresh();
     }
 }
@@ -733,8 +511,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
 {
     MElem* node = iElem->GetNode(aNodeUri);
-    bool unsafe = false;
-    MElem* mutelem = GetObjForSafeMut(iElem, node, ENt_Cont, unsafe);
+    MElem* mutelem = node;
     if (mutelem != NULL) {
 	GUri nuri;
 	node->GetUri(nuri, mutelem);
@@ -782,10 +559,8 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 TBool ElemDetRp::DoIsActionSupported(MElem* aComp, const MCrp::Action& aAction)
 {
     TBool res = ETrue;
-    if (aAction == MCrp::EA_TransToMut) {
-	res = aComp->IsPhenoModif();
-    } else if (aAction == MCrp::EA_GetParentsModifs) {
-	res = aComp->HasParentModifs();
+    if (aAction == MCrp::EA_GetParentsModifs) {
+	res = EFalse;
     }
     return res;
 }
@@ -930,10 +705,10 @@ void ElemDetRp::on_comp_menu_trans_to_mut()
     root->CompactChromo(lastmut);
 }
 
+// TODO Not used anymore, to remove
 void ElemDetRp::on_comp_menu_get_parents_modif()
 {
-    assert(iCompSelected != NULL);
-    iCompSelected->CopyModifsFromParent();
+    assert(false);
 }
 
 // Shifting of component to the latest rank
