@@ -78,10 +78,6 @@
         <node id="Picture_De" parent="/(Elem:)Root/Modules/(Elem:)Simple_vis/(Vert:)Components/(Pic:)PicDe">
           <cont node="./631507917/P1" ref="./../../Capsule/Inp_Par_Size_WH/Int"/>
           <rm node="./(Edge:)592434651"/>
-          <cont node="./PullingS/Held/Get_X/Index/Value" val="SI 0"/>
-          <cont node="./PullingS/Held/Get_Y/Index/Value" val="SI 1"/>
-          <cont node="./PullingS/Held/Get_W/Index/Value" val="SI 0"/>
-          <cont node="./PullingS/Held/Get_H/Index/Value" val="SI 1"/>
         </node>
         <cont node="./1464334493/P1" ref="./../../Picture_De/Capsule/Inp_coords_XY"/>
         <cont node="./1347304952/P1" ref="./../../Picture/Capsule/Vis_Child" na=""/>
