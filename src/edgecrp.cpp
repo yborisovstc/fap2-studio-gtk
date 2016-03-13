@@ -162,7 +162,7 @@ MElem* EdgeCrp::Point1()
     MEdge* medge = iElem->GetObj(medge);
     MVert* p1 = medge->Point1();
     if (p1 != NULL) {
-	res = p1->EBase()->GetObj(res);
+	res = p1->GetObj(res);
     }
     return res;
 }
@@ -173,7 +173,7 @@ MElem* EdgeCrp::Point2()
     MEdge* medge = iElem->GetObj(medge);
     MVert* p1 = medge->Point2();
     if (p1 != NULL) {
-	res = p1->EBase()->GetObj(res);
+	res = p1->GetObj(res);
     }
     return res;
 }

@@ -408,7 +408,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 	change.SetAttr(ENa_MutNode, nuri.GetUri());
 	change.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
 	change.SetAttr(ENa_MutVal, aNewName);
-	mutelem->Mutate(false, false, true);
+	mutelem->Mutate(false, false, true, iElem->GetRoot());
 	Refresh();
     }
 }
@@ -488,7 +488,7 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
 		sname = ss.str();
 	    }
 	    rmut.SetAttr(ENa_Id, sname);
-	    mutelem->Mutate(false, false, true);
+	    mutelem->Mutate(false, false, true, iElem->GetRoot());
 	}
     }
 }
@@ -503,7 +503,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
 	dnode->GetUri(nuri, mutelem);
 	ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
 	mutn.SetAttr(ENa_MutNode, nuri.GetUri());
-	mutelem->Mutate(false, false, true);
+	mutelem->Mutate(false, false, true, iElem->GetRoot());
 	Refresh();
     }
 }
@@ -518,7 +518,7 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
 	ChromoNode change = mutelem->Mutation().Root().AddChild(ENt_Cont);
 	change.SetAttr(ENa_MutNode, nuri.GetUri(true));
 	change.SetAttr(aRef ? ENa_Ref : ENa_MutVal, aNewContent);
-	mutelem->Mutate(false, true, true);
+	mutelem->Mutate(false, true, true, iElem->GetRoot());
 	Refresh();
     }
 }
@@ -540,7 +540,7 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 		change.SetAttr(ENa_Id, snode->GetUri(cowner));
 		//	change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
 		change.SetAttr(ENa_MutNode, dnode->GetUri(cowner));
-		cowner->Mutate(false, true, true);
+		cowner->Mutate(false, true, true, iElem->GetRoot());
 		Refresh();
 	    }
 	}
@@ -550,7 +550,7 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 	    ChromoNode rmut = iElem->Mutation().Root();
 	    ChromoNode change = rmut.AddChild(ENt_Move);
 	    change.SetAttr(ENa_Id, aNodeUri);
-	    iElem->Mutate(false, true, true);
+	    iElem->Mutate(false, true, true, iElem->GetRoot());
 	    Refresh();
 	}
     }
@@ -743,7 +743,7 @@ void ElemDetRp::DoOnActionInsert()
 	std::string filename = dialog.get_filename();
 	TBool res = iElem->AppendMutation(filename);
 	if (res) {
-	    iElem->Mutate(false, true, true);
+	    iElem->Mutate(false, true, true, iElem->GetRoot());
 	    Refresh();
 	}
     }

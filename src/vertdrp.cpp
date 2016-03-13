@@ -251,8 +251,8 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		medgecrp->SetCp2Coord(coord);
 		pair = medge->Point1();
 	    }
-	    MElem* epair = pair != NULL ? pair->EBase()->GetObj(epair) : NULL;
-	    MCompatChecker* mpaircc = pair != NULL ? pair->EBase()->GetObj(mpaircc) : NULL;
+	    MElem* epair = pair != NULL ? pair->GetObj(epair) : NULL;
+	    MCompatChecker* mpaircc = pair != NULL ? pair->GetObj(mpaircc) : NULL;
 	    // Find the nearest CP and highligh it
 	    int dist = KDistThresholdEdge ;
 	    MCrp* cand = NULL;
