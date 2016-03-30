@@ -100,6 +100,7 @@ class App
 	void InitialUpdate();
 	bool IsSystemChanged() const;
 	bool CheckCurrentModelSaving();
+	bool Idle();
     private:
 	// DES environment
 	Env* iEnv;

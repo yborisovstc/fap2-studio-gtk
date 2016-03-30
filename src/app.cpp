@@ -2,6 +2,7 @@
 #include <gtkmm.h>
 #include "gtkmm/object.h"
 #include <iostream>
+#include <daaprov.h>
 
 const char* KLogFileName = "fap2-studio.log";
 const char* KTmpFileName = ".fap2-studio-tmp.xml";
@@ -283,6 +284,8 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     gtk_rc_parse(KRcFileName);
     // Update menu and toolbar
     InitialUpdate();
+    // Try idle handler
+    Glib::signal_idle().connect(sigc::mem_fun(*this, &App::Idle));
 }
 
 App::~App() {
@@ -294,6 +297,12 @@ App::~App() {
     delete iStDesEnv;
     // iMdlProv is owned by iEnv, so no need to delete it
     delete iDesObserver;
+}
+
+bool App::Idle()
+{
+    std::cout << "Idle" << std::endl;
+    return false;
 }
 
 void App::on_setting_changed_pheno_enable()
@@ -552,6 +561,8 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iMdlProv = new MdlProv("MdlProv", iStDesEnv, NULL);
     iEnv = new Env(aFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
+    GProvider* daaprov = new DaaProv("DaaProv", iEnv);
+    iEnv->AddProvider(daaprov);
     iEnv->ImpsMgr()->AddImportsPaths(KModulesPath);
     iEnv->ChMgr()->SetLim(iChromoLim);
     iEnv->ChMgr()->SetEnableFixErrors(iRepair);
