@@ -30,8 +30,8 @@ void IncapsCrp::Construct()
     // Add CPs
     MElem* caps = iElem->GetNode(KCapsUri);
     assert(caps != NULL);
-    for (std::vector<MElem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < caps->CompsCount(); ci++) {
+	MElem* comp = caps->GetComp(ci);
 	CpRp* rp = new CpRp(comp);
 	add(*rp);
 	rp->show();

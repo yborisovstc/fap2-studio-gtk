@@ -10,6 +10,7 @@ Glib::ustring sUiInfo =
 "    <menu action='MenuFile'>"
 "      <menuitem action='New'/>"
 "      <menuitem action='Open'/>"
+"      <menuitem action='Close'/>"
 "      <menuitem action='Save'/>"
 "      <menuitem action='Save_as'/>"
 "      <menuitem action='Reload'/>"
@@ -32,6 +33,7 @@ Glib::ustring sUiInfo =
 
 const string KToolTip_New = "Create new model";
 const string KToolTip_Open = "Open a model";
+const string KToolTip_Close = "Close the model";
 const string KToolTip_Save = "Save the model";
 const string KToolTip_SaveAs = "Save as the model";
 const string KToolTip_Reload = "Reload the model";
@@ -50,6 +52,7 @@ MainWnd::MainWnd(MSEnv* aStEnv): iStEnv(aStEnv)
     irActionGroup->add(Gtk::Action::create("MenuFile", "_File"));
     irActionGroup->add(Gtk::Action::create("New", Gtk::Stock::NEW, "New", KToolTip_New));
     irActionGroup->add(Gtk::Action::create("Open", Gtk::Stock::OPEN, "Open", KToolTip_Open));
+    irActionGroup->add(Gtk::Action::create("Close", Gtk::Stock::CLOSE, "Close", KToolTip_Open));
     irActionGroup->add(Gtk::Action::create("Save", Gtk::Stock::SAVE, "Save", KToolTip_Save));
     irActionGroup->add(Gtk::Action::create("Save_as", Gtk::Stock::SAVE_AS, "Save as", KToolTip_SaveAs));
     irActionGroup->add(Gtk::Action::create("Reload", Gtk::Stock::REFRESH, "Reload", KToolTip_Reload));

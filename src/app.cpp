@@ -3,6 +3,7 @@
 #include "gtkmm/object.h"
 #include <iostream>
 #include <daaprov.h>
+#include <bclient.h>
 
 const char* KLogFileName = "fap2-studio.log";
 const char* KTmpFileName = ".fap2-studio-tmp.xml";
@@ -213,11 +214,39 @@ void DesObserver::RemoveObservable(MLogRec* aObservable)
     iLogRec = NULL;
 }
 
+string DesObserver::Mid() const
+{
+    return string();
+}
+
+MIface* DesObserver::Call(const string& aSpec, string& aRes)
+{
+    MIface* res = NULL;
+    string name, sig;
+    vector<string> args;
+    Ifu::ParseIcSpec(aSpec, name, sig, args);
+    TBool name_ok = mIfu.CheckMname(name);
+    if (!name_ok) 
+	    throw (runtime_error("Wrong method name"));
+    TBool args_ok = mIfu.CheckMpars(name, args.size());
+    if (!args_ok) 
+	    throw (runtime_error("Wrong arguments number"));
+    if (name == "OnCompDeleting") {
+    } else {
+	throw (runtime_error("Unhandled method: " + name));
+    }
+    return res;
+}
 
 
-App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoLim(0), iChanged(false), 
+const int App::mDesSrvPort = 30679;
+
+
+App::App(): iEnv(NULL), mDesSrv(NULL), mDesSrvThread(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoLim(0), iChanged(false), 
     iRepair(false)
 {
+    // Create DES server
+    mDesSrv = new Server(mDesSrvPort);
     // Create model observer
     iDesObserver = new DesObserver();
     // Set log view
@@ -252,6 +281,7 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_save));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Save_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_saveas));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Reload")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_recreate));
+    iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Close")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_close));
     iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Compact_as")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_compactas));
     iMainWnd->UIManager()->get_action("ui/MenuBar/MenuFile/Optimize")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_optimize));
     iMainWnd->UIManager()->get_action("ui/ToolBar/Undo")->signal_activate().connect(sigc::mem_fun(*this, &App::on_action_undo));
@@ -285,7 +315,10 @@ App::App(): iEnv(NULL), iMainWnd(NULL), iHDetView(NULL), iSaved(false), iChromoL
     // Update menu and toolbar
     InitialUpdate();
     // Try idle handler
-    Glib::signal_idle().connect(sigc::mem_fun(*this, &App::Idle));
+    //Glib::signal_idle().connect(sigc::mem_fun(*this, &App::Idle));
+    // Run DES server
+    //Glib::signal_idle().connect(sigc::mem_fun(*mDesSrv, &DesSrv::AcceptAndDispatch));
+    mDesSrvThread = Glib::Threads::Thread::create(sigc::mem_fun(*mDesSrv, &Server::AcceptAndDispatch));
 }
 
 App::~App() {
@@ -297,6 +330,7 @@ App::~App() {
     delete iStDesEnv;
     // iMdlProv is owned by iEnv, so no need to delete it
     delete iDesObserver;
+    delete mDesSrv;
 }
 
 bool App::Idle()
@@ -385,10 +419,33 @@ void App::on_action_new()
 	    std::string filename = dialog.get_filename();
 	    iSpecFileName.clear();
 	    iChromoLim = 0;
-	    OpenFile(filename, true);
-	    iInitMaxOrder = iEnv->ChMgr()->GetMaxOrder();
+	    //CloseFile();
+	    Glib::signal_idle().connect_once(sigc::bind<string, bool>(sigc::mem_fun(*this, &App::OpenFile), filename, false));
+	    //OpenFile(filename, true);
+	    //iInitMaxOrder = iEnv->ChMgr()->GetMaxOrder();
 	    iSaved = EFalse;
 	}
+    }
+}
+
+void App::on_action_close()
+{
+    if (CheckCurrentModelSaving()) {
+	CloseFile();
+    }
+}
+
+void App::CloseFile()
+{
+    if (iEnv != NULL) {
+	iDesObserver->SetDes(NULL);
+	iEnv->RemoveProvider(iMdlProv);
+	CSessionBase::RmSContext(iEnv);
+	delete iEnv;
+	delete iMdlProv;
+	iEnv = NULL;
+	iMdlProv = NULL;
+	iHDetView->Reset();
     }
 }
 
@@ -405,8 +462,11 @@ void App::on_action_open()
 	if (result == Gtk::RESPONSE_OK) {
 	    string filename = dialog.get_filename();
 	    iChromoLim = 0;
-	    OpenFile(filename, false);
-	    iInitMaxOrder = iEnv->ChMgr()->GetMaxOrder();
+	    //CloseFile();
+	    Glib::signal_idle().connect_once(sigc::bind<string, bool>(sigc::mem_fun(*this, &App::OpenFile), filename, false));
+	    //OpenFile(filename, false);
+	    // TODO to recover
+	    //iInitMaxOrder = iEnv->ChMgr()->GetMaxOrder();
 	    iSaved = EFalse;
 	}
     }
@@ -550,18 +610,18 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     Gtk::Main::instance()->iteration(false);
     }
     */
-    if (iEnv != NULL) {
-	iDesObserver->SetDes(NULL);
-	iEnv->RemoveProvider(iMdlProv);
-	delete iEnv;
-	delete iMdlProv;
-	iEnv = NULL;
-	iMdlProv = NULL;
-    }
+    CloseFile();
     iMdlProv = new MdlProv("MdlProv", iStDesEnv, NULL);
     iEnv = new Env(aFileName, iLogFileName);
     iEnv->AddProvider(iMdlProv);
+    // Register env in local server
+    CSessionBase::AddSContext("Env_1", iEnv);
     GProvider* daaprov = new DaaProv("DaaProv", iEnv);
+    stringstream ss;
+    ss << mDesSrvPort;
+    string srvid = "socks://localhost:" + ss.str();
+    iEnv->SetEVar("SID", srvid);
+    iEnv->SetEVar("EID", "Env_1");
     iEnv->AddProvider(daaprov);
     iEnv->ImpsMgr()->AddImportsPaths(KModulesPath);
     iEnv->ChMgr()->SetLim(iChromoLim);

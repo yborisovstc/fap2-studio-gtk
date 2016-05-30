@@ -150,8 +150,8 @@ SockErp::SockErp(MElem* aElem, const MErpProvider& aErpProv): VBox(), iElem(aEle
     }
     iName->set_alignment(xalign);
     // Pins
-    for (vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
+	MElem* comp = iElem->GetComp(ci);
 	if (comp->IsHeirOf(sCpEType) || comp->IsHeirOf(sSockEType)) {
 	    MErp* pinrp = iErpProv.CreateRp(*comp, this);
 	    if (pinrp != NULL) {

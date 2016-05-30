@@ -53,6 +53,9 @@ MDrp* DefDrpProv::CreateRp(MElem& aElem) const
     else if (aElem.IsHeirOf(ElemDrp::EType()) || aElem.EType().empty() && aElem.Name() == Elem::Type()) {
 	res = new ElemDrp(&aElem, iSenv->CrpProvider(), *iSenv);
     }
+    else {
+	res = new ElemDrp(&aElem, iSenv->CrpProvider(), *iSenv);
+    }
     return res;
 }
 
@@ -125,6 +128,9 @@ MCrp* DefCrpProv::CreateRp(MElem& aElem, const MCrpMgr* aMgr) const
 	res = new PropCrp(&aElem);
     }
     else if (aElem.IsHeirOf(ElemCrp::EType()) && aMgr->IsTypeAllowed(ElemCrp::EType())) {
+	res = new ElemCrp(&aElem);
+    }
+    else {
 	res = new ElemCrp(&aElem);
     }
     return res;

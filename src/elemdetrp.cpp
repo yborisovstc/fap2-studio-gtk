@@ -83,14 +83,10 @@ ElemDetRp::ElemDetRp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv):
     Gtk::Menu_Helpers::MenuElem e_editcont("_Edit content", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_edit_content));
     // TODO [YB] Consider saving from app - saving current app context instead of using context menu
     Gtk::Menu_Helpers::MenuElem e_save_chromo("_Save chromo", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_save_chromo));
-    Gtk::Menu_Helpers::MenuElem e_transtomut("_Transform to mut", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_trans_to_mut));
-    Gtk::Menu_Helpers::MenuElem e_getparentsmodif("_Get parents modif", sigc::mem_fun(*this, &ElemDetRp::on_comp_menu_get_parents_modif));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Rename, e_rename));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Remove, e_remove));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Edit_Content, e_editcont));
     iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_Save_Chromo, e_save_chromo));
-    iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_TransToMut, e_transtomut));
-    iCompMenuElems.insert(pair<MCrp::Action, Gtk::Menu_Helpers::MenuElem>(MCrp::EA_GetParentsModifs, e_getparentsmodif));
     // Setup components context menu
     Gtk::Menu::MenuList& menulist = iCrpContextMenu.items();
     /*
@@ -114,25 +110,27 @@ ElemDetRp::~ElemDetRp()
 void ElemDetRp::Construct()
 {
     // Add components
-    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
+	MElem* comp = iElem->GetComp(ci);
 	assert(comp != NULL);
 	if (comp->IsRemoved()) continue;
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
-	if (rp == NULL) {
+	if (rp != NULL) {
+	    if (IsCrpLogged(rp, MLogRec::EErr)) {
+		rp->SetErroneous(true);
+	    }
+	    Gtk::Widget& rpw = rp->Widget();
+	    //rpw.signal_button_press_event().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
+	    // Using specific signal for button press instead of standard because some Crps can have complex layout
+	    rp->SignalButtonPress().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
+	    rp->SignalButtonPressName().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
+	    add(rpw);
+	    iCompRps[comp] = rp;
+	    rpw.show();
+	} else {
 	    rp = iCrpProv.CreateRp(*comp, this);
+	    std::cout << "ElemDetRp::Construct, error - cannot create RP [" << comp->Name() << "]" << std::endl;
 	}
-	if (IsCrpLogged(rp, MLogRec::EErr)) {
-	    rp->SetErroneous(true);
-	}
-	Gtk::Widget& rpw = rp->Widget();
-	//rpw.signal_button_press_event().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_ext), comp));
-	// Using specific signal for button press instead of standard because some Crps can have complex layout
-	rp->SignalButtonPress().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), comp));
-	rp->SignalButtonPressName().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press_name), comp));
-	add(rpw);
-	iCompRps[comp] = rp;
-	rpw.show();
     }
 }
 
@@ -197,9 +195,10 @@ void ElemDetRp::on_size_allocate(Gtk::Allocation& aAllc)
 
     // Allocate components
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
-    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	if ((*it)->IsRemoved()) continue;
-	MCrp* crp = iCompRps.at(*it);
+    for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
+	MElem* ecomp = iElem->GetComp(ci);
+	if (ecomp->IsRemoved()) continue;
+	MCrp* crp = iCompRps.at(ecomp);
 	Gtk::Widget* comp = &(crp->Widget());
 	Gtk::Requisition req = comp->size_request();
 	int comp_body_center_x = req.width / 2;
@@ -326,7 +325,7 @@ bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int 
 	    iDropBaseCandidate->Model()->GetUri(uri, iElem);
 	}
 	else {
-	    iElem->GetUri(uri, iElem);
+	    // iElem->GetUri(uri, iElem); This will be empty uri anycase
 	}
 	if (action == Gdk::ACTION_COPY) {
 	    add_node(iDndReceivedData, uri.GetUri());
@@ -401,13 +400,10 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
     MElem* dnode = iElem->GetNode(aNodeUri);
     MElem* mutelem = dnode->GetMan();
     if (mutelem != NULL) {
-	ChromoNode smutr = mutelem->Mutation().Root();
 	GUri nuri;
-	dnode->GetRUri(nuri, mutelem);
-	ChromoNode change = smutr.AddChild(ENt_Change);
-	change.SetAttr(ENa_MutNode, nuri.GetUri());
-	change.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
-	change.SetAttr(ENa_MutVal, aNewName);
+	dnode->GetUri(nuri, mutelem);
+	mutelem->AppendMutation(TMut(ENt_Change, ENa_Comp, nuri.GetUri(),
+		    ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id), ENa_MutVal, aNewName));
 	mutelem->Mutate(false, false, true, iElem->GetRoot());
 	Refresh();
     }
@@ -416,8 +412,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 void ElemDetRp::import(const std::string& aUri)
 {
     MElem* mutelem = iElem;
-    ChromoNode mut = mutelem->Mutation().Root();
-    ChromoNode rmut = mut.AddChild(ENt_Import);
+    ChromoNode rmut = mutelem->AppendMutation(ENt_Import);
     rmut.SetAttr(ENa_Id, aUri);
     mutelem->Mutate();
     Refresh();
@@ -458,39 +453,27 @@ bool ElemDetRp::IsMutOwnerBased(TNodeType aMut) const
 
 void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParentUri, const std::string& aTargetUri)
 {
-    bool err = false;
     // Mutate appending
     MElem* targ = iElem->GetNode(aTargetUri);
-    bool unsafe = false;
-    MElem* mutelem = targ;
-    if (mutelem != NULL) {
-	ChromoNode mut = mutelem->Mutation().Root();
-	ChromoNode rmut = mut.AddChild(ENt_Node);
-	if (mutelem != targ) {
-	    GUri nodeuri;
-	    targ->GetUri(nodeuri, mutelem);
-	    string snodeuri = nodeuri.GetUri(true);
-	    rmut.SetAttr(ENa_MutNode, snodeuri);
-	}
-	__ASSERT(!aParentUri.empty());
-	MElem* parent = iElem->GetNode(aParentUri);
-	GUri prnturi;
-	parent->GetUri(prnturi, mutelem);
-	string prnturis = prnturi.GetUri(true);
-	if (!prnturis.empty()) {
-	    rmut.SetAttr(ENa_Parent, prnturis);
-	}
-	if (!err) {
-	    string sname(aName);
-	    if (sname.empty()) {
-		stringstream ss;
-		ss << rand();
-		sname = ss.str();
-	    }
-	    rmut.SetAttr(ENa_Id, sname);
-	    mutelem->Mutate(false, false, true, iElem->GetRoot());
-	}
+    __ASSERT(targ != NULL);
+    __ASSERT(!aParentUri.empty());
+    MElem* parent = iElem->GetNode(aParentUri);
+    __ASSERT(parent != NULL);
+    /*
+    GUri prnturi;
+    parent->GetUri(prnturi, targ);
+    __ASSERT(!prnturi.IsErr());
+    string prnturis = prnturi.GetUri(true);
+    */
+    string prnturis = parent->GetUri(targ);
+    string sname(aName);
+    if (sname.empty()) {
+	stringstream ss;
+	ss << rand();
+	sname = ss.str();
     }
+    targ->AppendMutation(TMut(ENt_Node, ENa_Id, sname, ENa_Parent, prnturis));
+    targ->Mutate(false, false, true, iElem->GetRoot());
 }
 
 void ElemDetRp::remove_node(const std::string& aNodeUri)
@@ -501,8 +484,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     if (mutelem != NULL) {
 	GUri nuri;
 	dnode->GetUri(nuri, mutelem);
-	ChromoNode mutn = mutelem->Mutation().Root().AddChild(ENt_Rm);
-	mutn.SetAttr(ENa_MutNode, nuri.GetUri());
+	mutelem->AppendMutation(TMut(ENt_Rm, ENa_Comp, nuri.GetUri()));
 	mutelem->Mutate(false, false, true, iElem->GetRoot());
 	Refresh();
     }
@@ -513,8 +495,7 @@ void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& a
     MElem* node = iElem->GetNode(aNodeUri);
     MElem* mutelem = node;
     if (mutelem != NULL) {
-	ChromoNode change = mutelem->Mutation().Root().AddChild(ENt_Cont);
-	change.SetAttr(aRef ? ENa_Ref : ENa_MutVal, aNewContent);
+	mutelem->AppendMutation(TMut(ENt_Cont, aRef ? ENa_Ref : ENa_MutVal, aNewContent));
 	mutelem->Mutate(false, true, true, iElem->GetRoot());
 	Refresh();
     }
@@ -532,8 +513,7 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 	if (snode != NULL) {
 	    MElem* cowner = iElem->GetCommonOwner(snode);
 	    if (cowner != NULL) {
-		ChromoNode rmut = cowner->Mutation().Root();
-		ChromoNode change = rmut.AddChild(ENt_Move);
+		ChromoNode change = cowner->AppendMutation(ENt_Move);
 		change.SetAttr(ENa_Id, snode->GetUri(cowner));
 		//	change.SetAttr(ENa_MutNode, iElem->GetUri(cowner));
 		change.SetAttr(ENa_MutNode, dnode->GetUri(cowner));
@@ -544,8 +524,7 @@ void ElemDetRp::move_node(const std::string& aNodeUri, const std::string& aDestU
 	else {
 	    // Probably external node
 	    // TODO [YB] To check explicitlly that it is external node but not wrong uri
-	    ChromoNode rmut = iElem->Mutation().Root();
-	    ChromoNode change = rmut.AddChild(ENt_Move);
+	    ChromoNode change = iElem->AppendMutation(ENt_Move);
 	    change.SetAttr(ENa_Id, aNodeUri);
 	    iElem->Mutate(false, true, true, iElem->GetRoot());
 	    Refresh();
@@ -580,9 +559,6 @@ void ElemDetRp::ShowCrpCtxDlg(GdkEventButton* event, MElem* aComp)
     if (crp->IsActionSupported(MCrp::EA_Save_Chromo)) {
 	menulist.push_back(iCompMenuElems.at(MCrp::EA_Save_Chromo));
     }
-    if (DoIsActionSupported(aComp, MCrp::EA_TransToMut)) {
-	menulist.push_back(iCompMenuElems.at(MCrp::EA_TransToMut));
-    }
     if (DoIsActionSupported(aComp, MCrp::EA_GetParentsModifs)) {
 	menulist.push_back(iCompMenuElems.at(MCrp::EA_GetParentsModifs));
     }
@@ -598,7 +574,7 @@ void ElemDetRp::on_comp_menu_rename()
 	std::string newname;
 	dlg->GetData(newname);
 	GUri duri;
-	iCompSelected->GetRUri(duri, iElem);
+	iCompSelected->GetUri(duri, iElem);
 	rename_node(duri.GetUri(true), newname);
     }
     delete dlg;
@@ -660,52 +636,6 @@ void ElemDetRp::on_comp_menu_save_chromo()
     }
 
     iCompSelected = NULL;
-}
-
-// [YB] This is example of how to do "transformations" in chromo
-// The approach is to avoid of editing chromo directly but instead to use
-// combinatin of mutations and chromo squeezing
-void ElemDetRp::on_comp_menu_trans_to_mut()
-{
-    // Add true mutation to model, using temp name
-    // Temp name is required to avoid conflict with the current pheno modif
-    ChromoNode mut = iElem->Mutation().Root();
-    ChromoNode rmut = mut.AddChild(ENt_Node);
-    MElem* parent = iCompSelected->GetParent();
-    GUri puri;
-    parent->GetUri(puri, iElem);
-    rmut.SetAttr(ENa_Parent, puri.GetUri(true));
-    rmut.SetAttr(ENa_Id, iCompSelected->Name() + "~tmp");
-    iElem->Mutate(false, true, true);
-    // Remove node originated by pheno modif
-    TMDep dep;
-    iCompSelected->GetDep(dep, ENa_Id, ETrue);
-    MElem* depnode = dep.first.first;
-    ChromoNode mutr = depnode->Mutation().Root();
-    ChromoNode rmutr = mutr.AddChild(ENt_Rm);
-    GUri nuri;
-    iCompSelected->GetUri(nuri, depnode);
-    rmutr.SetAttr(ENa_MutNode, nuri.GetUri(true));
-    depnode->Mutate(false, true, true);
-    // Squeeze chromo for mutations made to depnode: rm and rename
-    ChromoNode lastmut = *(depnode->Chromos().Root().Rbegin());
-    MElem* root = iElem->GetRoot();
-    root->CompactChromo(lastmut);
-    // Rename tmp name to correct
-    ChromoNode rmutrn = mutr.AddChild(ENt_Change);
-    rmutrn.SetAttr(ENa_MutNode, nuri.GetUri(true) + "~tmp");
-    rmutrn.SetAttr(ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id));
-    rmutrn.SetAttr(ENa_MutVal, iCompSelected->Name());
-    depnode->Mutate(false, true, true);
-    // Squeeze chromo for mutations made to depnode: rm and rename
-    lastmut = *(depnode->Chromos().Root().Rbegin());
-    root->CompactChromo(lastmut);
-}
-
-// TODO Not used anymore, to remove
-void ElemDetRp::on_comp_menu_get_parents_modif()
-{
-    assert(false);
 }
 
 // Shifting of component to the latest rank

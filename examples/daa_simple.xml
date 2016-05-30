@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Note" parent="Description"/>
+  <cont val="This is model template for incapsulated system.       Add required modules to [Modules] node and start creating model in [MRoot]" targ="./Note"/>
+  <node id="Modules" parent="AImports"/>
+  <import id="/IncapsComps/Incaps" targ="./Modules"/>
+  <node id="MRoot" parent="/Root/Modules/IncapsComps/Incaps"/>
+  <node id="renv" parent="ARenv" targ="./MRoot"/>
+  <cont val="Connect" targ="./MRoot/renv"/>
+  <node parent="ARenvu" id="remote_root" targ="./MRoot/renv"/>
+</node>

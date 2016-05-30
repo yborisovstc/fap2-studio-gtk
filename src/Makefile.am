@@ -7,6 +7,8 @@ fap2_studio_gtk_SOURCES = \
 		 common.h \
 		 app.h \
 		 app.cpp \
+		 dessrv.h \
+		 dessrv.cpp \
 		 dlgbase.h \
 		 dlgbase.cpp \
 		 hierdetailview.h \

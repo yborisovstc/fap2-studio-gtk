@@ -279,8 +279,8 @@ void VertCompRp::GetModelDebugInfo(int x, int y, string& aData) const
 {
     MElem* agents = iElem->GetNode("./Agents");
     vector<MElem*>::iterator it;
-    for (it = agents->Comps().begin(); it != agents->Comps().end(); it++) {
-	MElem* agent = *it;
+    for (TInt ci = 0; ci < agents->CompsCount(); ci++) {
+	MElem* agent = agents->GetComp(ci);
 	for (int cnt = 0; cnt < agent->GetContCount(); cnt++) {
 	    string name, value;
 	    agent->GetCont(cnt, name, value);

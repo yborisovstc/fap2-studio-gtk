@@ -32,6 +32,7 @@ fap2-studio-gtk=/home/yborisov/projects/fap/fap2-studio-gtk CD=. filter="autogen
   cpcrp.cpp
   cperp.cpp
   datacrp.cpp
+  dessrv.cpp
   dessync.cpp
   desvis.cpp
   dlgbase.cpp
@@ -61,6 +62,7 @@ fap2-studio-gtk=/home/yborisov/projects/fap/fap2-studio-gtk CD=. filter="autogen
   cpcrp.h
   cperp.h
   datacrp.h
+  dessrv.h
   dessync.h
   desvis.h
   dlgbase.h
@@ -97,8 +99,8 @@ fap2-studio-gtk=/home/yborisov/projects/fap/fap2-studio-gtk CD=. filter="autogen
  }
  templates=templates CD=. filter="*" {
   des.xml
-  incaps.xml
-  simple.xml
+   incaps.xml
+   simple.xml
  }
  modules=modules CD=. filter="*" {
   simple_vis.xml
@@ -131,19 +133,12 @@ fap2-studio-gtk=/home/yborisov/projects/fap/fap2-studio-gtk CD=. filter="autogen
   func_var_gen_mtr.xml
   func_var_tuple_1.xml
   incaps_1.xml
-  rock_al.xml
-  rock_al_bug.xml
-  rock_al_vis.xml
-  rock_al_vis_1.xml
   rock_al_vis_phd.xml
   simple_elem.xml
   simple_elem_err.xml
   simple_vert.xml
-  snails.xml
   snails_vis.xml
   syst_1.xml
-  vis_intract_1.xml
-  vis_intract_2.xml
   vis_intract_3.xml
   vis_vect_1.xml
  }
@@ -171,6 +166,7 @@ src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
   factr.h
   func.h
   guri.h
+  ifu.h
   imports.h
   incaps.h
   log.h
@@ -179,46 +175,48 @@ src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
   mdata.h
   mdes.h
   medge.h
-  melem.h
-  menv.h
-  mlog.h
-  mmod.h
-  mmuta.h
-  module.h
-  mprop.h
-  mprov.h
-  mrcust.h
-  mvert.h
-  plat.h
-  prop.h
-  prov.h
-  provdef.h
-  rcust.h
-  rdata.h
-  syst.h
-  vert.h
-  base.cpp
-  chromo.cpp
-  chromox.cpp
-  data.cpp
-  des.cpp
-  edge.cpp
-  elem.cpp
-  env.cpp
-  factr.cpp
-  func.cpp
-  guri.cpp
-  imports.cpp
-  incaps.cpp
-  log.cpp
-  module.cpp
-  prop.cpp
-  prov.cpp
-  provdef.cpp
-  rdata.cpp
-  syst.cpp
-  vert.cpp
-  Makefile.am
+ melem.h
+ menv.h
+ miface.h
+ mlog.h
+ mmod.h
+ mmuta.h
+ module.h
+ mprop.h
+ mprov.h
+ mrcust.h
+ mvert.h
+ plat.h
+ prop.h
+ prov.h
+ provdef.h
+ rcust.h
+ rdata.h
+ syst.h
+ vert.h
+ base.cpp
+ chromo.cpp
+ chromox.cpp
+ data.cpp
+ des.cpp
+ edge.cpp
+ elem.cpp
+ env.cpp
+ factr.cpp
+ func.cpp
+ guri.cpp
+ ifu.cpp
+ imports.cpp
+ incaps.cpp
+ log.cpp
+ module.cpp
+ prop.cpp
+ prov.cpp
+ provdef.cpp
+ rdata.cpp
+ syst.cpp
+ vert.cpp
+ Makefile.am
 } 
 etc=etc CD=. filter="*" {
  objspec.dtd
@@ -233,7 +231,6 @@ modules=modules CD=. filter="*" {
   srcust.xml
   syst.xml
   vis.xml
-  vis_old.xml
 }
 debian=debian CD=. filter="*" {
  README.Debian
@@ -272,15 +269,16 @@ test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
   ut_icache.cpp
   ut_module.cpp
   ut_mut.cpp
+  ut_rinv.cpp
   ut_uri.cpp
   ut_baseapis1.xml
   ut_compact1.xml
   ut_compact1_res.xml
   ut_compact2.xml
-  ut_compact2_res.xml
   ut_compact3.xml
   ut_compact_cont.xml
   ut_compact_ref1.xml
+  ut_compact_rmda.xml
   ut_conn_1.xml
   ut_conn_2.xml
   ut_conn_sock.xml
@@ -293,6 +291,7 @@ test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
   ut_cre_syst.xml
   ut_cre_syst1.xml
   ut_cre_syst__S.xml
+  ut_dcp_chromo_1.xml
   ut_des_cre1.xml
   ut_des_cre2.xml
   ut_des_cre3.xml
@@ -304,6 +303,12 @@ test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
   ut_func_var1.xml
   ut_func_var2.xml
   ut_icache_inv1.xml
+  ut_mod_impmgr_1.xml
+  ut_mod_impmgr_2.xml
+  ut_mod_impmgr_opt.xml
+  ut_mod_int_1.xml
+  ut_mod_int_1m.xml
+  ut_mod_int_2m.xml
   ut_mut_dep_1.xml
   ut_mut_dep_2.xml
   ut_mut_dep_3.xml
@@ -313,12 +318,18 @@ test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
   ut_mut_inv_prnt.xml
   ut_mut_inv_rnm.xml
   ut_mut_rm_recr.xml
+  ut_mut_rm_recrinh.xml
   ut_mut_syst.xml
   ut_mutadd_1.xml
   ut_mutmove_1.xml
+  ut_opt_rm_deps.xml
+  ut_par_mut1.xml
+  ut_par_mut2.xml
   ut_parmod1.xml
+  ut_rinv1.xml
   ut_transfmdf1.xml
   ut_uri_base.xml
+  ut_uri_chromo_1.xml
   Makefile.am
   ut_baseapis1.txt
   ut_compact1.txt
@@ -327,20 +338,26 @@ test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
   ut_compact2_res.txt
   ut_compact3.txt
   ut_compact3_res.txt
+  ut_compact3_res2.txt
   ut_compact_cont.txt
   ut_compact_cont_res.txt
   ut_compact_ref1.txt
   ut_compact_ref1_res.txt
+  ut_compact_rmda.txt
+  ut_compact_rmda_res.txt
   ut_conn_1.txt
   ut_conn_2.txt
   ut_conn_sock.txt
   ut_conn_sock2.txt
   ut_cre_1.txt
+  ut_cre_1_saved.txt
   ut_cre_data.txt
+  ut_cre_data_saved.txt
   ut_cre_gr.txt
   ut_cre_incaps.txt
   ut_cre_syst.txt
   ut_cre_vert_ae1.txt
+  ut_dcp_chromo_1.txt
   ut_des_cre1.txt
   ut_des_cre2.txt
   ut_des_cre4.txt
@@ -351,6 +368,10 @@ test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
   ut_func_var1.txt
   ut_func_var2.txt
   ut_icache_inv1.txt
+  ut_mod_impmgr_1.txt
+  ut_mod_impmgr_2.txt
+  ut_mod_impmgr_opt.txt
+  ut_mod_int_1.txt
   ut_mut_dep_1.txt
   ut_mut_dep_2.txt
   ut_mut_dep_3.txt
@@ -366,17 +387,96 @@ test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
   ut_mut_inv_rnm_res.txt
   ut_mut_rm_parent.txt
   ut_mut_rm_recr.txt
+  ut_mut_rm_recrinh.txt
   ut_mut_rn_parent.txt
   ut_mut_syst.txt
   ut_mutadd_1.txt
   ut_mutmove_1.txt
+  ut_opt_rm_deps.txt
+  ut_par_mut1.txt
   ut_parmod1.txt
   ut_parmod1_res.txt
+  ut_rinv1.txt
   ut_transfmdf1.txt
   ut_transfmdf1_res.txt
   ut_uri_base.txt
-  libs=.libs CD=. filter="*" {
-  }
+  ut_uri_chromo_1.txt
+}
+}
+fap2-srv=/home/yborisov/projects/fap/fap2-srv CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
+ autogen.sh
+ Makefile.am
+ configure.ac
+ AUTHORS
+ COPYING
+ ChangeLog
+ README
+ NEWS
+ Makefile.in
+ fap2srv.pc.in
+srvexe=srvexe CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+  server_main.cpp
+  Makefile.am
+} 
+server=server CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+  fapcsbase.h
+  requests.h
+  sclient.h
+  sserver.h
+  sthread.h
+  fapcsbase.cpp
+  requests.cpp
+  sclient.cpp
+  sserver.cpp
+  sthread.cpp
+  Makefile.am
+} 
+client=client CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+  bclient.h
+  bclient.cpp
+  client_test_main.cpp
+  Makefile.am
+} 
+dmas=dmas CD=. filter="*.h *.cpp *.dtd Makefile.am *.in" {
+  daaprov.h
+  daaproxy.h
+  daapxprov.h
+  mcobspx.h
+  melempx.h
+  mipxprov.h
+  mproxy.h
+  mvertpx.h
+  renv.h
+  daaprov.cpp
+  daaproxy.cpp
+  daapxprov.cpp
+  mcobspx.cpp
+  melempx.cpp
+  mvertpx.cpp
+  renv.cpp
+  Makefile.am
+  Makefile.in
+} 
+debian=debian CD=. filter="*" {
+}
+doc=doc CD=. filter="*" {
+ requirements=requirements CD=. filter="*" {
+  fap_req.xml
+   index.html
+ }
+ design=design CD=. filter="*" {
+  fap_design.xml
+ }
+}
+test=test CD=. filter="*.cpp *.h *.xml *.am" {
+  ut_base.cpp
+  ut_main.cpp
+  ut_bidir_cre.xml
+  ut_obs_cre.xml
+  ut_renva_cre.xml
+  ut_syst_cre.xml
+  ut_vert_cre.xml
+  Makefile.am
 }
 }
 fap2=/home/yborisov/projects/fap/git/fap2 CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
@@ -433,7 +533,7 @@ doc=doc CD=. filter="*" {
  }
 }
 test=test CD=. filter="*.cpp *.h *.xml *.am" {
-  ut_embmod.cpp
+ ut_embmod.cpp
   Makefile.am
   libs=.libs CD=. filter="*" {
    ut-fapws-lib
@@ -442,14 +542,14 @@ test=test CD=. filter="*.cpp *.h *.xml *.am" {
 }
 fap-vm-gtk=/home/yborisov/projects/fap/fap-vm-gtk CD=. filter="*" {
  AUTHORS
- COPYING
- ChangeLog
- INSTALL
- Makefile.am
- NEWS
- README
- autogen.sh
- configure.ac
+  COPYING
+  ChangeLog
+  INSTALL
+  Makefile.am
+  NEWS
+  README
+  autogen.sh
+  configure.ac
   debian=debian CD=. filter="*" {
    changelog
     compat
@@ -461,12 +561,12 @@ fap-vm-gtk=/home/yborisov/projects/fap/fap-vm-gtk CD=. filter="*" {
   }
  src=src CD=. filter="*.h *.cpp *.xml Makefile.am" {
   vmstates.h
-  vmwindow.h
-  vmstates.cpp
-  vmwindow.cpp
-  fap-vm-gtk.xml
-  fap-vm-gtk_old.xml
-  Makefile.am
+   vmwindow.h
+   vmstates.cpp
+   vmwindow.cpp
+   fap-vm-gtk.xml
+   fap-vm-gtk_old.xml
+   Makefile.am
  }
 }
 fap-bvp-gtk=/home/yborisov/projects/fap/fap-bvp-gtk CD=. filter="autogen.sh Makefile *.am *.ac *.in AUTHORS COPYING ChangeLog README NEWS" {
@@ -580,13 +680,13 @@ fap-tias=/home/yborisov/projects/fap/fap-tias CD=. filter="README *.ac *.am" {
 }
 fap-studio-gtk=/home/yborisov/projects/fap/fap-studio-gtk CD=. filter="autogen.sh Makefile *.am *.ac *.in AUTHORS COPYING ChangeLog README NEWS" {
  autogen.sh
- Makefile.am
- configure.ac
- AUTHORS
- COPYING
- ChangeLog
- README
- NEWS
+  Makefile.am
+  configure.ac
+  AUTHORS
+  COPYING
+  ChangeLog
+  README
+  NEWS
   debian=debian CD=. filter="*" {
    changelog
     compat
@@ -619,7 +719,7 @@ fap-studio-gtk=/home/yborisov/projects/fap/fap-studio-gtk CD=. filter="autogen.s
 fap2-studio-qt=/home/yborisov/projects/fap/git/fap2-studio-qt CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in *.pro {
 grayb_studio.pro
 src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
-  capcomp.h
+ capcomp.h
   capobject.h
   capopwnd.h
   caqproxy.h
@@ -672,24 +772,24 @@ fap-balls=/home/yborisov/projects/fap/git/fap-balls CD=. filter="*.ac *.am" {
 }
 fap-snails=/home/yborisov/projects/fap/git/fap-snails CD=. filter="*" {
  snails.cpp
- snails.h
- snails.pro
- ut_spec_ext_mut.xml
- images=images CD=. filter="*" {
-  snail.png
- }
+  snails.h
+  snails.pro
+  ut_spec_ext_mut.xml
+  images=images CD=. filter="*" {
+   snail.png
+  }
 }
 fapws=/home/yborisov/projects/fap/fap CD=. filter="*" {
  AUTHORS
- COPYING
- ChangeLog
- INSTALL
- Makefile.am
- NEWS
- README
- autogen.sh
- configure.ac
- libfapws.pc.in
+  COPYING
+  ChangeLog
+  INSTALL
+  Makefile.am
+  NEWS
+  README
+  autogen.sh
+  configure.ac
+  libfapws.pc.in
   src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
    deslbase.h
     fapbase.h

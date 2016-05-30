@@ -269,6 +269,17 @@ void HierDetailView::UpdataHistNavUI()
     frwd->set_sensitive(iNavHistIter != (iNavHist.end() - 1));
 }
 
+void HierDetailView::Reset()
+{
+    if (iDetRp != NULL) {
+	iAlignent->remove();
+	delete iDetRp;
+	iDetRp = NULL;
+    }
+    iRoot = NULL;
+    iCursor.clear();
+}
+
 void HierDetailView::SetCursor(MElem* aElem, bool FromHist)
 {
     assert(aElem != NULL);

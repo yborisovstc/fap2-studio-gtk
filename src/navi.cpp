@@ -746,7 +746,7 @@ GType HierTreeMdl::get_column_type_vfunc(int index) const
 
 int HierTreeMdl::iter_n_root_children_vfunc() const
 {
-    return iRoot->Comps().size();
+    return iRoot->CompsCount();
 }
 
 bool HierTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
@@ -759,10 +759,10 @@ bool HierTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
     vector<int> indcv = path.get_indices();
     for (int dc = 0; dc < depth; dc++) {
 	int ind = indcv.at(dc);
-	if (ind >= mgr->Comps().size()) {
+	if (ind >= mgr->CompsCount()) {
 	    return false;
 	}
-	comp = mgr->Comps().at(ind);
+	comp = mgr->GetComp(ind);
 	mgr = comp;
     }
     if (comp != NULL) {
@@ -785,8 +785,8 @@ Gtk::TreeModel::Path HierTreeMdl::get_path_vfunc(const iterator& iter) const
 	    break;
 	}
 	int pos;
-	for (pos = 0; pos < mgr->Comps().size(); pos++) {
-	    if (mgr->Comps().at(pos) == comp) {
+	for (pos = 0; pos < mgr->CompsCount(); pos++) {
+	    if (mgr->GetComp(pos) == comp) {
 		break;
 	    }
 	}
@@ -841,13 +841,13 @@ MElem* HierTreeMdl::get_next_comp(MElem* aComp)
     MElem* mgr = aComp->GetMan();
     if (mgr != NULL) {
 	int ct = 0;
-	for (; ct < mgr->Comps().size(); ct++) {
-	    if (mgr->Comps().at(ct) == aComp) {
+	for (; ct < mgr->CompsCount(); ct++) {
+	    if (mgr->GetComp(ct) == aComp) {
 		break;
 	    }
 	}
-	if (ct < mgr->Comps().size() - 1) {
-	    res = mgr->Comps().at(++ct);
+	if (ct < mgr->CompsCount() - 1) {
+	    res = mgr->GetComp(++ct);
 	}	
     }
     return res;
@@ -874,7 +874,7 @@ int HierTreeMdl::iter_n_children_vfunc(const iterator& iter) const
     int res = 0;
     if (IsIterValid(iter)) {
 	MElem* node = (MElem*) iter.gobj()->user_data;
-	res = node->Comps().size();
+	res = node->CompsCount();
     }
     return res;
 }
@@ -889,7 +889,7 @@ bool HierTreeMdl::iter_has_child_vfunc(const iterator& iter) const
     bool res = false;
     if (IsIterValid(iter)) {
 	MElem* node = (MElem*) iter.gobj()->user_data;
-	res = (node->Comps().size() > 0);
+	res = (node->CompsCount() > 0);
     }
     return res;
 }
@@ -899,9 +899,9 @@ bool HierTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterator& 
     bool res = false;
     if (IsIterValid(parent)) {
 	MElem* node = (MElem*) parent.gobj()->user_data;
-	if (n < node->Comps().size()) {
+	if (n < node->CompsCount()) {
 	    iter.set_stamp(iStamp);
-	    iter.gobj()->user_data = node->Comps().at(n);
+	    iter.gobj()->user_data = node->GetComp(n);
 	    res = true;
 	}
     }
@@ -911,9 +911,9 @@ bool HierTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterator& 
 bool HierTreeMdl::iter_nth_root_child_vfunc(int n, iterator& iter) const
 {
     bool res = false;
-    if (n < iRoot->Comps().size()) {
+    if (n < iRoot->CompsCount()) {
 	iter.set_stamp(iStamp);
-	iter.gobj()->user_data = iRoot->Comps().at(n);
+	iter.gobj()->user_data = iRoot->GetComp(n);
 	res = true;
     }
     return res;
@@ -987,10 +987,21 @@ void HierTreeMdl::OnCompAdding(MElem& aComp)
     iterator iter;
     iter.set_stamp(iStamp);
     iter.gobj()->user_data = &aComp;
-    Path path = get_path_vfunc(iter);
-    row_inserted(path, iter);
-    for (vector<MElem*>::iterator it = aComp.Comps().begin(); it != aComp.Comps().end(); it++) {
-	OnCompAdding(*(*it));
+    // TODO [YB] There are still cases when null aComp is passes, for instance when early
+    // construction of native agent happens, ref todo in Vert::Vert()
+    // To consider solid solution
+    // assert(&aComp != NULL);
+    if (&aComp != NULL) {
+	Path path = get_path_vfunc(iter);
+	if (path.size() > 0) {
+	    row_inserted(path, iter);
+	    for (TInt ci = 0; ci < aComp.CompsCount(); ci++) {
+		MElem* comp = aComp.GetComp(ci);
+		OnCompAdding(*comp);
+	    }
+	} else {
+	    //std::cout << "HierTreeMdl::OnCompAdding: Error on getting path" << std::endl;
+	}
     }
 }
 

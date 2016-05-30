@@ -230,8 +230,8 @@ void IncapsDrp::Construct()
     capscrpw.show();
     // Add CRPs from body
     assert(caps != NULL);
-    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
+	MElem* comp = iElem->GetComp(ci);
 	if (comp->IsRemoved()) continue;
 	assert(comp != NULL);
 	if (comp != caps) {
@@ -247,8 +247,8 @@ void IncapsDrp::Construct()
     }
     // Adding CRPs from Capsule
     // TODO Using Comps is not legal because it doesnt mask removed comps. To consider hide Comps and use uri based iterator here.
-    for (std::vector<MElem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < caps->CompsCount(); ci++) {
+	MElem* comp = caps->GetComp(ci);
 	if (comp->IsRemoved()) continue;
 	assert(comp != NULL);
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
@@ -276,8 +276,8 @@ void IncapsDrp::PreLayoutRps()
     // Phase 1: allocating RPs to areas
     // Inputs and outputs - only from Capsule
     MElem* caps = iElem->GetNode("./Capsule");
-    for (vector<MElem*>::const_iterator it = caps->Comps().begin(); it != caps->Comps().end(); it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < caps->CompsCount(); ci++) {
+	MElem* comp = caps->GetComp(ci);
 	if (comp->IsRemoved()) continue;
 	MCrp* crp = iCompRps.at(comp);
 	MEdgeCrp* ecrp = crp->GetObj(ecrp);
@@ -368,16 +368,16 @@ MElem* IncapsDrp::GetCompOwning(MElem* aElem)
 {
     MElem* res = NULL;
     MElem* caps = iElem->GetNode(KCapsUri);
-    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < iElem->CompsCount() && res == NULL; ci++) {
+	MElem* comp = iElem->GetComp(ci);
 	if (comp->IsRemoved()) continue;
 	if (aElem == comp || comp != caps && comp->IsComp(aElem)) {
 	    res = comp;
 	}
     }
     if (res == NULL) {
-	for (std::vector<MElem*>::iterator it = caps->Comps().begin(); it != caps->Comps().end() && res == NULL; it++) {
-	    MElem* comp = *it;
+	for (TInt ci = 0; ci < caps->CompsCount() && res == NULL; ci++) {
+	    MElem* comp = caps->GetComp(ci);
 	    if (comp->IsRemoved()) continue;
 	    if (aElem == comp || comp->IsComp(aElem)) {
 		res = comp;

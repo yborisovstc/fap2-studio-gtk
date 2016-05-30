@@ -5,6 +5,7 @@
 #include <env.h>
 #include <melem.h>
 #include <string.h>
+#include <sserver.h>
 
 #include "mainwnd.h"
 #include "stenv.h"
@@ -12,9 +13,10 @@
 #include "navi.h"
 #include "mdlprov.h"
 #include "mdesobs.h"
+#include "dessrv.h"
 
 // Simple extender of DES root events
-class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, public MLogObserver
+class DesObserver: public MBase, public MMdlObserver, public MAgentObserver, public MLogObserver
 {
     public:
 	static const string& Type();
@@ -36,12 +38,15 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	virtual tSigLogAdded SignalLogAdded();
 	virtual tSigSystemCreated SignalSystemCreated();
 	virtual MEnv* DesEnv();
-	// From MCompsObserver
+	// From MAgentObserver
 	virtual void OnCompDeleting(MElem& aComp, TBool aSoft = true);
 	virtual void OnCompAdding(MElem& aComp);
 	virtual TBool OnCompChanged(MElem& aComp);
 	virtual TBool OnCompRenamed(MElem& aComp, const string& aOldName);
 	virtual TBool OnContentChanged(MElem& aComp);
+	// From MIface	
+	virtual MIface* Call(const string& aSpec, string& aRes);
+	virtual string Mid() const;
 	// From MLogObserver
 	virtual void OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, const std::string& aContent, int aMutId = 0);
 	virtual void OnLogRecDeleting(MLogRec* aLogRec);
@@ -62,6 +67,7 @@ class DesObserver: public MBase, public MMdlObserver, public MCompsObserver, pub
 	MLogRec* iLogRec;
 };
 
+class BaseClient;
 class App
 {
     public:
@@ -77,6 +83,7 @@ class App
 	void on_action(const Glib::RefPtr<Gtk::Action>& aAction);
 	void on_action_new();
 	void on_action_open();
+	void on_action_close();
 	void on_action_save();
 	void on_action_saveas();
 	void on_action_compactas();
@@ -90,6 +97,7 @@ class App
 	void on_setting_changed_pheno_enable();
 	void on_setting_changed_disable_opt();
 	void on_comp_selected(MElem* aComp);
+	void CloseFile();
 	void OpenFile(const string& aFileName, bool aAsTmp = false);
 	void SaveFile(const string& aFileName, bool aUnorder = true);
 	void CompactAndSaveFile(const string& aFileName);
@@ -104,6 +112,10 @@ class App
     private:
 	// DES environment
 	Env* iEnv;
+	// Server
+	Server* mDesSrv;
+	static const int mDesSrvPort;
+	Glib::Threads::Thread* mDesSrvThread;
 	// Studio environment
 	StEnv* iStEnv;
 	StDesEnv* iStDesEnv;

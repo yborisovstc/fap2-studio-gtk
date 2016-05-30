@@ -28,6 +28,7 @@ class HierDetailView
 	void SetRoot(MElem* aRoot);
 	void SetCursor(MElem* aRoot, bool FromHist = false);
 	void SetCursor(const string& aUri);
+	void Reset();
 	string GetCursor() const;
 	tSigRecreateRequested SignalRecreateRequested() {return mSigRecreateRequested;};
 	tSigCompSelected SignalCompSelected() { return mSigCompSelected;};

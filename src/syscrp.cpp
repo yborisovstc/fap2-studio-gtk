@@ -99,8 +99,8 @@ SysCrp::SysCrp(MElem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): Ver
 void SysCrp::Construct()
 {
     // Add CPs
-    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
+	MElem* comp = iElem->GetComp(ci);
 	CpRp* rp = new CpRp(comp);
 	add(*rp);
 	rp->show();
@@ -129,8 +129,8 @@ void SysCrp::AddDataRp()
     }
     MElem* vdata = iElem->GetNode("./ViewData");
     if (vdata != NULL) {
-	for (vector<MElem*>::iterator it = vdata->Comps().begin(); it != vdata->Comps().end(); it++) {
-	    MElem* comp = *it;
+	for (TInt ci = 0; ci < vdata->CompsCount(); ci++) {
+	    MElem* comp = vdata->GetComp(ci);
 	    MProp* pcomp = comp->GetObj(pcomp);
 	    if (pcomp != NULL) {
 		MElem* data = comp->GetNode(pcomp->Value());

@@ -94,8 +94,8 @@ bool VertDrpw_v1::IsTypeAllowed(const std::string& aType) const
 MElem* VertDrpw_v1::GetCompOwning(MElem* aElem)
 {
     MElem* res = NULL;
-    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end() && res == NULL; it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < iElem->CompsCount() && res == NULL; ci++) {
+	MElem* comp = iElem->GetComp(ci);
 	if (comp->IsRemoved()) continue;
 	if (aElem == comp || comp->IsComp(aElem)) {
 	    res = comp;
@@ -155,8 +155,8 @@ void VertDrpw_v1::on_size_allocate(Gtk::Allocation& aAllc)
     // Keeping components order, so using elems register of comps
     int compb_x = aAllc.get_width()/2, compb_y = KViewCompGapHight;
     int comps_w_max = 0;
-    for (std::vector<MElem*>::iterator it = iElem->Comps().begin(); it != iElem->Comps().end(); it++) {
-	MElem* comp = *it;
+    for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
+	MElem* comp = iElem->GetComp(ci);
 	if (comp->IsRemoved()) continue;
 	MCrp* crp = iCompRps.at(comp);
 	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
@@ -310,14 +310,14 @@ void VertDrpw_v1::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& co
     /*
     iDndReceivedData = sel_data.get_text();
     */
-    //std::cout << "VertDrpw_v1 on_drag_data_received, target: " << target << ", info: " << info << " , text: " << iDndReceivedData << std::endl;
+    std::cout << "VertDrpw_v1 on_drag_data_received, target: " << target << ", info: " << info << " , text: " << iDndReceivedData << std::endl;
     ElemDetRp::on_drag_data_received(context, x, y, sel_data, info, time);
     if (iDnDTarg == EDT_Unknown) {
 	// Classify DnD target
 	if (target == KDnDTarg_EdgeCp) {
 	    iDnDTarg = EDT_EdgeCp;
 	}
-	//std::cout << "VertDrpw_v1 on_drag_data_received, detecting target: " << iDnDTarg << std::endl;
+	std::cout << "VertDrpw_v1 on_drag_data_received, detecting target: " << iDnDTarg << std::endl;
     }
     /*
     else {
@@ -350,7 +350,7 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    targ->GetRUri(uri, node);
 	    res = true;
 	    context->drag_finish(res, false, time);
-	    //std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
+	    std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
 	    change_content(iDndReceivedData, uri.GetUri(true), true);
 	}
 	else {
