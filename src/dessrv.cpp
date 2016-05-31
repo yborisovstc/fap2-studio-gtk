@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <glibmm.h>
+#include <unistd.h>
 #include "dessrv.h"
 
 using namespace std;
