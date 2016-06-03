@@ -29,7 +29,11 @@ class NatnTreeClrec: public Gtk::TreeModelColumnRecord
 };
 
 // Native nodes tree model
+#if GLIB_CHECK_VERSION(2, 42, 0)
+class NatnTreeMdl: public Gtk::TreeModel, public Gtk::TreeDragSource, public Glib::Object
+#else
 class NatnTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource
+#endif
 {
     public:
 	class GlueItem
@@ -123,7 +127,11 @@ class HierTreeClrec: public Gtk::TreeModelColumnRecord
 };
 
 // Current hier tree model
+#if GLIB_CHECK_VERSION(2, 42, 0)
+class HierTreeMdl: public Gtk::TreeModel, public Gtk::TreeDragSource, public Glib::Object/*, public MCompsObserver*/
+#else
 class HierTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource/*, public MCompsObserver*/
+#endif
 {
     public:
 	static Glib::RefPtr<HierTreeMdl> create(MEnv* aDesEnv);
@@ -225,7 +233,11 @@ class ModulesTreeClrec: public Gtk::TreeModelColumnRecord
 };
 
 // Modules tree model
+#if GLIB_CHECK_VERSION(2, 42, 0)
+class ModulesTreeMdl: public Gtk::TreeModel, public Gtk::TreeDragSource, public Glib::Object
+#else
 class ModulesTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource
+#endif
 {
     public:
 	static Glib::RefPtr<ModulesTreeMdl> create(MEnv* aDesEnv);

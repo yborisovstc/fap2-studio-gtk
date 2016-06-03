@@ -32,7 +32,11 @@ class ChromoTreeClrec: public Gtk::TreeModelColumnRecord
 };
 
 // Chromo tree model
+#if GLIB_CHECK_VERSION(2, 42, 0)
+class ChromoTreeMdl: public Gtk::TreeModel, public Gtk::TreeDragSource, public Glib::Object
+#else
 class ChromoTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::TreeDragSource
+#endif
 {
     public:
 	static Glib::RefPtr<ChromoTreeMdl> create(MElem* aRoot, MEnv* aDesEnv);
