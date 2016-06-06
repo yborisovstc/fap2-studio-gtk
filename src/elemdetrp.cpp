@@ -403,7 +403,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 	GUri nuri;
 	dnode->GetUri(nuri, mutelem);
 	mutelem->AppendMutation(TMut(ENt_Change, ENa_Comp, nuri.GetUri(),
-		    ENa_MutAttr, GUriBase::NodeAttrName(ENa_Id), ENa_MutVal, aNewName));
+		    ENa_MutAttr, TMut::NodeAttrName(ENa_Id), ENa_MutVal, aNewName));
 	mutelem->Mutate(false, false, true, iElem->GetRoot());
 	Refresh();
     }
