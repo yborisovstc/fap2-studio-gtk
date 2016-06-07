@@ -154,6 +154,10 @@ void ChromoTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column,
 		    data = "remove";
 		    data += " node:" + node.Attr(ENa_MutNode);
 		}
+        else if (node.Type() == ENt_Import) {
+		    data = "import";
+		    data += " id:" + node.Attr(ENa_Id);
+		}
 		sval.set(data.c_str());
 		value.init(coltype);
 		value = sval;
