@@ -101,6 +101,7 @@ void SysCrp::Construct()
     // Add CPs
     for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
 	MElem* comp = iElem->GetComp(ci);
+	if (comp->IsRemoved()) continue;
 	CpRp* rp = new CpRp(comp);
 	add(*rp);
 	rp->show();

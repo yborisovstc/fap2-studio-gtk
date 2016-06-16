@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Note" parent="Description"/>
+  <cont val="This is exampe of using variable type functions and data. Pheno modif is disabled." targ="./Note"/>
+  <node id="Modules" parent="AImports"/>
+  <import id="/IncapsComps/Incaps" targ="./Modules"/>
+  <import id="/DataComps/DataTVar" targ="./Modules"/>
+  <import id="/DataComps/DataSVar" targ="./Modules"/>
+  <import id="/FuncComps/FAddVar" targ="./Modules"/>
+  <node id="MRoot" parent="/Root/Modules/IncapsComps/Incaps"/>
+  <node id="renv" parent="ARenv" targ="./MRoot"/>
+  <cont val="Connect" targ="./MRoot/renv"/>
+  <node id="RenvRoot" parent="ARenvu" targ="./MRoot/renv"/>
+  <node id="RRoot" parent="/Root/Modules/IncapsComps/Incaps" targ="./MRoot/renv/RenvRoot"/>
+  <node id="Result" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataTVar" targ="./MRoot/renv/RenvRoot/RRoot"/>
+  <cont val="F 0.0" targ="./MRoot/renv/RenvRoot/RRoot/Result/Value"/>
+  <node id="Add" parent="/Root/Modules/(Elem:)FuncComps/(FuncVar:)FAddVar" targ="./MRoot/renv/RenvRoot/RRoot"/>
+  <node id="Arg_1" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataSVar" targ="./MRoot/renv/RenvRoot/RRoot"/>
+  <cont val="I 4" targ="./MRoot/renv/RenvRoot/RRoot/Arg_1/Value"/>
+  <node id="Arg_2" parent="/Root/Modules/(Elem:)DataComps/(DataS:)DataSVar" targ="./MRoot/renv/RenvRoot/RRoot"/>
+  <cont val="F 7.5" targ="./MRoot/renv/RenvRoot/RRoot/Arg_2/Value"/>
+  <node id="934924337" parent="Edge" targ="./MRoot/renv/RenvRoot/RRoot"/>
+  <cont ref="/Root/MRoot/renv/RenvRoot/RRoot/(FAddVar:)Add/Capsule/(Out_FVar:)out" targ="./MRoot/renv/RenvRoot/RRoot/934924337/P2"/>
+  <cont ref="/Root/MRoot/renv/RenvRoot/RRoot/(DataTVar:)Result/Capsule/inp" targ="./MRoot/renv/RenvRoot/RRoot/934924337/P1"/>
+  <node id="34541368" parent="Edge" targ="./MRoot/renv/RenvRoot/RRoot"/>
+  <cont ref="/Root/MRoot/renv/RenvRoot/RRoot/(FAddVar:)Add/Capsule/(Inp_FVar:)Inp" targ="./MRoot/renv/RenvRoot/RRoot/34541368/P2"/>
+  <cont ref="/Root/MRoot/renv/RenvRoot/RRoot/(DataSVar:)Arg_1/Capsule/out" targ="./MRoot/renv/RenvRoot/RRoot/34541368/P1"/>
+  <node id="1575836229" parent="Edge" targ="./MRoot/renv/RenvRoot/RRoot"/>
+  <cont ref="/Root/MRoot/renv/RenvRoot/RRoot/(FAddVar:)Add/Capsule/(Inp_FVar:)Inp" targ="./MRoot/renv/RenvRoot/RRoot/1575836229/P2"/>
+  <cont ref="/Root/MRoot/renv/RenvRoot/RRoot/(DataSVar:)Arg_2/Capsule/out" targ="./MRoot/renv/RenvRoot/RRoot/1575836229/P1"/>
+</node>

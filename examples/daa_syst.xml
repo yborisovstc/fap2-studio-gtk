@@ -7,5 +7,28 @@
   <node id="MRoot" parent="/Root/Modules/IncapsComps/Incaps"/>
   <node id="renv" parent="ARenv" targ="./MRoot"/>
   <cont val="Connect" targ="./MRoot/renv"/>
-  <node parent="ARenvu" id="remote_root" targ="./MRoot/renv"/>
+  <node id="remote_root" parent="ARenvu" targ="./MRoot/renv"/>
+  <node id="vv" parent="Vert" targ="./MRoot/renv/remote_root"/>
+  <node id="vv1" parent="Vert" targ="./MRoot/renv/remote_root"/>
+  <node id="ss" parent="Syst" targ="./MRoot/renv/remote_root"/>
+  <node id="v1" parent="Vert" targ="./MRoot/renv/remote_root/ss"/>
+  <node id="v2" parent="Vert" targ="./MRoot/renv/remote_root/ss"/>
+  <node id="782721331" parent="Edge" targ="./MRoot/renv/remote_root/ss"/>
+  <cont ref="./../../v1" targ="./MRoot/renv/remote_root/ss/782721331/P2"/>
+  <cont ref="./../../v2" targ="./MRoot/renv/remote_root/ss/782721331/P1"/>
+  <rm comp="./vv1" targ="./MRoot/renv/remote_root"/>
+  <node id="ss1" parent="Syst" targ="./MRoot/renv/remote_root/ss"/>
+  <node id="cp1" parent="ConnPointBase" targ="./MRoot/renv/remote_root/ss/ss1"/>
+  <rm comp="./cp1" targ="./MRoot/renv/remote_root/ss/ss1"/>
+  <import id="/SysComps/ConnPoint"/>
+  <node id="cp_1" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)SysComps/(ConnPointBase:)ConnPoint" targ="./MRoot/renv/remote_root/ss/ss1"/>
+  <node id="ss2" parent="Syst" targ="./MRoot/renv/remote_root/ss"/>
+  <node id="cp" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)SysComps/(ConnPointBase:)ConnPoint" targ="./MRoot/renv/remote_root/ss/ss2"/>
+  <cont val="A" targ="./MRoot/renv/remote_root/ss/ss1/cp_1/Provided"/>
+  <cont val="B" targ="./MRoot/renv/remote_root/ss/ss1/cp_1/Required"/>
+  <cont val="B" targ="./MRoot/renv/remote_root/ss/ss2/cp/Provided"/>
+  <cont val="A" targ="./MRoot/renv/remote_root/ss/ss2/cp/Required"/>
+  <node id="789573791" parent="Edge" targ="./MRoot/renv/remote_root/ss"/>
+  <cont ref="./../../ss1/cp_1" targ="./MRoot/renv/remote_root/ss/789573791/P2"/>
+  <cont ref="./../../ss2/cp" targ="./MRoot/renv/remote_root/ss/789573791/P1"/>
 </node>
