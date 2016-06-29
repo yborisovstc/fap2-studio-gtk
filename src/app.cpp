@@ -159,6 +159,11 @@ MMdlObserver::tSigLogAdded DesObserver::SignalLogAdded()
     return iSigLogAdded;
 }
 
+MMdlObserver::tSigTLogAdded DesObserver::SignalTLogAdded()
+{
+    return iSigTLogAdded;
+}
+
 void DesObserver::OnCompDeleting(MElem& aComp, TBool aSoft)
 {
     iSigCompDeleted.emit(&aComp);
@@ -193,6 +198,11 @@ TBool DesObserver::OnContentChanged(MElem& aComp)
 void DesObserver::OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, const std::string& aContent, int aMutId)
 {
     iSigLogAdded.emit(aTimestamp, aCtg, aNode, aMutId,  aContent);
+}
+
+void DesObserver::OnLogAdded(const TLog& aLog)
+{
+    iSigTLogAdded.emit(aLog);
 }
 
 void DesObserver::OnLogRecDeleting(MLogRec* aLogRec)

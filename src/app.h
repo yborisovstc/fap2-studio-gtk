@@ -36,6 +36,7 @@ class DesObserver: public MBase, public MMdlObserver, public MAgentObserver, pub
 	virtual tSigContentChanged SignalContentChanged();
 	virtual tSigSystemChanged SignalSystemChanged();
 	virtual tSigLogAdded SignalLogAdded();
+	virtual tSigTLogAdded SignalTLogAdded();
 	virtual tSigSystemCreated SignalSystemCreated();
 	virtual MEnv* DesEnv();
 	// From MAgentObserver
@@ -49,6 +50,7 @@ class DesObserver: public MBase, public MMdlObserver, public MAgentObserver, pub
 	virtual string Mid() const;
 	// From MLogObserver
 	virtual void OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, const std::string& aContent, int aMutId = 0);
+	virtual void OnLogAdded(const TLog& aLog);
 	virtual void OnLogRecDeleting(MLogRec* aLogRec);
 	virtual void AddObservable(MLogRec* aObservable);
 	virtual void RemoveObservable(MLogRec* aObservable);
@@ -62,6 +64,7 @@ class DesObserver: public MBase, public MMdlObserver, public MAgentObserver, pub
 	tSigContentChanged iSigContentChanged;
 	tSigSystemChanged iSigSystemChanged;
 	tSigLogAdded iSigLogAdded;
+	tSigTLogAdded iSigTLogAdded;
 	tSigSystemCreated iSigSystemCreated;
 	bool iChanged;
 	MLogRec* iLogRec;

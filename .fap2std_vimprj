@@ -118,6 +118,10 @@ fap2-studio-gtk=/home/yborisov/projects/fap/fap2-studio-gtk CD=. filter="autogen
   test_reduced_func_1.xml
  }
  examples=examples CD=. filter="*" {
+  daa_func_var_1.xml
+  daa_incaps.xml
+  daa_simple.xml
+  daa_syst.xml
   des_1.xml
   des_var_1.xml
   des_var_c1.xml
@@ -444,6 +448,7 @@ dmas=dmas CD=. filter="*.h *.cpp *.dtd Makefile.am *.in" {
   mcobspx.h
   melempx.h
   mipxprov.h
+  mlogrecpx.h
   mproxy.h
   mvertpx.h
   renv.h
@@ -452,6 +457,7 @@ dmas=dmas CD=. filter="*.h *.cpp *.dtd Makefile.am *.in" {
   daapxprov.cpp
   mcobspx.cpp
   melempx.cpp
+  mlogrecpx.cpp
   mvertpx.cpp
   renv.cpp
   Makefile.am

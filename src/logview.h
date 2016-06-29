@@ -87,6 +87,7 @@ class LogViewL: public TreeView
 	tSigLogRecActivated SignalLogRecActivated() {return mSigLogRecActivated;};
     protected:
 	void on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, int aMutId, const std::string& aContent);
+	void on_tlog_added(const TLog& aLog);
 	void on_des_env_changed();
 	static const string& CtgName(MLogRec::TLogRecCtg aCtg); 
 	virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);

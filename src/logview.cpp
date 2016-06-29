@@ -95,6 +95,7 @@ LogViewL::LogViewL(MMdlObserver* aDesObs): iDesObs(aDesObs)
     SetDesEnv(iDesObs->DesEnv());
     iDesObs->SignalDesEnvChanged().connect(sigc::mem_fun(*this, &LogViewL::on_des_env_changed));
     iDesObs->SignalLogAdded().connect(sigc::mem_fun(*this, &LogViewL::on_log_added));
+    iDesObs->SignalTLogAdded().connect(sigc::mem_fun(*this, &LogViewL::on_tlog_added));
 }
 
 LogViewL::~LogViewL()
@@ -156,6 +157,19 @@ void LogViewL::on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, const MEl
     it->set_value(iColRec.mutid, aMutId);
     it->set_value(iColRec.content, Glib::ustring(aContent.c_str()));
     mDesLog.mLog.insert(MDesLog::TLogVal(MDesLog::TLogKey(aNode, aCtg), MDesLog::TLogData(aContent)));
+}
+
+void LogViewL::on_tlog_added(const TLog& aLog)
+{
+    Glib::RefPtr<TreeModel> mdl = get_model();
+    Glib::RefPtr<ListStore> lsmdl = Glib::RefPtr<ListStore>::cast_dynamic<TreeModel>(mdl);
+    TreeIter it = lsmdl->append();
+    it->set_value(iColRec.timestamp, Glib::ustring(aLog.TimestampS()));
+    it->set_value(iColRec.ctg, Glib::ustring(aLog.CtgS()));
+    it->set_value(iColRec.mnode, Glib::ustring(aLog.NodeUriS()));
+    it->set_value(iColRec.mutid, aLog.MutId());
+    it->set_value(iColRec.content, Glib::ustring(aLog.Content()));
+    //mDesLog.mLog.insert(MDesLog::TLogVal(MDesLog::TLogKey(aNode, aCtg), MDesLog::TLogData(aContent)));
 }
 
 void LogViewL::Select(MElem* aNode, MLogRec::TLogRecCtg aCtg)

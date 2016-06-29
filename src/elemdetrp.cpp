@@ -412,9 +412,13 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
 void ElemDetRp::import(const std::string& aUri)
 {
     MElem* mutelem = iElem;
+    /*
     ChromoNode rmut = mutelem->AppendMutation(ENt_Import);
     rmut.SetAttr(ENa_Id, aUri);
     mutelem->Mutate();
+    */
+    mutelem->AppendMutation(TMut(ENt_Import, ENa_Id, aUri));
+    mutelem->Mutate(false, false, true, iElem->GetRoot());
     Refresh();
 }
 
