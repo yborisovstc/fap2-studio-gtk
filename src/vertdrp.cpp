@@ -235,6 +235,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 	if (iDnDTarg == EDT_EdgeCp) {
 	    // Stretch Edge to dragging CP
 	    Gtk::Requisition coord = {x,y};
+	    /*
 	    MElem* cp = iElem->GetNode(iDndReceivedData);
 	    //std::cout << "VertDrpw_v1 on_drag_motion, edge CP:" << cp->Name() << std::endl;
 	    MElem* edge = cp->GetMan();
@@ -251,6 +252,23 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		medgecrp->SetCp2Coord(coord);
 		pair = medge->Point1();
 	    }
+	    */
+	    string edgeuri, edgepoint;
+	    ParseDndReceivedDataEdge(edgeuri, edgepoint);
+	    MElem* edge = iElem->GetNode(edgeuri);
+	    MEdge* medge = edge->GetObj(medge);
+	    assert(medge != NULL);
+	    MCrp* crp = iCompRps.at(edge);
+	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	    MVert* pair = NULL;
+	    if (edgepoint == "P1") {
+		medgecrp->SetCp1Coord(coord);
+		pair = medge->Point2();
+	    } else if (edgepoint == "P2") {
+		medgecrp->SetCp2Coord(coord);
+		pair = medge->Point1();
+	    }
+
 	    MElem* epair = pair != NULL ? pair->GetObj(epair) : NULL;
 	    MCompatChecker* mpaircc = pair != NULL ? pair->GetObj(mpaircc) : NULL;
 	    // Find the nearest CP and highligh it
@@ -327,40 +345,66 @@ void VertDrpw_v1::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& co
     */
 }
 
+void VertDrpw_v1::ParseDndReceivedDataEdge(string& aEdgeUri, string& aEdgePoint)
+{
+    size_t pos = iDndReceivedData.find_last_of(".");
+    if (pos == string::npos) {
+	std::cout << "VertDrpw_v1, connecting edge: cannot select point Id" << std::endl;
+    }
+    aEdgeUri = iDndReceivedData.substr(0, pos);
+    aEdgePoint = iDndReceivedData.substr(pos + 1);
+    assert(aEdgePoint == "P1" || aEdgePoint == "P2");
+}
+
 bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
 {
     bool res = false;
     //std::cout << "VertDrpw_v1 on_drag_drop, detected target: " << iDnDTarg << std::endl;
     res = ElemDetRp::on_drag_drop(context, x, y, time);
     if (!res) {
-    if (iDnDTarg == EDT_Node) {
-	res = true;
-	context->drag_finish(true, false, time);
-	on_node_dropped(iDndReceivedData);
+	if (iDnDTarg == EDT_Node) {
+	    res = true;
+	    context->drag_finish(true, false, time);
+	    on_node_dropped(iDndReceivedData);
 	queue_resize();
     }
     else if (iDnDTarg == EDT_EdgeCp) {
+	string euri, ep;
+	ParseDndReceivedDataEdge(euri, ep);
+	MElem* edge = iElem->GetNode(euri);
+	MEdge* medge = edge->GetObj(medge);
 	if (iEdgeDropCandidate != NULL) {
 	    MCrpConnectable* conn = iEdgeDropCandidate->GetObj(conn);
 	    // Reset highlighting of drop candidate
 	    conn->HighlightCp(iEdgeDropCpCandidate, false);
 	    MElem* targ = iEdgeDropCpCandidate;
-	    MElem* node = iElem->GetNode(iDndReceivedData);
 	    GUri uri;
-	    targ->GetRUri(uri, node);
+	    targ->GetRUri(uri, edge);
 	    res = true;
 	    context->drag_finish(res, false, time);
-	    std::cout << "VertDrpw_v1, connectin edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
-	    change_content(iDndReceivedData, uri.GetUri(true), true);
+	    std::cout << "VertDrpw_v1, connecting edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
+	    //change_content(iDndReceivedData, uri.GetUri(true), true);
+	    if (ep == "P1") {
+		medge->SetPoint1(uri.GetUri(true));
+	    } else if (ep == "P2") {
+		medge->SetPoint2(uri.GetUri(true));
+	    }
 	}
 	else {
 	    // Disconnect edge if it is connected
 	    res = true;
+	    /*
 	    context->drag_finish(res, false, time);
 	    MElem* cp = iElem->GetNode(iDndReceivedData);
 	    MProp* prop = cp->GetObj(prop);
 	    //std::cout << "VertDrpw_v1 on_drag_motion, disconnecting CP:" << prop->Value() << std::endl;
 	    change_content(iDndReceivedData, std::string());
+	    */
+	    if (ep == "P1" && medge->Point1() != NULL) {
+		medge->SetPoint1(string());
+	    } else if (ep == "P2" && medge->Point1() != NULL) {
+		medge->SetPoint2(string());
+	    }
 	    // Redraw
 	    //queue_resize();
 	}

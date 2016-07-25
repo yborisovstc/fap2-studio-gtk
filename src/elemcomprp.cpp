@@ -235,6 +235,38 @@ bool ElemCompRp::DoIsIntersected(int x, int y) const
     return  x >= alc.get_x() && x < alc.get_x() + alc.get_width() && y >= alc.get_y() && y < alc.get_y() + alc.get_height();
 }
 
+void ElemCompRp::GetFormattedContent(string& aContent) const
+{
+    const TInt KIndStep = 1;
+    string cont;
+    iElem->GetCont(cont);
+    if (!cont.empty()) {
+	TBool fldopen = EFalse;
+	string delims;
+	delims += Elem::KContentStart;
+	delims += Elem::KContentEnd;
+	TInt indent = 0;
+	size_t lpos = 0;
+	size_t pos = cont.find_first_of(delims);
+	do {
+	    if (cont.at(pos) == Elem::KContentStart) {
+		indent += KIndStep;
+		fldopen = ETrue;
+		aContent.append(indent, ' ');
+		aContent.append("\n");
+	    } else {
+		indent -= KIndStep;
+		if (fldopen) {
+		    string field = cont.substr(lpos, pos - lpos);
+		    aContent.append(field);
+		}
+		fldopen = EFalse;
+	    }
+	    lpos = pos + 1;
+	    pos = cont.find_first_of(delims, lpos);
+	} while (pos != string::npos);
+    }
+}
 
 
 const string sType = "ElemCrp";

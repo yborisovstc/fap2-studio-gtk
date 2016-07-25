@@ -57,6 +57,8 @@ class ElemCompRp: public Gtk::Layout
 	// Signal handlers
 	bool on_name_button_press(GdkEventButton* event);
 	bool on_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Tooltip>& tooltip);
+	// Helpers
+	void GetFormattedContent(string& aContent) const;
     protected:
 	MElem* iElem;
 	ElemCompHead* iHead;

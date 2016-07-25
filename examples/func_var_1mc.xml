@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+    <cont id="About" val="This is exampe of using variable type functions and data. Pheno modif is disabled." />
+    <node id="Modules" parent="AImports">
+	<import id="/IncapsComps/Incaps"/>
+	<import id="/DataComps/DataTVarMc"/>
+	<import id="/DataComps/DataSVarMc"/>
+	<import id="/FuncComps/FAddVarMc"/>
+    </node>
+    <node id="IRoot" parent="/Root/Modules/IncapsComps/Incaps" >
+	<node id="Result" parent="/Root/Modules/(Elem:)DataComps/DataTVarMc" >
+	    <cont id="Value" val="F 0.0" />
+	</node>
+	<node id="Add" parent="/Root/Modules/FuncComps/FAddVarMc" />
+	<node id="Arg_1" parent="/Root/Modules/(Elem:)DataComps/DataSVarMc" >
+	    <cont id="Value" val="I 4" />
+	</node>
+	<node id="Arg_2" parent="/Root/Modules/DataComps/DataSVarMc" >
+	    <cont id="Value" val="F 7.5" />
+	</node>
+	<node id="934924337" parent="Aedge" >
+	    <cont id="P2" ref="/Root/IRoot/Add/Capsule/out" />
+	    <cont id="P1" ref="/Root/IRoot/Result/Capsule/inp" />
+	</node>
+	<node id="34541368" parent="Aedge" >
+	    <cont id="P2" ref="/Root/IRoot/Add/Capsule/Inp" />
+	    <cont id="P1" ref="/Root/IRoot/Arg_1/Capsule/out" />
+	</node>
+	<node id="1575836229" parent="Aedge" >
+	    <cont id="P2" ref="/Root/IRoot/Add/Capsule/Inp" />
+	    <cont id="P1" ref="/Root/IRoot/Arg_2/Capsule/out" />
+	</node>
+    </node>
+</node>

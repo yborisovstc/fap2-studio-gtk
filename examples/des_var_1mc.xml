@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem" tord="37">
+  <node id="Modules" parent="AImports">
+    <import id="/IncapsComps/Incaps"/>
+    <import id="/DesComps/DesTickerMc"/>
+    <import id="/DesComps/DesMc"/>
+    <import id="/DesComps/StateVarMc"/>
+    <import id="/FuncComps/TFAddVarMc"/>
+    <import id="/DataComps/DataSUVarMc"/>
+  </node>
+  <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
+    <node id="Ticker" parent="/Root/Modules/DesComps/DesTickerMc"/>
+    <node id="DesRoot" parent="/Root/Modules/DesComps/DesMc">
+      <node id="st" parent="/Root/Modules/DesComps/StateVarMc">
+        <node id="Add" parent="/Root/Modules/FuncComps/TFAddVarMc"/>
+        <node id="222049375" parent="Aedge">
+          <cont id="P1" ref="/Root/IncapsRoot/DesRoot/st/Capsule/Inp/Int/PinData"/>
+          <cont id="P2" ref="/Root/IncapsRoot/DesRoot/st/Add/Capsule/Inp"/>
+        </node>
+        <node id="820889547" parent="Aedge">
+          <cont id="P2" ref="/Root/IncapsRoot/DesRoot/st/Add/Capsule/Out"/>
+          <cont id="P1" ref="/Root/IncapsRoot/DesRoot/st/Prepared/Capsule/Inp"/>
+        </node>
+        <node id="Const1" parent="/Root/Modules/DataComps/DataSUVarMc">
+          <cont id="Value" val="F 0.1"/>
+        </node>
+        <node id="969163775" parent="Aedge">
+          <cont id="P1" ref="/Root/IncapsRoot/DesRoot/st/Add/Capsule/Inp"/>
+          <cont id="P2" ref="/Root/IncapsRoot/DesRoot/st/Const1/Capsule/out"/>
+        </node>
+        <cont node="./Confirmed/(Prop)Value" val="F 0"/>
+        <cont node="./Prepared/(Prop)Value" val="F 0"/>
+      </node>
+      <node id="1197245649" parent="Aedge">
+        <cont id="P2" ref="/Root/IncapsRoot/DesRoot/st/Capsule/Out"/>
+        <cont id="P1" ref="/Root/IncapsRoot/DesRoot/st/Capsule/Inp"/>
+      </node>
+    </node>
+    <node id="Ticker_edge" parent="Aedge">
+      <cont id="P1" ref="./../Ticker/Capsule/Out"/>
+      <cont id="P2" ref="./../DesRoot/Capsule/Sync"/>
+    </node>
+  </node>
+  <cont id="About" val="This is example of simple DES (incrementor) using variable type arithmetic"/>
+</node>

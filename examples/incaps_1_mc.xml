@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<node id="testroot" parent="Elem" tord="25">
+  <node id="Modules" parent="AImports">
+    <import id="/SysComps"/>
+    <import id="/IncapsComps/Incaps"/>
+  </node>
+  <node id="test" parent="./Modules/IncapsComps/Incaps">
+    <node id="Ics1" parent="./../Modules/IncapsComps/Incaps">
+      <node id="cp_int" parent="ConnPointMc">
+        <cont id="Provided" val="Role3"/>
+        <cont id="Required" val="Role4"/>
+      </node>
+      <node id="cpi" parent="./../../Modules/SysComps/ConnPointInpMc" node="./Capsule">
+        <cont id="Provided" val="Role3"/>
+        <cont id="Required" val="Role4"/>
+      </node>
+      <node id="ep" parent="./../../Modules/SysComps/ExtenderMc" node="./Capsule">
+	  <cont id="Provided" val="Role4" node="./Int"/>
+	  <cont id="Required" val="Role3" node="./Int"/>
+      </node>
+    </node>
+    <node id="Ics2" parent="./../Modules/IncapsComps/Incaps">
+      <node id="epi" parent="./../../Modules/SysComps/ExtenderInpMc" node="./Capsule">
+	  <cont id="Provided" val="Role3" node="./Int"/>
+	  <cont id="Required" val="Role4" node="./Int"/>
+      </node>
+      <node id="ep" parent="./../../Modules/SysComps/ExtenderMc" node="./Capsule">
+	  <cont id="Provided" val="Role3" node="./Int"/>
+	  <cont id="Required" val="Role4" node="./Int"/>
+      </node>
+      <node id="epo" parent="./../../Modules/SysComps/ExtenderOutMc" node="./Capsule">
+	  <cont id="Provided" val="Role3" node="./Int"/>
+	  <cont id="Required" val="Role4" node="./Int"/>
+      </node>
+    </node>
+    <node id="E1" parent="Aedge">
+      <cont id="P1" ref="./../Ics1/Capsule/ep"/>
+      <cont id="P2" ref="./../Ics2/Capsule/ep"/>
+    </node>
+    <node id="E2" parent="Aedge">
+      <cont id="P1" ref="./../Ics1/cp_int"/>
+      <cont id="P2" ref="./../Ics2/Capsule/ep"/>
+    </node>
+    <node id="E4" parent="Aedge">
+      <cont id="P1" ref="./../Ics1/Capsule/ep"/>
+      <cont id="P2" ref="./../Ics2/Capsule/epi"/>
+    </node>
+    <node id="E5" parent="Aedge">
+      <cont id="P1" ref="./../Ics1/Capsule/cpi"/>
+      <cont id="P2" ref="./../Ics2/Capsule/epo"/>
+    </node>
+    <node id="Note" parent="Description">
+      <cont val="Incapsulated system is system that has special agent &quot;Capsula&quot; for connection points.&#10;Only connection points places in caplula are allowed for connection. Incapsulated system refuses all connection apart of caplula.&#10;So all agent &quot;under&quot; capsula are &quot;internal&quot; and are not isolated from external agents"/>
+    </node>
+  </node>
+  <cont id="About" val="This example demonstrates using of incapsulated system"/>
+</node>

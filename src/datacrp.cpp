@@ -6,7 +6,7 @@
 using namespace Gtk;
 
 //  Connection point representation
-ValueRp::ValueRp(MElem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs)
+ValueRp::ValueRp(MElem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs), mCntId(string())
 {
     // Set text from Value
     MProp* prop = iElem->GetObj(prop);
@@ -16,13 +16,28 @@ ValueRp::ValueRp(MElem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(a
     iMdlObs->SignalContentChanged().connect(sigc::mem_fun(*this, &ValueRp::on_comp_changed));
 }
 
+ValueRp::ValueRp(MElem* aModel, const string& aCntId, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs), mCntId(aCntId)
+{
+    string cntval;
+    iElem->GetCont(cntval, mCntId);
+    set_text(cntval);
+    iMdlObs->SignalCompChanged().connect(sigc::mem_fun(*this, &ValueRp::on_comp_changed));
+    iMdlObs->SignalContentChanged().connect(sigc::mem_fun(*this, &ValueRp::on_comp_changed));
+}
+
 void ValueRp::on_comp_changed(MElem* aComp)
 {
     if (aComp == iElem) {
 	//std::cout << "DataRp::on_comp_changed" << std::endl;
+	if (mCntId.empty()) {
 	MProp* prop = iElem->GetObj(prop);
 	assert(prop != NULL);
 	set_text(prop->Value());
+	} else { // Multicontent
+	    string cntval;
+	    iElem->GetCont(cntval, mCntId);
+	    set_text(cntval);
+	}
     }
 }
 
@@ -30,6 +45,7 @@ void ValueRp::on_comp_changed(MElem* aComp)
 
 const string DataCrp::KModelName = "DataS";
 const string DataCrp::KValueUri = "./Value";
+const string DataCrp::KValueCntId = "Value";
 
 const string sCrpType = "DataCrp";
 
@@ -58,8 +74,14 @@ void DataCrp::Construct()
     IncapsCrp::Construct();
     // Add CPs
     MElem* val = iElem->GetNode(KValueUri);
-    assert(val != NULL);
-    iValue = new ValueRp(val, iMdlObs);
+    if (val != NULL) {
+	iValue = new ValueRp(val, iMdlObs);
+    } else {
+	string cntval;
+	TBool cntexst = iElem->GetCont(cntval, KValueCntId);
+	assert(cntexst);
+	iValue = new ValueRp(iElem, KValueCntId, iMdlObs);
+    }
     add(*iValue);
     iValue->show();
 }

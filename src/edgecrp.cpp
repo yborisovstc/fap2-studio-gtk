@@ -346,8 +346,10 @@ void EdgeCrp::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Selec
 	else {
 	    pte = iElem->GetNode("./P2");
 	}
-	pte->GetUri(uri, iElem->GetMan());
-	std::string suri = uri.GetUri();
+	//pte->GetUri(uri, iElem->GetMan());
+	//std::string suri = uri.GetUri();
+	std::string suri = iElem->GetUri();
+	suri += (iDraggedPart == EDp_Cp1) ? ".P1" : ".P2";
 	data.set(KDnDTarg_EdgeCp, suri);
 	//std::cout << "EdgeCrp on_drag_data_get, data set: [" << suri << "]" << std::endl;
     }

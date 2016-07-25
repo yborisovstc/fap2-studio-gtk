@@ -143,6 +143,21 @@ void SysCrp::AddDataRp()
 		}    
 	    }
 	}
+    } else { // Multicontent
+	TInt cnt = iElem->GetContCount("ViewData");
+	for (TInt ci = 0; ci < cnt; ci++) {
+	    string val, id;
+	    iElem->GetCont(ci, id, val, "ViewData");
+	    if (!val.empty()) {
+		MElem* data = iElem->GetNode(val);
+		if (data != NULL) {
+		    DataRp* rp = new DataRp(data, MElem::GetContentLName(id), iMdlObs);
+		    add(*rp);
+		    rp->show();
+		    iDataRps[data] = rp;
+		}    
+	    }
+	}
     }
 }
 

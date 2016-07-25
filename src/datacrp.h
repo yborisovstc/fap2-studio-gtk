@@ -10,12 +10,14 @@ class ValueRp: public Gtk::Label
 {
     public:
 	ValueRp(MElem* aModel, MMdlObserver* aMdlObs);
+	ValueRp(MElem* aModel, const string& aCntId, MMdlObserver* aMdlObs);
     protected:
 	// Model events handlers
 	void on_comp_changed(MElem* aComp);
     protected:
 	MElem* iElem;
 	MMdlObserver* iMdlObs;
+	const string& mCntId;
 };
 
 // Data incaps compact representation
@@ -39,6 +41,7 @@ class DataCrp: public IncapsCrp
     protected:
 	static const string KValueUri;
 	static const string KModelName;
+	static const string KValueCntId;
 	ValueRp* iValue;
 };
 

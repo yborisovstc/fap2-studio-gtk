@@ -65,6 +65,8 @@ class VertDrpw_v1: public ElemDetRp, public MDrp
 	// TODO This is workaround for missing of model APIs of mutation trying, ref #uc_014. To implement API
 	virtual bool AreCpsCompatible(MElem* aCp1, MElem* aCp2);
     protected:
+	void ParseDndReceivedDataEdge(string& aEdgeUri, string& aEdgePoint);
+    protected:
 	MCrp* iEdgeDropCandidate;
 	MElem* iEdgeDropCpCandidate;
 

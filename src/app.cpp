@@ -176,7 +176,7 @@ void DesObserver::OnCompAdding(MElem& aComp)
     SetModelChanged();
 }
 
-TBool DesObserver::OnCompChanged(MElem& aComp)
+TBool DesObserver::OnCompChanged(MElem& aComp, const string& aName)
 {
     iSigCompChanged.emit(&aComp);
     SetModelChanged();
@@ -189,7 +189,7 @@ TBool DesObserver::OnCompRenamed(MElem& aComp, const string& aOldName)
     SetModelChanged();
 }
 
-TBool DesObserver::OnContentChanged(MElem& aComp)
+TBool DesObserver::OnContentChanged(MElem& aComp, const string& aName)
 {
     iSigContentChanged.emit(&aComp);
     return true;

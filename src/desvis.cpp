@@ -366,7 +366,7 @@ MVisContainer* AVisWidget::GetVisContainer()
     return res;
 }
 
-TBool AVisWidget::HandleCompChanged(MElem& aContext, MElem& aComp)
+TBool AVisWidget::HandleCompChanged(MElem& aContext, MElem& aComp, const string& aName)
 {
     TBool res = ETrue;
     MElem* eprntcp = aContext.GetNode("./Child");

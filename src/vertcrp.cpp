@@ -277,6 +277,8 @@ bool VertCompRp::IsIntersected(int aX, int aY) const
 
 void VertCompRp::GetModelDebugInfo(int x, int y, string& aData) const
 {
+    GetFormattedContent(aData);
+    aData += "\n";
     MElem* agents = iElem->GetNode("./Agents");
     vector<MElem*>::iterator it;
     for (TInt ci = 0; ci < agents->CompsCount(); ci++) {

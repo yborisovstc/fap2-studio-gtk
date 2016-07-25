@@ -21,9 +21,9 @@
         <cont node="./Int/Required" val="Role4"/>
       </node>
     </node>
-    <node id="E1" parent="Edge">
-      <cont node="./P1" ref="./../../Ics1/Capsule/ep"/>
-      <cont node="./P2" ref="./../../Ics2/Capsule/ep"/>
+    <node id="E1" parent="Aedge">
+      <cont id="P1" ref="./../Ics1/Capsule/ep"/>
+      <cont id="P2" ref="./../Ics2/Capsule/ep"/>
     </node>
     <node id="E2" parent="Edge">
       <cont node="./P1" ref="./../../Ics1/cp_int"/>

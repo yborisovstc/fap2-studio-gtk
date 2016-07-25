@@ -9,6 +9,7 @@
 #include <gtkmm.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/filechooserdialog.h>
+#include "cntview.h"
 
 // [YB] GTK_TREE_MODEL_ROW is the only target supported by tree view model
 // All tree views in navigation panel sources are overwritted for now, so this target
@@ -494,12 +495,12 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     }
 }
 
-void ElemDetRp::change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef )
+void ElemDetRp::change_content(const string& aNodeUri, const string& aCntPath, const string& aNewContent, bool aRef)
 {
     MElem* node = iElem->GetNode(aNodeUri);
     MElem* mutelem = node;
     if (mutelem != NULL) {
-	mutelem->AppendMutation(TMut(ENt_Cont, aRef ? ENa_Ref : ENa_MutVal, aNewContent));
+	mutelem->AppendMutation(TMut(ENt_Cont, ENa_Id, aCntPath, aRef ? ENa_Ref : ENa_MutVal, aNewContent));
 	mutelem->Mutate(false, true, true, iElem->GetRoot());
 	Refresh();
     }
@@ -606,14 +607,24 @@ void ElemDetRp::on_comp_menu_edit_content()
     crp->GetContentUri(uri_cont);
     uri += uri_cont;
     MElem* cnode = iElem->GetNode(uri);
-    cnode->GetCont(sCont);
-    TextEditDlg* dlg = new TextEditDlg("Edit content", sCont);
-    int res = dlg->run();
+    ContentSelectDlg* sdlg = new ContentSelectDlg("Select content", *cnode);
+    int res = sdlg->run();
     if (res == Gtk::RESPONSE_OK) {
-	dlg->GetData(sCont);
-	change_content(uri.GetUri(), sCont);
+	string sCpath;
+	sdlg->GetData(sCpath);
+	string sValue;
+	cnode->GetCont(sValue, sCpath);
+	delete sdlg;
+	TextEditDlg* edlg = new TextEditDlg("Edit content", sValue);
+	res = edlg->run();
+	if (res == Gtk::RESPONSE_OK) {
+	    edlg->GetData(sValue);
+	    change_content(uri.GetUri(), sCpath, sValue);
+	}
+	delete edlg;
+    } else {
+	delete sdlg;
     }
-    delete dlg;
     iCompSelected = NULL;
 }
 

@@ -13,6 +13,7 @@
 #include "common.h"
 
 using namespace Gtk;
+using namespace std;
 
 class ElemDetRp: public Gtk::Layout, public MCrpMgr
 {
@@ -50,7 +51,7 @@ class ElemDetRp: public Gtk::Layout, public MCrpMgr
 	void add_node(const std::string& aParentUri, const std::string& aNeighborUri = string());
 	void rename_node(const std::string& aNodeUri, const std::string& aNewName);
 	void remove_node(const std::string& aNodeUri);
-	void change_content(const std::string& aNodeUri, const std::string& aNewContent, bool aRef = false);
+	void change_content(const string& aNodeUri, const string& aCntPath, const string& aNewContent, bool aRef = false);
 	void move_node(const std::string& aNodeUri, const std::string& aDestUri);
 	void import(const std::string& aUri);
 	void ShowCrpCtxDlg(GdkEventButton* event, MElem* aComp);

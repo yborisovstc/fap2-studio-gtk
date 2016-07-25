@@ -121,7 +121,7 @@ MCrp* DefCrpProv::CreateRp(MElem& aElem, const MCrpMgr* aMgr) const
     else if (aElem.IsHeirOf(VertCompRp::EType()) && aMgr->IsTypeAllowed(VertCompRp::EType())) {
 	res = new VertCompRp(&aElem);
     }
-    else if (aElem.IsHeirOf(EdgeCrp::EType()) && aMgr->IsTypeAllowed(EdgeCrp::EType())) {
+    else if ((aElem.IsHeirOf(EdgeCrp::EType()) || aElem.IsHeirOf("Aedge")) && aMgr->IsTypeAllowed(EdgeCrp::EType())) {
 	res = new EdgeCrp(&aElem);
     }
     else if (aElem.IsHeirOf(PropCrp::EType()) && aMgr->IsTypeAllowed(PropCrp::EType())) {
@@ -160,7 +160,7 @@ int DefErpProv::GetConfidence(const MElem& aElem) const
 MErp* DefErpProv::CreateRp(MElem& aElem, const MErpMgr* aMgr) const
 {
     MErp* res = NULL;
-    if (aElem.IsHeirOf(CpErp::EType()) && aMgr->IsTypeAllowed(CpErp::EType())) {
+    if ((aElem.IsHeirOf(CpErp::EType()) || aElem.IsHeirOf("Elem:Vert:ConnPointMc")) && aMgr->IsTypeAllowed(CpErp::EType())) {
 	res = new CpErp(&aElem);
     }
     else if (aElem.IsHeirOf(SockErp::EType()) && aMgr->IsTypeAllowed(SockErp::EType())) {

@@ -136,7 +136,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	virtual Widget& GetChild();
 	virtual int GetParInt(TPar);
 	// From MACompsObserver
-	virtual TBool HandleCompChanged(MElem& aContext, MElem& aComp);
+	virtual TBool HandleCompChanged(MElem& aContext, MElem& aComp, const string& aName=string());
 	// From MDesObserver
 	virtual void OnUpdated();
 	virtual void OnActivated();
