@@ -53,8 +53,7 @@ DataRp::DataRp(MElem* aModel, const string& aDataName, MMdlObserver* aMdlObs): i
     assert(prop != NULL);
     set_text(prop->Value());
     */
-    string cont;
-    iElem->GetCont(cont);
+    string cont = iElem->GetContent();
     set_text(iDataName + ": " + cont);
     iMdlObs->SignalCompChanged().connect(sigc::mem_fun(*this, &DataRp::on_comp_changed));
     iMdlObs->SignalContentChanged().connect(sigc::mem_fun(*this, &DataRp::on_comp_changed));
@@ -69,8 +68,7 @@ void DataRp::on_comp_changed(MElem* aComp)
 	assert(prop != NULL);
 	set_text(prop->Value());
 	*/
-	string cont;
-	iElem->GetCont(cont);
+	string cont = iElem->GetContent();
 	set_text(iDataName + ": " + cont);
 	set_has_tooltip();
 	set_tooltip_text(iDataName + ": " + cont);
@@ -146,8 +144,8 @@ void SysCrp::AddDataRp()
     } else { // Multicontent
 	TInt cnt = iElem->GetContCount("ViewData");
 	for (TInt ci = 0; ci < cnt; ci++) {
-	    string val, id;
-	    iElem->GetCont(ci, id, val, "ViewData");
+	    string id = iElem->GetContComp("ViewData", ci);
+	    string val = iElem->GetContent(id);
 	    if (!val.empty()) {
 		MElem* data = iElem->GetNode(val);
 		if (data != NULL) {

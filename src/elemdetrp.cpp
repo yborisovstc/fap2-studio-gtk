@@ -612,8 +612,7 @@ void ElemDetRp::on_comp_menu_edit_content()
     if (res == Gtk::RESPONSE_OK) {
 	string sCpath;
 	sdlg->GetData(sCpath);
-	string sValue;
-	cnode->GetCont(sValue, sCpath);
+	string sValue = cnode->GetContent(sCpath);
 	delete sdlg;
 	TextEditDlg* edlg = new TextEditDlg("Edit content", sValue);
 	res = edlg->run();

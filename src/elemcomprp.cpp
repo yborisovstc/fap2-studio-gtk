@@ -66,9 +66,11 @@ ElemCompRp::ElemCompRp(MElem* aElem): iElem(aElem), iHead(NULL), iHighlighted(fa
     iHead = new ElemCompHead(*iElem);
     add(*iHead);
     iHead->show();
-    // Add content
     string cont;
-    iElem->GetCont(cont);
+    if (iElem->ContValueExists()) {
+	// Add content
+	cont = iElem->GetContent();
+    }
     iContent.set_line_wrap(true);
     iContent.set_text(cont);
     add(iContent);
@@ -163,8 +165,8 @@ bool ElemCompRp::on_query_tooltip(int x, int y, bool keyboard_tooltip, const Gli
 void ElemCompRp::GetModelDebugInfo(int x, int y, string& aData) const
 {
     for (int cnt = 0; cnt < iElem->GetContCount(); cnt++) {
-	string name, value;
-	iElem->GetCont(cnt, name, value);
+	string name = iElem->GetContComp(string(), cnt);
+	string value = iElem->GetContent(name);
 	aData += name + ": " + value + "\n";
     }
 }
@@ -238,8 +240,7 @@ bool ElemCompRp::DoIsIntersected(int x, int y) const
 void ElemCompRp::GetFormattedContent(string& aContent) const
 {
     const TInt KIndStep = 1;
-    string cont;
-    iElem->GetCont(cont);
+    string cont = iElem->GetContent();
     if (!cont.empty()) {
 	TBool fldopen = EFalse;
 	string delims;

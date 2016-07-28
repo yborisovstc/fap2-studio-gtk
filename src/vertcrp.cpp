@@ -284,8 +284,8 @@ void VertCompRp::GetModelDebugInfo(int x, int y, string& aData) const
     for (TInt ci = 0; ci < agents->CompsCount(); ci++) {
 	MElem* agent = agents->GetComp(ci);
 	for (int cnt = 0; cnt < agent->GetContCount(); cnt++) {
-	    string name, value;
-	    agent->GetCont(cnt, name, value);
+	    string name = agent->GetContComp(string(), cnt);
+	    string value = agent->GetContent(name);
 	    aData += name + ": " + value + "\n";
 	}
     }

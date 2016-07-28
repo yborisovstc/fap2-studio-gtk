@@ -50,8 +50,7 @@ int ContentTreeMdl::GetCompInd(const string& aComp) const
     } else {
 	string owner = mAgent.GetContentOwner(aComp);
 	for (; ind < mAgent.GetContCount(owner); ind++) {
-	    string comp, cval;
-	    mAgent.GetCont(ind, comp, cval, owner);
+	    string comp =  mAgent.GetContComp(owner, ind);
 	    if (comp == aComp) {
 		break;
 	    }
@@ -83,7 +82,7 @@ int ContentTreeMdl::iter_n_root_children_vfunc() const
 bool ContentTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
 {
     bool res = false;
-    string comp, cval;
+    string comp;
     string owner;
     unsigned depth = path.size();
     vector<int> indcv = path.get_indices();
@@ -92,7 +91,7 @@ bool ContentTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
 	if (ind >= mAgent.GetContCount(owner)) {
 	    return false;
 	}
-	mAgent.GetCont(ind, comp, cval, owner);
+	comp = mAgent.GetContComp(owner, ind);
 	owner = comp;
     }
     iter.set_stamp(iStamp);
@@ -111,8 +110,7 @@ Gtk::TreeModel::Path ContentTreeMdl::get_path_vfunc(const iterator& iter) const
     do {
 	int pos;
 	for (pos = 0; pos < mAgent.GetContCount(owner); pos++) {
-	    string ccomp, cval;
-	    mAgent.GetCont(pos, ccomp, cval, owner);
+	    string ccomp = mAgent.GetContComp(owner, pos);
 	    if (ccomp == comp) {
 		break;
 	    }
@@ -162,8 +160,7 @@ void ContentTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column
 		Glib::Value<Glib::ustring> sval;
 		sval.init(coltype);
 		GlueItem* gi = (GlueItem*) iter.gobj()->user_data;
-		string data;
-		mAgent.GetCont(data, gi->mContName);
+		string data = mAgent.GetContent(gi->mContName);
 		sval.set(data.c_str());
 		value.init(coltype);
 		value = sval;
@@ -176,11 +173,10 @@ string ContentTreeMdl::get_next_comp(const string& aComp)
 {
     string res;
     string owner = mAgent.GetContentOwner(aComp);
-    int count = mAgent.GetContCount();
+    int count = mAgent.GetContCount(owner);
     int ind = GetCompInd(aComp);
     if (ind < (count - 1)) {
-	string cval;
-	mAgent.GetCont(ind + 1, res, cval, owner);
+	res = mAgent.GetContComp(owner, ind + 1);
     }
     return res;
 }
@@ -231,9 +227,8 @@ bool ContentTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterato
     bool res = false;
     if (IsIterValid(parent)) {
 	GlueItem* owner = (GlueItem*) parent.gobj()->user_data;
-	string name, val;
 	if (n < mAgent.GetContCount(owner->mContName)) {
-	    mAgent.GetCont(n, name, val, owner->mContName);
+	    string name = mAgent.GetContComp(owner->mContName, n);
 	    iter.set_stamp(iStamp);
 	    iter.gobj()->user_data = AddGlueItem(name);
 	    res = true;
@@ -247,8 +242,7 @@ bool ContentTreeMdl::iter_nth_root_child_vfunc(int n, iterator& iter) const
     bool res = false;
     if (n < mAgent.GetContCount()) {
 	iter.set_stamp(iStamp);
-	string comp, cval;
-	mAgent.GetCont(n, comp, cval);
+	string comp = mAgent.GetContComp(string(), n);
 	iter.gobj()->user_data = AddGlueItem(comp);
 	res = true;
     }

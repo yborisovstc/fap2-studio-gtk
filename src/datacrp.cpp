@@ -18,8 +18,7 @@ ValueRp::ValueRp(MElem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(a
 
 ValueRp::ValueRp(MElem* aModel, const string& aCntId, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs), mCntId(aCntId)
 {
-    string cntval;
-    iElem->GetCont(cntval, mCntId);
+    string cntval = iElem->GetContent(mCntId);
     set_text(cntval);
     iMdlObs->SignalCompChanged().connect(sigc::mem_fun(*this, &ValueRp::on_comp_changed));
     iMdlObs->SignalContentChanged().connect(sigc::mem_fun(*this, &ValueRp::on_comp_changed));
@@ -34,8 +33,7 @@ void ValueRp::on_comp_changed(MElem* aComp)
 	assert(prop != NULL);
 	set_text(prop->Value());
 	} else { // Multicontent
-	    string cntval;
-	    iElem->GetCont(cntval, mCntId);
+	    string cntval = iElem->GetContent(mCntId);
 	    set_text(cntval);
 	}
     }
@@ -77,9 +75,7 @@ void DataCrp::Construct()
     if (val != NULL) {
 	iValue = new ValueRp(val, iMdlObs);
     } else {
-	string cntval;
-	TBool cntexst = iElem->GetCont(cntval, KValueCntId);
-	assert(cntexst);
+	string cntval = iElem->GetContent(KValueCntId);
 	iValue = new ValueRp(iElem, KValueCntId, iMdlObs);
     }
     add(*iValue);
