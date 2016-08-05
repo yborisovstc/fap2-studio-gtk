@@ -16,6 +16,7 @@ class CpErp: public Label, public MErp, public MErpConnectable
     public:
 	static const string& Type();
 	static string EType();
+	static string IfaceSupported();
     public:
 	CpErp(MElem* aElem);
 	virtual ~CpErp();
@@ -47,6 +48,7 @@ class SockErp: public VBox, public MErp, public MErpMgr, public MErpConnectable
     public:
 	static const string& Type();
 	static string EType();
+	static string IfaceSupported();
     public:
 	SockErp(MElem* aElem, const MErpProvider& aErpProv);
 	virtual ~SockErp();

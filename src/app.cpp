@@ -451,8 +451,8 @@ void App::CloseFile()
 	iDesObserver->SetDes(NULL);
 	iEnv->RemoveProvider(iMdlProv);
 	CSessionBase::RmSContext(iEnv);
-	delete iEnv;
 	delete iMdlProv;
+	delete iEnv;
 	iEnv = NULL;
 	iMdlProv = NULL;
 	iHDetView->Reset();

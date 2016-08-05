@@ -28,8 +28,8 @@
           <cont id="P1" ref="/Root/IncapsRoot/DesRoot/st/Add/Capsule/Inp"/>
           <cont id="P2" ref="/Root/IncapsRoot/DesRoot/st/Const1/Capsule/out"/>
         </node>
-        <cont node="./Confirmed/(Prop)Value" val="F 0"/>
-        <cont node="./Prepared/(Prop)Value" val="F 0"/>
+	<cont node="./Confirmed" id="Value" val="F 0"/>
+	<cont node="./Prepared"  id="Value" val="F 0"/>
       </node>
       <node id="1197245649" parent="Aedge">
         <cont id="P2" ref="/Root/IncapsRoot/DesRoot/st/Capsule/Out"/>

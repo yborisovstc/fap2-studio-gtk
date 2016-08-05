@@ -17,7 +17,7 @@ class ValueRp: public Gtk::Label
     protected:
 	MElem* iElem;
 	MMdlObserver* iMdlObs;
-	const string& mCntId;
+	string mCntId;
 };
 
 // Data incaps compact representation

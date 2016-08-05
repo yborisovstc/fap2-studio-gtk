@@ -160,10 +160,12 @@ int DefErpProv::GetConfidence(const MElem& aElem) const
 MErp* DefErpProv::CreateRp(MElem& aElem, const MErpMgr* aMgr) const
 {
     MErp* res = NULL;
-    if ((aElem.IsHeirOf(CpErp::EType()) || aElem.IsHeirOf("Elem:Vert:ConnPointMc")) && aMgr->IsTypeAllowed(CpErp::EType())) {
+    if ((aElem.GetObj(CpErp::IfaceSupported().c_str()) != NULL)  && aMgr->IsTypeAllowed(SockErp::EType())) {
+    //if ((aElem.IsHeirOf(CpErp::EType()) || aElem.IsHeirOf("Elem:Vert:ConnPointMc")) && aMgr->IsTypeAllowed(CpErp::EType())) {
 	res = new CpErp(&aElem);
     }
-    else if (aElem.IsHeirOf(SockErp::EType()) && aMgr->IsTypeAllowed(SockErp::EType())) {
+    //else if ((aElem.GetSIfi(SockErp::IfaceSupported().c_str()) != NULL)  && aMgr->IsTypeAllowed(SockErp::EType())) {
+    else if ((aElem.GetObj(SockErp::IfaceSupported().c_str()) != NULL)  && aMgr->IsTypeAllowed(SockErp::EType())) {
 	res = new SockErp(&aElem, *this);
     }
     return res;

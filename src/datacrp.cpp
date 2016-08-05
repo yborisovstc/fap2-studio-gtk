@@ -6,7 +6,7 @@
 using namespace Gtk;
 
 //  Connection point representation
-ValueRp::ValueRp(MElem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs), mCntId(string())
+ValueRp::ValueRp(MElem* aModel, MMdlObserver* aMdlObs): iElem(aModel), iMdlObs(aMdlObs)
 {
     // Set text from Value
     MProp* prop = iElem->GetObj(prop);

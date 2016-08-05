@@ -15,6 +15,11 @@ string CpErp::EType()
     return "Elem:Vert:ConnPointBase:ConnPoint";
 }
 
+string CpErp::IfaceSupported()
+{
+    return MConnPoint::Type();
+}
+
 CpErp::CpErp(MElem* aElem): Label(), iElem(aElem), iPos(EPos_Right), iHighlighted(false)
 {
     set_label(iElem->Name());
@@ -126,7 +131,9 @@ const int kPinPadding = 9;
 
 const string sSockErpType = "SockErp";
 const string sCpEType = ":Elem:Vert:ConnPointBase";
+const string sCpEType2 = ":Elem:Vert:ConnPointMc";
 const string sSockEType = ":Elem:Vert:Socket";
+const string sSockEType2 = ":Elem:Vert:SocketMc";
 
 const string& SockErp::Type()
 {
@@ -136,6 +143,11 @@ const string& SockErp::Type()
 string SockErp::EType()
 {
     return sSockEType;
+}
+
+string SockErp::IfaceSupported()
+{
+    return MSocket::Type();
 }
 
 SockErp::SockErp(MElem* aElem, const MErpProvider& aErpProv): VBox(), iElem(aElem), iPos(EPos_Left), iHighlighted(false),
@@ -152,7 +164,7 @@ SockErp::SockErp(MElem* aElem, const MErpProvider& aErpProv): VBox(), iElem(aEle
     // Pins
     for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
 	MElem* comp = iElem->GetComp(ci);
-	if (comp->IsHeirOf(sCpEType) || comp->IsHeirOf(sSockEType)) {
+	if (comp->IsHeirOf(sCpEType) || comp->IsHeirOf(sCpEType2) || comp->IsHeirOf(sSockEType) || comp->IsHeirOf(sSockEType2)) {
 	    MErp* pinrp = iErpProv.CreateRp(*comp, this);
 	    if (pinrp != NULL) {
 		iPinRps[comp] = pinrp;
