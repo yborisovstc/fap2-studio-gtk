@@ -11,6 +11,7 @@
   <node id="IncapsRoot" parent="/Root/Modules/IncapsComps/Incaps">
     <node id="Ticker" parent="/Root/Modules/DesComps/DesTickerMc"/>
     <node id="DesRoot" parent="/Root/Modules/DesComps/DesMc">
+	<cont id="" val="Test of root content"/>
       <node id="st" parent="/Root/Modules/DesComps/StateVarMc">
         <node id="Add" parent="/Root/Modules/FuncComps/TFAddVarMc"/>
         <node id="222049375" parent="Aedge">

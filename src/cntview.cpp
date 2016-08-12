@@ -1,6 +1,7 @@
 #include <gtkmm.h>
 #include <gtkmm/treerowreference.h>
 #include "cntview.h"
+#include <iostream>
 
 // Current hier tree model
 
@@ -76,7 +77,8 @@ GType ContentTreeMdl::get_column_type_vfunc(int index) const
 
 int ContentTreeMdl::iter_n_root_children_vfunc() const
 {
-    return mAgent.GetContCount();
+//     return mAgent.GetContCount();
+     return 1;
 }
 
 bool ContentTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
@@ -87,11 +89,12 @@ bool ContentTreeMdl::get_iter_vfunc(const Path& path, iterator& iter) const
     unsigned depth = path.size();
     vector<int> indcv = path.get_indices();
     for (int dc = 0; dc < depth; dc++) {
+	int count = (dc == 0) ? 1 : mAgent.GetContCount(owner);
 	int ind = indcv.at(dc);
-	if (ind >= mAgent.GetContCount(owner)) {
+	if (ind >= count) {
 	    return false;
 	}
-	comp = mAgent.GetContComp(owner, ind);
+	comp = (dc == 0) ? string() : mAgent.GetContComp(owner, ind);
 	owner = comp;
     }
     iter.set_stamp(iStamp);
@@ -106,18 +109,21 @@ Gtk::TreeModel::Path ContentTreeMdl::get_path_vfunc(const iterator& iter) const
     GlueItem* gi = (GlueItem*) iter.gobj()->user_data;
     string comp = gi->mContName;
     string owner = MElem::GetContentOwner(comp);
-    // By depth
-    do {
-	int pos;
-	for (pos = 0; pos < mAgent.GetContCount(owner); pos++) {
-	    string ccomp = mAgent.GetContComp(owner, pos);
-	    if (ccomp == comp) {
-		break;
+    if (!comp.empty()) {
+	// By depth
+	do {
+	    int pos;
+	    for (pos = 0; pos < mAgent.GetContCount(owner); pos++) {
+		string ccomp = mAgent.GetContComp(owner, pos);
+		if (ccomp == comp) {
+		    break;
+		}
 	    }
-	}
-	path.prepend_index(pos);
-	comp = owner;
-    } while (!comp.empty());
+	    path.prepend_index(pos);
+	    comp = owner;
+	} while (!comp.empty());
+    }
+    path.prepend_index(0);
     return path;
 }
 
@@ -172,11 +178,13 @@ void ContentTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column
 string ContentTreeMdl::get_next_comp(const string& aComp) 
 {
     string res;
-    string owner = mAgent.GetContentOwner(aComp);
-    int count = mAgent.GetContCount(owner);
-    int ind = GetCompInd(aComp);
-    if (ind < (count - 1)) {
-	res = mAgent.GetContComp(owner, ind + 1);
+    if (!aComp.empty()) {
+	string owner = mAgent.GetContentOwner(aComp);
+	int count = mAgent.GetContCount(owner);
+	int ind = GetCompInd(aComp);
+	if (ind < (count - 1)) {
+	    res = mAgent.GetContComp(owner, ind + 1);
+	}
     }
     return res;
 }
@@ -240,9 +248,18 @@ bool ContentTreeMdl::iter_nth_child_vfunc(const iterator& parent, int n, iterato
 bool ContentTreeMdl::iter_nth_root_child_vfunc(int n, iterator& iter) const
 {
     bool res = false;
+    /*
     if (n < mAgent.GetContCount()) {
 	iter.set_stamp(iStamp);
 	string comp = mAgent.GetContComp(string(), n);
+	iter.gobj()->user_data = AddGlueItem(comp);
+	res = true;
+    }
+    */
+    __ASSERT(n==0);
+    if (n == 0 ) {
+	iter.set_stamp(iStamp);
+	string comp = "";
 	iter.gobj()->user_data = AddGlueItem(comp);
 	res = true;
     }
@@ -281,6 +298,15 @@ bool ContentTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
     return true;
 }
 
+void ContentTreeMdl::set_value_impl(const iterator& row, int column, const Glib::ValueBase& value)
+{
+    const Glib::Value<Glib::ustring>& sval = (const Glib::Value<Glib::ustring>&) value;
+    Glib::ustring val = sval.get();
+    GlueItem* gi = (GlueItem*) row.gobj()->user_data;
+    string strval(val);
+    ((MElem&) mAgent).ChangeCont(val, ETrue, gi->mContName);
+}
+
 void ContentTreeMdl::on_comp_deleting(MElem* aComp)
 {
 }
@@ -296,17 +322,34 @@ void ContentTreeMdl::on_comp_changed(MElem* aComp)
 
 // Content navigation widget
 
-NaviContent::NaviContent(const MElem& aAgent): mAgent(aAgent)
+NaviContent::NaviContent(MElem& aAgent): mAgent(aAgent)
 {
     set_headers_visible(false);
-    Glib::RefPtr<ContentTreeMdl> mdl = ContentTreeMdl::create(mAgent);
-    set_model(mdl);
-    append_column( "name", mdl->ColRec().name);
-    append_column( "value", mdl->ColRec().value);
+    SetAgent();
 }
 
 NaviContent::~NaviContent()
 {
+    UnsetAgent();
+}
+
+void NaviContent::UnsetAgent()
+{
+    mAgent.SetObserver(NULL);
+    unset_model();
+    remove_all_columns();
+    Glib::RefPtr<TreeModel> curmdl = get_model();
+    curmdl.reset();
+}
+
+void NaviContent::SetAgent()
+{
+    mAgent.SetObserver(this);
+    Glib::RefPtr<ContentTreeMdl> mdl = ContentTreeMdl::create(mAgent);
+    GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
+    set_model(mdl);
+    append_column( "name", mdl->ColRec().name);
+    append_column_editable( "value", mdl->ColRec().value);
 }
 
 bool NaviContent::on_button_press_event(GdkEventButton* event)
@@ -368,23 +411,79 @@ NaviContent::tSigCompActivated NaviContent::SignalCompActivated()
     return iSigCompActivated;
 }
 
+// From MAgentObserver
+
+void NaviContent::OnCompDeleting(MElem& aComp, TBool aSoft)
+{
+}
+
+void NaviContent::OnCompAdding(MElem& aComp)
+{
+}
+
+TBool NaviContent::OnCompChanged(MElem& aComp, const string& aContName)
+{
+    UnsetAgent();
+    SetAgent();
+}
+
+TBool NaviContent::OnContentChanged(MElem& aComp, const string& aContName)
+{
+    UnsetAgent();
+    SetAgent();
+}
+
+TBool NaviContent::OnCompRenamed(MElem& aComp, const string& aOldName)
+{
+    return false;
+}
+
+MIface* NaviContent::Call(const string& aSpec, string& aRes)
+{
+    __ASSERT(false);
+}
+
+string NaviContent::Mid() const
+{
+    __ASSERT(false);
+}
+
 
 // Content select dialog
 
-ContentSelectDlg::ContentSelectDlg(const string& aTitle, const MElem& aAgent): Gtk::Dialog(aTitle)
+ContentSelectDlg::ContentSelectDlg(const string& aTitle, MElem& aAgent): Gtk::Dialog(aTitle), mAgent(aAgent), mNavi(NULL)
 {
+    // Action area
+    //    add_button(Gtk::Stock::ADD, ERsp_Add);
     add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);
-    Gtk::VBox* cont_area = get_vbox();
+    mBtnAdd = new Button("Add");
+    mBtnAdd->show();
+    mBtnAdd->set_sensitive(false);
+    get_action_area()->pack_end(*mBtnAdd);
+    mBtnAdd->signal_pressed().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnAddButtonPressed));
 
+    // Data area
+    Gtk::VBox* cont_area = get_vbox();
     mNavi = new NaviContent(aAgent);
+    mNavi->signal_row_activated().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnModelRowActivated));
+    mNavi->signal_columns_changed().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnColumnChanged));
+    mNavi->signal_cursor_changed().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnCursorChanged));
     mNavi->show();
     Glib::RefPtr<TreeSelection> sel = mNavi->get_selection();
     sel->set_mode(SELECTION_SINGLE);
+    set_response_sensitive(Gtk::RESPONSE_APPLY, false);
 //    mSw.add(*mNavi);
 //    mSw.show();
 //    cont_area->pack_start(mSw);
     cont_area->pack_start(*mNavi);
+}
+
+ContentSelectDlg::~ContentSelectDlg()
+{
+    if (mNavi != NULL) {
+	delete mNavi;
+    }
 }
 
 void ContentSelectDlg::GetData(string& aData)
@@ -396,4 +495,105 @@ void ContentSelectDlg::GetData(string& aData)
     aData = cont_path;
 }
 
+void ContentSelectDlg::OnModelRowActivated(const TreeModel::Path& aPath, TreeViewColumn* aColumn)
+{
+    cout << "ContentSelectDlg::OnModelRowActivated" << endl;
+} 
 
+void ContentSelectDlg::OnColumnChanged() 
+{
+    cout << "ContentSelectDlg::OnColumnChanged" << endl;
+} 
+
+void ContentSelectDlg::OnCursorChanged() 
+{
+    cout << "ContentSelectDlg::OnCursorChanged" << endl;
+    Glib::RefPtr<TreeSelection> sec = mNavi->get_selection();
+    TreeModel::iterator it = sec->get_selected();
+    bool isvalid = it.operator bool();
+    if (isvalid) {
+	mBtnAdd->set_sensitive(true);
+	//set_response_sensitive(Gtk::RESPONSE_APPLY, true);
+    } else {
+	mBtnAdd->set_sensitive(false);
+    }
+} 
+
+void ContentSelectDlg::on_response(int response_id)
+{
+    cout << "ContentSelectDlg::on_response: " << response_id << endl;
+    if (response_id == ERsp_Add) { // Adding content
+	Glib::RefPtr<TreeSelection> sec = mNavi->get_selection();
+	TreeModel::iterator it = sec->get_selected();
+	Glib::ustring path;
+	it->get_value(ContentTreeClrec::KCol_Path, path);
+	cout << "Path: " << path << endl;
+	string sName, sValue;
+	ContentAddDlg* dlg = new ContentAddDlg("Add content");
+	int res = dlg->run();
+	if (res == Gtk::RESPONSE_OK) {
+	    dlg->GetData(sName, sValue);
+	    mAgent.ChangeCont(sValue, ETrue, Elem::ContentCompId(path, sName));
+	}
+	delete dlg;
+    }
+}
+
+void ContentSelectDlg::OnAddButtonPressed()
+{
+    Glib::RefPtr<TreeSelection> sec = mNavi->get_selection();
+    TreeModel::iterator it = sec->get_selected();
+    Glib::ustring path;
+    it->get_value(ContentTreeClrec::KCol_Path, path);
+    cout << "Path: " << path << endl;
+    string sName, sValue;
+    ContentAddDlg* dlg = new ContentAddDlg("Add content");
+    int res = dlg->run();
+    if (res == Gtk::RESPONSE_OK) {
+	dlg->GetData(sName, sValue);
+	mAgent.ChangeCont(sValue, ETrue, Elem::ContentCompId(path, sName));
+    }
+    delete dlg;
+}
+
+
+
+
+ContentAddDlg::ContentAddDlg(const string& aTitle): Gtk::Dialog(aTitle)
+{
+    add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);
+    Gtk::VBox* cont_area = get_vbox();
+    // Name
+    Gtk::HBox* mNameArea = new Gtk::HBox();
+    cont_area->pack_start(*mNameArea);
+    mNameArea->show();
+    mNameLabel = new Gtk::Label();
+    mNameLabel->set_text("Name: ");
+    mNameLabel->show();
+    mNameArea->pack_start(*mNameLabel, false, false, 4);
+    Glib::RefPtr<Gtk::TextBuffer> namebuf = Gtk::TextBuffer::create();
+    mName = new Gtk::TextView(namebuf);
+    mName->show();
+    mNameArea->pack_start(*mName, false, false, 4);
+    // Value
+    Gtk::HBox* mValueArea = new Gtk::HBox();
+    cont_area->pack_start(*mValueArea);
+    mValueArea->show();
+    mValueLabel = new Gtk::Label();
+    mValueLabel->set_text("Value: ");
+    mValueLabel->show();
+    mValueArea->pack_start(*mValueLabel, false, false, 4);
+    Glib::RefPtr<Gtk::TextBuffer> valuebuf = Gtk::TextBuffer::create();
+    mValue = new Gtk::TextView(valuebuf);
+    mValue->show();
+    mValueArea->pack_start(*mValue, false, false, 4);
+}
+
+void ContentAddDlg::GetData(string& aName, string &aValue)
+{
+    Glib::RefPtr<Gtk::TextBuffer> namebuf = mName->get_buffer();
+    aName = namebuf->get_text();
+    Glib::RefPtr<Gtk::TextBuffer> valuebuf = mValue->get_buffer();
+    aValue = valuebuf->get_text();
+}

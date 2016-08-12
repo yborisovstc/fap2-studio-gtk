@@ -607,13 +607,14 @@ void ElemDetRp::on_comp_menu_edit_content()
     crp->GetContentUri(uri_cont);
     uri += uri_cont;
     MElem* cnode = iElem->GetNode(uri);
-    ContentSelectDlg* sdlg = new ContentSelectDlg("Select content", *cnode);
+    ContentSelectDlg* sdlg = new ContentSelectDlg("Edit content", *cnode);
     int res = sdlg->run();
     if (res == Gtk::RESPONSE_OK) {
 	string sCpath;
 	sdlg->GetData(sCpath);
 	string sValue = cnode->GetContent(sCpath);
 	delete sdlg;
+	/*
 	TextEditDlg* edlg = new TextEditDlg("Edit content", sValue);
 	res = edlg->run();
 	if (res == Gtk::RESPONSE_OK) {
@@ -621,6 +622,7 @@ void ElemDetRp::on_comp_menu_edit_content()
 	    change_content(uri.GetUri(), sCpath, sValue);
 	}
 	delete edlg;
+	*/
     } else {
 	delete sdlg;
     }

@@ -74,7 +74,8 @@ class ContentTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tr
 	virtual bool get_iter_vfunc(const Path& path, iterator& iter) const;
 	virtual bool iter_is_valid(const iterator& iter) const;
 	virtual void get_value_vfunc(const TreeModel::iterator& iter, int column, Glib::ValueBase& value) const;
-	bool iter_next_vfunc(const iterator& iter, iterator& iter_next) const;
+	virtual bool iter_next_vfunc(const iterator& iter, iterator& iter_next) const;
+	virtual void set_value_impl(const iterator& row, int column, const Glib::ValueBase& value);
 	// From Gtk::TreeDragSource
 	virtual bool row_draggable_vfunc(const TreeModel::Path& path) const;
 	virtual bool drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const;
@@ -98,17 +99,25 @@ class ContentTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tr
 };
 
 // Content navigation widget
-class NaviContent: public Gtk::TreeView
+class NaviContent: public Gtk::TreeView, public MAgentObserver
 {
     public:
 	typedef sigc::signal<void, string> tSigCompSelected;
 	typedef sigc::signal<void, string> tSigCompActivated;
     public:
-	NaviContent(const MElem& aAgent);
+	NaviContent(MElem& aAgent);
 	virtual ~NaviContent();
 	// TODO [YB] To move out to iface like MHierNavigator, and implement, the same for MDrp
 	virtual tSigCompSelected SignalCompSelected();
 	virtual tSigCompActivated SignalCompActivated();
+	// From MAgentObserver
+	virtual void OnCompDeleting(MElem& aComp, TBool aSoft = ETrue);
+	virtual void OnCompAdding(MElem& aComp);
+	virtual TBool OnCompChanged(MElem& aComp, const string& aContName = string());
+	virtual TBool OnContentChanged(MElem& aComp, const string& aContName = string());
+	virtual TBool OnCompRenamed(MElem& aComp, const string& aOldName);
+	virtual MIface* Call(const string& aSpec, string& aRes);
+	virtual string Mid() const;
     protected:
 	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context);
 	virtual void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext >& context, Gtk::SelectionData& selection_data, guint info, guint time);
@@ -116,11 +125,33 @@ class NaviContent: public Gtk::TreeView
 	virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);
     protected:
 	void set_source_row(const Glib::RefPtr<Gdk::DragContext>& context, Glib::RefPtr<Gtk::TreeModel>& model, Gtk::TreePath& source_row);
+	void UnsetAgent();
+	void SetAgent();
     private:
-	const MElem& mAgent;
+	MElem& mAgent;
 	int iPressX, iPressY;
 	tSigCompSelected iSigCompSelected;
 	tSigCompActivated iSigCompActivated;
+};
+
+// Add content dialog 
+class ContentAddDlg: public Gtk::Dialog
+{
+    public:
+	enum {
+	    EActionCancel,
+	    EActionOK
+	};
+    public:
+	ContentAddDlg(const string& aTitle);
+	void GetData(string& aName, string &aValue);
+    protected:
+	Gtk::HBox* mNameArea;
+	Gtk::HBox* mValueArea;
+	Gtk::Label* mNameLabel;
+	Gtk::Label* mValueLabel;
+	Gtk::TextView* mName;
+	Gtk::TextView* mValue;
 };
 
 
@@ -132,13 +163,25 @@ class ContentSelectDlg: public Gtk::Dialog
 	    EActionCancel,
 	    EActionOK
 	};
+	enum {
+	    ERsp_Add = 1
+	} TResponse;
     public:
-	ContentSelectDlg(const string& aTitle, const MElem& aAgent);
+	ContentSelectDlg(const string& aTitle, MElem& aAgent);
+	~ContentSelectDlg();
 	void GetData(string& aData);
+    protected:
+	void OnModelRowActivated(const TreeModel::Path& aPath, TreeViewColumn* aColumn); 
+	void OnColumnChanged(); 
+	void OnCursorChanged(); 
+	void OnAddButtonPressed(); 
+	virtual void on_response(int response_id);
     protected:
 	// Navigation tree of content
 	NaviContent* mNavi;
 	ScrolledWindow mSw;
+	MElem& mAgent;
+	Button* mBtnAdd;
 };
 
 

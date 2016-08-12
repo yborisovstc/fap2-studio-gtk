@@ -54,7 +54,7 @@ DataRp::DataRp(MElem* aModel, const string& aDataName, MMdlObserver* aMdlObs): i
     set_text(prop->Value());
     */
     string cont = iElem->GetContent();
-    set_text(iDataName + ": " + cont);
+    set_text(iDataName.empty() ? cont : iDataName + ": " + cont);
     iMdlObs->SignalCompChanged().connect(sigc::mem_fun(*this, &DataRp::on_comp_changed));
     iMdlObs->SignalContentChanged().connect(sigc::mem_fun(*this, &DataRp::on_comp_changed));
 }
@@ -69,7 +69,7 @@ void DataRp::on_comp_changed(MElem* aComp)
 	set_text(prop->Value());
 	*/
 	string cont = iElem->GetContent();
-	set_text(iDataName + ": " + cont);
+	set_text(iDataName.empty() ? cont : iDataName + ": " + cont);
 	set_has_tooltip();
 	set_tooltip_text(iDataName + ": " + cont);
     }

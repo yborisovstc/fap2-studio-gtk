@@ -9,6 +9,7 @@ class CpCrp: public VertCompRp
     public:
 	static const string& Type();
 	static string EType();
+	static string IfaceSupported();
     public:
 	CpCrp(MElem* aElem);
 	virtual ~CpCrp();

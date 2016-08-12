@@ -249,23 +249,27 @@ void ElemCompRp::GetFormattedContent(string& aContent) const
 	TInt indent = 0;
 	size_t lpos = 0;
 	size_t pos = cont.find_first_of(delims);
-	do {
-	    if (cont.at(pos) == Elem::KContentStart) {
-		indent += KIndStep;
-		fldopen = ETrue;
-		aContent.append(indent, ' ');
-		aContent.append("\n");
-	    } else {
-		indent -= KIndStep;
-		if (fldopen) {
-		    string field = cont.substr(lpos, pos - lpos);
-		    aContent.append(field);
+	if (pos != string::npos) {
+	    do {
+		if (cont.at(pos) == Elem::KContentStart) {
+		    indent += KIndStep;
+		    fldopen = ETrue;
+		    aContent.append(indent, ' ');
+		    aContent.append("\n");
+		} else {
+		    indent -= KIndStep;
+		    if (fldopen) {
+			string field = cont.substr(lpos, pos - lpos);
+			aContent.append(field);
+		    }
+		    fldopen = EFalse;
 		}
-		fldopen = EFalse;
-	    }
-	    lpos = pos + 1;
-	    pos = cont.find_first_of(delims, lpos);
-	} while (pos != string::npos);
+		lpos = pos + 1;
+		pos = cont.find_first_of(delims, lpos);
+	    } while (pos != string::npos);
+	} else {
+	    aContent = cont;
+	}
     }
 }
 

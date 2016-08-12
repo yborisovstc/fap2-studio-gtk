@@ -18,6 +18,11 @@ string CpCrp::EType()
     return "Elem:Vert:ConnPointBase:ConnPoint";
 }
 
+string CpCrp::IfaceSupported()
+{
+    return MConnPoint::Type();
+}
+
 CpCrp::CpCrp(MElem* aElem): VertCompRp(aElem)
 {
     // Prepare data of "provided"

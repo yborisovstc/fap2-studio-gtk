@@ -16,6 +16,10 @@
 #include "mcrp.h"
 #include "cperp.h"
 
+
+const string KEType_Aedge = ":Elem:Aedge";
+const string KEType_ExtenderMc = ":Elem:Vert:ExtenderMc";
+
 DefDrpProv::DefDrpProv(): iSenv(NULL)
 {
 }
@@ -112,7 +116,7 @@ MCrp* DefCrpProv::CreateRp(MElem& aElem, const MCrpMgr* aMgr) const
     else if (aElem.IsHeirOf(SysCrp::EType()) && aMgr->IsTypeAllowed(SysCrp::EType())) {
 	res = new SysCrp(&aElem, iMdlObs);
     }
-    else if (aElem.IsHeirOf(ExtdCrp::EType()) && aMgr->IsTypeAllowed(ExtdCrp::EType())) {
+    else if ((aElem.IsHeirOf(ExtdCrp::EType()) || aElem.IsHeirOf(KEType_ExtenderMc)) && aMgr->IsTypeAllowed(ExtdCrp::EType())) {
 	res = new ExtdCrp(&aElem, iSenv->ErpProvider());
     }
     else if (aElem.IsHeirOf(CpCrp::EType()) && aMgr->IsTypeAllowed(CpCrp::EType())) {
@@ -121,7 +125,7 @@ MCrp* DefCrpProv::CreateRp(MElem& aElem, const MCrpMgr* aMgr) const
     else if (aElem.IsHeirOf(VertCompRp::EType()) && aMgr->IsTypeAllowed(VertCompRp::EType())) {
 	res = new VertCompRp(&aElem);
     }
-    else if ((aElem.IsHeirOf(EdgeCrp::EType()) || aElem.IsHeirOf("Aedge")) && aMgr->IsTypeAllowed(EdgeCrp::EType())) {
+    else if ((aElem.IsHeirOf(EdgeCrp::EType()) || aElem.IsHeirOf(KEType_Aedge)) && aMgr->IsTypeAllowed(EdgeCrp::EType())) {
 	res = new EdgeCrp(&aElem);
     }
     else if (aElem.IsHeirOf(PropCrp::EType()) && aMgr->IsTypeAllowed(PropCrp::EType())) {
@@ -160,7 +164,7 @@ int DefErpProv::GetConfidence(const MElem& aElem) const
 MErp* DefErpProv::CreateRp(MElem& aElem, const MErpMgr* aMgr) const
 {
     MErp* res = NULL;
-    if ((aElem.GetObj(CpErp::IfaceSupported().c_str()) != NULL)  && aMgr->IsTypeAllowed(SockErp::EType())) {
+    if ((aElem.GetObj(CpErp::IfaceSupported().c_str()) != NULL)  && aMgr->IsTypeAllowed(CpErp::EType())) {
     //if ((aElem.IsHeirOf(CpErp::EType()) || aElem.IsHeirOf("Elem:Vert:ConnPointMc")) && aMgr->IsTypeAllowed(CpErp::EType())) {
 	res = new CpErp(&aElem);
     }
