@@ -175,6 +175,7 @@ class ContentSelectDlg: public Gtk::Dialog
 	void OnColumnChanged(); 
 	void OnCursorChanged(); 
 	void OnAddButtonPressed(); 
+	void OnRmButtonPressed(); 
 	virtual void on_response(int response_id);
     protected:
 	// Navigation tree of content
@@ -182,6 +183,7 @@ class ContentSelectDlg: public Gtk::Dialog
 	ScrolledWindow mSw;
 	MElem& mAgent;
 	Button* mBtnAdd;
+	Button* mBtnRm;
 };
 
 

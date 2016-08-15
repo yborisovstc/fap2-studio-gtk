@@ -3,6 +3,8 @@
 #include "cntview.h"
 #include <iostream>
 
+const string KMsgConfirmRm = "Remove the content selected?";
+
 // Current hier tree model
 
 const ContentTreeClrec ContentTreeMdl::iColRec;
@@ -108,10 +110,10 @@ Gtk::TreeModel::Path ContentTreeMdl::get_path_vfunc(const iterator& iter) const
     Path path;
     GlueItem* gi = (GlueItem*) iter.gobj()->user_data;
     string comp = gi->mContName;
-    string owner = MElem::GetContentOwner(comp);
     if (!comp.empty()) {
 	// By depth
 	do {
+	    string owner = MElem::GetContentOwner(comp);
 	    int pos;
 	    for (pos = 0; pos < mAgent.GetContCount(owner); pos++) {
 		string ccomp = mAgent.GetContComp(owner, pos);
@@ -457,18 +459,27 @@ ContentSelectDlg::ContentSelectDlg(const string& aTitle, MElem& aAgent): Gtk::Di
     //    add_button(Gtk::Stock::ADD, ERsp_Add);
     add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);
+    // Button "Add"
     mBtnAdd = new Button("Add");
     mBtnAdd->show();
     mBtnAdd->set_sensitive(false);
     get_action_area()->pack_end(*mBtnAdd);
     mBtnAdd->signal_pressed().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnAddButtonPressed));
+    // Button "Remove"
+    mBtnRm = new Button("Remove");
+    mBtnRm->show();
+    mBtnRm->set_sensitive(false);
+    get_action_area()->pack_end(*mBtnRm);
+    mBtnRm->signal_pressed().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnRmButtonPressed));
 
     // Data area
     Gtk::VBox* cont_area = get_vbox();
+    // Content navigation tree view
     mNavi = new NaviContent(aAgent);
     mNavi->signal_row_activated().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnModelRowActivated));
     mNavi->signal_columns_changed().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnColumnChanged));
     mNavi->signal_cursor_changed().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnCursorChanged));
+    mNavi->expand_all();
     mNavi->show();
     Glib::RefPtr<TreeSelection> sel = mNavi->get_selection();
     sel->set_mode(SELECTION_SINGLE);
@@ -513,9 +524,10 @@ void ContentSelectDlg::OnCursorChanged()
     bool isvalid = it.operator bool();
     if (isvalid) {
 	mBtnAdd->set_sensitive(true);
-	//set_response_sensitive(Gtk::RESPONSE_APPLY, true);
+	mBtnRm->set_sensitive(true);
     } else {
 	mBtnAdd->set_sensitive(false);
+	mBtnRm->set_sensitive(false);
     }
 } 
 
@@ -554,6 +566,22 @@ void ContentSelectDlg::OnAddButtonPressed()
 	mAgent.ChangeCont(sValue, ETrue, Elem::ContentCompId(path, sName));
     }
     delete dlg;
+}
+
+void ContentSelectDlg::OnRmButtonPressed()
+{
+    Glib::RefPtr<TreeSelection> sec = mNavi->get_selection();
+    TreeModel::iterator it = sec->get_selected();
+    Glib::ustring path;
+    it->get_value(ContentTreeClrec::KCol_Path, path);
+    cout << "Path: " << path << endl;
+    // Confirmation dialog
+    Gtk::MessageDialog cdlg(KMsgConfirmRm, false, MESSAGE_INFO, BUTTONS_OK_CANCEL, true);
+    int result = cdlg.run();
+    if (result == Gtk::RESPONSE_OK) {
+	string val = "{" + MElem::GetContentLName(path) + ":-}";
+	mAgent.ChangeCont(val, ETrue, MElem::GetContentOwner(path));
+    }
 }
 
 
