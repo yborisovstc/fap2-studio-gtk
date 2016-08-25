@@ -59,6 +59,7 @@ class SysCrp: public VertCompRp
 	// From MCrp
 	virtual Gtk::Widget& Widget();
 	virtual void *DoGetObj(const string& aName);
+	virtual void GetModelDebugInfo(int x, int y, string& aData) const;
 	// From MCrpConnectable
 	virtual Gtk::Requisition GetCpCoord(MElem* aCp = NULL);
 	virtual int GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp);
@@ -69,6 +70,8 @@ class SysCrp: public VertCompRp
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
     protected:
 	void AddDataRp();
+	Gtk::Allocation GetCpAlloc(MElem* aCp);
+	MElem* GetHoweredCp(Gtk::Requisition aCoord) const;
     protected:
 	MMdlObserver* iMdlObs;
 	typedef std::map<MElem*, CpRp*> tCpRps;

@@ -55,4 +55,3 @@ void *IncapsCrp::DoGetObj(const string& aName)
     return res;
 }
 
-

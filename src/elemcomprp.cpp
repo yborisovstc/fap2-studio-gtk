@@ -155,7 +155,7 @@ bool ElemCompRp::on_name_button_press(GdkEventButton* event)
 
 bool ElemCompRp::on_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Tooltip>& tooltip)
 {
-//    std::cout << "ElemCompRp on_query_tooltip" << std::endl;
+    //std::cout << "ElemCompRp on_query_tooltip, x: " << x << ", y: " << y << std::endl;
     string info;
     GetModelDebugInfo(x, y, info);
     tooltip->set_text(info);
@@ -218,7 +218,7 @@ bool ElemCompRp::DoIsActionSupported(MCrp::Action aAction)
 {
     return (aAction == MCrp::EA_Remove || aAction == MCrp::EA_Rename 
 	    || aAction == MCrp::EA_Save_Chromo && iElem->IsChromoAttached()
-	    || aAction == MCrp::EA_Edit_Content && iElem->IsContChangeable());
+	    || aAction == MCrp::EA_Edit_Content && !iElem->IsContOfCategory("", MElem::KCont_Ctg_Readonly));
 }
 
 void ElemCompRp::DoSetDnDTargSupported(int aTarg)

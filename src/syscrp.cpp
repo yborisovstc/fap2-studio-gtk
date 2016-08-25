@@ -218,6 +218,48 @@ int SysCrp::GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp)
     return res;
 }
 
+/*
+Gtk::Allocation SysCrp::GetCpAlloc(MElem* aCp)
+{
+    Gtk::Allocation alc = get_allocation();
+    Gtk::Allocation res;
+    if (iCpRps.count(aCp) > 0) {
+	CpRp* cprp = iCpRps.at(aCp);
+	Gtk::Allocation cpalc = cprp->get_allocation();
+	res = Gtk::Allocation(alc.get_x() + cpalc.get_x(), alc.get_y() + cpalc.get_y(),
+		cpalc.get_width(), cpalc.get_height()); 
+    }
+    return res;
+}
+*/
+
+Gtk::Allocation SysCrp::GetCpAlloc(MElem* aCp)
+{
+    Gtk::Allocation res;
+    if (iCpRps.count(aCp) > 0) {
+	CpRp* cprp = iCpRps.at(aCp);
+	res = cprp->get_allocation();
+    }
+    return res;
+}
+
+MElem* SysCrp::GetHoweredCp(Gtk::Requisition aCoord) const
+{
+    MElem* res = NULL;
+    for (tCpRps::const_iterator it = iCpRps.begin(); it != iCpRps.end(); it++) {
+	MElem* cp = it->first;
+	Gtk::Allocation cpalloc = ((SysCrp*) this)->GetCpAlloc(cp);
+	TBool in = aCoord.width > cpalloc.get_x() &&
+	    aCoord.width < (cpalloc.get_x() + cpalloc.get_width()) &&
+	    aCoord.width > cpalloc.get_x() &&
+	    aCoord.width < (cpalloc.get_x() + cpalloc.get_width());
+	if (in) {
+	    res = cp; break;
+	}
+    }
+    return res;
+}
+
 void SysCrp::HighlightCp(MElem* aCp, bool aSet)
 {
     MElem* cp = aCp;
@@ -311,3 +353,19 @@ void SysCrp::on_size_request(Gtk::Requisition* aReq)
     aReq->width = max(aReq->width, data_w + 2*KViewElemCrpInnerBorder); 
 }
 
+void SysCrp::GetModelDebugInfo(int x, int y, string& aData) const
+{
+    Gtk::Requisition coord = {x, y};
+    MElem* cp = GetHoweredCp(coord);
+    if (cp != NULL) {
+	if (iElem->ContentExists("SpAgent")) {
+	    string agt_uri = iElem->GetContent("SpAgent");
+	    MElem* agent = iElem->GetNode(agt_uri);
+	    if (agent != NULL) {
+		GUri uri;
+		cp->GetRUri(uri, agent);
+		aData = agent->GetAssociatedData(uri.GetUri(ETrue));
+	    }
+	}
+    }
+}
