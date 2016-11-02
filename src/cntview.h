@@ -76,6 +76,7 @@ class ContentTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tr
 	virtual void get_value_vfunc(const TreeModel::iterator& iter, int column, Glib::ValueBase& value) const;
 	virtual bool iter_next_vfunc(const iterator& iter, iterator& iter_next) const;
 	virtual void set_value_impl(const iterator& row, int column, const Glib::ValueBase& value);
+	virtual void on_row_changed (const TreeModel::Path& path, const TreeModel::iterator& iter);
 	// From Gtk::TreeDragSource
 	virtual bool row_draggable_vfunc(const TreeModel::Path& path) const;
 	virtual bool drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const;
@@ -114,7 +115,7 @@ class NaviContent: public Gtk::TreeView, public MAgentObserver
 	virtual void OnCompDeleting(MElem& aComp, TBool aSoft = ETrue);
 	virtual void OnCompAdding(MElem& aComp);
 	virtual TBool OnCompChanged(MElem& aComp, const string& aContName = string());
-	virtual TBool OnContentChanged(MElem& aComp, const string& aContName = string());
+	virtual TBool OnChanged(MElem& aComp);
 	virtual TBool OnCompRenamed(MElem& aComp, const string& aOldName);
 	virtual MIface* Call(const string& aSpec, string& aRes);
 	virtual string Mid() const;

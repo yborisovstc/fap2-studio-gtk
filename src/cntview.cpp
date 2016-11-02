@@ -302,11 +302,18 @@ bool ContentTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
 
 void ContentTreeMdl::set_value_impl(const iterator& row, int column, const Glib::ValueBase& value)
 {
+    cout << "ContentTreeMdl::set_value_impl" << endl;
     const Glib::Value<Glib::ustring>& sval = (const Glib::Value<Glib::ustring>&) value;
     Glib::ustring val = sval.get();
     GlueItem* gi = (GlueItem*) row.gobj()->user_data;
     string strval(val);
-    ((MElem&) mAgent).ChangeCont(val, ETrue, gi->mContName);
+    MElem& agt = (MElem&) mAgent;
+    //((MElem&) mAgent).ChangeCont(val, ETrue, gi->mContName);
+
+    agt.AppendMutation(TMut(ENt_Cont, ENa_Id, gi->mContName, ENa_MutVal, val));
+    agt.Mutate(false, false, true, agt.GetRoot());
+    // Notify model base of row changed (signal "row-changed") will be emitted to the view
+    row_changed(get_path_vfunc(row), row);
 }
 
 void ContentTreeMdl::on_comp_deleting(MElem* aComp)
@@ -321,6 +328,11 @@ void ContentTreeMdl::on_comp_changed(MElem* aComp)
 {
 }
 
+void ContentTreeMdl::on_row_changed(const TreeModel::Path& path, const TreeModel::iterator& iter)
+{
+    cout << "ContentTreeMdl::on_row_changed" << endl;
+    Gtk::TreeModel::on_row_changed(path, iter);
+}
 
 // Content navigation widget
 
@@ -338,8 +350,8 @@ NaviContent::~NaviContent()
 void NaviContent::UnsetAgent()
 {
     mAgent.SetObserver(NULL);
-    unset_model();
     remove_all_columns();
+    unset_model();
     Glib::RefPtr<TreeModel> curmdl = get_model();
     curmdl.reset();
 }
@@ -352,6 +364,7 @@ void NaviContent::SetAgent()
     set_model(mdl);
     append_column( "name", mdl->ColRec().name);
     append_column_editable( "value", mdl->ColRec().value);
+    expand_all();
 }
 
 bool NaviContent::on_button_press_event(GdkEventButton* event)
@@ -425,14 +438,14 @@ void NaviContent::OnCompAdding(MElem& aComp)
 
 TBool NaviContent::OnCompChanged(MElem& aComp, const string& aContName)
 {
-    UnsetAgent();
-    SetAgent();
+//    UnsetAgent();
+//    SetAgent();
 }
 
-TBool NaviContent::OnContentChanged(MElem& aComp, const string& aContName)
+TBool NaviContent::OnChanged(MElem& aComp)
 {
-    UnsetAgent();
-    SetAgent();
+//    UnsetAgent();
+//    SetAgent();
 }
 
 TBool NaviContent::OnCompRenamed(MElem& aComp, const string& aOldName)

@@ -88,7 +88,8 @@ bool DesObserver::IsModelChanged() const
 
 void DesObserver::SetModelChanged(bool aChanged)
 {
-    if (!iChanged && aChanged) {
+    //if (!iChanged && aChanged) {
+    if (aChanged) {
 	iSigSystemChanged.emit();
     }
     iChanged = aChanged;
@@ -189,7 +190,7 @@ TBool DesObserver::OnCompRenamed(MElem& aComp, const string& aOldName)
     SetModelChanged();
 }
 
-TBool DesObserver::OnContentChanged(MElem& aComp, const string& aName)
+TBool DesObserver::OnChanged(MElem& aComp)
 {
     iSigContentChanged.emit(&aComp);
     return true;
@@ -668,7 +669,9 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     iChanged = false;
     iEnv->ChMgr()->SetEnableFixErrors(false);
     // Init max order from spec, to be able to do redo
+    // TODO [YB] MaxOrder doesn't work, to fix it
     iMaxOrder = iEnv->ChMgr()->GetSpecMaxOrder();
+    iInitMaxOrder = iEnv->ChMgr()->GetMaxOrder();
     UpdataUndoRedo();
     // Start tracking the model changes in order to update undo/redo
     iDesObserver->SignalSystemChanged().connect(sigc::mem_fun(*this, &App::on_system_changed));

@@ -11,6 +11,7 @@ CpRp::CpRp(MElem* aCp): iElem(aCp)
 {
     // Set text from CP name
     set_text(iElem->Name());
+    set_name("CpRp");
 }
 
 CpRp::~CpRp()
@@ -96,17 +97,18 @@ SysCrp::SysCrp(MElem* aElem, MMdlObserver* aMdlObs, const string& aDataUri): Ver
 
 void SysCrp::Construct()
 {
-    // Add CPs
+    VertCompRp::Construct();
+    // Add CPs - only representatives (i.e. connpoints)
     for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
 	MElem* comp = iElem->GetComp(ci);
 	if (comp->IsRemoved()) continue;
+	MConnPoint* mcp = comp->GetObj(mcp);
+	if (mcp == NULL) continue;
 	CpRp* rp = new CpRp(comp);
 	add(*rp);
 	rp->show();
 	iCpRps[comp] = rp;
     }
-    set_has_tooltip();
-    set_tooltip_text("SysCrp Tooltip test");
     // Add Data Crp
     AddDataRp();
 }
@@ -265,6 +267,7 @@ void SysCrp::HighlightCp(MElem* aCp, bool aSet)
     MElem* cp = aCp;
     assert(cp != NULL && iCpRps.count(cp) > 0);
     Gtk::Widget* cprp = iCpRps.at(cp);
+    std::cout << "SysCrp::HighlightCp, aSet: " << aSet << ", aCp: " << aCp->Uid() << ", widget: " << cprp->get_name()  << std::endl;
     if (aSet) {
 	cprp->set_state(Gtk::STATE_PRELIGHT);
     }
@@ -355,9 +358,11 @@ void SysCrp::on_size_request(Gtk::Requisition* aReq)
 
 void SysCrp::GetModelDebugInfo(int x, int y, string& aData) const
 {
+//    std::cout << "SysCrp::GetModelDebugInfo" << std::endl;
     Gtk::Requisition coord = {x, y};
     MElem* cp = GetHoweredCp(coord);
     if (cp != NULL) {
+	//std::cout << "SysCrp::GetModelDebugInfo, howered cp: " << cp->Uid() << std::endl;
 	if (iElem->ContentExists("SpAgent")) {
 	    string agt_uri = iElem->GetContent("SpAgent");
 	    MElem* agent = iElem->GetNode(agt_uri);
@@ -366,6 +371,11 @@ void SysCrp::GetModelDebugInfo(int x, int y, string& aData) const
 		cp->GetRUri(uri, agent);
 		aData = agent->GetAssociatedData(uri.GetUri(ETrue));
 	    }
+	} else {
+	    //GetFormattedContent(cp, aData);
+	    GetContentFormatted(cp, "", 0, aData);
 	}
+    } else {
+	VertCompRp::GetModelDebugInfo(x, y, aData);
     }
 }

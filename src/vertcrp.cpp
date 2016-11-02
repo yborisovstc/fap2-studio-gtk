@@ -2,6 +2,7 @@
 #include <vert.h>
 #include "common.h"
 #include "vertcrp.h"
+#include <iostream>
 
 VertCompHead::VertCompHead(const MElem& aElem): iElem(aElem)
 {
@@ -153,6 +154,7 @@ int VertCompRp::GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp)
 
 void VertCompRp::HighlightCp(MElem* aCp, bool aSet)
 {
+    std::cout << "VertCompRp::HighlightCp, aSet: " << aSet  << std::endl;
     SetHighlighted(aSet);
 }
 
@@ -277,7 +279,9 @@ bool VertCompRp::IsIntersected(int aX, int aY) const
 
 void VertCompRp::GetModelDebugInfo(int x, int y, string& aData) const
 {
-    GetFormattedContent(aData);
+//    std::cout << "VertCompRp::GetModelDebugInfo" << std::endl;
+    GetContentFormatted(iElem, "", 0, aData);
+    //GetFormattedContent(iElem, aData);
     aData += "\n";
     MElem* agents = iElem->GetNode("./Agents");
     vector<MElem*>::iterator it;

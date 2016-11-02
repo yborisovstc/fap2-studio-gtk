@@ -2,6 +2,7 @@
 #include "common.h"
 #include "cperp.h"
 #include "gtkmm/alignment.h"
+#include <iostream>
 
 const string sType = "CpErp";
 
@@ -118,6 +119,7 @@ int CpErp::GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp)
 void CpErp::HighlightCp(MElem* aCp, bool aSet)
 {
     assert(aCp == iElem);
+    std::cout << "CpErp::HighlightCp, aSet: " << aSet  << std::endl;
     set_state(aSet ? STATE_PRELIGHT : STATE_NORMAL);
 }
 

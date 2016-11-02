@@ -191,6 +191,7 @@ int ExtdCrp::GetNearestCp(Gtk::Requisition aCoord, MElem*& aCp)
 
 void ExtdCrp::HighlightCp(MElem* aCp, bool aSet)
 {
+    std::cout << "ExtdCrp::HighlightCp, aSet: " << aSet  << std::endl;
     MElem* intcp = iElem->GetNode(KIntUri);
     if (aCp == iElem) {
 	iLabExt->set_state(aSet ? STATE_PRELIGHT: STATE_NORMAL);

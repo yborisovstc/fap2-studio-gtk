@@ -3,24 +3,26 @@
 #include "chromoview.h"
 #include <gtkmm/treerowreference.h>
 #include <glibmm/main.h>
+#include <iostream>
 
 
 // Current hier tree model
 
 const ChromoTreeClrec ChromoTreeMdl::iColRec;
 
-ChromoTreeMdl::ChromoTreeMdl(MElem* aRoot, MEnv* aDesEnv): Glib::ObjectBase(typeid(ChromoTreeMdl)), Glib::Object(), Gtk::TreeModel(), 
-    iDesEnv(aDesEnv), iStamp(55), iRoot(aRoot), iRnode(iRoot->Chromos().Root())
+ChromoTreeMdl::ChromoTreeMdl(MElem* aRoot, MEnv* aDesEnv, MMdlObserver* aDesObs): Glib::ObjectBase(typeid(ChromoTreeMdl)), Glib::Object(), Gtk::TreeModel(), 
+    iDesEnv(aDesEnv), iStamp(55), iRoot(aRoot), iRnode(iRoot->Chromos().Root()), iDesObs(aDesObs)
 {
+	iDesObs->SignalSystemChanged().connect(sigc::mem_fun(*this, &ChromoTreeMdl::on_system_changed));
 }
 
 ChromoTreeMdl::~ChromoTreeMdl()
 {
 }
 
-Glib::RefPtr<ChromoTreeMdl> ChromoTreeMdl::create(MElem* aRoot, MEnv* aDesEnv)
+Glib::RefPtr<ChromoTreeMdl> ChromoTreeMdl::create(MElem* aRoot, MEnv* aDesEnv, MMdlObserver* aDesObs)
 {
-    ChromoTreeMdl* nmdl = new ChromoTreeMdl(aRoot, aDesEnv);
+    ChromoTreeMdl* nmdl = new ChromoTreeMdl(aRoot, aDesEnv, aDesObs);
     Gtk::TreeModel* mdl = reinterpret_cast<Gtk::TreeModel*> (nmdl);
     GtkTreeModel* treemdl = mdl->gobj();
     bool ist = GTK_IS_TREE_MODEL(treemdl);
@@ -142,7 +144,12 @@ void ChromoTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column,
 		}
 		else if (node.Type() == ENt_Cont) { 
 		    data = "cont";
-		    data += " node:" + node.Attr(ENa_MutNode);
+		    if (node.AttrExists(ENa_MutNode)) {
+			data += " node:" + node.Attr(ENa_MutNode);
+		    }
+		    if (node.AttrExists(ENa_Id)) {
+			data += " id:" + node.Attr(ENa_Id);
+		    }
 		    if (node.AttrExists(ENa_MutVal)) {
 			data += " val:" + node.Attr(ENa_MutVal);
 		    }
@@ -322,6 +329,18 @@ bool ChromoTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
 
 void ChromoTreeMdl::on_system_changed()
 {
+    cout << "ChromoTreeMdl::on_system_changed" << endl;
+    // Chromo was appended, notify the view of row added
+    //Path path;
+    iterator iter;
+    //get_iter_vfunc(path, iter);
+    //while (iter_next_vfunc(iter, iter));
+
+    ChromoNode mut = *(iRnode.Rbegin());
+    iter.set_stamp(iStamp);
+    iter.gobj()->user_data = mut.Handle();
+
+    row_inserted(get_path_vfunc(iter), iter);
 }
 
 
@@ -367,14 +386,14 @@ void ChromoTree::RefreshModel()
     // Simply reload model
     unset_model();
     remove_all_columns();
-    Glib::RefPtr<ChromoTreeMdl> mdl = ChromoTreeMdl::create(iDesEnv->Root(), iDesEnv);
+    Glib::RefPtr<ChromoTreeMdl> mdl = ChromoTreeMdl::create(iDesEnv->Root(), iDesEnv, iDesObs);
     set_model(mdl);
     append_column( "name", mdl->ColRec().name);
 }
 
 void ChromoTree::on_refresh_model()
 {
-    RefreshModel();
+    //RefreshModel();
 }
 
 void ChromoTree::on_des_env_changed()
@@ -386,7 +405,7 @@ void ChromoTree::on_des_root_added()
 {
     if (!iRootAdded && iDesEnv != NULL) {
 	iRootAdded = true;
-	Glib::RefPtr<ChromoTreeMdl> mdl = ChromoTreeMdl::create(iDesEnv->Root(), iDesEnv);
+	Glib::RefPtr<ChromoTreeMdl> mdl = ChromoTreeMdl::create(iDesEnv->Root(), iDesEnv, iDesObs);
 	ChromoTreeMdl* hmdl = mdl.operator ->();
 	GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
 	set_model(mdl);

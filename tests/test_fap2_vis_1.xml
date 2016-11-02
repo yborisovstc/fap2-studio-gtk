@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<node id="Root" parent="Elem">
+  <node id="Modules" parent="AImports"/>
+  <import id="/IncapsComps/Incaps" targ="./Modules"/>
+  <import id="/DesComps/DesTicker" targ="./Modules"/>
+  <import id="/DesComps/Des" targ="./Modules"/>
+  <import id="/DesComps/StateVarCT" targ="./Modules"/>
+  <node id="MRoot" parent="/Root/Modules/IncapsComps/Incaps"/>
+  <node id="Ticker" parent="/Root/Modules/DesComps/DesTicker" targ="./MRoot"/>
+  <node id="DesRoot" parent="/Root/Modules/DesComps/Des" targ="./MRoot"/>
+  <node id="Ticker_edge" parent="Edge" targ="./MRoot"/>
+  <cont val="./../../DesRoot/Capsule/Sync" targ="./MRoot/Ticker_edge/P2"/>
+  <cont val="./../../Ticker/Capsule/Out" targ="./MRoot/Ticker_edge/P1"/>
+  <node id="Note" parent="Description"/>
+  <cont val="This is template for Discrete Events System (DES).     Add required modules to [Modules] node and start creating model in [DesRoot]    Use Ticker agent controls on toolbar to generate system ticks." targ="./Note"/>
+  <node id="GVisComps" parent="Elem" targ="./Modules"/>
+  <import id="/SysComps" targ="./Modules/GVisComps"/>
+  <node id="GWidget" parent="Syst" targ="./Modules/GVisComps"/>
+  <node id="Owner" parent="/*/Modules/SysComps/ConnPoint" targ="./Modules/GVisComps/GWidget"/>
+  <cont val="MGWidgetOwner" targ="./Modules/GVisComps/GWidget/Owner/Provided"/>
+  <cont val="MGWidgetComp" targ="./Modules/GVisComps/GWidget/Owner/Required"/>
+  <node id="Comp" parent="/*/Modules/SysComps/ConnPoint" targ="./Modules/GVisComps/GWidget"/>
+  <cont val="MGWidgetComp" targ="./Modules/GVisComps/GWidget/Comp/Provided"/>
+  <cont val="MGWidgetOwner" targ="./Modules/GVisComps/GWidget/Comp/Required"/>
+  <node id="Inp_X" parent="/*/Modules/DesComps/StVarInp" targ="./Modules/GVisComps/GWidget"/>
+  <node id="Inp_Y" parent="/*/Modules/DesComps/StVarInp" targ="./Modules/GVisComps/GWidget"/>
+  <node id="Inp_W" parent="/*/Modules/DesComps/StVarInp" targ="./Modules/GVisComps/GWidget"/>
+  <node id="Inp_H" parent="/*/Modules/DesComps/StVarInp" targ="./Modules/GVisComps/GWidget"/>
+  <node id="BtnPressEvent" parent="/*/Modules/DesComps/StVarOut" targ="./Modules/GVisComps/GWidget"/>
+  <cont id="About" val="BtnPressEvent: tuple, TPL,SI:Type,SI:State,SI:Button" targ="./Modules/GVisComps/GWidget/BtnPressEvent"/>
+  <node id="Inp_State" parent="/*/Modules/DesComps/StVarInp" targ="./Modules/GVisComps/GWidget"/>
+  <cont id="About" val="This in input for widget state" targ="./Modules/GVisComps/GWidget/Inp_State"/>
+  <node id="MotionEvent" parent="/*/Modules/DesComps/StVarOut" targ="./Modules/GVisComps/GWidget"/>
+  <node id="BtnReleaseEvent" parent="/*/Modules/DesComps/StVarOut" targ="./Modules/GVisComps/GWidget"/>
+  <node id="Allocation" parent="/*/Modules/DesComps/StVarOut" targ="./Modules/GVisComps/GWidget"/>
+  <node id="SizeRequest" parent="/*/Modules/DesComps/StVarOut" targ="./Modules/GVisComps/GWidget"/>
+  <node id="HintFixed" parent="/*/Modules/DesComps/Des" targ="./Modules/GVisComps"/>
+  <cont id="About" val="Hints of component layout in fixed layout container" targ="./Modules/GVisComps/HintFixed"/>
+  <node id="Position" parent="/Root/Modules/DesComps/StateVarMc" targ="./Modules/GVisComps/HintFixed"/>
+  <node id="GWindow" parent="./GWidget" targ="./Modules/GVisComps"/>
+  <cont id="About" val="Top-level window" targ="./Modules/GVisComps/GWindow"/>
+  <node id="GWindow" parent="AGWindow" targ="./Modules/GVisComps/GWindow/Agents"/>
+  <node id="GContFixed" parent="./(Syst:)GWidget" targ="./Modules/GVisComps"/>
+  <node id="AgtGContFixed" parent="(AGCont:)AGContFixed" targ="./Modules/GVisComps/GContFixed/Agents"/>
+  <import id="/DesComps/ExtStOutSocketMc" targ="./Modules"/>
+  <import id="/DesComps/ExtStInpSocketMc" targ="./Modules"/>
+  <import id="/DesComps/ExtStOutSocketMc" targ="./Modules/GVisComps/HintFixed"/>
+  <node id="Position" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(ExtenderOutMc:)ExtStOutSocketMc" targ="./Modules/GVisComps/HintFixed/Capsule"/>
+  <change attr="id" val="OPosition" comp="./(ExtStOutSocketMc:)Position" targ="./Modules/GVisComps/HintFixed/Capsule"/>
+  <node id="InpPosition" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(ExtenderInpMc:)ExtStInpSocketMc" targ="./Modules/GVisComps/HintFixed/Capsule"/>
+  <change attr="id" val="OutPosition" comp="./(ExtStOutSocketMc:)OPosition" targ="./Modules/GVisComps/HintFixed/Capsule"/>
+  <node id="E1" parent="(Elem:)Aedge" targ="./Modules/GVisComps/HintFixed"/>
+</node>

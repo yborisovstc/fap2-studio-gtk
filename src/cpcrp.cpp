@@ -45,6 +45,7 @@ CpCrp::CpCrp(MElem* aElem): VertCompRp(aElem)
     iLabReq = new Gtk::Label(rval, Gtk::ALIGN_LEFT);
     add(*iLabReq);
     iLabReq->show();
+    set_name("CpCrp");
 }
 
 CpCrp::~CpCrp()

@@ -95,6 +95,8 @@ widget "*.*.ElemCompRp~da" style "elem_style_da"
 widget "*.*.Edge" style "edge_style"
 widget "*.*.Edge~da" style "edge_style_da"
 widget "*.*.CapsCrp" style "capscrp_style"
+widget "*.*.CpCrp" style "elem_style"
+widget "*.*.CpRp" style "def_label_style"
 
 widget "*.*.AVisDrawing" style "visdrawing_style"
 

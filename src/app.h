@@ -44,7 +44,7 @@ class DesObserver: public MBase, public MMdlObserver, public MAgentObserver, pub
 	virtual void OnCompAdding(MElem& aComp);
 	virtual TBool OnCompChanged(MElem& aComp, const string& aName=string());
 	virtual TBool OnCompRenamed(MElem& aComp, const string& aOldName);
-	virtual TBool OnContentChanged(MElem& aComp, const string& aName=string());
+	virtual TBool OnChanged(MElem& aComp);
 	// From MIface	
 	virtual MIface* Call(const string& aSpec, string& aRes);
 	virtual string Mid() const;

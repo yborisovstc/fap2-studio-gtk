@@ -155,20 +155,39 @@ bool ElemCompRp::on_name_button_press(GdkEventButton* event)
 
 bool ElemCompRp::on_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Tooltip>& tooltip)
 {
-    //std::cout << "ElemCompRp on_query_tooltip, x: " << x << ", y: " << y << std::endl;
+//    std::cout << "ElemCompRp on_query_tooltip, x: " << x << ", y: " << y << std::endl;
     string info;
     GetModelDebugInfo(x, y, info);
     tooltip->set_text(info);
     return true;
 }
 
+void ElemCompRp::GetContentFormatted(MElem* aElem, const string& aContName, TInt aIndent, string& aRes)
+{
+    string indent;
+    indent.append(aIndent, ' ');
+    for (int cnt = 0; cnt < aElem->GetContCount(aContName); cnt++) {
+	string name = aElem->GetContComp(string(), cnt);
+	string value = aElem->GetContent(name);
+	if (cnt != 0) aRes += "\n";
+	aRes += name + ": " + value;
+	if (aElem->GetContCount(name) > 0) {
+	    aRes += "\n";
+	    GetContentFormatted(aElem, name, aIndent + 1, aRes);
+	}
+    }
+}
+
 void ElemCompRp::GetModelDebugInfo(int x, int y, string& aData) const
 {
+    GetContentFormatted(iElem, "", 0, aData);
+    /*
     for (int cnt = 0; cnt < iElem->GetContCount(); cnt++) {
 	string name = iElem->GetContComp(string(), cnt);
 	string value = iElem->GetContent(name);
 	aData += name + ": " + value + "\n";
     }
+    */
 }
 
 void ElemCompRp::DoSetHighlighted(bool aSet)
@@ -237,10 +256,10 @@ bool ElemCompRp::DoIsIntersected(int x, int y) const
     return  x >= alc.get_x() && x < alc.get_x() + alc.get_width() && y >= alc.get_y() && y < alc.get_y() + alc.get_height();
 }
 
-void ElemCompRp::GetFormattedContent(string& aContent) const
+void ElemCompRp::GetFormattedContent(MElem* aElem, string& aContent)
 {
     const TInt KIndStep = 1;
-    string cont = iElem->GetContent();
+    string cont = aElem->GetContent("", ETrue);
     if (!cont.empty()) {
 	TBool fldopen = EFalse;
 	string delims;

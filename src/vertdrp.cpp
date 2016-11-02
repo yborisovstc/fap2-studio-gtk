@@ -299,6 +299,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		    iEdgeDropCandidate = cand;
 		    iEdgeDropCpCandidate = candcp;
 		    conn = iEdgeDropCandidate->GetObj(conn);
+		    std::cout << "VertDrpw_v1::on_drag_motion , HighlightCp"<< std::endl;
 		    conn->HighlightCp(iEdgeDropCpCandidate, true);
 		}
 		else {

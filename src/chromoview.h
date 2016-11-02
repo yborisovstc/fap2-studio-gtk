@@ -39,8 +39,8 @@ class ChromoTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tre
 #endif
 {
     public:
-	static Glib::RefPtr<ChromoTreeMdl> create(MElem* aRoot, MEnv* aDesEnv);
-	ChromoTreeMdl(MElem* aRoot, MEnv* aDesEnv);
+	static Glib::RefPtr<ChromoTreeMdl> create(MElem* aRoot, MEnv* aDesEnv, MMdlObserver* aDesObs);
+	ChromoTreeMdl(MElem* aRoot, MEnv* aDesEnv, MMdlObserver* aDesObs);
 	virtual ~ChromoTreeMdl();
 	static const ChromoTreeClrec& ColRec() {return iColRec;};
 	// Model events handlers
@@ -72,8 +72,10 @@ class ChromoTreeMdl: public Glib::Object, public Gtk::TreeModel, public Gtk::Tre
 	ChromoNode get_next_comp(const ChromoNode& aComp);
 	void GetNodeArg(const ChromoNode& aNode, int aArgInd, string& aArg) const;
     private:
-	// Provider provider
+	// Environment
 	MEnv* iDesEnv;
+	// DES observer
+	MMdlObserver* iDesObs;
 	// Column record, contains info of column types
 	static const ChromoTreeClrec iColRec;
 	// Root of hier
