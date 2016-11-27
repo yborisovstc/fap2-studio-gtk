@@ -253,8 +253,8 @@ MElem* SysCrp::GetHoweredCp(Gtk::Requisition aCoord) const
 	Gtk::Allocation cpalloc = ((SysCrp*) this)->GetCpAlloc(cp);
 	TBool in = aCoord.width > cpalloc.get_x() &&
 	    aCoord.width < (cpalloc.get_x() + cpalloc.get_width()) &&
-	    aCoord.width > cpalloc.get_x() &&
-	    aCoord.width < (cpalloc.get_x() + cpalloc.get_width());
+	    aCoord.height > cpalloc.get_y() &&
+	    aCoord.height < (cpalloc.get_y() + cpalloc.get_height());
 	if (in) {
 	    res = cp; break;
 	}

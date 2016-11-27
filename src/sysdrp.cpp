@@ -220,6 +220,7 @@ bool SysDrp::IsTypeAllowed(const std::string& aType) const
 
 void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 {
+    //std::cout << "SysDrp::on_size_allocate" << std::endl;
     set_allocation(aAllc);
     if (get_realized()) {
 	get_window()->move_resize(aAllc.get_x(), aAllc.get_y(), aAllc.get_width(), aAllc.get_height());
@@ -262,6 +263,9 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 
 		Gtk::Requisition p1coord = medgecrp->Cp1Coord();
 		Gtk::Requisition p2coord = medgecrp->Cp2Coord();
+		//std::cout << "SysDrp::on_size_allocate, p1coord: " << p1coord.width << "-" << p1coord.height << ", p2coord: " << p2coord.width << "-" << p2coord.height << std::endl;
+		// If not dragging then park edges terminal points 
+		if (!crp->Dragging()) {
 		if (p1 != NULL && !p1->IsRemoved()) {
 		    __ASSERT(iCompRps.count(op1) > 0);
 		    MCrp* pcrp = iCompRps.at(op1);
@@ -289,6 +293,8 @@ void SysDrp::on_size_allocate(Gtk::Allocation& aAllc)
 		    p2coord.height =  edge_park_y;
 		    medgecrp->SetCp2Coord(p2coord);
 		}
+		}
+		//std::cout << "SysDrp::on_size_allocate, p1coordf: " << p1coord.width << "-" << p1coord.height << ", p2coordf: " << p2coord.width << "-" << p2coord.height << std::endl;
 		// Trace the edge, calculating the edges nodes, from left to right
 		// Tracing step is from entry of the current vert tunnel till the entry to next one (Z form)
 		bool done = false;
@@ -614,7 +620,7 @@ bool SysDrp::AreCpsCompatible(MElem* aCp1, MElem* aCp2)
 	MCompatChecker* c2 = aCp2->GetObj(c2);
 	res = (c1 == NULL || c1->IsCompatible(aCp2)) && (c2 == NULL || c2->IsCompatible(aCp1));
     }
-    std::cout << "SysDrp::AreCpsCompatible, aCp1: " << aCp1->Name() << ", aCp2: " << aCp2->Name() << ", res: " << res << std::endl;
+    //std::cout << "SysDrp::AreCpsCompatible, aCp1: " << aCp1->Name() << ", aCp2: " << aCp2->Name() << ", res: " << res << std::endl;
     return res;
 }
 

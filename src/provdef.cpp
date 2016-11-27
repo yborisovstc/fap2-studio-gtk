@@ -93,6 +93,16 @@ int DefCrpProv::GetConfidence(const MElem& aElem) const
     return res;
 }
 
+bool DefCrpProv::IsExtender(MElem& aModel)
+{
+    bool res = EFalse;
+    MCompatChecker* mcc = aModel.GetObj(mcc);
+    if (mcc != NULL) {
+	res = (mcc->GetExtd() != NULL);
+    }
+    return res;
+}
+
 MCrp* DefCrpProv::CreateRp(MElem& aElem, const MCrpMgr* aMgr) const
 {
     MCrp* res = NULL;
@@ -116,7 +126,7 @@ MCrp* DefCrpProv::CreateRp(MElem& aElem, const MCrpMgr* aMgr) const
     else if (aElem.IsHeirOf(SysCrp::EType()) && aMgr->IsTypeAllowed(SysCrp::EType())) {
 	res = new SysCrp(&aElem, iMdlObs);
     }
-    else if ((aElem.IsHeirOf(ExtdCrp::EType()) || aElem.IsHeirOf(KEType_ExtenderMc)) && aMgr->IsTypeAllowed(ExtdCrp::EType())) {
+    else if ((aElem.IsHeirOf(ExtdCrp::EType()) || IsExtender(aElem)) && aMgr->IsTypeAllowed(ExtdCrp::EType())) {
 	res = new ExtdCrp(&aElem, iSenv->ErpProvider());
     }
     else if (aElem.IsHeirOf(CpCrp::EType()) && aMgr->IsTypeAllowed(CpCrp::EType())) {

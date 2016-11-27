@@ -47,7 +47,25 @@
   <import id="/DesComps/ExtStOutSocketMc" targ="./Modules/GVisComps/HintFixed"/>
   <node id="Position" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(ExtenderOutMc:)ExtStOutSocketMc" targ="./Modules/GVisComps/HintFixed/Capsule"/>
   <change attr="id" val="OPosition" comp="./(ExtStOutSocketMc:)Position" targ="./Modules/GVisComps/HintFixed/Capsule"/>
-  <node id="InpPosition" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(ExtenderInpMc:)ExtStInpSocketMc" targ="./Modules/GVisComps/HintFixed/Capsule"/>
+  <node id="InpPosition" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(ExtenderInpMc:)ExtStInpSocketMcVar" targ="./Modules/GVisComps/HintFixed/Capsule"/>
   <change attr="id" val="OutPosition" comp="./(ExtStOutSocketMc:)OPosition" targ="./Modules/GVisComps/HintFixed/Capsule"/>
   <node id="E1" parent="(Elem:)Aedge" targ="./Modules/GVisComps/HintFixed"/>
+  <import id="/DesComps/ExtStOutSocketMcVar" targ="./Modules/GVisComps/HintFixed"/>
+  <node id="Out_Position" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(ExtenderOutMc:)ExtStOutSocketMcVar" targ="./Modules/GVisComps/HintFixed/Capsule"/>
+  <rm comp="./(ExtStOutSocketMc:)OutPosition" targ="./Modules/GVisComps/HintFixed/Capsule"/>
+  <cont id="P2" ref="./../Position/Capsule/Out" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P1" ref="./../Capsule/Out_Position/Int" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P2" ref="" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P2" ref="" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P2" ref="./../Position/Capsule/Out" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P2" ref="" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P2" ref="" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P2" ref="./../Position/Capsule/Out" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P2" ref="" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P2" ref="./../Position/Capsule/Out" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="P1" ref="./../Capsule/Out_Position/Int" targ="./Modules/GVisComps/HintFixed/E1"/>
+  <cont id="Provided" val="MDVarGet" targ="./Modules/GVisComps/HintFixed/Capsule/InpPosition/Int/PinData"/>
+  <node id="dd" parent="(Elem:)Aedge" targ="./Modules/GVisComps/HintFixed"/>
+  <cont id="P1" ref="./../Position/Capsule/Inp" targ="./Modules/GVisComps/HintFixed/dd"/>
+  <cont id="P2" ref="./../Capsule/InpPosition/Int" targ="./Modules/GVisComps/HintFixed/dd"/>
 </node>

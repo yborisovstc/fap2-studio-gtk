@@ -967,7 +967,7 @@ bool HierTreeMdl::drag_data_delete_vfunc(const TreeModel::Path& path)
     return true;
 }
 
-void HierTreeMdl::OnCompDeleting(MElem& aComp, TBool aSoft)
+void HierTreeMdl::OnCompDeleting(MElem& aComp, TBool aSoft, TBool aModif)
 {
     //std::cout << "HierTreeMdl::OnCompDeleting: [" << aComp.Name() << "]" << std::endl;
     //UpdateStamp();
@@ -978,7 +978,7 @@ void HierTreeMdl::OnCompDeleting(MElem& aComp, TBool aSoft)
     row_deleted(path);
 }
 
-void HierTreeMdl::OnCompAdding(MElem& aComp)
+void HierTreeMdl::OnCompAdding(MElem& aComp, TBool aModif)
 {
     //std::cout << "HierTreeMdl::OnCompAdding: [" << aComp.Name() << "]" << std::endl;
     //UpdateStamp();
@@ -1005,7 +1005,7 @@ void HierTreeMdl::OnCompAdding(MElem& aComp)
     }
 }
 
-TBool HierTreeMdl::OnCompChanged(MElem& aComp)
+TBool HierTreeMdl::OnCompChanged(MElem& aComp, const string& aContName, TBool aModif)
 {
     //std::cout << "HierTreeMdl::OnCompChanged" << std::endl;
     UpdateStamp();

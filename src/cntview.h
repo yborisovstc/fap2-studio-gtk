@@ -112,9 +112,9 @@ class NaviContent: public Gtk::TreeView, public MAgentObserver
 	virtual tSigCompSelected SignalCompSelected();
 	virtual tSigCompActivated SignalCompActivated();
 	// From MAgentObserver
-	virtual void OnCompDeleting(MElem& aComp, TBool aSoft = ETrue);
-	virtual void OnCompAdding(MElem& aComp);
-	virtual TBool OnCompChanged(MElem& aComp, const string& aContName = string());
+	virtual void OnCompDeleting(MElem& aComp, TBool aSoft = ETrue, TBool aModif = EFalse);
+	virtual void OnCompAdding(MElem& aComp, TBool aModif = EFalse);
+	virtual TBool OnCompChanged(MElem& aComp, const string& aContName = string(), TBool aModif = EFalse);
 	virtual TBool OnChanged(MElem& aComp);
 	virtual TBool OnCompRenamed(MElem& aComp, const string& aOldName);
 	virtual MIface* Call(const string& aSpec, string& aRes);

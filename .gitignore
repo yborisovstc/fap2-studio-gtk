@@ -57,4 +57,6 @@ lcov_report
 *-trunk
 install-root
 src/fap2-studio-gtk
-
+.exrc
+src/.exrc
+doc/design/index.html

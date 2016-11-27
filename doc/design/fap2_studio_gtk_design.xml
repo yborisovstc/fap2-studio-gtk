@@ -100,4 +100,14 @@
 	</sect2>
     </sect1>
 
+    <sect1 id="ds_ki"><title>Known issues</title>
+	<sect2><title>Gtk-CRITICAL ... assertion `has_next' failed. There is a disparity between the internal view of the GtkTreeView, and the GtkTreeModel</title>
+	    <sect3><title>Analysis</title>
+		<simpara>Chromo model handles notification of model changes (i.e. model's chromo has new mut added), ref ChromoTreeMdl::on_system_changed().
+		    The handler assumes that just one mut was added to the end of model so initiate adding row to the view. The problem occurs when the 
+		    notification comes w/o changing chromo, for instance on run-time change.</simpara>
+	    </sect3>
+	</sect2>
+    </sect1>
+
 </article>

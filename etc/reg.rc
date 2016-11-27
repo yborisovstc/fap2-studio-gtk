@@ -85,7 +85,7 @@ style "visdrawing_style"
     GtkLayout::draw-border = {5, 5, 5, 5}
 }
 
-#class "GtkLabel" style "def_label_style"
+class "GtkLabel" style "def_label_style"
 
 widget "*.*.ElemDrp" style "elem_drp_style"
 widget "*.*.ElemDrp~err" style "elem_drp_att_style"

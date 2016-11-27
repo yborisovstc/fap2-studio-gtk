@@ -428,15 +428,15 @@ NaviContent::tSigCompActivated NaviContent::SignalCompActivated()
 
 // From MAgentObserver
 
-void NaviContent::OnCompDeleting(MElem& aComp, TBool aSoft)
+void NaviContent::OnCompDeleting(MElem& aComp, TBool aSoft, TBool aModif)
 {
 }
 
-void NaviContent::OnCompAdding(MElem& aComp)
+void NaviContent::OnCompAdding(MElem& aComp, TBool aModif)
 {
 }
 
-TBool NaviContent::OnCompChanged(MElem& aComp, const string& aContName)
+TBool NaviContent::OnCompChanged(MElem& aComp, const string& aContName, TBool aModif)
 {
 //    UnsetAgent();
 //    SetAgent();

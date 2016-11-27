@@ -40,9 +40,9 @@ class DesObserver: public MBase, public MMdlObserver, public MAgentObserver, pub
 	virtual tSigSystemCreated SignalSystemCreated();
 	virtual MEnv* DesEnv();
 	// From MAgentObserver
-	virtual void OnCompDeleting(MElem& aComp, TBool aSoft = true);
-	virtual void OnCompAdding(MElem& aComp);
-	virtual TBool OnCompChanged(MElem& aComp, const string& aName=string());
+	virtual void OnCompDeleting(MElem& aComp, TBool aSoft = true, TBool aModif = EFalse);
+	virtual void OnCompAdding(MElem& aComp, TBool aModif = EFalse);
+	virtual TBool OnCompChanged(MElem& aComp, const string& aName=string(), TBool aModif = EFalse);
 	virtual TBool OnCompRenamed(MElem& aComp, const string& aOldName);
 	virtual TBool OnChanged(MElem& aComp);
 	// From MIface	

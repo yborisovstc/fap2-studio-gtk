@@ -260,6 +260,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 	    assert(medge != NULL);
 	    MCrp* crp = iCompRps.at(edge);
 	    MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	    //std::cout << "VertDrpw_v1 on_drag_motion, edgepoint:" << edgepoint << std::endl;
 	    MVert* pair = NULL;
 	    if (edgepoint == "P1") {
 		medgecrp->SetCp1Coord(coord);
@@ -299,7 +300,7 @@ bool VertDrpw_v1::on_drag_motion (const Glib::RefPtr<Gdk::DragContext>& context,
 		    iEdgeDropCandidate = cand;
 		    iEdgeDropCpCandidate = candcp;
 		    conn = iEdgeDropCandidate->GetObj(conn);
-		    std::cout << "VertDrpw_v1::on_drag_motion , HighlightCp"<< std::endl;
+		    std::cout << "VertDrpw_v1::on_drag_motion , HighlightCp" << std::endl;
 		    conn->HighlightCp(iEdgeDropCpCandidate, true);
 		}
 		else {
@@ -368,8 +369,7 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    context->drag_finish(true, false, time);
 	    on_node_dropped(iDndReceivedData);
 	queue_resize();
-    }
-    else if (iDnDTarg == EDT_EdgeCp) {
+    } else if (iDnDTarg == EDT_EdgeCp) {
 	string euri, ep;
 	ParseDndReceivedDataEdge(euri, ep);
 	MElem* edge = iElem->GetNode(euri);
@@ -390,8 +390,7 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    } else if (ep == "P2") {
 		medge->SetPoint2(uri.GetUri(true));
 	    }
-	}
-	else {
+	} else {
 	    // Disconnect edge if it is connected
 	    res = true;
 	    /*
@@ -410,6 +409,8 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    //queue_resize();
 	}
 	iEdgeDropCandidate = NULL;
+	// Re-layout in order to layout edge according to new connection status
+	queue_resize();
     }
     iDnDTarg = EDT_Unknown;
     iDndReceivedData.clear();
@@ -440,6 +441,20 @@ bool VertDrpw_v1::on_button_press_event(GdkEventButton* aEvent)
 	    }
 	}
     }
+    // Then remaining edges
+    for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end() && !res; it++) {
+	MCrp* crp = it->second;
+	MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
+	if (medgecrp != NULL) {
+	    Gtk::Widget& wd = crp->Widget();
+	    if (wd.get_state() != Gtk::STATE_SELECTED) {
+		Gtk::Allocation talc = wd.get_allocation();
+		aEvent->x = ex + ox - talc.get_x();
+		aEvent->y = ey + oy - talc.get_y();
+		res = wd.event((GdkEvent*) aEvent);
+	    }
+	}
+    }
     if (!res) {
 	for (tCrps::iterator it = iCompRps.begin(); it != iCompRps.end(); it++) {
 	    MCrp* crp = it->second;
@@ -448,11 +463,13 @@ bool VertDrpw_v1::on_button_press_event(GdkEventButton* aEvent)
 		Gtk::Allocation talc = wd.get_allocation();
 		MEdgeCrp* medgecrp = crp->GetObj(medgecrp);
 		if (medgecrp != NULL) {
+		    /*
 		    if (wd.get_state() != Gtk::STATE_SELECTED) {
 			aEvent->x = ex + ox - talc.get_x();
 			aEvent->y = ey + oy - talc.get_y();
 			res = wd.event((GdkEvent*) aEvent);
 		    }
+		    */
 		}
 		// Also hangling other not-windowed widgets
 		else {

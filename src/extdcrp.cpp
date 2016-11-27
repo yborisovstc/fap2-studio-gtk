@@ -37,7 +37,7 @@ ExtdCrp::ExtdCrp(MElem* aElem, MErpProvider& aErpProv): VertCompRp(aElem), iErpP
 	pos = MErp::EPos_Left;
 	iExtPos = MErp::EPos_Right;
     }
-    else if (iInt->GetMdlDir() == MCompatChecker::ERegular) {
+    else if (iInt->GetMdlDir() == MCompatChecker::ERegular || iInt->GetMdlDir() == MCompatChecker::EOut) {
 	if (GetLArea() == ERight) {
 	    pos = MErp::EPos_Left;
 	    iExtPos = MErp::EPos_Right;

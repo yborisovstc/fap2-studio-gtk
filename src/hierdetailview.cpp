@@ -373,7 +373,7 @@ void HierDetailView::on_action_redo()
 
 void HierDetailView::on_comp_selected(MElem* aComp)
 {
-    std::cout << "on_comp_selected, comp [" << aComp->Name() << "]" << std::endl;
+    std::cout << "HierDetailView::on_comp_selected, comp [" << aComp->Name() << "]" << std::endl;
     mSigCompSelected.emit(aComp);
 }
 

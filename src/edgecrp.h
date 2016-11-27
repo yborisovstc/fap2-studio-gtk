@@ -31,7 +31,8 @@ class MEdgeCrp
 class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 {
     public:
-    enum TDraggedPart { EDp_None, EDp_Cp1, EDp_Cp2 };
+	// Termital point of edge
+    enum TTpoint { EDp_None, EDp_Cp1, EDp_Cp2 };
     public:
 	static const string& Type();
 	static string EType();
@@ -65,6 +66,8 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	virtual TVectEn& VectEn();
     protected:
 	bool IsPointIn(int aX, int aY) const;
+	template <TTpoint pt> bool IsCpLeft() const;
+	TTpoint HoweredTerm(int aX, int aY) const;
     protected:
 	virtual bool on_expose_event(GdkEventExpose* event);
 	virtual void on_size_request(Gtk::Requisition* aRequisition);
@@ -79,7 +82,8 @@ class EdgeCrp: public Gtk::Widget, public MCrp, public MEdgeCrp
 	TVectEn iNodes;
 	Requisition iCp1;
 	Requisition iCp2;
-	TDraggedPart iDraggedPart;
+	TTpoint iDraggedPart;
+	TTpoint iHoweredTerm;
 	bool iDragging;
 	bool iHighlighted;
 	bool iErr;

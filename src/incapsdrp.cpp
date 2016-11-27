@@ -222,7 +222,7 @@ void IncapsDrp::Construct()
     mCapsLCrp = new CapsCrp(caps);
     mCapsLCrp->SetLArea(MCrp::EOverlay);
     mCapsLCrp->SetDnDTargSupported(EDT_Node);
-    mCapsLCrp->SignalButtonPress().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), mCapsLCrp->Model()));
+    //mCapsLCrp->SignalButtonPress().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), mCapsLCrp->Model()));
     Gtk::Widget& capscrpw = mCapsLCrp->Widget();
     add(capscrpw);
     iCompRps[caps] = mCapsLCrp;
@@ -259,6 +259,7 @@ void IncapsDrp::Construct()
 	iCompRps[comp] = rp;
 	rpw.show();
     }
+    mCapsLCrp->SignalButtonPress().connect(sigc::bind<MElem*>(sigc::mem_fun(*this, &ElemDetRp::on_comp_button_press), mCapsLCrp->Model()));
     UpdateRpsRelatios();
     PreLayoutRps();
 }

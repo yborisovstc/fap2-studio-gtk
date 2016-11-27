@@ -110,6 +110,7 @@ fap2-studio-gtk=/home/yborisov/projects/fap/fap2-studio-gtk CD=. filter="autogen
  tests=tests CD=. filter="*" {
   test_compact_1.xml
   test_compact_1_res.xml
+  test_fap2_vis_1.xml
   test_mut_dep_1.xml
   test_mut_dep_2.xml
   test_mut_dep_add_node.xml

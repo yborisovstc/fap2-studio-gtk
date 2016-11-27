@@ -30,6 +30,8 @@ class DefCrpProv: public MCrpProvider
 	virtual void SetSenv(MSEnv& aEnv);
 	virtual MCrp* CreateRp(MElem& aElem, const MCrpMgr* aMgr) const;
 	virtual int GetConfidence(const MElem& aElem) const;
+    protected:
+	static bool IsExtender(MElem& aModel);
     private:
 	MMdlObserver* iMdlObs;
 	MSEnv* iSenv;
