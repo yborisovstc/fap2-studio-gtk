@@ -453,6 +453,10 @@ TBool NaviContent::OnCompRenamed(MElem& aComp, const string& aOldName)
     return false;
 }
 
+void NaviContent::OnCompMutated(const MElem* aNode)
+{
+}
+
 MIface* NaviContent::Call(const string& aSpec, string& aRes)
 {
     __ASSERT(false);
@@ -558,7 +562,9 @@ void ContentSelectDlg::on_response(int response_id)
 	int res = dlg->run();
 	if (res == Gtk::RESPONSE_OK) {
 	    dlg->GetData(sName, sValue);
-	    mAgent.ChangeCont(sValue, ETrue, Elem::ContentCompId(path, sName));
+	    mAgent.AppendMutation(TMut(ENt_Cont, ENa_Id, sName, ENa_MutVal, sValue));
+	    mAgent.Mutate(false, true, true, mAgent.GetRoot());
+	//    mAgent.ChangeCont(sValue, EFalse, Elem::ContentCompId(path, sName));
 	}
 	delete dlg;
     }
@@ -576,7 +582,9 @@ void ContentSelectDlg::OnAddButtonPressed()
     int res = dlg->run();
     if (res == Gtk::RESPONSE_OK) {
 	dlg->GetData(sName, sValue);
-	mAgent.ChangeCont(sValue, ETrue, Elem::ContentCompId(path, sName));
+	//mAgent.ChangeCont(sValue, ETrue, Elem::ContentCompId(path, sName));
+	mAgent.AppendMutation(TMut(ENt_Cont, ENa_Id, Elem::ContentCompId(path, sName), ENa_MutVal, sValue));
+	mAgent.Mutate(false, true, true, mAgent.GetRoot());
     }
     delete dlg;
 }

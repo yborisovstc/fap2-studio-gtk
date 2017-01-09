@@ -15,6 +15,8 @@
   <cont val="This is template for Discrete Events System (DES).     Add required modules to [Modules] node and start creating model in [DesRoot]    Use Ticker agent controls on toolbar to generate system ticks." targ="./Note"/>
   <node id="GVisComps" parent="Elem" targ="./Modules"/>
   <import id="/SysComps" targ="./Modules/GVisComps"/>
+  <node id="VisEnv" parent="/*/Modules/IncapsComps/Incaps" targ="./Modules/GVisComps"/>
+  <node id="VisEnvAgt" parent="AVisEnv" targ="./Modules/GVisComps/VisEnv/Agents"/>
   <node id="GWidget" parent="Syst" targ="./Modules/GVisComps"/>
   <node id="Owner" parent="/*/Modules/SysComps/ConnPoint" targ="./Modules/GVisComps/GWidget"/>
   <cont val="MGWidgetOwner" targ="./Modules/GVisComps/GWidget/Owner/Provided"/>
@@ -68,4 +70,58 @@
   <node id="dd" parent="(Elem:)Aedge" targ="./Modules/GVisComps/HintFixed"/>
   <cont id="P1" ref="./../Position/Capsule/Inp" targ="./Modules/GVisComps/HintFixed/dd"/>
   <cont id="P2" ref="./../Capsule/InpPosition/Int" targ="./Modules/GVisComps/HintFixed/dd"/>
+  <node id="WidgetForHint" parent="(Vert:)ConnPointMc" targ="./Modules/GVisComps/GWidget"/>
+  <cont id="Provided" val="AGWidget" targ="./Modules/GVisComps/GWidget/WidgetForHint"/>
+  <cont id="Required" val="LayoutHint" targ="./Modules/GVisComps/GWidget/WidgetForHint"/>
+  <cont id="Required" val="LayoutHint" targ="./Modules/GVisComps/GWidget/WidgetForHint"/>
+  <change attr="id" val="LayoutedWidget" comp="./(ConnPointMc:)WidgetForHint" targ="./Modules/GVisComps/GWidget"/>
+  <node id="LayoutHint" parent="(Vert:)ConnPointMc" targ="./Modules/GVisComps/HintFixed/Capsule"/>
+  <cont id="Required" val="AGWidget" targ="./Modules/GVisComps/HintFixed/Capsule/LayoutHint"/>
+  <cont id="Provided" val="LayoutHint" targ="./Modules/GVisComps/HintFixed/Capsule/LayoutHint"/>
+  <node id="VisEnv" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)GVisComps/VisEnv" targ="./MRoot/DesRoot"/>
+  <node id="TopWindow" parent="(AGWidget:)AGWindow" targ="./MRoot/DesRoot"/>
+  <rm comp="./(AGWindow:)TopWindow" targ="./MRoot/DesRoot"/>
+  <node id="Window" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)GVisComps/(GWidget:)GWindow" targ="./MRoot/DesRoot"/>
+  <rm comp="./(GWindow:)Window" targ="./MRoot/DesRoot"/>
+  <node id="TopWindow" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)GVisComps/(GWidget:)GWindow" targ="./MRoot/DesRoot/VisEnv"/>
+  <node id="GVisComps~1" parent="(:)Elem" targ="./Modules"/>
+  <node id="VisEnv" parent="/*/Modules/IncapsComps/Incaps" targ="./Modules/GVisComps~1"/>
+  <node id="VisEnvAgt" parent="AVisEnv" targ="./Modules/GVisComps~1/VisEnv/Agents"/>
+  <node id="GWidget" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)IncapsComps/(Syst:)Incaps" targ="./Modules/GVisComps~1"/>
+  <node id="Inp_XY" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(ExtStInpSocketMc:)ExtStInpSocketMcVar" targ="./Modules/GVisComps~1/GWidget/Capsule"/>
+  <node id="Inp_WH" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(ExtStInpSocketMc:)ExtStInpSocketMcVar" targ="./Modules/GVisComps~1/GWidget/Capsule"/>
+  <node id="Inp_State" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(ExtStInpSocketMc:)ExtStInpSocketMcVar" targ="./Modules/GVisComps~1/GWidget/Capsule"/>
+  <cont id="About" val="Standard widget" targ="./Modules/GVisComps~1/GWidget"/>
+  <node id="GWidgetC" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)IncapsComps/(Syst:)Incaps" targ="./Modules/GVisComps~1"/>
+  <cont id="About" val="Widget with compact connection points. Designded for using within containers." targ="./Modules/GVisComps~1/GWidgetC"/>
+  <node id="Parts" parent="Elem" targ="./Modules/GVisComps~1"/>
+  <node id="WidgetInpSock" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)SysComps/(Vert:)SocketMc" targ="./Modules/GVisComps~1/Parts"/>
+  <node id="XY" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(StInpSocketMc:)StInpSocketMcVar" targ="./Modules/GVisComps~1/Parts/WidgetInpSock"/>
+  <cont id="About" val="Position of widget" targ="./Modules/GVisComps~1/Parts/WidgetInpSock/XY"/>
+  <node id="WH" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(StInpSocketMc:)StInpSocketMcVar" targ="./Modules/GVisComps~1/Parts/WidgetInpSock"/>
+  <cont id="About" val="Size of widget" targ="./Modules/GVisComps~1/Parts/WidgetInpSock/WH"/>
+  <cont id="About" val="Widget's input. Designed to connect widget to container layout hint." targ="./Modules/GVisComps~1/Parts/WidgetInpSock"/>
+  <cont id="Direction" val="Inp" targ="./Modules/GVisComps~1/Parts/WidgetInpSock"/>
+  <node id="Inp" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)GVisComps~1/(Elem:)Parts/(SocketMc:)WidgetInpSock" targ="./Modules/GVisComps~1/GWidgetC/Capsule"/>
+  <node id="ExtWidgetInpSock" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)SysComps/(ExtenderMc:)ExtenderInpMc" targ="./Modules/GVisComps~1/Parts"/>
+  <node id="Int" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)GVisComps~1/(Elem:)Parts/(SocketMc:)WidgetInpSock" targ="./Modules/GVisComps~1/Parts/ExtWidgetInpSock"/>
+  <rm comp="./(WidgetInpSock:)Inp" targ="./Modules/GVisComps~1/GWidgetC/Capsule"/>
+  <node id="Inp~1" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)GVisComps~1/(Elem:)Parts/(ExtenderInpMc:)ExtWidgetInpSock" targ="./Modules/GVisComps~1/GWidgetC/Capsule"/>
+  <cont id="Direction" val="Out" targ="./Modules/GVisComps~1/Parts/WidgetInpSock"/>
+  <node id="Height" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(StateMc:)StateVarMc" targ="./MRoot/DesRoot/VisEnv"/>
+  <node id="e1" parent="(Elem:)Aedge" targ="./MRoot/DesRoot/VisEnv"/>
+  <cont id="P1" ref="./../Height/Capsule/Out" targ="./MRoot/DesRoot/VisEnv/e1"/>
+  <cont id="P2" ref="./../TopWindow/Inp_H" targ="./MRoot/DesRoot/VisEnv/e1"/>
+  <import id="/DesComps/StateVarMc" targ="./MRoot/DesRoot/VisEnv"/>
+  <import id="/DesComps/StateVarMc" targ="./MRoot/DesRoot/VisEnv"/>
+  <node id="Width" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(StateMc:)StateVarMc" targ="./MRoot/DesRoot/VisEnv"/>
+  <node id="e2" parent="(Elem:)Aedge" targ="./MRoot/DesRoot/VisEnv"/>
+  <cont id="P1" ref="./../Width/Capsule/Out" targ="./MRoot/DesRoot/VisEnv/e2"/>
+  <cont id="P2" ref="./../TopWindow/Inp_W" targ="./MRoot/DesRoot/VisEnv/e2"/>
+  <cont id="Value" val="SI 600" targ="./MRoot/DesRoot/VisEnv/Height/Confirmed"/>
+  <cont id="Value" val="SI 600" targ="./MRoot/DesRoot/VisEnv/Height/Prepared"/>
+  <cont id="Value" val="" targ="./MRoot/DesRoot/VisEnv/Width/Confirmed"/>
+  <cont id="Value" val="SI 800" targ="./MRoot/DesRoot/VisEnv/Width/Confirmed"/>
+  <cont id="Value" val="SI 800" targ="./MRoot/DesRoot/VisEnv/Width/Prepared"/>
+  <cont id="Init" val="Yes" targ="./MRoot/DesRoot/VisEnv/TopWindow"/>
 </node>

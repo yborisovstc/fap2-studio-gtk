@@ -102,7 +102,7 @@ void SysCrp::Construct()
     for (TInt ci = 0; ci < iElem->CompsCount(); ci++) {
 	MElem* comp = iElem->GetComp(ci);
 	if (comp->IsRemoved()) continue;
-	MConnPoint* mcp = comp->GetObj(mcp);
+	MCompatChecker* mcp = comp->GetObj(mcp);
 	if (mcp == NULL) continue;
 	CpRp* rp = new CpRp(comp);
 	add(*rp);

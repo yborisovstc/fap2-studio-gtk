@@ -6,6 +6,6 @@
   <import id="/IncapsComps/Incaps" targ="./Modules"/>
   <node id="MRoot" parent="/Root/Modules/IncapsComps/Incaps"/>
   <node id="renv" parent="ARenv" targ="./MRoot"/>
-  <cont val="Connect" targ="./MRoot/renv"/>
+  <cont id="Remote_Uid" val="Local" targ="./MRoot/renv"/>
   <node parent="ARenvu" id="remote_root" targ="./MRoot/renv"/>
 </node>

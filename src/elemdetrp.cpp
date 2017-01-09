@@ -470,7 +470,9 @@ void ElemDetRp::do_add_node(const std::string& aName, const std::string& aParent
     __ASSERT(!prnturi.IsErr());
     string prnturis = prnturi.GetUri(true);
     */
-    string prnturis = parent->GetUri(targ);
+    // Using short Uri (owning hier only). It is OK because unique comps name approach applied.
+    // Full URI causes problems with creating remote env root.
+    string prnturis = parent->GetUri(targ, ETrue);
     string sname(aName);
     if (sname.empty()) {
 	stringstream ss;

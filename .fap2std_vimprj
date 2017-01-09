@@ -483,7 +483,6 @@ test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
   ut_main.cpp
   ut_swnd_1.xml
   Makefile.am
-  ut_swnd_1.txt
 }
 }
 fap2-srv=/home/yborisov/projects/fap/fap2-srv CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {

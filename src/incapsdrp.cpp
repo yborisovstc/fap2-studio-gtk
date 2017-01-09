@@ -302,6 +302,7 @@ void IncapsDrp::PreLayoutRps()
     TVectCrps& crps_out = iLaPars.at(iLaNum - 1).second;;
     crps_out.sort(cmp);
     // Body
+    // TODO [YB] Using BodyPreLayoutAut from SysDrp causes not including connpoints to body layout. To fix.
     BodyPreLayoutAut();
 }
 

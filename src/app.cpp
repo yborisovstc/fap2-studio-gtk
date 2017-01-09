@@ -168,32 +168,27 @@ MMdlObserver::tSigTLogAdded DesObserver::SignalTLogAdded()
 void DesObserver::OnCompDeleting(MElem& aComp, TBool aSoft, TBool aModif)
 {
     iSigCompDeleted.emit(&aComp);
-    if (!aModif) {
-	SetModelChanged();
-    }
 }
 
 void DesObserver::OnCompAdding(MElem& aComp, TBool aModif)
 {
     iSigCompAdded.emit(&aComp);
-    if (!aModif) {
-	SetModelChanged();
-    }
 }
 
 TBool DesObserver::OnCompChanged(MElem& aComp, const string& aName, TBool aModif)
 {
     std::cout << "DesObserver::OnCompChanged, aComp: " << aComp.Uid() << ", aModif: " << aModif << std::endl;
     iSigCompChanged.emit(&aComp);
-    if (!aModif) {
-	SetModelChanged();
-    }
     return true;
 }
 
 TBool DesObserver::OnCompRenamed(MElem& aComp, const string& aOldName)
 {
     iSigCompRenamed.emit(&aComp, aOldName);
+}
+
+void DesObserver::OnCompMutated(const MElem* aNode)
+{
     SetModelChanged();
 }
 
