@@ -12,7 +12,7 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_LIBTOOL
 
-CFLAGS="-g -O0"
+CFLAGS="-g -O0 -std=c++11"
 #CFLAGS="-g -O2"
 
 dnl Check for Glib/GConf
