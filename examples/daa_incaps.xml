@@ -8,6 +8,7 @@
   <node id="renv" parent="ARenv" targ="./MRoot"/>
   <cont id="Remote_Uid" val="Local" targ="./MRoot/renv"/>
   <node id="remote_root" parent="ARenvu" targ="./MRoot/renv"/>
+  <cont val="Connect" targ="./MRoot/renv/remote_root"/>
   <node id="vv" parent="Vert" targ="./MRoot/renv/remote_root"/>
   <node id="vv1" parent="Vert" targ="./MRoot/renv/remote_root"/>
   <node id="ss" parent="Syst" targ="./MRoot/renv/remote_root"/>
