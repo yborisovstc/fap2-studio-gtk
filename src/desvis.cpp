@@ -361,7 +361,7 @@ MVisContainer* AVisWidget::GetVisContainer()
 	res = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
     }
     else {
-	Logger()->Write(MLogRec::EErr, this, "Input [Child] not exists");
+	Logger()->Write(EErr, this, "Input [Child] not exists");
     }
     return res;
 }
@@ -380,7 +380,7 @@ TBool AVisWidget::HandleCompChanged(MElem& aContext, MElem& aComp, const string&
 			cont.add(*iWidget);
 		    }
 		    else {
-			Logger()->Write(MLogRec::EErr, this, "Attempt to attach already attached child");
+			Logger()->Write(EErr, this, "Attempt to attach already attached child");
 			res = EFalse;
 		    }
 		}
@@ -391,7 +391,7 @@ TBool AVisWidget::HandleCompChanged(MElem& aContext, MElem& aComp, const string&
 	}
     }
     else {
-	Logger()->Write(MLogRec::EErr, this, "Input [Child] not exists");
+	Logger()->Write(EErr, this, "Input [Child] not exists");
 	res = EFalse;
     }
     return res;
@@ -430,7 +430,7 @@ bool AVisWidget::GetDataInt(const string& aInpUri, int& aData)
 	}
     }
     else {
-	Logger()->Write(MLogRec::EErr, this, "Input [%s] not exists", aInpUri.c_str());
+	Logger()->Write(EErr, this, "Input [%s] not exists", aInpUri.c_str());
     }
     return res;
 }
@@ -458,7 +458,7 @@ bool AVisWidget::GetInpState(const string& aInpUri, Gtk::StateType& aData)
 	}
     }
     else {
-	Logger()->Write(MLogRec::EErr, this, "Input [%s] not exists", aInpUri.c_str());
+	Logger()->Write(EErr, this, "Input [%s] not exists", aInpUri.c_str());
     }
     return res;
 }
@@ -699,7 +699,7 @@ bool VisDrwArea::on_expose_event(GdkEventExpose* aEvent)
     Allocation alc = get_allocation();
     drw->draw_rectangle(gc, true, 0, 0, alc.get_width() - 1, alc.get_height() - 1);
     */
-    //mHost->Logger()->Write(MLogRec::EInfo, mHost, "on_expose_event");
+    //mHost->Logger()->Write(EInfo, mHost, "on_expose_event");
     MElem* eobs = mHost->GetNode("./../../DrawingArea");
     __ASSERT(eobs != NULL);
     MElem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
@@ -718,7 +718,7 @@ void VisDrwArea::on_size_allocate(Allocation& aAlloc)
 
 void VisDrwArea::on_size_request(Requisition* aReq)
 {
-    mHost->Logger()->Write(MLogRec::EInfo, mHost, "on_size_request");
+    mHost->Logger()->Write(EInfo, mHost, "on_size_request");
     DrawingArea::on_size_request(aReq);
 }
 
@@ -1010,7 +1010,7 @@ TBool AVisDrawingElem::HandleCompChanged(MElem& aContext, MElem& aComp)
 	    }
 	}
 	else {
-	    Logger()->Write(MLogRec::EErr, this, "Input [DrawingElem] doesn't exist");
+	    Logger()->Write(EErr, this, "Input [DrawingElem] doesn't exist");
 	    res = EFalse;
 	}
     }

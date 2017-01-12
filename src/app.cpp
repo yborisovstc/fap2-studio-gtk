@@ -198,7 +198,7 @@ TBool DesObserver::OnChanged(MElem& aComp)
     return true;
 }
 
-void DesObserver::OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, const std::string& aContent, int aMutId)
+void DesObserver::OnLogAdded(long aTimestamp, TLogRecCtg aCtg, const MElem* aNode, const std::string& aContent, int aMutId)
 {
     iSigLogAdded.emit(aTimestamp, aCtg, aNode, aMutId,  aContent);
 }
@@ -362,7 +362,7 @@ void App::on_setting_changed_disable_opt()
 
 void App::on_comp_selected(MElem* aComp)
 {
-    iLogView->Select(aComp, MLogRec::EErr);
+    iLogView->Select(aComp, EErr);
 }
 
 void App::on_system_changed()

@@ -99,7 +99,7 @@ ElemDetRp::ElemDetRp(MElem* aElem, const MCrpProvider& aCrpProv, MSEnv& aStEnv):
        menulist.push_back(iCompMenuElems.at(MCrp::EA_Remove));
        */
     iCrpContextMenu.accelerate(*this);
-    bool iserr =  mStEnv.DesLog().IsNodeLogged(iElem, MLogRec::EErr);
+    bool iserr =  mStEnv.DesLog().IsNodeLogged(iElem, EErr);
     set_name(iserr ? "ElemDrp~err" : "ElemDrp");
 }
 
@@ -117,7 +117,7 @@ void ElemDetRp::Construct()
 	if (comp->IsRemoved()) continue;
 	MCrp* rp = iCrpProv.CreateRp(*comp, this);
 	if (rp != NULL) {
-	    if (IsCrpLogged(rp, MLogRec::EErr)) {
+	    if (IsCrpLogged(rp, EErr)) {
 		rp->SetErroneous(true);
 	    }
 	    Gtk::Widget& rpw = rp->Widget();
@@ -135,7 +135,7 @@ void ElemDetRp::Construct()
     }
 }
 
-bool ElemDetRp::IsCrpLogged(MCrp* aCrp, MLogRec::TLogRecCtg aCtg) const
+bool ElemDetRp::IsCrpLogged(MCrp* aCrp, TLogRecCtg aCtg) const
 {
     return  mStEnv.DesLog().IsNodeLogged(aCrp->Model(), aCtg);
 }

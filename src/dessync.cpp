@@ -122,7 +122,7 @@ void ADesSync::DoStep() {
     MElem* eout = GetNode("./../../Capsule/Out");
     MDesSyncable* out = (MDesSyncable*) eout->GetSIfiC(MDesSyncable::Type(), this);
     if (eout != NULL) {
-	Logger()->Write(MLogRec::EDbg, this, "Step %d", iCount++);
+	Logger()->Write(EDbg, this, "Step %d", iCount++);
 	try {
 	    if (out->IsActive()) {
 		out->Update();
@@ -131,7 +131,7 @@ void ADesSync::DoStep() {
 		out->Confirm();
 	    }
 	} catch (const std::exception& e) {
-	    Logger()->Write(MLogRec::EErr, this, "Unspecified error on update");
+	    Logger()->Write(EErr, this, "Unspecified error on update");
 	}
     }
 }

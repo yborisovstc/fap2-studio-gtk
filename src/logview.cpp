@@ -81,7 +81,7 @@ const MDesLog::TLog& SDesLog::LogData() const
     return mLog;
 }
 
-bool SDesLog::IsNodeLogged(MElem* aNode, MLogRec::TLogRecCtg aCtg) const
+bool SDesLog::IsNodeLogged(MElem* aNode, TLogRecCtg aCtg) const
 {
     return mLog.count(MDesLog::TLogKey(aNode, aCtg));
 }
@@ -132,16 +132,16 @@ const string KCtgInfo = "INF";
 const string KCtgWrn = "WRN";
 const string KCtgDbg = "DBG";
 
-const string& LogViewL::CtgName(MLogRec::TLogRecCtg aCtg) 
+const string& LogViewL::CtgName(TLogRecCtg aCtg) 
 {
-    if (aCtg == MLogRec::EErr) return KCtgErr;
-    else if (aCtg == MLogRec::EInfo) return KCtgInfo;
-    else if (aCtg == MLogRec::EWarn) return KCtgWrn;
-    else if (aCtg == MLogRec::EDbg) return KCtgDbg;
+    if (aCtg == EErr) return KCtgErr;
+    else if (aCtg == EInfo) return KCtgInfo;
+    else if (aCtg == EWarn) return KCtgWrn;
+    else if (aCtg == EDbg) return KCtgDbg;
     else __ASSERT(false);
 }
 
-void LogViewL::on_log_added(long aTimeStamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, int aMutId, const std::string& aContent)
+void LogViewL::on_log_added(long aTimeStamp, TLogRecCtg aCtg, const MElem* aNode, int aMutId, const std::string& aContent)
 {
     Glib::RefPtr<TreeModel> mdl = get_model();
     //ListStore* lmdl = (ListStore*) mdl.operator->();
@@ -172,7 +172,7 @@ void LogViewL::on_tlog_added(const TLog& aLog)
     //mDesLog.mLog.insert(MDesLog::TLogVal(MDesLog::TLogKey(aNode, aCtg), MDesLog::TLogData(aContent)));
 }
 
-void LogViewL::Select(MElem* aNode, MLogRec::TLogRecCtg aCtg)
+void LogViewL::Select(MElem* aNode, TLogRecCtg aCtg)
 {
     get_selection()->unselect_all();
     GUri upath;

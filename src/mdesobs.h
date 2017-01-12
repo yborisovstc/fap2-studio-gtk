@@ -22,7 +22,7 @@ class MMdlObserver
 	typedef sigc::signal<void, MElem*> tSigCompChanged;
 	typedef sigc::signal<void, MElem*> tSigContentChanged;
 	typedef sigc::signal<void, MElem*, const std::string&> tSigCompRenamed;
-	typedef sigc::signal<void, long, MLogRec::TLogRecCtg, const MElem*, int, const std::string&> tSigLogAdded;
+	typedef sigc::signal<void, long, TLogRecCtg, const MElem*, int, const std::string&> tSigLogAdded;
 	typedef sigc::signal<void, const TLog&> tSigTLogAdded;
     public:
 	virtual tSigSystemChanged SignalSystemChanged () = 0;

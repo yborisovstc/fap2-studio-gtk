@@ -50,7 +50,7 @@ class DesObserver: public MBase, public MMdlObserver, public MAgentObserver, pub
 	virtual MIface* Call(const string& aSpec, string& aRes);
 	virtual string Mid() const;
 	// From MLogObserver
-	virtual void OnLogAdded(long aTimestamp, MLogRec::TLogRecCtg aCtg, const MElem* aNode, const std::string& aContent, int aMutId = 0);
+	virtual void OnLogAdded(long aTimestamp, TLogRecCtg aCtg, const MElem* aNode, const std::string& aContent, int aMutId = 0);
 	virtual void OnLogAdded(const TLog& aLog);
 	virtual void OnLogRecDeleting(MLogRec* aLogRec);
 	virtual void AddObservable(MLogRec* aObservable);
