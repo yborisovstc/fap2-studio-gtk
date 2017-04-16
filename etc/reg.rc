@@ -100,3 +100,10 @@ widget "*.*.CpRp" style "def_label_style"
 
 widget "*.*.AVisDrawing" style "visdrawing_style"
 
+#TODO [YB] To adjust
+style "my-tooltips"
+{
+  bg[NORMAL] = "#FFFFAF"
+  fg[NORMAL] = "#000000"
+}
+widget "gtk-tooltip*" style "my-tooltips"

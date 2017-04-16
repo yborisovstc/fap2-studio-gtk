@@ -153,6 +153,149 @@ fap2-studio-gtk=/home/yborisov/projects/fap/fap2-studio-gtk CD=. filter="autogen
   vis_vect_1.xml
  }
 }
+fap2-vis=/home/yborisov/projects/fap/fap2-vis CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
+ autogen.sh
+ Makefile.am
+ configure.ac
+ AUTHORS
+ COPYING
+ ChangeLog
+ README
+ NEWS
+ libfap2vis.pc.in
+src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+  gwcont.h
+  mwidget.h
+  visprov.h
+  widget.h
+  gwcont.cpp
+  plugin.cpp
+  visprov.cpp
+  widget.cpp
+  Makefile.am
+} 
+etc=etc CD=. filter="*" {
+ objspec.dtd
+  objspec_s1.dtd
+  objspec_s2.dtd
+}
+modules=modules CD=. filter="*" {
+  widgets.xml
+}
+debian=debian CD=. filter="*" {
+ README.Debian
+  changelog
+  compat
+  control
+  copyright
+  dirs
+  docs
+  fapws-dev.install
+  fapws-dev.substvars
+  fapws.install
+  fapws.postinst.debhelper
+  fapws.postrm.debhelper
+  fapws.substvars
+  files
+  rules
+  fapws-dev.debhelper.log
+  fapws.debhelper.log
+}
+doc=doc CD=. filter="*" {
+ requirements=requirements CD=. filter="*" {
+  fap_req.xml
+   index.html
+ }
+ design=design CD=. filter="*" {
+  fap_design.xml
+ }
+}
+test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
+  ut_base.cpp
+  ut_cre.cpp
+  ut_main.cpp
+  ut_swnd_1.xml
+  Makefile.am
+}
+}
+fap2-srv=/home/yborisov/projects/fap/fap2-srv CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
+ autogen.sh
+ Makefile.am
+ configure.ac
+ AUTHORS
+ COPYING
+ ChangeLog
+ README
+ NEWS
+ Makefile.in
+ fap2srv.pc.in
+srvexe=srvexe CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+  server_main.cpp
+  Makefile.am
+} 
+server=server CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+  fapcsbase.h
+  requests.h
+  sclient.h
+  sserver.h
+  sthread.h
+  fapcsbase.cpp
+  requests.cpp
+  sclient.cpp
+  sserver.cpp
+  sthread.cpp
+  Makefile.am
+} 
+client=client CD=. filter="*.h *.cpp *.dtd Makefile.am" {
+  bclient.h
+  bclient.cpp
+  client_test_main.cpp
+  Makefile.am
+} 
+dmas=dmas CD=. filter="*.h *.cpp *.dtd Makefile.am *.in" {
+  daaprov.h
+  daaproxy.h
+  daapxprov.h
+  mcobspx.h
+  melempx.h
+  mipxprov.h
+  mlogrecpx.h
+  mproxy.h
+  mvertpx.h
+  renv.h
+  daaprov.cpp
+  daaproxy.cpp
+  daapxprov.cpp
+  mcobspx.cpp
+  melempx.cpp
+  mlogrecpx.cpp
+  mvertpx.cpp
+  renv.cpp
+  Makefile.am
+  Makefile.in
+} 
+debian=debian CD=. filter="*" {
+}
+doc=doc CD=. filter="*" {
+ requirements=requirements CD=. filter="*" {
+  fap_req.xml
+   index.html
+ }
+ design=design CD=. filter="*" {
+  fap_design.xml
+ }
+}
+test=test CD=. filter="*.cpp *.h *.xml *.am" {
+  ut_base.cpp
+  ut_main.cpp
+  ut_bidir_cre.xml
+  ut_obs_cre.xml
+  ut_renva_cre.xml
+  ut_syst_cre.xml
+  ut_vert_cre.xml
+  Makefile.am
+}
+}
 grayb=/home/yborisov/projects/fap/grayb CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
 autogen.sh
 Makefile.am
@@ -418,149 +561,6 @@ test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
   ut_transfmdf1_res.txt
   ut_uri_base.txt
   ut_uri_chromo_1.txt
-}
-}
-fap2-vis=/home/yborisov/projects/fap/fap2-vis CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
- autogen.sh
- Makefile.am
- configure.ac
- AUTHORS
- COPYING
- ChangeLog
- README
- NEWS
- libfap2vis.pc.in
-src=src CD=. filter="*.h *.cpp *.dtd Makefile.am" {
-  gwcont.h
-  mwidget.h
-  visprov.h
-  widget.h
-  gwcont.cpp
-  plugin.cpp
-  visprov.cpp
-  widget.cpp
-  Makefile.am
-} 
-etc=etc CD=. filter="*" {
- objspec.dtd
-  objspec_s1.dtd
-  objspec_s2.dtd
-}
-modules=modules CD=. filter="*" {
-  widgets.xml
-}
-debian=debian CD=. filter="*" {
- README.Debian
-  changelog
-  compat
-  control
-  copyright
-  dirs
-  docs
-  fapws-dev.install
-  fapws-dev.substvars
-  fapws.install
-  fapws.postinst.debhelper
-  fapws.postrm.debhelper
-  fapws.substvars
-  files
-  rules
-  fapws-dev.debhelper.log
-  fapws.debhelper.log
-}
-doc=doc CD=. filter="*" {
- requirements=requirements CD=. filter="*" {
-  fap_req.xml
-   index.html
- }
- design=design CD=. filter="*" {
-  fap_design.xml
- }
-}
-test=test CD=. filter="*.cpp *.h *.xml *.am *.txt" {
-  ut_base.cpp
-  ut_cre.cpp
-  ut_main.cpp
-  ut_swnd_1.xml
-  Makefile.am
-}
-}
-fap2-srv=/home/yborisov/projects/fap/fap2-srv CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {
- autogen.sh
- Makefile.am
- configure.ac
- AUTHORS
- COPYING
- ChangeLog
- README
- NEWS
- Makefile.in
- fap2srv.pc.in
-srvexe=srvexe CD=. filter="*.h *.cpp *.dtd Makefile.am" {
-  server_main.cpp
-  Makefile.am
-} 
-server=server CD=. filter="*.h *.cpp *.dtd Makefile.am" {
-  fapcsbase.h
-  requests.h
-  sclient.h
-  sserver.h
-  sthread.h
-  fapcsbase.cpp
-  requests.cpp
-  sclient.cpp
-  sserver.cpp
-  sthread.cpp
-  Makefile.am
-} 
-client=client CD=. filter="*.h *.cpp *.dtd Makefile.am" {
-  bclient.h
-  bclient.cpp
-  client_test_main.cpp
-  Makefile.am
-} 
-dmas=dmas CD=. filter="*.h *.cpp *.dtd Makefile.am *.in" {
-  daaprov.h
-  daaproxy.h
-  daapxprov.h
-  mcobspx.h
-  melempx.h
-  mipxprov.h
-  mlogrecpx.h
-  mproxy.h
-  mvertpx.h
-  renv.h
-  daaprov.cpp
-  daaproxy.cpp
-  daapxprov.cpp
-  mcobspx.cpp
-  melempx.cpp
-  mlogrecpx.cpp
-  mvertpx.cpp
-  renv.cpp
-  Makefile.am
-  Makefile.in
-} 
-debian=debian CD=. filter="*" {
-}
-doc=doc CD=. filter="*" {
- requirements=requirements CD=. filter="*" {
-  fap_req.xml
-   index.html
- }
- design=design CD=. filter="*" {
-  fap_design.xml
- }
-}
-test=test CD=. filter="*.cpp *.h *.xml *.am" {
-  ut_base.cpp
-  ut_main.cpp
-  ut_bidir_cre.xml
-  ut_obs_cre.xml
-  ut_renva_cre.xml
-  ut_syst_cre.xml
-  ut_vert_cre.xml
-  Makefile.am
 }
 }
 desa=/home/yborisov/projects/fap/desa CD=. filter="autogen.sh Makefile.am configure.ac AUTHORS COPYING ChangeLog README NEWS *.in {

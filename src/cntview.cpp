@@ -2,6 +2,7 @@
 #include <gtkmm/treerowreference.h>
 #include "cntview.h"
 #include <iostream>
+#include <fapcsbase.h>
 
 const string KMsgConfirmRm = "Remove the content selected?";
 
@@ -462,6 +463,11 @@ MIface* NaviContent::Call(const string& aSpec, string& aRes)
     __ASSERT(false);
 }
 
+string NaviContent::Uid() const
+{
+    return "NaviContent_1";
+}
+
 string NaviContent::Mid() const
 {
     __ASSERT(false);
@@ -493,6 +499,7 @@ ContentSelectDlg::ContentSelectDlg(const string& aTitle, MElem& aAgent): Gtk::Di
     Gtk::VBox* cont_area = get_vbox();
     // Content navigation tree view
     mNavi = new NaviContent(aAgent);
+    CSessionBase::AddSContext(mNavi->Uid(), mNavi);
     mNavi->signal_row_activated().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnModelRowActivated));
     mNavi->signal_columns_changed().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnColumnChanged));
     mNavi->signal_cursor_changed().connect(sigc::mem_fun(*this, &ContentSelectDlg::OnCursorChanged));
@@ -510,6 +517,7 @@ ContentSelectDlg::ContentSelectDlg(const string& aTitle, MElem& aAgent): Gtk::Di
 ContentSelectDlg::~ContentSelectDlg()
 {
     if (mNavi != NULL) {
+	CSessionBase::RmSContext(mNavi);
 	delete mNavi;
     }
 }

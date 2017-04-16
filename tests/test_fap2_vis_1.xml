@@ -102,31 +102,11 @@
   <rm comp="./(WidgetInpSock:)Inp" targ="./Modules/GVisComps~1/GWidgetC/Capsule"/>
   <node id="Inp~1" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)GVisComps~1/(Elem:)Parts/(ExtenderInpMc:)ExtWidgetInpSock" targ="./Modules/GVisComps~1/GWidgetC/Capsule"/>
   <cont id="Direction" val="Out" targ="./Modules/GVisComps~1/Parts/WidgetInpSock"/>
-
   <node id="renv" parent="ARenv" targ="./MRoot/DesRoot"/>
   <cont id="Remote_Uid" val="Local" targ="./MRoot/DesRoot/renv"/>
   <node id="remote_root" parent="ARenvu" targ="./MRoot/DesRoot/renv"/>
   <cont val="Connect" targ="./MRoot/DesRoot/renv/remote_root"/>
   <node id="VisEnv" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)GVisComps~1/VisEnv" targ="./MRoot/DesRoot/renv/remote_root"/>
   <node id="TopWindow" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)GVisComps/(GWidget:)GWindow" targ="./MRoot/DesRoot/renv/remote_root/VisEnv"/>
-
-  <!--
-
-  <node id="Height" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(StateMc:)StateVarMc" targ="./MRoot/DesRoot/VisEnv"/>
-  <node id="e1" parent="(Elem:)Aedge" targ="./MRoot/DesRoot/VisEnv"/>
-  <cont id="P1" ref="./../Height/Capsule/Out" targ="./MRoot/DesRoot/VisEnv/e1"/>
-  <cont id="P2" ref="./../TopWindow/Inp_H" targ="./MRoot/DesRoot/VisEnv/e1"/>
-  <import id="/DesComps/StateVarMc" targ="./MRoot/DesRoot/VisEnv"/>
-  <import id="/DesComps/StateVarMc" targ="./MRoot/DesRoot/VisEnv"/>
-  <node id="Width" parent="/(Elem:)Root/(AImports:)Modules/(Elem:)DesComps/(StateMc:)StateVarMc" targ="./MRoot/DesRoot/VisEnv"/>
-  <node id="e2" parent="(Elem:)Aedge" targ="./MRoot/DesRoot/VisEnv"/>
-  <cont id="P1" ref="./../Width/Capsule/Out" targ="./MRoot/DesRoot/VisEnv/e2"/>
-  <cont id="P2" ref="./../TopWindow/Inp_W" targ="./MRoot/DesRoot/VisEnv/e2"/>
-  <cont id="Value" val="SI 600" targ="./MRoot/DesRoot/VisEnv/Height/Confirmed"/>
-  <cont id="Value" val="SI 600" targ="./MRoot/DesRoot/VisEnv/Height/Prepared"/>
-  <cont id="Value" val="" targ="./MRoot/DesRoot/VisEnv/Width/Confirmed"/>
-  <cont id="Value" val="SI 800" targ="./MRoot/DesRoot/VisEnv/Width/Confirmed"/>
-  <cont id="Value" val="SI 800" targ="./MRoot/DesRoot/VisEnv/Width/Prepared"/>
-  <cont id="Init" val="Yes" targ="./MRoot/DesRoot/VisEnv/TopWindow"/>
--->
+  <cont id="Init" val="Yes" targ="./MRoot/DesRoot/renv/remote_root/VisEnv"/>
 </node>

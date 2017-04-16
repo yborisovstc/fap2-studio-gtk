@@ -119,6 +119,7 @@ class NaviContent: public Gtk::TreeView, public MAgentObserver
 	virtual TBool OnCompRenamed(MElem& aComp, const string& aOldName);
 	virtual void OnCompMutated(const MElem* aNode);
 	virtual MIface* Call(const string& aSpec, string& aRes);
+	virtual string Uid() const;
 	virtual string Mid() const;
     protected:
 	virtual void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>& context);

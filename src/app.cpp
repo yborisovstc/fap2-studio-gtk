@@ -177,7 +177,7 @@ void DesObserver::OnCompAdding(MElem& aComp, TBool aModif)
 
 TBool DesObserver::OnCompChanged(MElem& aComp, const string& aName, TBool aModif)
 {
-    std::cout << "DesObserver::OnCompChanged, aComp: " << aComp.Uid() << ", aModif: " << aModif << std::endl;
+    //std::cout << "DesObserver::OnCompChanged, aComp: " << aComp.Uid() << ", aModif: " << aModif << std::endl;
     iSigCompChanged.emit(&aComp);
     return true;
 }
