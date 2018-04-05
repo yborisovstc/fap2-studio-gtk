@@ -229,7 +229,7 @@ void ElemCompRp::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Se
     std::cout << "ElemCompRp on_drag_data_get"  << std::endl;
     GUri uri;
     iElem->GetUri(uri, iElem->GetMan());
-    std::string suri = uri.GetUri();
+    std::string suri = uri;
     data.set(KDnDTarg_Comp, suri);
 }
 

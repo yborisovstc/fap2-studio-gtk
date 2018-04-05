@@ -383,12 +383,12 @@ bool VertDrpw_v1::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, in
 	    targ->GetRUri(uri, edge);
 	    res = true;
 	    context->drag_finish(res, false, time);
-	    std::cout << "VertDrpw_v1, connecting edge [" << iDndReceivedData << "] to [" << uri.GetUri() << "]" << std::endl;
+	    std::cout << "VertDrpw_v1, connecting edge [" << iDndReceivedData << "] to [" << uri.toString() << "]" << std::endl;
 	    //change_content(iDndReceivedData, uri.GetUri(true), true);
 	    if (ep == "P1") {
-		medge->SetPoint1(uri.GetUri(true));
+		medge->SetPoint1(uri.toString(true));
 	    } else if (ep == "P2") {
-		medge->SetPoint2(uri.GetUri(true));
+		medge->SetPoint2(uri.toString(true));
 	    }
 	} else {
 	    // Disconnect edge if it is connected

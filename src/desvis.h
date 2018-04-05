@@ -56,11 +56,22 @@ class AWindow: public Elem, public MVisContainer
 
 
 // Base of Agent of widgets
-class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public MDesObserver
+class AVisWidget: public Elem, public MVisChild, public MACompsObserver
 {
     public:
 	typedef std::map<Gtk::StateType, string>  tStatesMap;
     protected:
+	class DesObserver: public MDesObserver {
+	    public:
+		DesObserver(AVisWidget& aHost): mHost(aHost) {}
+		// From MDesObserver
+		virtual void OnUpdated() { mHost.doOnUpdated();}
+		virtual void OnActivated() { mHost.doOnActivated();}
+		virtual MIface* Call(const string& aSpec, string& aRes) {return NULL;}
+		virtual string Mid() const {return string();}
+	    private:
+		AVisWidget& mHost;
+	};
 	// Data provider base
 	class DataProv {
 	    public:
@@ -137,9 +148,6 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	virtual int GetParInt(TPar);
 	// From MACompsObserver
 	virtual TBool HandleCompChanged(MElem& aContext, MElem& aComp, const string& aName=string());
-	// From MDesObserver
-	virtual void OnUpdated();
-	virtual void OnActivated();
     protected:
 	virtual TInt GetParData(ParentSize::TData aData);
 	void GetBtnPressEvent(NTuple& aData) { aData = mBtnPressEvt;};
@@ -154,6 +162,9 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	bool OnButtonPress(GdkEventButton* aEvent);
 	bool OnButtonRelease(GdkEventButton* aEvent);
 	bool OnMotion(GdkEventMotion* aEvent);
+	// From MDesObserver
+	virtual void doOnUpdated();
+	virtual void doOnActivated();
     protected:
 	virtual void OnUpdated_X(int aOldData);
 	virtual void OnUpdated_Y(int aOldData);
@@ -169,6 +180,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	MVisContainer* GetVisContainer();
     protected:
 	Widget* iWidget;
+	DesObserver mDesObserver;
 	ParentSizeProv iParProvW;
 	ParentSizeProv iParProvH;
 	ParentSizeProvVar iParProvVarW;

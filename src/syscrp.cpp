@@ -369,7 +369,7 @@ void SysCrp::GetModelDebugInfo(int x, int y, string& aData) const
 	    if (agent != NULL) {
 		GUri uri;
 		cp->GetRUri(uri, agent);
-		aData = agent->GetAssociatedData(uri.GetUri(ETrue));
+		aData = agent->GetAssociatedData(uri.toString(ETrue));
 	    }
 	} else {
 	    //GetFormattedContent(cp, aData);

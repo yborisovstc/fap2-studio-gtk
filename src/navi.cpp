@@ -413,7 +413,7 @@ void ModulesTreeMdl::get_value_vfunc(const TreeModel::iterator& iter, int column
 		ChromoNode node = create_node_from_iter(iter);
 		GUri uri;
 		node.GetUri(uri);
-		string data = uri.GetUri(true);
+		string data = uri.toString(true);
 		sval.set(data);
 		value.init(coltype);
 		value = sval;
@@ -949,7 +949,7 @@ bool HierTreeMdl::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::Selectio
     GUri uri;
     node->GetUri(uri);
     //selection_data.set_text(uri.GetUri());
-    selection_data.set(KDnDTarg_Comp, uri.GetUri());
+    selection_data.set(KDnDTarg_Comp, uri);
 
     //
     /*

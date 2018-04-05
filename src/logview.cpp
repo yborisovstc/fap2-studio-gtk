@@ -153,7 +153,7 @@ void LogViewL::on_log_added(long aTimeStamp, TLogRecCtg aCtg, const MElem* aNode
     if (aNode != NULL) {
 	aNode->GetUri(fullpath);
     }
-    it->set_value(iColRec.mnode, Glib::ustring(fullpath.GetUri(ETrue).c_str()));
+    it->set_value(iColRec.mnode, Glib::ustring(fullpath.toString(ETrue).c_str()));
     it->set_value(iColRec.mutid, aMutId);
     it->set_value(iColRec.content, Glib::ustring(aContent.c_str()));
     mDesLog.mLog.insert(MDesLog::TLogVal(MDesLog::TLogKey(aNode, aCtg), MDesLog::TLogData(aContent)));
@@ -177,7 +177,7 @@ void LogViewL::Select(MElem* aNode, TLogRecCtg aCtg)
     get_selection()->unselect_all();
     GUri upath;
     aNode->GetUri(upath);
-    Glib::ustring path = upath.GetUri(true);
+    Glib::ustring path = upath.toString(true);
     TreeIter it = get_model()->get_iter(TreePath("0"));
     for (; it.operator bool(); it++) {
 	Glib::ustring ctg = it->get_value(iColRec.ctg);

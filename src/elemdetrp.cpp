@@ -329,10 +329,10 @@ bool ElemDetRp::on_drag_drop(const Glib::RefPtr<Gdk::DragContext>& context, int 
 	    // iElem->GetUri(uri, iElem); This will be empty uri anycase
 	}
 	if (action == Gdk::ACTION_COPY) {
-	    add_node(iDndReceivedData, uri.GetUri());
+	    add_node(iDndReceivedData, uri);
 	}
 	else if (action == Gdk::ACTION_MOVE) {
-	    move_node(iDndReceivedData, uri.GetUri());
+	    move_node(iDndReceivedData, uri);
 	}
 	iDnDTarg = EDT_Unknown;
 	iDndReceivedData.clear();
@@ -403,7 +403,7 @@ void ElemDetRp::rename_node(const std::string& aNodeUri, const std::string& aNew
     if (mutelem != NULL) {
 	GUri nuri;
 	dnode->GetUri(nuri, mutelem);
-	mutelem->AppendMutation(TMut(ENt_Change, ENa_Comp, nuri.GetUri(),
+	mutelem->AppendMutation(TMut(ENt_Change, ENa_Comp, nuri,
 		    ENa_MutAttr, TMut::NodeAttrName(ENa_Id), ENa_MutVal, aNewName));
 	mutelem->Mutate(false, false, true, iElem->GetRoot());
 	Refresh();
@@ -491,7 +491,7 @@ void ElemDetRp::remove_node(const std::string& aNodeUri)
     if (mutelem != NULL) {
 	GUri nuri;
 	dnode->GetUri(nuri, mutelem);
-	mutelem->AppendMutation(TMut(ENt_Rm, ENa_Comp, nuri.GetUri()));
+	mutelem->AppendMutation(TMut(ENt_Rm, ENa_Comp, nuri));
 	mutelem->Mutate(false, false, true, iElem->GetRoot());
 	Refresh();
     }
@@ -582,7 +582,7 @@ void ElemDetRp::on_comp_menu_rename()
 	dlg->GetData(newname);
 	GUri duri;
 	iCompSelected->GetUri(duri, iElem);
-	rename_node(duri.GetUri(true), newname);
+	rename_node(duri.toString(true), newname);
     }
     delete dlg;
     iCompSelected = NULL;
@@ -593,7 +593,7 @@ void ElemDetRp::on_comp_menu_remove()
     assert(iCompSelected != NULL);
     GUri nuri;
     iCompSelected->GetUri(nuri, iElem);
-    remove_node(nuri.GetUri());
+    remove_node(nuri);
     iCompSelected = NULL;
 }
 

@@ -164,7 +164,7 @@ bool AVisWidget::mInit = false;
 AVisWidget::tStatesMap  AVisWidget::mStatesMap;
 
 AVisWidget::AVisWidget(const string& aName, MElem* aMan, MEnv* aEnv): Elem(aName, aMan, aEnv),
-    iWidget(NULL), iX(0), iY(0), iH(10), iW(10)
+    iWidget(NULL), mDesObserver(*this), iX(0), iY(0), iH(10), iW(10)
 {
     SetParent(Type());
     iParProvW.SetData(ParentSizeProv::ED_W, this);
@@ -192,7 +192,7 @@ AVisWidget::AVisWidget(const string& aName, MElem* aMan, MEnv* aEnv): Elem(aName
 }
 
 AVisWidget::AVisWidget(MElem* aMan, MEnv* aEnv): Elem(Type(), aMan, aEnv),
-    iWidget(NULL), iX(0), iY(0), iH(10), iW(10)
+    iWidget(NULL), mDesObserver(*this), iX(0), iY(0), iH(10), iW(10)
 {
     SetParent(Elem::PEType());
     iParProvW.SetData(ParentSizeProv::ED_W, this);
@@ -232,7 +232,7 @@ void *AVisWidget::DoGetObj(const char *aName)
 	res = (MACompsObserver*) this;
     } 
     else if (strcmp(aName, MDesObserver::Type()) == 0) {
-	res = (MDesObserver*) this;
+	res = &mDesObserver;
     } 
     else {
 	res = Elem::DoGetObj(aName);
@@ -479,7 +479,7 @@ void AVisWidget::OnUpdated_H(int aOldData)
 {
 }
 
-void AVisWidget::OnUpdated()
+void AVisWidget::doOnUpdated()
 {
     MVisContainer* cont = GetVisContainer();
     // Data providers updated - update the data
@@ -536,7 +536,7 @@ void AVisWidget::OnUpdated()
     }
 }
 
-void AVisWidget::OnActivated()
+void AVisWidget::doOnActivated()
 {
 }
 
