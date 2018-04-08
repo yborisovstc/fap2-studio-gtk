@@ -307,9 +307,7 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
     else {
 	res = DoGetObj(aName.c_str());
     }
-    if (res != NULL) {
-	InsertIfCache(aName, aCtx, this, res);
-    }
+    InsertIfCache(aName, aCtx, this, res);
 }
 
 Widget& AVisWidget::GetChild()
