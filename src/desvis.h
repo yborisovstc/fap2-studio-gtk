@@ -37,7 +37,7 @@ class MVisContainer
 };
 
 // Agent of top level window
-class AWindow: public Elem, public MVisContainer
+class AWindow: public Elem, public MVisContainer, public MAgent
 {
     public:
 	static const char* Type() { return "AWindow";};
@@ -47,6 +47,8 @@ class AWindow: public Elem, public MVisContainer
 	// From MVisContainer
 	virtual Container& GetContainer();
 	virtual void OnChildChanged(Widget* aChild, MVisChild::TPar aPar);
+	// From MAgent
+	MIface* MAgent_DoGetIface(const string& aName) override;
     protected:
 	// From Base
 	virtual void *DoGetObj(const char *aName);
@@ -56,7 +58,7 @@ class AWindow: public Elem, public MVisContainer
 
 
 // Base of Agent of widgets
-class AVisWidget: public Elem, public MVisChild, public MACompsObserver
+class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public MAgent
 {
     public:
 	typedef std::map<Gtk::StateType, string>  tStatesMap;
@@ -92,6 +94,8 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver
 	    public:
 	    // From MDIntGet
 	    virtual TInt Value();
+	    MIface* MDIntGet_Call(const string& aSpec, string& aRes) override {return NULL;}
+	    string MDIntGet_Mid() const override {return string();}
 	};
 	class ParentSizeProvVar: public ParentSize, public MDVarGet, public MDtGet<Sdata<int> > {
 	    public:
@@ -148,6 +152,8 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver
 	virtual int GetParInt(TPar);
 	// From MACompsObserver
 	virtual TBool HandleCompChanged(MElem& aContext, MElem& aComp, const string& aName=string());
+	// From MAgent
+	MIface* MAgent_DoGetIface(const string& aName) override;
     protected:
 	virtual TInt GetParData(ParentSize::TData aData);
 	void GetBtnPressEvent(NTuple& aData) { aData = mBtnPressEvt;};

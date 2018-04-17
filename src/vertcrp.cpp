@@ -283,6 +283,7 @@ void VertCompRp::GetModelDebugInfo(int x, int y, string& aData) const
     GetContentFormatted(iElem, "", 0, aData);
     //GetFormattedContent(iElem, aData);
     aData += "\n";
+#if 0 // TODO to re-implement
     MElem* agents = iElem->GetNode("./Agents");
     vector<MElem*>::iterator it;
     for (TInt ci = 0; ci < agents->CompsCount(); ci++) {
@@ -293,4 +294,5 @@ void VertCompRp::GetModelDebugInfo(int x, int y, string& aData) const
 	    aData += name + ": " + value + "\n";
 	}
     }
+#endif
 }

@@ -33,10 +33,19 @@ void *AWindow::DoGetObj(const char *aName)
     } 
     else if (strcmp(aName, MVisContainer::Type()) == 0) {
 	res = (MVisContainer*) this;
-    } 
-    else {
+    } else if (strcmp(aName, MAgent::Type()) == 0) {
+	res = dynamic_cast<MAgent*>(this );
+    } else {
 	res = Elem::DoGetObj(aName);
     }
+    return res;
+}
+
+MIface* AWindow::MAgent_DoGetIface(const string& aName)
+{
+    MIface* res = NULL;
+    if (aName == MElem::Type())
+	res = dynamic_cast<MElem*>(this);
     return res;
 }
 
@@ -224,19 +233,25 @@ void *AVisWidget::DoGetObj(const char *aName)
     void* res = NULL;
     if (strcmp(aName, Type()) == 0) {
 	res = this;
-    } 
-    else if (strcmp(aName, MVisChild::Type()) == 0) {
+    } else if (strcmp(aName, MAgent::Type()) == 0) {
+	res = dynamic_cast<MAgent*>(this);
+    } else if (strcmp(aName, MVisChild::Type()) == 0) {
 	res = (MVisChild*) this;
-    } 
-    else if (strcmp(aName, MACompsObserver::Type()) == 0) {
+    } else if (strcmp(aName, MACompsObserver::Type()) == 0) {
 	res = (MACompsObserver*) this;
-    } 
-    else if (strcmp(aName, MDesObserver::Type()) == 0) {
+    } else if (strcmp(aName, MDesObserver::Type()) == 0) {
 	res = &mDesObserver;
-    } 
-    else {
+    } else {
 	res = Elem::DoGetObj(aName);
     }
+    return res;
+}
+
+MIface* AVisWidget::MAgent_DoGetIface(const string& aName)
+{
+    MIface* res = NULL;
+    if (aName == MElem::Type())
+	res = dynamic_cast<MElem*>(this);
     return res;
 }
 
@@ -250,8 +265,8 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	res = this;
     }
     else if (strcmp(aName.c_str(), MDIntGet::Type()) == 0) {
-	MElem* cpw = GetNode("./../../Prov_PW");
-	MElem* cph = GetNode("./../../Prov_PH");
+	MElem* cpw = GetNode("./../Prov_PW");
+	MElem* cph = GetNode("./../Prov_PH");
 	if (aCtx->IsInContext(cpw)) {
 	    res = (MDIntGet*) &iParProvW;
 	}
@@ -261,12 +276,12 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
     }
     else if (strcmp(aName.c_str(), MDVarGet::Type()) == 0 || strcmp(aName.c_str(), MDtGet<Sdata<int> >::Type()) == 0) {
 	bool isdvar = strcmp(aName.c_str(), MDVarGet::Type()) == 0;
-	MElem* cpw = GetNode("./../../Prov_PW");
-	MElem* cph = GetNode("./../../Prov_PH");
-	MElem* bpe = GetNode("./../../BtnPressEvent");
-	MElem* bre = GetNode("./../../BtnReleaseEvent");
-	MElem* mte = GetNode("./../../MotionEvent");
-	MElem* alc = GetNode("./../../Allocation");
+	MElem* cpw = GetNode("./../Prov_PW");
+	MElem* cph = GetNode("./../Prov_PH");
+	MElem* bpe = GetNode("./../BtnPressEvent");
+	MElem* bre = GetNode("./../BtnReleaseEvent");
+	MElem* mte = GetNode("./../MotionEvent");
+	MElem* alc = GetNode("./../Allocation");
 	if (aCtx->IsInContext(cpw)) {
 	    if (isdvar) {
 		res = (MDVarGet*) &iParProvVarW;
@@ -323,7 +338,7 @@ TInt AVisWidget::GetParData(ParentSize::TData aData)
     // info of local connection change, but not the whole connection chain change. Ref grayb uc_010
     Container* parent = iWidget != NULL ? iWidget->get_parent() : NULL;
     if (parent == NULL) {
-	MElem* eprntcp = GetNode("./../../Child");
+	MElem* eprntcp = GetNode("./../Child");
 	if (eprntcp != NULL) {
 	    MVisContainer* mcont = (MVisContainer*) eprntcp->GetSIfiC(MVisContainer::Type(), this);
 	    if (mcont != NULL) {
@@ -397,7 +412,7 @@ TBool AVisWidget::HandleCompChanged(MElem& aContext, MElem& aComp, const string&
 
 MElem* AVisWidget::Host() 
 {
-    return iMan->GetMan();
+    return GetMan();
 }
 
 
@@ -569,7 +584,7 @@ bool AVisWidget::HandleButtonPress(GdkEventButton* aEvent)
     __ASSERT(ey != NULL);
     ey->Set(aEvent->y);
     // Activate dependencies
-    ActivateDeps("./../../BtnPressEvent/Int/PinObs");
+    ActivateDeps("./../BtnPressEvent/Int/PinObs");
     return false;
 }
 
@@ -589,7 +604,7 @@ bool AVisWidget::HandleButtonRelease(GdkEventButton* aEvent)
     __ASSERT(ey != NULL);
     ey->Set(aEvent->y);
     // Activate dependencies
-    ActivateDeps("./../../BtnReleaseEvent/Int/PinObs");
+    ActivateDeps("./../BtnReleaseEvent/Int/PinObs");
     return false;
 }
 
@@ -622,7 +637,7 @@ bool AVisWidget::HandleMotion(GdkEventMotion* aEvent)
     __ASSERT(ey != NULL);
     ey->Set(aEvent->y);
     // Activate dependencies
-    ActivateDeps("./../../MotionEvent/Int/PinObs");
+    ActivateDeps("./../MotionEvent/Int/PinObs");
     return false;
 }
 
@@ -698,7 +713,7 @@ bool VisDrwArea::on_expose_event(GdkEventExpose* aEvent)
     drw->draw_rectangle(gc, true, 0, 0, alc.get_width() - 1, alc.get_height() - 1);
     */
     //mHost->Logger()->Write(EInfo, mHost, "on_expose_event");
-    MElem* eobs = mHost->GetNode("./../../DrawingArea");
+    MElem* eobs = mHost->GetNode("./../DrawingArea");
     __ASSERT(eobs != NULL);
     MElem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
     for (MIfProv::TIfIter it = range.first; it != range.second; it++) {
@@ -762,7 +777,7 @@ void *AVisDrawing::DoGetObj(const char *aName)
 
 MElem::TIfRange AVisDrawing::GetDrawingElems()
 {
-    MElem* eobs = GetNode("./../../DrawingArea");
+    MElem* eobs = GetNode("./../DrawingArea");
     __ASSERT(eobs != NULL);
     MElem::TIfRange range = eobs->GetIfi(MVisDrawingElem::Type());
     return range;
@@ -946,7 +961,7 @@ void AVisDrawingElem::OnUpdated_H(int aOldData)
 MVisDrawingArea* AVisDrawingElem::GetDrawingArea()
 {
     MVisDrawingArea* res = NULL;
-    MElem* edacp = GetNode("./../../DrawingElem");
+    MElem* edacp = GetNode("./../DrawingElem");
     if (edacp != NULL) {
 	res = (MVisDrawingArea*) edacp->GetSIfiC(MVisDrawingArea::Type(), this);
     }
@@ -960,7 +975,7 @@ void AVisDrawingElem::OnAllocUpdated(const Rectangle& aOldAlloc)
 	Glib::RefPtr<Gdk::Window> wnd = mda->GetWindow();
 	wnd->clear_area(aOldAlloc.get_x(), aOldAlloc.get_y(), aOldAlloc.get_width(), aOldAlloc.get_height());
 	wnd->invalidate_rect(Rectangle(iX, iY, iW, iH), true);
-	ActivateDeps("./../../Allocation/Int/PinObs");
+	ActivateDeps("./../Allocation/Int/PinObs");
     }
 }
 

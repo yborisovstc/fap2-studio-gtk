@@ -67,7 +67,7 @@ MDrp* DefDrpProv::CreateRp(MElem& aElem) const
 const string KStateEType = "Incaps:State";
 const string KStateDataUri = "Confirmed/Value";
 const string KTFuncIntEType = "Incaps:TFuncInt";
-const string KTFuncIntDataUri = "Agents/func_agt";
+const string KTFuncIntDataUri = "./func_agt";
 const string KDataSEType = "Incaps:DataS";
 const string KDataSDataUri = "Value";
 

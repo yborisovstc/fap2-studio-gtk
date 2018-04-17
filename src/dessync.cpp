@@ -65,10 +65,19 @@ void *ADesSync::DoGetObj(const char *aName)
     void* res = NULL;
     if (strcmp(aName, Type()) == 0) {
 	res = this;
-    }
-    else {
+    } else if (strcmp(aName, MAgent::Type()) == 0) {
+	res = dynamic_cast<MAgent*>(this);
+    } else {
 	res = Elem::DoGetObj(aName);
     }
+    return res;
+}
+
+MIface* ADesSync::MAgent_DoGetIface(const string& aName)
+{
+    MIface* res = NULL;
+    if (aName == MElem::Type())
+	res = dynamic_cast<MElem*>(this);
     return res;
 }
 
@@ -119,7 +128,7 @@ void ADesSync::on_action_next()
 }
 
 void ADesSync::DoStep() {
-    MElem* eout = GetNode("./../../Capsule/Out");
+    MElem* eout = GetNode("./../Capsule/Out");
     MDesSyncable* out = (MDesSyncable*) eout->GetSIfiC(MDesSyncable::Type(), this);
     if (eout != NULL) {
 	Logger()->Write(EDbg, this, "Step %d", iCount++);

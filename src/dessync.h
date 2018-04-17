@@ -8,7 +8,7 @@
 
 // DES synchronizer agent
 
-class ADesSync: public Elem
+class ADesSync: public Elem, public MAgent
 {
     public:
 	static const char* Type() { return "ADesSync";};
@@ -16,6 +16,8 @@ class ADesSync: public Elem
 	ADesSync(const string& aName = string(), MElem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
 	ADesSync(MElem* aMan = NULL, MEnv* aEnv = NULL, MSDesEnv* aSDesEnv = NULL);
 	virtual ~ADesSync();
+	// From MAgent
+	MIface* MAgent_DoGetIface(const string& aName) override;
     protected:
 	// From Base
 	virtual void *DoGetObj(const char *aName);
