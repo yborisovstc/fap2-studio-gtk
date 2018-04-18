@@ -163,7 +163,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	// From Base
 	virtual void *DoGetObj(const char *aName);
 	// Ifaces cache
-	virtual void UpdateIfi(const string& aName, const RqContext* aCtx);
+	void UpdateIfi(const string& aName, const TICacheRCtx& aCtx) override;
 	// Widget events handling
 	bool OnButtonPress(GdkEventButton* aEvent);
 	bool OnButtonRelease(GdkEventButton* aEvent);

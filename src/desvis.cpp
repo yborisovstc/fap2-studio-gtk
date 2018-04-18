@@ -255,22 +255,22 @@ MIface* AVisWidget::MAgent_DoGetIface(const string& aName)
     return res;
 }
 
-void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
+void AVisWidget::UpdateIfi(const string& aName, const TICacheRCtx& aCtx)
 {
-    void* res = NULL;
+    MIface* res = NULL;
     TIfRange rr;
     TBool resg = EFalse;
-    RqContext ctx(this, aCtx);
+    TICacheRCtx ctx(aCtx); ctx.push_back(this);
     if (strcmp(aName.c_str(), Type()) == 0) {
 	res = this;
     }
     else if (strcmp(aName.c_str(), MDIntGet::Type()) == 0) {
 	MElem* cpw = GetNode("./../Prov_PW");
 	MElem* cph = GetNode("./../Prov_PH");
-	if (aCtx->IsInContext(cpw)) {
+	if (aCtx.IsInContext(cpw)) {
 	    res = (MDIntGet*) &iParProvW;
 	}
-	else if (aCtx->IsInContext(cph)) {
+	else if (aCtx.IsInContext(cph)) {
 	    res = (MDIntGet*) &iParProvH;
 	}
     }
@@ -282,45 +282,45 @@ void AVisWidget::UpdateIfi(const string& aName, const RqContext* aCtx)
 	MElem* bre = GetNode("./../BtnReleaseEvent");
 	MElem* mte = GetNode("./../MotionEvent");
 	MElem* alc = GetNode("./../Allocation");
-	if (aCtx->IsInContext(cpw)) {
+	if (aCtx.IsInContext(cpw)) {
 	    if (isdvar) {
-		res = (MDVarGet*) &iParProvVarW;
+		res = (MIface*) &iParProvVarW;
 	    }
 	    else {
-		res = (MDtGet<Sdata<int> >*) &iParProvVarW;
+		res = (MIface*) &iParProvVarW;
 	    }
 	}
-	else if (aCtx->IsInContext(cph)) {
+	else if (aCtx.IsInContext(cph)) {
 	    if (isdvar) {
-		res = (MDVarGet*) &iParProvVarH;
+		res = (MIface*) &iParProvVarH;
 	    }
 	    else {
-		res = (MDtGet<Sdata<int> >*) &iParProvVarH;
+		res = (MIface*) &iParProvVarH;
 	    }
 	}
-	else if (aCtx->IsInContext(bpe)) {
+	else if (aCtx.IsInContext(bpe)) {
 	    if (isdvar) {
-		res = (MDVarGet*) &mBtnPressEvtProv;
+		res = (MIface*) &mBtnPressEvtProv;
 	    }
 	}
-	else if (aCtx->IsInContext(bre)) {
+	else if (aCtx.IsInContext(bre)) {
 	    if (isdvar) {
-		res = (MDVarGet*) &mBtnReleaseEvtProv;
+		res = (MIface*) &mBtnReleaseEvtProv;
 	    }
 	}
-	else if (aCtx->IsInContext(mte)) {
+	else if (aCtx.IsInContext(mte)) {
 	    if (isdvar) {
-		res = (MDVarGet*) &mMotionEvtProv;
+		res = (MIface*) &mMotionEvtProv;
 	    }
 	}
-	else if (aCtx->IsInContext(alc)) {
+	else if (aCtx.IsInContext(alc)) {
 	    if (isdvar) {
-		res = (MDVarGet*) &mAllocationProv;
+		res = (MIface*) &mAllocationProv;
 	    }
 	}
     }
     else {
-	res = DoGetObj(aName.c_str());
+	res = (MIface*) DoGetObj(aName.c_str());
     }
     InsertIfCache(aName, aCtx, this, res);
 }
@@ -611,7 +611,6 @@ bool AVisWidget::HandleButtonRelease(GdkEventButton* aEvent)
 void AVisWidget::ActivateDeps(const string& aUri) {
     MElem* eobs = GetNode(aUri);
     __ASSERT(eobs != NULL);
-    RqContext ctx(this);
     TIfRange range = eobs->GetIfi(MDesObserver::Type());
     for (TIfIter it = range.first; it != range.second; it++) {
 	MDesObserver* mobs = (MDesObserver*) (*it);
