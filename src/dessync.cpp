@@ -63,9 +63,7 @@ ADesSync::~ADesSync()
 void *ADesSync::DoGetObj(const char *aName)
 {
     void* res = NULL;
-    if (strcmp(aName, Type()) == 0) {
-	res = this;
-    } else if (strcmp(aName, MAgent::Type()) == 0) {
+    if (strcmp(aName, MAgent::Type()) == 0) {
 	res = dynamic_cast<MAgent*>(this);
     } else {
 	res = Elem::DoGetObj(aName);

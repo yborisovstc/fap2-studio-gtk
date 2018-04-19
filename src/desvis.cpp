@@ -28,10 +28,7 @@ AWindow::AWindow(MElem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv):
 void *AWindow::DoGetObj(const char *aName)
 {
     void* res = NULL;
-    if (strcmp(aName, Type()) == 0) {
-	res = this;
-    } 
-    else if (strcmp(aName, MVisContainer::Type()) == 0) {
+    if (strcmp(aName, MVisContainer::Type()) == 0) {
 	res = (MVisContainer*) this;
     } else if (strcmp(aName, MAgent::Type()) == 0) {
 	res = dynamic_cast<MAgent*>(this );
@@ -231,9 +228,7 @@ void AVisWidget::Construct()
 void *AVisWidget::DoGetObj(const char *aName)
 {
     void* res = NULL;
-    if (strcmp(aName, Type()) == 0) {
-	res = this;
-    } else if (strcmp(aName, MAgent::Type()) == 0) {
+    if (strcmp(aName, MAgent::Type()) == 0) {
 	res = dynamic_cast<MAgent*>(this);
     } else if (strcmp(aName, MVisChild::Type()) == 0) {
 	res = (MVisChild*) this;
@@ -669,10 +664,7 @@ AVisFixed::AVisFixed(MElem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
 void *AVisFixed::DoGetObj(const char *aName)
 {
     void* res = NULL;
-    if (strcmp(aName, Type()) == 0) {
-	res = this;
-    } 
-    else if (strcmp(aName, MVisContainer::Type()) == 0) {
+    if (strcmp(aName, MVisContainer::Type()) == 0) {
 	res = (MVisContainer*) this;
     } 
     else {
@@ -762,10 +754,7 @@ AVisDrawing::AVisDrawing(MElem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv
 void *AVisDrawing::DoGetObj(const char *aName)
 {
     void* res = NULL;
-    if (strcmp(aName, Type()) == 0) {
-	res = this;
-    } 
-    else if (strcmp(aName, MVisDrawingArea::Type()) == 0) {
+    if (strcmp(aName, MVisDrawingArea::Type()) == 0) {
 	res = (MVisDrawingArea*) this;
     } 
     else {
@@ -913,9 +902,7 @@ AVisDrawingElem::AVisDrawingElem(MElem* aMan, MEnv* aEnv): AVisWidget(Type(), aM
 void *AVisDrawingElem::DoGetObj(const char *aName)
 {
     void* res = NULL;
-    if (strcmp(aName, Type()) == 0) {
-	res = this;
-    } else if (strcmp(aName, MVisDrawingElem::Type()) == 0){
+    if (strcmp(aName, MVisDrawingElem::Type()) == 0){
 	res = (MVisDrawingElem*) this;
     } else {
 	res = AVisWidget::DoGetObj(aName);

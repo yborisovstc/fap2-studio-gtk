@@ -99,6 +99,7 @@ void *DesObserver::DoGetObj(const string& aName)
 {
     void* res = NULL;
     if (aName ==  Type()) {
+	__ASSERT(NULL);
 	res = this;
     }
     else if (aName ==  MMdlObserver::Type()) {
