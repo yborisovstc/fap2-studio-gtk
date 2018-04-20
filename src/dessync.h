@@ -20,7 +20,7 @@ class ADesSync: public Elem, public MAgent
 	MIface* MAgent_DoGetIface(const string& aName) override;
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName);
+	virtual MIface *DoGetObj(const char *aName);
 	// Signal handlers:
 	void on_action_run();
 	void on_action_stop();

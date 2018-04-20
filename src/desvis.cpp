@@ -25,9 +25,9 @@ AWindow::AWindow(MElem* aMan, MEnv* aEnv, MSDesEnv* aSDesEnv):
     SetParent(Elem::PEType());
 }
 
-void *AWindow::DoGetObj(const char *aName)
+MIface *AWindow::DoGetObj(const char *aName)
 {
-    void* res = NULL;
+    MIface* res = NULL;
     if (strcmp(aName, MVisContainer::Type()) == 0) {
 	res = (MVisContainer*) this;
     } else if (strcmp(aName, MAgent::Type()) == 0) {
@@ -225,9 +225,9 @@ void AVisWidget::Construct()
     }
 }
 
-void *AVisWidget::DoGetObj(const char *aName)
+MIface *AVisWidget::DoGetObj(const char *aName)
 {
-    void* res = NULL;
+    MIface* res = NULL;
     if (strcmp(aName, MAgent::Type()) == 0) {
 	res = dynamic_cast<MAgent*>(this);
     } else if (strcmp(aName, MVisChild::Type()) == 0) {
@@ -256,10 +256,7 @@ void AVisWidget::UpdateIfi(const string& aName, const TICacheRCtx& aCtx)
     TIfRange rr;
     TBool resg = EFalse;
     TICacheRCtx ctx(aCtx); ctx.push_back(this);
-    if (strcmp(aName.c_str(), Type()) == 0) {
-	res = this;
-    }
-    else if (strcmp(aName.c_str(), MDIntGet::Type()) == 0) {
+    if (strcmp(aName.c_str(), MDIntGet::Type()) == 0) {
 	MElem* cpw = GetNode("./../Prov_PW");
 	MElem* cph = GetNode("./../Prov_PH");
 	if (aCtx.IsInContext(cpw)) {
@@ -279,38 +276,38 @@ void AVisWidget::UpdateIfi(const string& aName, const TICacheRCtx& aCtx)
 	MElem* alc = GetNode("./../Allocation");
 	if (aCtx.IsInContext(cpw)) {
 	    if (isdvar) {
-		res = (MIface*) &iParProvVarW;
+		res = (MDVarGet*) &iParProvVarW;
 	    }
 	    else {
-		res = (MIface*) &iParProvVarW;
+		res = (MDtGet<Sdata<int> >*) &iParProvVarW;
 	    }
 	}
 	else if (aCtx.IsInContext(cph)) {
 	    if (isdvar) {
-		res = (MIface*) &iParProvVarH;
+		res = (MDVarGet*) &iParProvVarH;
 	    }
 	    else {
-		res = (MIface*) &iParProvVarH;
+		res = (MDtGet<Sdata<int> >*) &iParProvVarH;
 	    }
 	}
 	else if (aCtx.IsInContext(bpe)) {
 	    if (isdvar) {
-		res = (MIface*) &mBtnPressEvtProv;
+		res = (MDVarGet*) &mBtnPressEvtProv;
 	    }
 	}
 	else if (aCtx.IsInContext(bre)) {
 	    if (isdvar) {
-		res = (MIface*) &mBtnReleaseEvtProv;
+		res = (MDVarGet*) &mBtnReleaseEvtProv;
 	    }
 	}
 	else if (aCtx.IsInContext(mte)) {
 	    if (isdvar) {
-		res = (MIface*) &mMotionEvtProv;
+		res = (MDVarGet*) &mMotionEvtProv;
 	    }
 	}
 	else if (aCtx.IsInContext(alc)) {
 	    if (isdvar) {
-		res = (MIface*) &mAllocationProv;
+		res = (MDVarGet*) &mAllocationProv;
 	    }
 	}
     }
@@ -661,9 +658,9 @@ AVisFixed::AVisFixed(MElem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv)
     iWidget->show();
 }
 
-void *AVisFixed::DoGetObj(const char *aName)
+MIface *AVisFixed::DoGetObj(const char *aName)
 {
-    void* res = NULL;
+    MIface* res = NULL;
     if (strcmp(aName, MVisContainer::Type()) == 0) {
 	res = (MVisContainer*) this;
     } 
@@ -751,9 +748,9 @@ AVisDrawing::AVisDrawing(MElem* aMan, MEnv* aEnv): AVisWidget(Type(), aMan, aEnv
     iWidget->show();
 }
 
-void *AVisDrawing::DoGetObj(const char *aName)
+MIface *AVisDrawing::DoGetObj(const char *aName)
 {
-    void* res = NULL;
+    MIface* res = NULL;
     if (strcmp(aName, MVisDrawingArea::Type()) == 0) {
 	res = (MVisDrawingArea*) this;
     } 
@@ -899,9 +896,9 @@ AVisDrawingElem::AVisDrawingElem(MElem* aMan, MEnv* aEnv): AVisWidget(Type(), aM
     SetParent(AVisWidget::PEType());
 }
 
-void *AVisDrawingElem::DoGetObj(const char *aName)
+MIface *AVisDrawingElem::DoGetObj(const char *aName)
 {
-    void* res = NULL;
+    MIface* res = NULL;
     if (strcmp(aName, MVisDrawingElem::Type()) == 0){
 	res = (MVisDrawingElem*) this;
     } else {

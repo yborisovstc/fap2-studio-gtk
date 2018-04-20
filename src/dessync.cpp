@@ -60,9 +60,9 @@ ADesSync::~ADesSync()
     iActionGroup.reset();
 }
 
-void *ADesSync::DoGetObj(const char *aName)
+MIface *ADesSync::DoGetObj(const char *aName)
 {
-    void* res = NULL;
+    MIface* res = NULL;
     if (strcmp(aName, MAgent::Type()) == 0) {
 	res = dynamic_cast<MAgent*>(this);
     } else {

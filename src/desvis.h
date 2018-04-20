@@ -2,6 +2,7 @@
 #ifndef __FAPSTU_GTK_DESVIS_H
 #define __FAPSTU_GTK_DESVIS_H
 
+#include <miface.h>
 #include <elem.h>
 #include <mdes.h>
 #include <mdata.h>
@@ -14,7 +15,7 @@
 using namespace Gtk;
 using namespace Gdk;
 
-class MVisChild 
+class MVisChild: public MIfaceStub
 {
     public:
 	enum TPar {
@@ -28,7 +29,7 @@ class MVisChild
 	virtual int GetParInt(TPar) = 0;
 };
 
-class MVisContainer 
+class MVisContainer : public MIfaceStub
 {
     public:
 	static const char* Type() { return "MVisContainer";};
@@ -51,7 +52,7 @@ class AWindow: public Elem, public MVisContainer, public MAgent
 	MIface* MAgent_DoGetIface(const string& aName) override;
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName);
+	virtual MIface *DoGetObj(const char *aName);
     protected:
 	MSDesEnv* iSDesEnv;
 };
@@ -161,7 +162,7 @@ class AVisWidget: public Elem, public MVisChild, public MACompsObserver, public 
 	void GetMotionEvent(NTuple& aData) { aData = mMotionEvt;};
 	void ActivateDeps(const string& aUri);
 	// From Base
-	virtual void *DoGetObj(const char *aName);
+	virtual MIface *DoGetObj(const char *aName);
 	// Ifaces cache
 	void UpdateIfi(const string& aName, const TICacheRCtx& aCtx) override;
 	// Widget events handling
@@ -221,7 +222,7 @@ class AVisFixed: public AVisWidget, public MVisContainer
 	virtual void OnChildChanged(Widget* aChild, MVisChild::TPar aPar);
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName);
+	virtual MIface *DoGetObj(const char *aName);
 };
 
 class VisDrwArea: public DrawingArea
@@ -236,7 +237,7 @@ class VisDrwArea: public DrawingArea
 };
 
 // Interface of drawing area, that uses drawing elements to performs draw 
-class MVisDrawingArea
+class MVisDrawingArea: public MIfaceStub
 {
     public:
 	static const char* Type() { return "MVisDrawingArea";};
@@ -248,7 +249,7 @@ class MVisDrawingArea
 
 
 // Interface of drawing element, that performs partial draw in drawing area
-class MVisDrawingElem
+class MVisDrawingElem: public MIfaceStub
 {
     public:
 	static const char* Type() { return "MVisDrawingElem";};
@@ -280,7 +281,7 @@ class AVisDrawing: public AVisWidget, public MVisDrawingArea
 	virtual bool HandleMotion(GdkEventMotion* aEvent);
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName);
+	virtual MIface *DoGetObj(const char *aName);
 	// From MVisDrawingArea
 	virtual void GetAllocation(Rectangle& aRect);
 	virtual Glib::RefPtr<Gdk::Window> GetWindow();
@@ -308,7 +309,7 @@ class AVisDrawingElem: public AVisWidget, public MVisDrawingElem
 	virtual bool OnAreaMotion(GdkEventMotion* aEvent);
     protected:
 	// From Base
-	virtual void *DoGetObj(const char *aName);
+	virtual MIface *DoGetObj(const char *aName);
 	// From MACompsObserver
 	//virtual TBool HandleCompChanged(MElem& aContext, MElem& aComp);
 	// From AVisWidget
