@@ -51,7 +51,7 @@ void DesObserver::SetDes(MEnv* aDesEnv)
 	if (iDesEnv != NULL) {
 	    iDesEnv->Logger()->RemoveLogObserver(this);
 	    MElem* root = iDesEnv->Root();
-	    root->SetObserver(NULL);
+	    root->UnsetObserver(this);
 	    iDesEnv = NULL;
 	}
     }

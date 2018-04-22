@@ -350,7 +350,7 @@ NaviContent::~NaviContent()
 
 void NaviContent::UnsetAgent()
 {
-    mAgent.SetObserver(NULL);
+    mAgent.UnsetObserver(this);
     remove_all_columns();
     unset_model();
     Glib::RefPtr<TreeModel> curmdl = get_model();
