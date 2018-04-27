@@ -396,7 +396,9 @@ TBool AVisWidget::HandleCompChanged(MElem& aContext, MElem& aComp, const string&
 	}
     }
     else {
-	Logger()->Write(EErr, this, "Input [Child] not exists");
+	// TODO this is a hack for the case when "Child" is of ConnPointMc - it changes direction just in constructor
+	// i.e. before registered in hier. To apply solid solution
+	// Logger()->Write(EErr, this, "Input [Child] not exists");
 	res = EFalse;
     }
     return res;
