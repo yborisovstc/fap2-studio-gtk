@@ -350,7 +350,8 @@ NaviContent::~NaviContent()
 
 void NaviContent::UnsetAgent()
 {
-    mAgent.UnsetObserver(this);
+    // TODO to use root observer - agents oblservers get not supprted 
+    //mAgent.UnsetObserver(this);
     remove_all_columns();
     unset_model();
     Glib::RefPtr<TreeModel> curmdl = get_model();
@@ -359,7 +360,8 @@ void NaviContent::UnsetAgent()
 
 void NaviContent::SetAgent()
 {
-    mAgent.SetObserver(this);
+    // TODO to use root observer - agents oblservers get not supprted 
+    //mAgent.SetObserver(this);
     Glib::RefPtr<ContentTreeMdl> mdl = ContentTreeMdl::create(mAgent);
     GtkTreeModel* model = mdl->Gtk::TreeModel::gobj();
     set_model(mdl);

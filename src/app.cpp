@@ -50,18 +50,14 @@ void DesObserver::SetDes(MEnv* aDesEnv)
     if (aDesEnv == NULL) {
 	if (iDesEnv != NULL) {
 	    iDesEnv->Logger()->RemoveLogObserver(this);
-	    MElem* root = iDesEnv->Root();
-	    root->UnsetObserver(this);
+	    iDesEnv->UnsetObserver(this);
 	    iDesEnv = NULL;
 	}
     }
     else {
 	iDesEnv = aDesEnv;
 	iDesEnv->Logger()->AddLogObserver(this);
-	MElem* root = iDesEnv->Root();
-	if (root != NULL) {
-	    root->SetObserver(this);
-	}
+	iDesEnv->SetObserver(this);
     }
     iSigDesEnvChanged.emit();
 }
@@ -74,9 +70,8 @@ void DesObserver::UpdateDesRootObserver()
     if (iDesEnv != NULL) {
 	MElem* root = iDesEnv->Root();
 	if (root != NULL) {
-	    root->SetObserver(this);
+	    iDesEnv->SetObserver(this);
 	    iSigSystemCreated.emit();
-	    //iSigSystemChanged.emit();
 	}
     }
 }
@@ -657,7 +652,7 @@ void App::OpenFile(const string& aFileName, bool aAsTmp)
     } catch (std::exception e) {
 	std::cerr << "exception caught: " << e.what() << '\n';
     }
-    iDesObserver->UpdateDesRootObserver();
+    //iDesObserver->UpdateDesRootObserver();
     iHDetView->SetRoot(iEnv->Root());
     iHDetView->SetCursor(iEnv->Root());
     if (!aAsTmp) {
